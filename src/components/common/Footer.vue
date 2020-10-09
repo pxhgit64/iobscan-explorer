@@ -12,8 +12,8 @@
 			 :style="`background:${(prodConfig.footer || {}).bgColor_bottom || '#000000'}`">
 			<div class="footer_content_bottom" >
 				<p>{{(prodConfig.footer || {}).copyright || 'copyright © 2020 边界智能'}}</p>
-				<p>{{chainId}}</p>
-				<p>{{version}}</p>
+				<p v-if="(prodConfig.footer || {}).chainIdShow">{{chainId}}</p>
+				<p v-if="(prodConfig.footer || {}).versionShow">{{version}}</p>
 			</div>
 		</div>
 	</div>

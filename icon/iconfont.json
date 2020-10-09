@@ -6,6 +6,69 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "17454331",
+      "name": "网络切换箭头",
+      "font_class": "wangluoqiehuanjiantou",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "17454353",
+      "name": "fuxi1",
+      "font_class": "fuxi1",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "17454356",
+      "name": "BI-01",
+      "font_class": "BI-01",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    },
+    {
+      "icon_id": "17453657",
+      "name": "疑问",
+      "font_class": "yiwen",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "17453083",
+      "name": "提示",
+      "font_class": "tishi",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "17453114",
+      "name": "iris",
+      "font_class": "iris",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "17453117",
+      "name": "彩虹猫",
+      "font_class": "caihongmao",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "17453118",
+      "name": "GOZ",
+      "font_class": "GOZ",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "17218842",
+      "name": "身份ID",
+      "font_class": "ID",
+      "unicode": "e656",
+      "unicode_decimal": 58966
+    },
+    {
       "icon_id": "17162256",
       "name": "帮助",
       "font_class": "help",

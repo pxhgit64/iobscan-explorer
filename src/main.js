@@ -10,6 +10,12 @@ import lang from 'element-ui/lib/locale/lang/en';
 import locale from 'element-ui/lib/locale';
 import VueI18n from 'vue-i18n';
 import prodConfig from "./productionConfig";
+/*引入自定义过滤器*/
+import filters from './filters';
+Vue.use(filters);
+/*引入自定义修饰器*/
+import directives from './directives';
+Vue.use(directives);
 
 locale.use(lang);
 Vue.use(ElementUI)

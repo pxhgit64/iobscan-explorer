@@ -7,8 +7,8 @@
 						<div class="block_list_current_height_content">
 							<span class="block_list_current_height_title">{{$t('ExplorerLang.block.currentHeight')}}</span>
 							<span class="block_list_current_height_number">
-							<router-link :to="`/block/${latestBlockHeight}`">{{latestBlockHeight}}</router-link>
-						</span>
+								<router-link :to="`/block/${latestBlockHeight}`">{{latestBlockHeight}}</router-link>
+							</span>
 						</div>
 						<div class="pagination_content">
 							<m-pagination :page-size="pageSize" :total="dataCount" :page="pageNumber" :page-change="pageChange"></m-pagination>

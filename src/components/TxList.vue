@@ -10,7 +10,7 @@
                                        :label="item.label"
                                        :value="item.value"></el-option>
                         </el-select>-->
-                        <el-select v-model="txType">
+                        <el-select v-model="txType" filterable>
                             <el-option v-for="(item, index) in txTypeOption"
                                        :key="index"
                                        :label="item.label"

@@ -1,7 +1,7 @@
 import axios from "axios"
 export default class Service {
 	static http(url){
-		return axios.get(url).then(data => {
+	return axios.get(url).then(data => {
 			if(data.status === 200){
 				return data.data
 			}

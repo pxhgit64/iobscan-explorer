@@ -128,7 +128,7 @@
                     <span class="service_information_transaction_condition_count">
                         {{`${txCount} ${$t('ExplorerLang.unit.Txs')}`}}
                     </span>
-                    <el-select v-model="type">
+                    <el-select v-model="type" filterable>
                         <el-option v-for="(item, index) in txTypeOption"
                                    :key="index"
                                    :label="item.label"

@@ -21,7 +21,7 @@ export default {
 </script>
 
 <style lang="scss">
-  @import "style/index.css";
+@import "style/index.css";
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -40,7 +40,7 @@ export default {
     -webkit-text-size-adjust: none;
   }
   body{
-    overflow-y: scroll;
+    overflow-y: overlay;
     background: $bg_cancel_c;
     font-size: $s16 !important;
   }
@@ -69,7 +69,7 @@ export default {
 
   @media screen and (max-width: 1000px) {
     .content{
-      margin-top: 0rem;
+      margin-top: 1.21rem;
     }
   }
 /*  {

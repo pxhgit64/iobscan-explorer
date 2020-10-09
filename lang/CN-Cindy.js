@@ -33,7 +33,7 @@ export const ExplorerLang = {
         denom: '数据类别',
         denomId: '数据类别标识',
         owner: '拥有者',
-        id: '数据标识',
+        id: '数据对象标识',
         data: '链上数据',
         uri: '链外链接',
         serviceName: '服务类型',
@@ -57,6 +57,23 @@ export const ExplorerLang = {
         idPubkey:'身份公钥',
         pubKeyAlgo:'公钥算法',
         certificate:'证书',
+        credentials: '身份凭证',
+        // 新增
+        commission: 'Commission',
+        bondedTokens: 'Bonded_Tokens',
+        uptime: 'Uptime',
+        selfBonded: 'Self-Bonded',
+        delegators: 'Delegators',
+        bondHeight: 'Bond_Height',
+        address: 'Address',
+        amount: 'Amount',
+        shares: 'Shares',
+        endTime: 'End Time',
+        fee: 'Fee',
+        status: 'Status',
+        consensusAddress: 'Consensus Address',
+        proposerPriority: 'Proposer Priority',
+        
         updateTime:'更新时间'
 
     },
@@ -104,11 +121,19 @@ export const ExplorerLang = {
         transaction: '交易数量:',
         timestamp: '参考时间:',
         transactions: '区块交易',
+        // 新增
+        proposer: 'Proposer:',
+        validators: 'Validators:',
+        votingPower: 'Voting Power:',
+        inflation: 'Inflation:',
+        validatorSet:'Validator Set'
     },
     transactions:{
         txs: '交易',
         search: '搜索',
         status: '交易状态',
+        // 新增
+        delegationTxsList: 'Delegation Txs List'
     },
     validators:{
         bonded:'共识中',
@@ -118,14 +143,14 @@ export const ExplorerLang = {
     nftAsset:{
         assets: '数据对象',
         search: '搜索',
-        placeHolder: '搜索数据标识',
+        placeHolder: '搜索数据对象标识',
     },
     denom:{
         title: '数据类别',
         search: '搜索',
         placeHolder: '搜索数据类别或数据类别标识',
     },
-    identityList:{
+    identity:{
         title: '身份',
         search: '搜索',
         placeHolder: '搜索身份ID/拥有者',
@@ -224,9 +249,48 @@ export const ExplorerLang = {
             clientID:'客户端ID',
             module:'模块',
         },
+        identity:{
+            id:'身份ID',
+            pubkey:'身份公钥',
+            certificate:'证书',
+            credentials:'身份凭证',
+            pubKeyAlgo:'公钥算法'
+        },
         client:{
             clientID:'客户端ID',
             header:'区块头',
+        },
+        // 新增
+        transactionInformations: {
+            title: 'Transaction Information',
+            block: 'Block',
+            status: 'Status',
+            timestamp: 'Timestamp',
+            fee: 'Fee',
+            gasUsed: 'Gas Used',
+            signer: 'Signer',
+            memo:'Memo'
+        },
+        transactionMessage: {
+            title: 'Transaction Message or Result',
+            TxType: 'TxType :',
+            from: 'From :',
+            amount: 'Amount :',
+            to: 'To :',
+            shares: 'Shares :',
+            toShares: 'Shares : ',//'Shares : '此处有空格
+            endTime: 'End Time :',
+            withdrawAddress: 'Withdraw Address:',
+            delegatorAddress: 'Delegator Address :',
+            operatorAddress: 'Operator Address :',
+            moniker: 'Moniker :',
+            identity: 'Identity :',
+            selfBonded: 'Self-Bonded :',
+            ownerAddress:'Owner Address :',
+            consensusPubkey: 'Consensus Pubkey :',
+            commissionRate: 'Commission Rate :',
+            website: 'Website :',
+            details: 'Details :',
         }
     },
     addressDetail: {
@@ -242,7 +306,7 @@ export const ExplorerLang = {
         nftInformation: '数据对象详情',
         owner: '拥有者',
         denom: '数据类别',
-        id: '数据标识',
+        id: '数据对象标识',
         schema: '上链结构',
         data: '链上数据',
         creator: '创建者',
@@ -282,5 +346,86 @@ export const ExplorerLang = {
         backHome: '返回首页',
         resultTitle: '搜索结果为空',
         searchTip: '尝试搜索交易哈希或区块高度',
+    },
+    // 新增
+    // 验证人列表
+    staking: {
+        title: 'Validator List',
+        status:{
+            active:'Active',
+            candidate:'Candidate',
+            jailed:'Jailed',
+        }
+    },
+    // 验证人详情
+    validatorDetail: {
+        title: 'Validator Details',
+        validatorInformation: {
+            validatorTip: 'The validator has no more information',
+            operatorAddressTip: 'The address you used to Create a Validator , Delegate or Withdraw DelegatorReward, etc.',
+            validationAssetInfoArr: {
+                operatorAddress: 'Operator Address:',
+                ownerAddress: 'Owner Address:',
+                withdrawAddress: 'Withdraw Address:',
+                votingPower: 'Voting Power:',
+                uptime: 'Uptime:',
+                missedBlocks: 'Missed Blocks:',
+                bondHeight: 'Bond Height:',
+                unbondingHeight:'Unbonding Height:',
+                consensusPubkey: 'Consensus Pubkey:',
+                jailedUntil:'Jailed Until:'
+            }
+        },
+        commissionInfo: {
+            title: 'Commission Info',
+            scatter: {
+                title: 'Commission Rate & Bonded Tokens Distribution',
+                xAxis: 'Commission Rate(%)',
+                yAxis: 'Bonded_Token(IRIS)',
+                tooltip: {
+                    commissionRate: 'Commission Rate',
+                    bondedTokens: 'Bonded Tokens',
+                },
+                otherValidator: 'Other Validator'
+            },
+            bondedAndCommissionArr: {
+                commissionRate: 'Commission Rate:',
+                bondedTokens: 'Bonded Tokens:',
+                delegators: 'Delegators:',
+                totalShares: 'Total Shares:',
+                commissionRewards: 'Commission Rewards:',
+                commissionRateRange: 'Commission Rate Range:',
+                children: {
+                    maxChangeRateEverytime: 'Max Change Rate Everytime:',
+                    selfBonded: 'Self-Bonded:',
+                    delegatorBonded:'Delegator Bonded:'
+                }
+            }
+        },
+        delegationsTitle: 'Delegations',
+        unbondingDelegationsTitle: 'Unbonding Delegations',
+        delegationsTxsTitle: 'Delegation Txs',
+        validationTxsTitle: 'Validation Txs'
+    },
+    // 普通地址详情
+    addressInformation: {
+        content: {
+            address: 'Address',
+            token: 'Token',
+            totalAmount: 'Total Amount',
+            balance: 'Balance',
+            delegated: 'Delegated',
+            unBonding: 'UnBonding',
+            rewards: 'Rewards'
+        },
+        delegatorRewards: {
+            title: 'Delegator Rewards',
+            withdrawTo: 'Withdraw To'
+        },
+        validatorRewards: {
+            title: 'Validator Rewards',
+            validatorMoniker: 'Validator Moniker',
+            operatorAddress:'Operator Address'
+        }
     }
 }

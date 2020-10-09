@@ -4,7 +4,7 @@ import moment from 'moment';
 
 function get(url){
 	return new Promise(async (res,rej)=>{
-        url = `/api/${url.replace(/^\//,'')}`;
+        url = `/api/${url.replace(/^\//, '')}`;
 		try{
 			let data = await HttpHelper.get(url);
 			if(data && data.code == 0){
@@ -218,50 +218,69 @@ export function getNodeInfo(){
     return getFromLcd('node_info');
 }
 export function getIdentities(identity, pageNum, pageSize){
-    let url = `identities?pageNum=${pageNum}&pageSize=${pageSize}&useCount=true&search=${identity}`;
+    let url = `txs/identities?pageNum=${pageNum}&pageSize=${pageSize}&useCount=true&search=${identity}`;
     return get(url);
 }
 
-export function getIdentityDetail(identity){
-    let url = `/identities/${identity}`;
+export function getValidatorsListApi(pageNum, pageSize, useCount,status){
+    let url = `staking/validators?pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}&status=${status}`;
     return get(url);
 }
 
-export function getPubkeyListByIdentity(identity, pageNum, pageSize, useCount){
-    let url = `identities/pubkey?id=${identity}&pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}`;
+export function getValidatorsInfoApi(valAddress){
+    let url = `staking/validators/${valAddress}`;
     return get(url);
 }
 
-export function getCertificateListByIdentity(identity, pageNum, pageSize, useCount){
-    let url = `identities/certificate?id=${identity}&pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}`;
+export function getValidatorWithdrawAddrApi(delegatorAddr){
+    let url = `/distribution/delegators/${delegatorAddr}/withdraw_address`;
     return get(url);
 }
 
-export function getTxListByIdentity(identity, pageNum, pageSize, useCount){
-    let url = `txs/identity?id=${identity}&pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}`;
+export function getValidatorRewardsApi(valAddress){
+    let url = `/distribution/validators/${valAddress} `;
     return get(url);
 }
 
-export function getIdentityListByAddress(address, pageNum, pageSize, useCount){
-    let url = `identities/address?address=${address||''}&pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}`;
+export function getValidatorCommissionInfoApi(){
+    let url = `/staking/commission_info`;
     return get(url);
 }
 
+export function getValidatorsDelegationsApi(valAddress,pageNum,pageSize,useCount){
+    let url = `/staking/validators/${valAddress}/delegations?pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}`;
+    return get(url);
+}
 
+export function getUnbondingDelegationsApi(valAddress,pageNum,pageSize,useCount){
+    let url = `/staking/validators/${valAddress}/unbonding-delegations?pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}`;
+    return get(url);
+}
 
+// 验证人详情页面 获取Delegation Txs 待调整
+export function getDelegationTxsApi(valAddress,pageNum,pageSize){
+    let url = `/txs/staking?pageNum=${pageNum}&pageSize=${pageSize}&useCount=true&address=${valAddress}`;
+    return get(url);
+}
 
+// 验证人详情页面 获取Validation Txs 待调整
+export function getValidationTxsApi(valAddress,pageNum,pageSize){
+    let url = `/txs/declaration?pageNum=${pageNum}&pageSize=${pageSize}&useCount=true&address=${valAddress}`;
+    return get(url);
+}
 
+// 地址详情接口 operator_address和withdrawAddress无数据
+export function getAddressInformationApi(address){
+    let url = `/staking/account/${address}`;
+    return get(url);
+}
 
+export function getDelegationListApi(address){
+    let url = `/staking/delegators/${address}/delegations`;
+    return get(url);
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
+export function getUnBondingDelegationListApi(address){
+    let url = `/staking/delegators/${address}/unbonding_delegations`;
+    return get(url);
+}

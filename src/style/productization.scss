@@ -1,5 +1,5 @@
 // theme
-$theme_c:${theme_color};							//主题色
+$theme_c:${theme_color};							//主题色 var(--bgColor)
 
 // text-color
 $t_first_c: ${text_color_first};  					//一级文字色
@@ -11,3 +11,7 @@ $t_button_c: ${button_color_common};				//通用按钮文字色
 
 // background-color
 $bg_button_c: ${button_bgColor_common};
+
+:root {
+    --bgColor:  #{$theme_c};
+}

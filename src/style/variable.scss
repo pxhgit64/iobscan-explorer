@@ -35,3 +35,7 @@ $bd_third_c: #F3F5F6;					//三级边框色
 .table{
 	color:$t_first_c;
 }
+
+:root {
+    --bgColor: $theme_c;
+}
