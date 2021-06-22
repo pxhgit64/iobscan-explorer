@@ -126,11 +126,13 @@ export async function addressRoute (address) {
         let length = addressPrefix.iva.length
         if(address) {
             console.log(cfg)
+            let isIris = addressPrefix.iaa === IRIS_ADDRESS_PREFIX,
+                isCosmos = addressPrefix.iaa === COSMOS_ADDRESS_PREFIX;
             if (address.substring(0, length) === addressPrefix.iva) {
                 return this.$router.push(`/staking/${address}`)
-            } else if (address.startsWith(COSMOS_ADDRESS_PREFIX)) {
+            } else if (isIris && address.startsWith(COSMOS_ADDRESS_PREFIX)) {
                 return window.open(`${cfg.cosmosXpAddress}/#/address/${address}`)
-            }  else if (address.startsWith(IRIS_ADDRESS_PREFIX)) {
+            }  else if (isCosmos && address.startsWith(IRIS_ADDRESS_PREFIX)) {
                 return window.open(`${cfg.irisXpAddress}/#/address/${address}`)
             } else {
                 return this.$router.push(`/address/${address}`)
