@@ -546,3 +546,4 @@ export const DISTRIBUTION = {
 }
 
 export const COSMOS_ADDRESS_PREFIX = 'cosmos';
+export const IRIS_ADDRESS_PREFIX = 'iaa';

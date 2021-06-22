@@ -1486,6 +1486,10 @@
 				<span>{{minLiquidity}}</span>
 			</p>
 			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.coinswap.tokenPair')}}</span>
+				<span>{{tokenPair || '--'}}</span>
+			</p>
+			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.coinswap.deadline')}}</span>
 				<span>{{deadline}}</span>
 			</p>
@@ -2408,7 +2412,7 @@
 											if (attr.key == 'request_context_id') {
 												this.requestContextId = attr.value || '--';
 											}
-										}); 
+										});
 									})
 								}
 								break;
@@ -2692,9 +2696,21 @@
 									if(item.msg_index === this.msgIndex) {
 										(item.events || []).forEach((events) => {
 											if(events.type === 'swap') {
-												(events.attributes || []).forEach(attribute => {
+												(events.attributes || []).forEach(async attribute => {
 													if(attribute.key === 'token_pair') {
-														this.tokenPair = attribute.value;
+														let list = attribute.value.split('-');
+														if(list.length > 1){
+															let token1 = await converCoin({
+																denom:list[0],
+																amount:0
+															})
+															let token2 = await converCoin({
+																denom:list[1],
+																amount:0
+															})
+															this.tokenPair = `${token1.denom.toUpperCase()} - ${token2.denom.toUpperCase()}`;
+														}
+														
 													}
 												})
 											}
@@ -2711,19 +2727,20 @@
                                             let amountList = transferItem.attributes.filter((t)=>t.key === 'amount');
                                             if(amountList && amountList.length > 0){
                                                 let inputItem = amountList[0],
-                                                    outputItem = amountList[1]
+                                                    outputItem = amountList[amountList.length - 1]
                                                 let inputAmount = inputItem.value.match(/\d+/g), inputDenom = '',
                                                     outputAmount = outputItem.value.match(/\d+/g), outputDenom = '';
                                                 if(inputAmount && inputAmount.length > 0){
-                                                    inputDenom = inputItem.value.split(inputAmount[0])[1];
+                                                    inputDenom = inputItem.value.substr(inputAmount[0].length);
                                                 }
                                                 if(outputAmount && outputAmount.length > 0){
-                                                    outputDenom = outputItem.value.split(outputAmount[0])[1];
+													outputDenom = outputItem.value.substr(outputAmount[0].length);
                                                 }
                                                 let input = await converCoin({
                                                     denom:inputDenom,
                                                     amount:inputAmount[0]
-                                                })
+												})
+												
                                                 this.input = `${input.amount} ${input.denom.toLocaleUpperCase()}`;
                                                 let output = await converCoin({
                                                     denom:outputDenom,
@@ -2755,10 +2772,32 @@
 									if(item.msg_index === this.msgIndex) {
 										(item.events || []).forEach((events) => {
 											if(events.type === 'transfer') {
-												(events.attributes || []).forEach(attribute => {
+												(events.attributes || []).forEach(async attribute => {
 													if(attribute.key === 'amount') {
 														if(attribute.value && attribute.value.includes(",")) {
-															this.amount = attribute.value
+															const amount1 = this.getAmountByAmountStr(attribute.value.split(',')[0]);
+															const amount2 = this.getAmountByAmountStr(attribute.value.split(',')[1]);
+															const amountItem1 = await converCoin(amount1);
+															const amountItem2 = await converCoin(amount2);
+															this.amount = `${amountItem1.amount} ${amountItem1.denom.toUpperCase()}, ${amountItem2.amount} ${amountItem2.denom.toUpperCase()}`
+														}
+													}
+												})
+											}
+											if(events.type === 'add_liquidity') {
+												(events.attributes || []).forEach(async attribute => {
+													if(attribute.key === 'token_pair') {
+														let list = attribute.value.split('-');
+														if(list.length > 1){
+															let token1 = await converCoin({
+																denom:list[0],
+																amount:0
+															})
+															let token2 = await converCoin({
+																denom:list[1],
+																amount:0
+															})
+															this.tokenPair = `${token1.denom.toUpperCase()} - ${token2.denom.toUpperCase()}`;
 														}
 													}
 												})
@@ -2783,18 +2822,33 @@
 									if(item.msg_index === this.msgIndex) {
 										(item.events || []).forEach((events) => {
 											if(events.type === 'transfer') {
-												(events.attributes || []).forEach(attribute => {
+												(events.attributes || []).forEach(async attribute => {
 													if(attribute.key === 'amount') {
 														if(attribute.value && attribute.value.includes(",")) {
-															this.amount = attribute.value
+															const amount1 = this.getAmountByAmountStr(attribute.value.split(',')[0]);
+															const amount2 = this.getAmountByAmountStr(attribute.value.split(',')[1]);
+															const amountItem1 = await converCoin(amount1);
+															const amountItem2 = await converCoin(amount2);
+															this.amount = `${amountItem1.amount} ${amountItem1.denom.toUpperCase()}, ${amountItem2.amount} ${amountItem2.denom.toUpperCase()}`
 														}
 													}
 												})
 											}
 											if(events.type === 'remove_liquidity') {
-												(events.attributes || []).forEach(attribute => {
+												(events.attributes || []).forEach(async attribute => {
 													if(attribute.key === 'token_pair') {
-														this.tokenPair = attribute.value;
+														let list = attribute.value.split('-');
+														if(list.length > 1){
+															let token1 = await converCoin({
+																denom:list[0],
+																amount:0
+															})
+															let token2 = await converCoin({
+																denom:list[1],
+																amount:0
+															})
+															this.tokenPair = `${token1.denom.toUpperCase()} - ${token2.denom.toUpperCase()}`;
+														}
 													}
 												})
 											}
@@ -3195,6 +3249,16 @@
 				} catch (e) {
 					console.error(e);
 				}
+			},
+			getAmountByAmountStr(str){
+				let amount = str.match(/\d+/g), denom = '';
+                if(amount && amount.length > 0){
+					denom = str.substr(amount[0].length);
+					return {
+						amount:amount[0], 
+						denom
+					}
+                }
 			},
 			// 处理需打开的网站地址
 			openUrl(url) {
