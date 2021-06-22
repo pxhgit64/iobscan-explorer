@@ -129,13 +129,9 @@ export async function addressRoute (address) {
             if (address.substring(0, length) === addressPrefix.iva) {
                 return this.$router.push(`/staking/${address}`)
             } else if (address.startsWith(COSMOS_ADDRESS_PREFIX)) {
-                //return window.open(`${cfg.cosmosXpAddress}/#/address/${address}`)
-                return window.open(`https://cosmoshub.iobscan.io/#/address/${address}`)
-                //TODO (lvshenchao)暂时没有时间排查打包配置环境变量错误读问题, 暂时写死生产环境地址
+                return window.open(`${cfg.cosmosXpAddress}/#/address/${address}`)
             }  else if (address.startsWith(IRIS_ADDRESS_PREFIX)) {
-                //return window.open(`${cfg.irisXpAddress}/#/address/${address}`)
-                return window.open(`https://irishub.iobscan.io/#/address/${address}`)
-                //TODO (lvshenchao)暂时没有时间排查打包配置环境变量错误读问题, 暂时写死生产环境地址
+                return window.open(`${cfg.irisXpAddress}/#/address/${address}`)
             } else {
                 return this.$router.push(`/address/${address}`)
             }
