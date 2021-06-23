@@ -134,7 +134,7 @@ export async function addressRoute (address) {
                 return window.open(`${cfg.cosmosXpAddress}/#/address/${address}`)
             }  else if (isCosmos && address.startsWith(IRIS_ADDRESS_PREFIX)) {
                 return window.open(`${cfg.irisXpAddress}/#/address/${address}`)
-            } else {
+            }  else if (address.startsWith(IRIS_ADDRESS_PREFIX) || address.startsWith(COSMOS_ADDRESS_PREFIX)) {
                 return this.$router.push(`/address/${address}`)
             }
         }

@@ -646,14 +646,18 @@
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.sender')}}：</span>
 				<template>
 					<span v-if="sender === '--'">{{sender}}</span>
-					<span v-else @click="addressRoute(sender)" class="address_link">{{sender}}</span>
+					<span v-else @click="addressRoute(sender)"
+                          :class="(sender.startsWith(COSMOS_ADDRESS_PREFIX) || sender.startsWith(IRIS_ADDRESS_PREFIX))? 'address_link' : ''"
+                    >{{sender}}</span>
 				</template>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.receiver')}}：</span>
                 <template>
                     <span v-if="sender === '--'">{{receiver}}</span>
-                    <span v-else @click="addressRoute(receiver)" class="address_link">{{receiver}}</span>
+                    <span v-else @click="addressRoute(receiver)"
+                          :class="(receiver.startsWith(COSMOS_ADDRESS_PREFIX) || receiver.startsWith(IRIS_ADDRESS_PREFIX))? 'address_link' : ''"
+                    >{{receiver}}</span>
                 </template>
 			</p>
 			<p>
@@ -2074,7 +2078,7 @@
 </template>
 
 <script>
-	import {TX_TYPE,voteOptions,formatVoteOptions,TX_TYPE_DISPLAY} from '../../constant';
+	import {TX_TYPE,voteOptions,formatVoteOptions,TX_TYPE_DISPLAY, COSMOS_ADDRESS_PREFIX, IRIS_ADDRESS_PREFIX} from '../../constant';
 	import Tools from "../../util/Tools";
 	import { TxHelper } from '../../helper/TxHelper';
     import LargeString from './LargeString';
@@ -2298,6 +2302,10 @@
 				transfer: '',
 				tokenPair: '',
 				amountArray:[],
+                COSMOS_ADDRESS_PREFIX,
+                IRIS_ADDRESS_PREFIX,
+
+
 			}
 		},
 		computed: {
@@ -2710,7 +2718,7 @@
 															})
 															this.tokenPair = `${token1.denom.toUpperCase()} - ${token2.denom.toUpperCase()}`;
 														}
-														
+
 													}
 												})
 											}
@@ -2740,7 +2748,7 @@
                                                     denom:inputDenom,
                                                     amount:inputAmount[0]
 												})
-												
+
                                                 this.input = `${input.amount} ${input.denom.toLocaleUpperCase()}`;
                                                 let output = await converCoin({
                                                     denom:outputDenom,
@@ -3255,7 +3263,7 @@
                 if(amount && amount.length > 0){
 					denom = str.substr(amount[0].length);
 					return {
-						amount:amount[0], 
+						amount:amount[0],
 						denom
 					}
                 }
