@@ -42,7 +42,9 @@
                 </template > -->
                 <template slot-scope="scope">
                         <span v-if="scope.row.msgCount == 1 && !scope.row.isShowMore">{{scope.row.amount}}</span>
-                        <router-link v-else :to="`/tx?txHash=${scope.row.txHash}`">{{$t('ExplorerLang.table.more')}} <i class="iconfont icontiaozhuan more_icontiaozhuan"></i></router-link>
+                        <router-link v-else :to="`/tx?txHash=${scope.row.txHash}`">
+                            {{$t('ExplorerLang.table.more')}} <i class="iconfont icontiaozhuan more_icontiaozhuan"></i>
+                        </router-link>
                 </template>
             </el-table-column>
             <!-- <el-table-column align="center" :min-width="ColumnMinWidth.message" :label="$t('ExplorerLang.table.message')">
@@ -55,7 +57,9 @@
                     <el-tooltip v-if="isValid(scope.row.from)" v-show="Number(scope.row.msgCount) <= 1" :content="scope.row.from"
                                 placement="top"
                                 :disabled="!isValid(scope.row.from)">
-                        <span v-if="isValid(scope.row.from) && address !== scope.row.from " class="address_link" @click="addressRoute(scope.row.from)">
+                        <span v-if="isValid(scope.row.from) && address !== scope.row.from "
+                              :class="(scope.row.from.startsWith(COSMOS_ADDRESS_PREFIX) || scope.row.from.startsWith(IRIS_ADDRESS_PREFIX))? 'address_link' : ''"
+                              @click="addressRoute(scope.row.from)">
                             {{  formatMoniker(scope.row.fromMonikers,monikerNum.otherTable) || formatAddress(scope.row.from)}}
                         </span>
                         <span v-else>
@@ -74,7 +78,9 @@
                                 placement="top"
                                 :key="Math.random()"
                                 :disabled="!isValid(scope.row.to) || Array.isArray(scope.row.to)">
-                        <span v-if="typeof scope.row.to=='string' && isValid(scope.row.to) && address !== scope.row.to" class="address_link" @click="addressRoute(scope.row.to)">
+                        <span v-if="typeof scope.row.to=='string' && isValid(scope.row.to) && address !== scope.row.to"
+                              :class="(scope.row.to.startsWith(COSMOS_ADDRESS_PREFIX) || scope.row.to.startsWith(IRIS_ADDRESS_PREFIX))? 'address_link' : ''"
+                              @click="addressRoute(scope.row.to)">
                             {{ formatMoniker(scope.row.toMonikers,monikerNum.otherTable) || formatAddress(scope.row.to)}}
                         </span>
                         <span v-else-if="typeof scope.row.to=='string' && isValid(scope.row.to) && address === scope.row.to">
@@ -130,7 +136,7 @@
 <script>
     import Tools from "../../util/Tools";
     import {TxHelper} from "../../helper/TxHelper";
-    import { TX_TYPE,TX_STATUS,ColumnMinWidth,monikerNum,decimals,TX_TYPE_DISPLAY } from '../../constant';
+    import { TX_TYPE,TX_STATUS,ColumnMinWidth,monikerNum,decimals,TX_TYPE_DISPLAY, IRIS_ADDRESS_PREFIX, COSMOS_ADDRESS_PREFIX } from '../../constant';
     import { addressRoute, formatMoniker, converCoin, getMainToken } from '@/helper/IritaHelper';
     import {getAmountByTx} from "../../helper/txListAmoutHelper";
     import prodConfig from '../../productionConfig';
@@ -167,6 +173,8 @@
                 colWidthList: [],
                 loading: false,
                 mainTokenSymbol:'',
+                IRIS_ADDRESS_PREFIX,
+                COSMOS_ADDRESS_PREFIX,
 
             }
         },
