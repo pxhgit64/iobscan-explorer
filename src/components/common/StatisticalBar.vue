@@ -172,7 +172,7 @@ export default {
         clearInterval(this.syncTimer )
         this.syncTimer = setInterval(() => {
             this.getNavigation();
-        },20000)
+        },20000)//TODO (lvshenchao) 目前cosmos lcd接口很难获取到, 暂时降低请求频率
   },
   methods: {
         async getNavigation(){
