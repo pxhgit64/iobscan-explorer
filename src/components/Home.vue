@@ -29,7 +29,7 @@
 								</p>
 							</li>
 						</div>
-					
+
 					</ul>
 				</div>
 				<div class="home_transaction_content">
@@ -107,7 +107,8 @@
 				transfersTimer:null,
 				screenWidth: document.body.clientWidth,
 				depositPeriodDatas:[],
-				votingPeriodDatas: []
+				votingPeriodDatas: [],
+                txTimer:null,
 			}
 		},
 		mounted () {
@@ -117,8 +118,11 @@
 			clearInterval(this.syncTimer )
 			this.syncTimer = setInterval(() => {
 				this.getLastBlocks();
+			},8000);
+			this.txTimer = setInterval(() => {
 				this.getTransaction();
-			},5000);
+			},12530);//这个时间为了不跟block接口同时请求
+
 			window.addEventListener("resize",this.monitorScreenWidth,false)
 		},
 		watch:{
@@ -281,6 +285,7 @@
 			clearInterval(this.blocksTimer);
 			clearInterval(this.transfersTimer);
 			clearInterval(this.syncTimer)
+			clearInterval(this.txTimer)
 			window.removeEventListener("resize",this.monitorScreenWidth);
 		}
 	}
@@ -330,7 +335,7 @@
 								color: $t_link_c;
 							}
 							border-bottom: 0.01rem solid $t_link_c;
-							
+
 						}
 					}
 					.home_block_bottom_content{
@@ -367,7 +372,7 @@
 							animation:translational_animation 1.1s infinite;
 						}
 					}
-					
+
 				}
 				.home_transaction_content{
 					flex: 1;
@@ -394,7 +399,7 @@
 								color: $t_link_c;
 							}
 							border-bottom: 0.01rem solid $t_link_c;
-							
+
 						}
 					}
 					.home_transaction_bottom_content{
@@ -491,10 +496,10 @@
 						.home_block_top_content{
 							.home_block_top_title{
 								i{
-								
+
 								}
 								span{
-								
+
 								}
 							}
 							.home_block_view_all{
@@ -504,67 +509,67 @@
 							}
 						}
 						.home_block_bottom_content{
-							
+
 							.home_block_list_item_content{
-								
+
 								.home_block_time_content{
-									
+
 									.home_block{
 										a{
-										
+
 										}
 									}
 								}
 								.home_tx_time_content{
-									
+
 									.home_tx{
 										span{
-										
+
 										}
 									}
 								}
 							}
 							.animation{
-							
+
 							}
 						}
-						
+
 					}
 					.home_transaction_content{
 						margin-top:0.2rem;
 						.home_transaction_top_content{
-							
+
 							.home_transaction_top_title{
 								i{
-								
+
 								}
 								span{
-								
+
 								}
 							}
 							.home_transaction_view_all{
 								a{
-								
+
 								}
-								
-								
+
+
 							}
 						}
 						.home_transaction_bottom_content{
-							
+
 							.home_transaction_list_item_content{
-								
+
 								.home_transaction_time_content{
-									
+
 									.home_transaction{
-										
+
 										a{
-										
+
 										}
 									}
 								}
 								.home_tx_type_content{
-								
+
 								}
 							}
 						}
@@ -644,10 +649,10 @@
 						.home_block_top_content{
 							.home_block_top_title{
 								i{
-								
+
 								}
 								span{
-								
+
 								}
 							}
 							.home_block_view_all{
@@ -657,67 +662,67 @@
 							}
 						}
 						.home_block_bottom_content{
-							
+
 							.home_block_list_item_content{
-								
+
 								.home_block_time_content{
-									
+
 									.home_block{
 										a{
-										
+
 										}
 									}
 								}
 								.home_tx_time_content{
-									
+
 									.home_tx{
 										span{
-										
+
 										}
 									}
 								}
 							}
 							.animation{
-							
+
 							}
 						}
-						
+
 					}
 					.home_transaction_content{
 						padding: 0.27rem 0.12rem 0.18rem 0.12rem;
 						.home_transaction_top_content{
-							
+
 							.home_transaction_top_title{
 								i{
-								
+
 								}
 								span{
-								
+
 								}
 							}
 							.home_transaction_view_all{
 								a{
-								
+
 								}
-								
-								
+
+
 							}
 						}
 						.home_transaction_bottom_content{
-							
+
 							.home_transaction_list_item_content{
-								
+
 								.home_transaction_time_content{
-									
+
 									.home_transaction{
-										
+
 										a{
-										
+
 										}
 									}
 								}
 								.home_tx_type_content{
-								
+
 								}
 							}
 						}
