@@ -172,7 +172,7 @@ export default {
         clearInterval(this.syncTimer )
         this.syncTimer = setInterval(() => {
             this.getNavigation();
-        },5000)
+        },20000)
   },
   methods: {
         async getNavigation(){

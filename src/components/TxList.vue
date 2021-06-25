@@ -10,7 +10,7 @@
                                        :label="item.label"
                                        :value="item.value"></el-option>
                         </el-select>-->
-                        
+
                         <el-cascader
                             class="tx_type_transactions"
                             popper-class="tooltip"
@@ -148,7 +148,7 @@
                 // }
                 if(this.txType){
                     url += `&txType=${this.txType}`;
-                } 
+                }
                 if(this.statusValue){
                     url += `&status=${this.statusValue}`;
                 }
@@ -181,7 +181,8 @@
             async getTxList(){
                 const {txType, status, beginTime, endTime, pageNum, pageSize} = Tools.urlParser();
                 const params = {
-                    txType,status, beginTime, endTime, pageNum, pageSize
+                    txType,status, beginTime, endTime, pageNum, pageSize,
+                    useCount:true
                 };
 
                 try{
@@ -425,10 +426,10 @@
                                 }
                                 input:-moz-placeholder{    /* Firefox版本4-18 */
                                     color: $t_first_c;
-                                }              
+                                }
                                 input::-moz-placeholder{    /* Firefox版本19+ */
                                     color: $t_first_c;
-                                }              
+                                }
                                 input:-ms-input-placeholder{   /* IE浏览器 */
                                     color: $t_first_c;
                                 }
