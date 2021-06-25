@@ -287,6 +287,10 @@
                     if(amounts && amounts.length > 0) {
                         let amount = await Promise.all(amounts)
                         this.txDataList.forEach((item,index) => {
+
+                            if(amount[index] && amount[index].includes('SWAP')){
+                                this.txDataList[index].isShowMore = true;
+                            }
                             this.txDataList[index].amount = amount[index]
                         })
                     }
