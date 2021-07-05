@@ -2546,11 +2546,12 @@
 									this.proofCommitment = msg.proof_commitment || '--';
 									this.proofHeight = msg.proof_height ? JSON.stringify(msg.proof_height) : '--';
 									this.signer = msg.signer || '--';
+									let originalDenom = TxHelper.getOriginalDenomFromPacket(msg.packet);
 									if(msg.packet && msg.packet.data){
 									    this.sender = msg.packet.data.sender;
 									    this.receiver = msg.packet.data.receiver;
                                         this.amount = await converCoin({
-                                            denom:msg.packet.data.denom,
+                                            denom:originalDenom || msg.packet.data.denom,
                                             amount:msg.packet.data.amount,
                                         });
                                     }
@@ -3126,11 +3127,12 @@
 								this.proofHeight = msg.proof_height ? JSON.stringify(msg.proof_height) : '--';
 								this.nextSequenceRecv = msg.next_sequence_recv || '--';
 								this.signer = msg.signer || '--';
+								let originalDenom = TxHelper.getOriginalDenomFromPacket(msg.packet);
                                 if(msg.packet && msg.packet.data){
                                     this.sender = msg.packet.data.sender;
                                     this.receiver = msg.packet.data.receiver;
                                     this.amount = await converCoin({
-                                        denom:msg.packet.data.denom,
+                                        denom:originalDenom || msg.packet.data.denom,
                                         amount:msg.packet.data.amount,
                                     });
                                 }

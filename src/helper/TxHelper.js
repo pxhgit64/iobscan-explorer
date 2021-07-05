@@ -1,7 +1,29 @@
 import { TX_TYPE, PubKeyAlgorithm,LEVEL_TX_TYPE,TX_TYPE_DISPLAY } from "../constant";
-import prodConfig from '../productionConfig'
-
+import prodConfig from '../productionConfig';
+import Tools from "../util/Tools";
 export class TxHelper {
+    static getOriginalDenomFromPacket (ibc_package) { //通过 IBC Packet path 推导对应 ibc denom
+        let denom_result = '';
+        if (ibc_package && typeof ibc_package == 'object') {
+            let { source_port, source_channel, destination_port, destination_channel, data } = ibc_package;
+            let prefix_sc = `${source_port}/${source_channel}/`;
+            let prefix_dc = `${destination_port}/${destination_channel}/`;
+            let denom = data.denom;
+            if (denom.startsWith(prefix_sc)){
+                let denom_clear_prefix = denom.replace(prefix_sc,'');
+                if (denom_clear_prefix.indexOf('/') == -1) {
+                    denom_result = denom_clear_prefix;
+                }else{
+                    denom_result = `ibc/${Tools.sha256(denom_clear_prefix).toUpperCase()}`;
+                }
+            }else{
+                let denom_add_prefix = `${prefix_dc}${denom}`;
+                denom_result = `ibc/${Tools.sha256(denom_add_prefix).toUpperCase()}`;
+            }
+        }
+        console.log('sssssssssss2:',denom_result);
+        return denom_result;
+    }
 
     static getFromAndToAddressFromMsg (msgs) {
         let res = {
