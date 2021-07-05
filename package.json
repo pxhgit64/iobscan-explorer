@@ -15,6 +15,7 @@
     "core-js": "^3.4.3",
     "echarts": "^4.1.0",
     "element-ui": "^2.13.0",
+    "md5": "^2.3.0",
     "moment": "^2.26.0",
     "move-decimal-point": "0.0.4",
     "node-sass": "^4.13.0",

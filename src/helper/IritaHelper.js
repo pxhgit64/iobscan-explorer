@@ -148,3 +148,17 @@ export function formatMoniker (moniker,monikerNum) {
     }
     return Tools.formatString(moniker.trim(), monikerNum, "...");
 }
+
+export function getAmount (amount) {
+  if (!amount) {
+      return "";
+  }
+  return amount.split(' ')[0];
+}
+
+export function getAmountUnit (amount) {
+  if (!amount) {
+      return "";
+  }
+  return amount.split(' ').pop();
+}
