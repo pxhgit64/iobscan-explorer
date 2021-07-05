@@ -69,13 +69,6 @@
             </div>
             <TxListComponent :txData="transactionArray"></TxListComponent>
             <div class="pagination_content">
-                <div class="tooltip_box">
-                  <span class="tooltip_title">Cross-chain TokenType:</span>
-                  <span class="tooltip_title_box">
-                    <span class="tooltip_title_IBC">IBC</span>
-                    <span class="tooltip_title_HTLT">Hash Lock</span>
-                  </span>
-                </div>
                 <keep-alive>
                     <m-pagination :page-size="Number(pageSize)"
                                   :total="txCount"
@@ -559,51 +552,8 @@
             }
             .pagination_content {
                 display: flex;
-                justify-content: space-between;
+                justify-content: flex-end;
                 margin: 0.1rem 0 0.2rem 0;
-                .tooltip_box{
-                  display: flex;
-                  align-items: center;
-                  background-color: white;
-                  padding: 0.05rem 0.2rem;
-                  font-size: $s12;
-                  color: #8d8b8b;
-                  .tooltip_title{
-                    margin-right: 0.24rem;
-                  }
-                  .tooltip_title_box{
-                    display: flex;
-                  }
-                   .tooltip_title_IBC {
-                      margin-right: 0.24rem;
-                      display: flex;
-                      align-items: center;
-                      position: relative;
-                      &::before{
-                        left: -0.12rem;
-                        content: ' ';
-                        position: absolute;
-                        height: 0.08rem;
-                        width: 0.08rem;
-                        border-radius: 0.04rem;
-                        background-color: #D47D78;
-                      }
-                    }
-                    .tooltip_title_HTLT{
-                      display: flex;
-                      align-items: center;
-                      position: relative;
-                      &::before{
-                        left: -0.12rem;
-                        content: ' ';
-                        position: absolute;
-                        height: 0.08rem;
-                        width: 0.08rem;
-                        border-radius: 0.04rem;
-                        background-color: #51A3A3;
-                      }
-                    }
-                }
             }
         }
     }
