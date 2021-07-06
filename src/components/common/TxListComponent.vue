@@ -34,33 +34,23 @@
             <!-- <el-table-column align="right" class-name="amount" prop="amount" :label="$t('ExplorerLang.table.amount')" :min-width="ColumnMinWidth.amountAndDenom"> -->
             <el-table-column align="right" class-name="amount" prop="amount" :label="$t('ExplorerLang.table.amount')" :width="colWidthList[2]">
                 <!-- <template slot="header">
-                  <span>{{ $t('ExplorerLang.table.amount')}}</span>
-                  <el-tooltip :content="mainTokenSymbol"
-                              placement="top">
-                      <i class="iconfont iconyiwen yiwen_icon" />
-                  </el-tooltip>
+                    <span>{{ $t('ExplorerLang.table.amount')}}</span>
+                    <el-tooltip :content="mainTokenSymbol"
+                                placement="top">
+                        <i class="iconfont iconyiwen yiwen_icon" />
+                    </el-tooltip>
                 </template > -->
                 <template slot-scope="scope">
-                  <span v-if="scope.row.msgCount == 1 && !scope.row.isShowMore && !scope.row.isShowTooltip">
-                    {{scope.row.amount}}
-                  </span>
-                  <span v-else-if="scope.row.isShowTooltip">
-                    <span>{{ getAmount(scope.row.amount) }}</span>
-                    <el-tooltip :content="scope.row.tooltipContent" placement="top">
-                      <span :style="{ color: scope.row.tooltipContent === 'IBC' ? '#D47D7B' : scope.row.tooltipContent === 'HashLock' ? '#51A3A3' : '' }">
-                        {{ getAmountUnit(scope.row.amount) }}
-                      </span>   
-                    </el-tooltip>
-                  </span>
-                  <router-link v-else :to="`/tx?txHash=${scope.row.txHash}`">
-                    {{$t('ExplorerLang.table.more')}} <i class="iconfont icontiaozhuan more_icontiaozhuan"></i>
-                  </router-link>
+                        <span v-if="scope.row.msgCount == 1 && !scope.row.isShowMore">{{scope.row.amount}}</span>
+                        <router-link v-else :to="`/tx?txHash=${scope.row.txHash}`">
+                            {{$t('ExplorerLang.table.more')}} <i class="iconfont icontiaozhuan more_icontiaozhuan"></i>
+                        </router-link>
                 </template>
             </el-table-column>
             <!-- <el-table-column align="center" :min-width="ColumnMinWidth.message" :label="$t('ExplorerLang.table.message')">
-              <template slot-scope="scope">
-                <span>{{scope.row.msgCount}} {{$t('ExplorerLang.unit.msgCountUnit')}}</span>
-              </template>
+                <template slot-scope="scope">
+                    <span>{{scope.row.msgCount}} {{$t('ExplorerLang.unit.msgCountUnit')}}</span>
+                </template>
             </el-table-column> -->
             <el-table-column :min-width="ColumnMinWidth.address" class-name="from" :label="$t('ExplorerLang.table.from')">
                 <template slot-scope="scope">
@@ -185,7 +175,7 @@
                 mainTokenSymbol:'',
                 IRIS_ADDRESS_PREFIX,
                 COSMOS_ADDRESS_PREFIX,
-                denomMap: {}
+
             }
         },
         watch:{
@@ -198,7 +188,6 @@
         },
         mounted(){
             this.setMainToken();
-            this.setDenomMap();
         },
         methods : {
             isValid(value){
@@ -217,18 +206,6 @@
             },
             formatAddress(address){
                 return Tools.formatValidatorAddress(address)
-            },
-            getAmount(amount) {
-              if (!amount) {
-                  return "";
-              }
-              return amount.split(' ')[0];
-            },
-            getAmountUnit(amount) {
-              if (!amount) {
-                  return "";
-              }
-              return amount.split(' ').pop();
             },
             async formatTxData() {
                 this.loading = true;
@@ -266,12 +243,13 @@
                         }
                         let isShowMore = false;
                         const type = tx.msgs && tx.msgs[0] && tx.msgs[0].type;
-                        if(type && (type === TX_TYPE.add_liquidity || type === TX_TYPE.remove_liquidity || TX_TYPE.swap_order)) {
+                        if(type && (type === TX_TYPE.add_liquidity || type === TX_TYPE.remove_liquidity)) {
                             isShowMore = true
                         }
                         if(tx.type === TX_TYPE.send) {
                             tx && tx.msgs && tx.msgs[0] && tx.msgs[0].msg && tx.msgs[0].msg.amount && tx.msgs[0].msg.amount.length > 1 ? isShowMore = true : ''
                         }
+
                         this.txDataList.push({
                                 txHash : tx.tx_hash,
                                 blockHeight : tx.height,
@@ -289,8 +267,6 @@
                                 amount: '',
                                 ageTime: Tools.formatAge(Tools.getTimestamp(),tx.time*1000,"ago",">"),
                                 isShowMore,
-                                isShowTooltip: false,
-                                tooltipContent: ''
                         })
                         clearInterval(this.txListTimer);
                         this.txListTimer = setInterval(() => {
@@ -311,12 +287,7 @@
                     if(amounts && amounts.length > 0) {
                         let amount = await Promise.all(amounts)
                         this.txDataList.forEach((item,index) => {
-                          let checkDenom = amount[index].split(' ')?.pop()
-                          if(this.denomMap.has(checkDenom?.toLowerCase())){
-                            this.txDataList[index].isShowTooltip = true,
-                            this.txDataList[index].tooltipContent = this.denomMap.get(checkDenom?.toLowerCase()).toUpperCase()
-                          }
-                          this.txDataList[index].amount = amount[index] 
+                            this.txDataList[index].amount = amount[index]
                         })
                     }
                     this.$nextTick(() => {
@@ -326,15 +297,6 @@
                         });
                     });
                 }
-            },
-            setDenomMap() {
-              this.denomMap = new Map()
-              let tokenList = JSON.parse(sessionStorage.getItem('config'))?.tokenData
-              tokenList?.forEach(token =>{
-                if(token.src_protocol === 'hashlock' || token.src_protocol === 'ibc'){
-                  this.denomMap.set(token.symbol, token.src_protocol)
-                }           
-              })
             }
         },
         beforeDestroy() {

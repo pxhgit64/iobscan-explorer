@@ -11,14 +11,4 @@ export class HttpHelper {
             return null
         }
     }
-
-    static async post(url, payload){
-      const data = await axios.post(url, payload);
-      if(data && data.status === 200){
-          return data.data;
-      } else {
-          console.error('request from server failed:', data);
-          return null
-      }
-  }
 }
