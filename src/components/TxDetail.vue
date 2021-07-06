@@ -86,6 +86,7 @@ import { moduleSupport } from '../helper/ModulesHelper'
 import slef_axios from "../axios"
 import { converCoin,addressRoute } from '@/helper/IritaHelper';
 import prodConfig from '../productionConfig';
+import { getIbcToken } from "@/service/api";
 export default {
   name: 'TxDetail',
   components: { MPagination, MClip, TxMessage },
@@ -138,7 +139,9 @@ export default {
       fee:'',
       monikers:[],
       timeData: 0,
-      timestampTimer: null
+      timestampTimer: null,
+      denomMap: '',
+      chain: 'iris',
     }
   },
   mounted() {
@@ -149,6 +152,8 @@ export default {
       }
     }, 1000);
     this.iosOnpageshow();
+    this.setDenomMap();
+    this.getIbcAddress(this.chain)
   },
   watch:{
       gasPrice(){
@@ -165,6 +170,29 @@ export default {
       }
   },
   methods: {
+    async getIbcAddress(chain){     
+      if(this.denomMap.has(hash)){
+        this.txHash = this.denomMap.get(this.$route.query.txHash)
+      } else {
+        const hash = 'ibc/' + this.$route.query.txHash
+        const md5 = require("md5")
+        const payload = {
+          "denom": hash,
+          "chain": chain,
+          "key": md5((chain.slice(1, 2) +  hash.slice(5, -10) + chain.slice(2,3)).slice(3, -8))
+        }
+        const url = '/upload-token-info'          
+        const res = await getIbcToken(url, payload);
+        this.txHash = res.data.symbol
+      }
+    },
+    setDenomMap() {
+      this.denomMap = new Map()
+      let tokenList = JSON.parse(sessionStorage.getItem('config'))?.tokenData
+      tokenList?.forEach(token =>{
+        this.denomMap.set(token.denom.split('/').pop(), token.symbol)          
+      })
+    },
     iosOnpageshow() {
       let broswerRule = /^.*((iPhone)|(iPad)|(Safari))+.*$/;
       if(broswerRule.test(navigator.userAgent)){
@@ -179,7 +207,7 @@ export default {
     async getTransactionInformation() {
       try {
         const res = await getTxDetail(this.$route.query.txHash)
-        // console.log(res,'交易展示数据')
+        console.log(res, '交易展示数据')
         if (res) {
           this.monikers = res.monikers
           this.messages = res.msgs || []
