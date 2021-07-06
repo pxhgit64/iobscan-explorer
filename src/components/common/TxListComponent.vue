@@ -53,7 +53,7 @@
                     </el-tooltip>
                   </span>
                   <router-link v-else :to="`/tx?txHash=${scope.row.txHash}`">
-                    {{$t('ExplorerLang.table.more')}} <i class="iconfont icontiaozhuan more_icontiaozhuan"></i>
+                    {{$t('ExplorerLang.table.more')}} <i class="iconfont icontiaozhuan more_icontiaozhuan"></i>              
                   </router-link>
                 </template>
             </el-table-column>
@@ -266,7 +266,7 @@
                         }
                         let isShowMore = false;
                         const type = tx.msgs && tx.msgs[0] && tx.msgs[0].type;
-                        if(type && (type === TX_TYPE.add_liquidity || type === TX_TYPE.remove_liquidity || TX_TYPE.swap_order)) {
+                        if(type && (type === TX_TYPE.add_liquidity || type === TX_TYPE.remove_liquidity || type === TX_TYPE.swap_order)) {
                             isShowMore = true
                         }
                         if(tx.type === TX_TYPE.send) {
