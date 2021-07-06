@@ -181,9 +181,15 @@ export default {
           "chain": chain,
           "key": md5((chain.slice(1, 2) +  hash.slice(5, -10) + chain.slice(2,3)).slice(3, -8))
         }
-        const url = '/upload-token-info'          
-        const res = await getIbcToken(url, payload);
-        this.txHash = res.data.symbol
+        const url = '/upload-token-info' 
+        try {
+          const res = await getIbcToken(url, payload);
+          this.txHash = res.data.symbol
+        } catch(e) {
+          console.log(e)
+        }
+        
+        
       }
     },
     setDenomMap() {
