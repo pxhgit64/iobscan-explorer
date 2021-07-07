@@ -93,8 +93,9 @@
     import MPagination from "./common/MPagination";
     import TxListComponent from "./common/TxListComponent";
     import {TxHelper} from "../helper/TxHelper";
-    import {getAllTxTypes, getTxList} from '../service/api';
+    import {getAllTxTypes, getTxList } from '../service/api';
     import { TX_TYPE,TX_STATUS } from '../constant';
+    import { uploadIbcToken } from "../helper/IritaHelper"
 
     export default {
         name : "TxList",
@@ -197,10 +198,22 @@
                     this.txCount = res.count;
                     this.pageNum = res.pageNum;
                     this.pageSize = res.pageSize;
+                    this.doUploadIbcToken()
                 }catch (e) {
                     console.error(e);
                     // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
                 }
+            },
+            doUploadIbcToken(){
+              let array = JSON.stringify(JSON.parse(this.transactionArray))
+              array.forEach((transfer, index) => {
+                let denom = transfer.msgs[0]?.msg?.amount?.denom
+                if(denom !== undefined && denom.includes('ibc')){        
+                  let { symbol } = uploadIbcToken(denom)
+                  array[index].msgs[0].msg.amount.denom = symbol
+                }
+              });
+              this.transactionArray = array
             },
             async getAllTxType(){
                 try {
