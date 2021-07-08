@@ -146,7 +146,7 @@
 <script>
     import Tools from "../../util/Tools";
     import {TxHelper} from "../../helper/TxHelper";
-    import { TX_TYPE,TX_STATUS,ColumnMinWidth,monikerNum,decimals,LEVEL_TX_TYPE,TX_TYPE_DISPLAY, IRIS_ADDRESS_PREFIX, COSMOS_ADDRESS_PREFIX } from '../../constant';
+    import { TX_TYPE,TX_STATUS,ColumnMinWidth,monikerNum,decimals,TX_TYPE_DISPLAY, IRIS_ADDRESS_PREFIX, COSMOS_ADDRESS_PREFIX } from '../../constant';
     import { addressRoute, formatMoniker, converCoin, getMainToken, getConfig } from '@/helper/IritaHelper';
     import {getAmountByTx} from "../../helper/txListAmoutHelper";
     import prodConfig from '../../productionConfig';
@@ -186,8 +186,8 @@
                 IRIS_ADDRESS_PREFIX,
                 COSMOS_ADDRESS_PREFIX,
                 denomMap: {},
-                IBC: LEVEL_TX_TYPE.IBC,
-                HashLock: LEVEL_TX_TYPE.HashLock
+                IBC: 'IBC',
+                HashLock: 'Hash Lock'
             }
         },
         watch:{
@@ -225,14 +225,14 @@
               if (!amount) {
                   return "";
               }
-              let denomRule = /[0-9]+/
+              let denomRule = /[0-9.]+/
               return amount.match(denomRule)[0];
             },
             getAmountUnit(amount) {
               if (!amount) {
                   return "";
               }
-              let denomRule = /[A-Z]+/
+              let denomRule = /[A-Za-z\/]+/
               return amount.match(denomRule)[0];
             },
             async formatTxData() {

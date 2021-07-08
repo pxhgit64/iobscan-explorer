@@ -94,15 +94,15 @@
     import TxListComponent from "./common/TxListComponent";
     import {TxHelper} from "../helper/TxHelper";
     import {getAllTxTypes, getTxList } from '../service/api';
-    import { TX_TYPE,TX_STATUS,LEVEL_TX_TYPE } from '../constant';
+    import { TX_TYPE,TX_STATUS } from '../constant';
     export default {
         name : "TxList",
         components : {MPagination, TxListComponent},
         data(){
             const {txType, status, beginTime, endTime, pageNum, pageSize} = Tools.urlParser();
             return {
-                IBC: LEVEL_TX_TYPE.IBC,
-                HashLock: LEVEL_TX_TYPE.HashLock,
+                IBC: 'IBC',
+                HashLock: 'Hash Lock',
                 PickerOptions: {
 					      disabledDate: (time) => {
 						      return time.getTime() < new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
