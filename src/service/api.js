@@ -4,7 +4,7 @@ import moment from 'moment';
 
 function get(url){
 	return new Promise(async (res,rej)=>{
-        url = `/api/${url.replace(/^\//, '')}`;
+    url = `/api/${url.replace(/^\//, '')}`;
 		try{
 			let data = await HttpHelper.get(url);
 			if(data && data.code == 0){
@@ -21,26 +21,24 @@ function get(url){
 	});
 }
 
-export function getIbcToken(url, payload){
-  return new Promise(async (res,rej)=>{
-    url = `/api/${url.replace(/^\//, '')}`;
-    try{
-      let data = await HttpHelper.post(url, payload);
-      if(data){
-        res(data);
-      }else{
-        console.error(`error from ${url}:`,JSON.stringify(data));
-        rej(data);
-      }
-    }catch(err){
-      console.error(`error from ${url}:`,err.message);
-      rej(err);
+async function post(url, payload){
+  url = `/api/${url.replace(/^\//, '')}`;
+  try{
+    let data = await HttpHelper.post(url, payload);
+    if(data && data.code == 0){
+      return data;
+    }else{
+      console.error(`error from ${url}:`,JSON.stringify(data));
+      return data;
     }
-  });
+  }catch(err){
+    console.error(`error from ${url}:`,err.message);
+    return err;
+  }
 }
 
 function getFromLcd(url){
-    url = `/lcd/${url.replace(/^\//,'')}`;
+  url = `/lcd/${url.replace(/^\//,'')}`;
 	return new Promise(async (res,rej)=>{
 		try{
 			let data = await HttpHelper.get(url);
@@ -55,6 +53,11 @@ function getFromLcd(url){
 			rej(err);
 		}
 	})
+}
+
+export async function getIbcToken(payload){
+  const url = '/upload-token-info'   
+	return await post(url, payload);
 }
 
 export function getDbStatistics(params){
@@ -359,7 +362,7 @@ export function getValidatorSetList (pageNum,pageSize,height) {
 }
 
 export function getConfig () {
-    const url = `/config`
+  const url = `/config`
 	return get(url)
 }
 

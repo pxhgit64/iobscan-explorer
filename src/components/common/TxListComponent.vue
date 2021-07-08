@@ -47,7 +47,7 @@
                   <span v-else-if="scope.row.isShowTooltip">
                     <span>{{ getAmount(scope.row.amount) }}</span>
                     <el-tooltip :content="scope.row.tooltipContent" placement="top">
-                      <span :style="{ color: scope.row.tooltipContent === 'IBC' ? '#D47D7B' : scope.row.tooltipContent === 'HashLock' ? '#51A3A3' : '' }">
+                      <span :style="{ color: scope.row.tooltipContent === IBC ? '#D47D7B' : scope.row.tooltipContent === HashLock ? '#51A3A3' : '' }">
                         {{ getAmountUnit(scope.row.amount) }}
                       </span>   
                     </el-tooltip>
@@ -125,7 +125,7 @@
                 </template>
             </el-table-column> -->
             <el-table-column v-if="isShowFee" align="right" class-name="fee" prop="Tx_Fee" :min-width="ColumnMinWidth.fee">
-                <template slot="header" slot-scope="scope">
+                <template slot="header">
                     <span>{{ $t('ExplorerLang.table.fee')}}</span>
                     <el-tooltip :content="mainTokenSymbol"
                                 placement="top">
@@ -146,8 +146,8 @@
 <script>
     import Tools from "../../util/Tools";
     import {TxHelper} from "../../helper/TxHelper";
-    import { TX_TYPE,TX_STATUS,ColumnMinWidth,monikerNum,decimals,TX_TYPE_DISPLAY, IRIS_ADDRESS_PREFIX, COSMOS_ADDRESS_PREFIX } from '../../constant';
-    import { addressRoute, formatMoniker, converCoin, getMainToken } from '@/helper/IritaHelper';
+    import { TX_TYPE,TX_STATUS,ColumnMinWidth,monikerNum,decimals,LEVEL_TX_TYPE,TX_TYPE_DISPLAY, IRIS_ADDRESS_PREFIX, COSMOS_ADDRESS_PREFIX } from '../../constant';
+    import { addressRoute, formatMoniker, converCoin, getMainToken, getConfig } from '@/helper/IritaHelper';
     import {getAmountByTx} from "../../helper/txListAmoutHelper";
     import prodConfig from '../../productionConfig';
 
@@ -185,12 +185,15 @@
                 mainTokenSymbol:'',
                 IRIS_ADDRESS_PREFIX,
                 COSMOS_ADDRESS_PREFIX,
-                denomMap: {}
+                denomMap: {},
+                IBC: LEVEL_TX_TYPE.IBC,
+                HashLock: LEVEL_TX_TYPE.HashLock
             }
         },
         watch:{
             txData() {
-                this.formatTxData()
+              this.setDenomMap();
+              this.formatTxData();
             }
         },
         created(){
@@ -222,13 +225,15 @@
               if (!amount) {
                   return "";
               }
-              return amount.split(' ')[0];
+              let denomRule = /[0-9]+/
+              return amount.match(denomRule)[0];
             },
             getAmountUnit(amount) {
               if (!amount) {
                   return "";
               }
-              return amount.split(' ').pop();
+              let denomRule = /[A-Z]+/
+              return amount.match(denomRule)[0];
             },
             async formatTxData() {
                 this.loading = true;
@@ -310,11 +315,12 @@
                     }
                     if(amounts && amounts.length > 0) {
                         let amount = await Promise.all(amounts)
+                        let denomRule = /[A-Z]+/
                         this.txDataList.forEach((item,index) => {
-                          let checkDenom = amount[index].split(' ')?.pop()
-                          if(this.denomMap.has(checkDenom?.toLowerCase())){
+                          let checkDenom = amount[index].match(denomRule)[0]?.toLowerCase()
+                          if(this.denomMap.has(checkDenom)){
                             this.txDataList[index].isShowTooltip = true,
-                            this.txDataList[index].tooltipContent = this.denomMap.get(checkDenom?.toLowerCase()).toUpperCase()
+                            this.txDataList[index].tooltipContent = this.denomMap.get(checkDenom) === 'ibc' ? 'IBC' : 'Hash Lock'
                           }
                           this.txDataList[index].amount = amount[index] 
                         })
@@ -327,13 +333,13 @@
                     });
                 }
             },
-            setDenomMap() {
+            async setDenomMap() {
               this.denomMap = new Map()
-              let tokenList = JSON.parse(sessionStorage.getItem('config'))?.tokenData
+              let { tokenData: tokenList } = await getConfig()
               tokenList?.forEach(token =>{
                 if(token.src_protocol === 'hashlock' || token.src_protocol === 'ibc'){
                   this.denomMap.set(token.symbol, token.src_protocol)
-                }           
+                }          
               })
             }
         },

@@ -234,6 +234,7 @@ export const LEVEL_TX_TYPE = {
   Identity: 'Identity',
   IBC: 'IBC',
   HTLC: 'HTLC',
+  HashLock: 'Hash Lock',
   Oracle: 'Oracle',
   Random: 'Random',
   Record: 'Record',

@@ -4,33 +4,30 @@ import Tools from "../util/Tools";
 import { COSMOS_ADDRESS_PREFIX , IRIS_ADDRESS_PREFIX} from "@/constant";
 // import { ibcDenomPrefix } from '../constant';
 import {cfg} from "@/config";
-import md5 from "md5";
+import md5 from "js-md5";
 
-export function uploadIbcToken(denom){
-  const payload = {
+async function md5Fun(hash){
+  return md5(hash.slice(5, -10).slice(3, -8))
+}
+
+async function uploadIbcToken(denom){
+  let key = await md5Fun(denom)
+  let payload = {
     "denom": denom,
-    "key": md5Fun(denom)
-  }
-  const url = '/upload-token-info'          
-  const { data } = getIbcToken(url, payload);
-  if(data?.symbol){
-    setConfig()
-    return data 
-  } else {   
-  }       
+    "key": key,
+    "chain": ''
+  }    
+  let { data } = await getIbcToken(payload);
+    if(data?.symbol){
+      setConfig()
+      return data 
+    } else {   
+    }    
 }
 
-export function md5Fun(hash){
-  return md5(hash.slice(5, -10)).slice(3, -8)
-}
-
-export function setConfig(){
-  let config = getConfigApi().catch((e)=>{throw e});
-  if (config) {
-    window.sessionStorage.setItem('config',JSON.stringify(config));
-  }else{
-    config = {};
-  }
+async function setConfig(){
+  let config = await getConfigApi().catch((e)=>{throw e});
+  window.sessionStorage.setItem('config',JSON.stringify(config));
 }
 
 export async function getConfig(){
@@ -110,10 +107,11 @@ export async function converCoin (_coin) {
         //         coin.denom = (ibcDenomPrefix + res.denom_trace.base_denom).toUpperCase()
         //     }
         // }
-        if(coin.denom.includes('ibc')){
+        const ibcTest = /ibc\/[0-9A-Z]{54}/ 
+        if(ibcTest.test(coin.denom)){
           const data = await uploadIbcToken(coin.denom)
           if(data?.symbol){
-            return { 'denom': data.symbol, 'amount': data.amount } 
+            return { 'denom': data.symbol, 'amount': moveDecimal(String(coin.amount || 0),0-Number(data.scale)) } 
           } else {
             return coin;
           }       
@@ -184,18 +182,4 @@ export function formatMoniker (moniker,monikerNum) {
         return "";
     }
     return Tools.formatString(moniker.trim(), monikerNum, "...");
-}
-
-export function getAmount (amount) {
-  if (!amount) {
-      return "";
-  }
-  return amount.split(' ')[0];
-}
-
-export function getAmountUnit (amount) {
-  if (!amount) {
-      return "";
-  }
-  return amount.split(' ').pop();
 }

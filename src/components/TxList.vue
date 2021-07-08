@@ -72,8 +72,8 @@
                 <div class="tooltip_box">
                   <span class="tooltip_title">Cross-chain TokenType:</span>
                   <span class="tooltip_title_box">
-                    <span class="tooltip_title_IBC">IBC</span>
-                    <span class="tooltip_title_HTLT">Hash Lock</span>
+                    <span class="tooltip_title_IBC">{{ IBC }}</span>
+                    <span class="tooltip_title_HTLT">{{ HashLock }}</span>
                   </span>
                 </div>
                 <keep-alive>
@@ -94,20 +94,19 @@
     import TxListComponent from "./common/TxListComponent";
     import {TxHelper} from "../helper/TxHelper";
     import {getAllTxTypes, getTxList } from '../service/api';
-    import { TX_TYPE,TX_STATUS } from '../constant';
-    import { uploadIbcToken } from "../helper/IritaHelper"
-
+    import { TX_TYPE,TX_STATUS,LEVEL_TX_TYPE } from '../constant';
     export default {
         name : "TxList",
         components : {MPagination, TxListComponent},
         data(){
             const {txType, status, beginTime, endTime, pageNum, pageSize} = Tools.urlParser();
-
             return {
+                IBC: LEVEL_TX_TYPE.IBC,
+                HashLock: LEVEL_TX_TYPE.HashLock,
                 PickerOptions: {
-					disabledDate: (time) => {
-						return time.getTime() < new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
-					}
+					      disabledDate: (time) => {
+						      return time.getTime() < new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
+					      }
 				},
                 TX_TYPE,
                 TX_STATUS,
@@ -198,22 +197,10 @@
                     this.txCount = res.count;
                     this.pageNum = res.pageNum;
                     this.pageSize = res.pageSize;
-                    this.doUploadIbcToken()
                 }catch (e) {
                     console.error(e);
                     // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
                 }
-            },
-            doUploadIbcToken(){
-              let array = JSON.stringify(JSON.parse(this.transactionArray))
-              array.forEach((transfer, index) => {
-                let denom = transfer.msgs[0]?.msg?.amount?.denom
-                if(denom !== undefined && denom.includes('ibc')){        
-                  let { symbol } = uploadIbcToken(denom)
-                  array[index].msgs[0].msg.amount.denom = symbol
-                }
-              });
-              this.transactionArray = array
             },
             async getAllTxType(){
                 try {
