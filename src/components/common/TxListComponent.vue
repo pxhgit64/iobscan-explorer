@@ -317,7 +317,7 @@
                         let amount = await Promise.all(amounts)
                         let denomRule = /[A-Z]+/
                         this.txDataList.forEach((item,index) => {
-                          let checkDenom = amount[index].match(denomRule)[0]?.toLowerCase()
+                          let checkDenom = amount[index].match(denomRule)?.[0].toLowerCase()
                           if(this.denomMap.has(checkDenom)){
                             this.txDataList[index].isShowTooltip = true,
                             this.txDataList[index].tooltipContent = this.denomMap.get(checkDenom) === 'ibc' ? 'IBC' : 'Hash Lock'
