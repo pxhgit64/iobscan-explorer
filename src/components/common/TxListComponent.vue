@@ -147,7 +147,7 @@
     import Tools from "../../util/Tools";
     import {TxHelper} from "../../helper/TxHelper";
     import { TX_TYPE,TX_STATUS,ColumnMinWidth,monikerNum,decimals,TX_TYPE_DISPLAY, IRIS_ADDRESS_PREFIX, COSMOS_ADDRESS_PREFIX } from '../../constant';
-    import { addressRoute, formatMoniker, converCoin, getMainToken, getConfig } from '@/helper/IritaHelper';
+    import { addressRoute, formatMoniker, converCoin, getMainToken, setDenomMap } from '@/helper/IritaHelper';
     import {getAmountByTx} from "../../helper/txListAmoutHelper";
     import prodConfig from '../../productionConfig';
 
@@ -192,7 +192,7 @@
         },
         watch:{
             txData() {
-              this.setDenomMap();
+              this.getDenomMap();
               this.formatTxData();
             }
         },
@@ -201,7 +201,7 @@
         },
         mounted(){
             this.setMainToken();
-            this.setDenomMap();
+            this.getDenomMap();
         },
         methods : {
             isValid(value){
@@ -333,14 +333,8 @@
                     });
                 }
             },
-            async setDenomMap() {
-              this.denomMap = new Map()
-              let { tokenData: tokenList } = await getConfig()
-              tokenList?.forEach(token =>{
-                if(token.src_protocol === 'hashlock' || token.src_protocol === 'ibc'){
-                  this.denomMap.set(token.symbol, token.src_protocol)
-                }          
-              })
+            async getDenomMap(){
+              this.denomMap = await setDenomMap()
             }
         },
         beforeDestroy() {
