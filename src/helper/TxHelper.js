@@ -2,7 +2,8 @@ import { TX_TYPE, PubKeyAlgorithm,LEVEL_TX_TYPE,TX_TYPE_DISPLAY } from "../const
 import prodConfig from '../productionConfig';
 import Tools from "../util/Tools";
 export class TxHelper {
-    static getOriginalDenomFromPacket (ibc_package) { //通过 IBC Packet path 推导对应 ibc denom
+    //The corresponding IBC Denom was deduced through the IBC Packet path
+    static getOriginalDenomFromPacket (ibc_package) { 
         let denom_result = '';
         if (ibc_package && typeof ibc_package == 'object') {
             let { source_port, source_channel, destination_port, destination_channel, data } = ibc_package;
