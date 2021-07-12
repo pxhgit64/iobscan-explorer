@@ -41,17 +41,17 @@
                   </el-tooltip>
                 </template > -->
                 <template slot-scope="scope">
-                  <span v-if="scope.row.msgCount == 1 && !scope.row.isShowMore && !scope.row.isShowTooltip">
-                    {{scope.row.amount}}
-                  </span>
-                  <span v-else-if="scope.row.isShowTooltip">
-                    <span>{{ getAmount(scope.row.amount) }}</span>
-                    <el-tooltip :content="scope.row.tooltipContent" placement="top">
-                      <span :style="{ color: scope.row.tooltipContent === IBC ? '#D47D7B' : scope.row.tooltipContent === HashLock ? '#51A3A3' : '' }">
+                  <span v-if="scope.row.msgCount == 1 && !scope.row.isShowMore">
+                    <span v-if="scope.row.denomTheme.tooltipContent">
+                      {{ getAmount(scope.row.amount) }}
+                      <el-tooltip  :content="scope.row.denomTheme.tooltipContent" placement="top">
+                      <span :style="{ color: scope.row.denomTheme.denomColor }">
                         {{ getAmountUnit(scope.row.amount) }}
                       </span>   
                     </el-tooltip>
-                  </span>
+                    </span>
+                    <span v-else>{{ scope.row.amount }}</span>
+                  </span>                 
                   <router-link v-else :to="`/tx?txHash=${scope.row.txHash}`">
                     {{$t('ExplorerLang.table.more')}} <i class="iconfont icontiaozhuan more_icontiaozhuan"></i>              
                   </router-link>
@@ -147,7 +147,7 @@
     import Tools from "../../util/Tools";
     import {TxHelper} from "../../helper/TxHelper";
     import { TX_TYPE,TX_STATUS,ColumnMinWidth,monikerNum,decimals,TX_TYPE_DISPLAY, IRIS_ADDRESS_PREFIX, COSMOS_ADDRESS_PREFIX } from '../../constant';
-    import { addressRoute, formatMoniker, converCoin, getMainToken, setDenomMap } from '@/helper/IritaHelper';
+    import { addressRoute, formatMoniker, converCoin, getMainToken, setDenomMap, setDenomTheme } from '@/helper/IritaHelper';
     import {getAmountByTx} from "../../helper/txListAmoutHelper";
     import prodConfig from '../../productionConfig';
 
@@ -294,8 +294,10 @@
                                 amount: '',
                                 ageTime: Tools.formatAge(Tools.getTimestamp(),tx.time*1000,"ago",">"),
                                 isShowMore,
-                                isShowTooltip: false,
-                                tooltipContent: ''
+                                denomTheme: {
+                                  denomColor: '',
+                                  tooltipContent: ''
+                                }
                         })
                         clearInterval(this.txListTimer);
                         this.txListTimer = setInterval(() => {
@@ -315,13 +317,8 @@
                     }
                     if(amounts && amounts.length > 0) {
                         let amount = await Promise.all(amounts)
-                        let denomRule = /[A-Z]+/
-                        this.txDataList.forEach((item,index) => {
-                          let checkDenom = amount[index].match(denomRule)?.[0].toLowerCase()
-                          if(this.denomMap.has(checkDenom)){
-                            this.txDataList[index].isShowTooltip = true,
-                            this.txDataList[index].tooltipContent = this.denomMap.get(checkDenom) === 'ibc' ? 'IBC' : 'Hash Lock'
-                          }
+                        this.txDataList.forEach((item, index) => {    
+                          this.txDataList[index].denomTheme = setDenomTheme(amount[index], this.denomMap)
                           this.txDataList[index].amount = amount[index] 
                         })
                     }
