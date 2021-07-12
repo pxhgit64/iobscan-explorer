@@ -34,23 +34,33 @@
             <!-- <el-table-column align="right" class-name="amount" prop="amount" :label="$t('ExplorerLang.table.amount')" :min-width="ColumnMinWidth.amountAndDenom"> -->
             <el-table-column align="right" class-name="amount" prop="amount" :label="$t('ExplorerLang.table.amount')" :width="colWidthList[2]">
                 <!-- <template slot="header">
-                    <span>{{ $t('ExplorerLang.table.amount')}}</span>
-                    <el-tooltip :content="mainTokenSymbol"
-                                placement="top">
-                        <i class="iconfont iconyiwen yiwen_icon" />
-                    </el-tooltip>
+                  <span>{{ $t('ExplorerLang.table.amount')}}</span>
+                  <el-tooltip :content="mainTokenSymbol"
+                              placement="top">
+                      <i class="iconfont iconyiwen yiwen_icon" />
+                  </el-tooltip>
                 </template > -->
                 <template slot-scope="scope">
-                        <span v-if="scope.row.msgCount == 1 && !scope.row.isShowMore">{{scope.row.amount}}</span>
-                        <router-link v-else :to="`/tx?txHash=${scope.row.txHash}`">
-                            {{$t('ExplorerLang.table.more')}} <i class="iconfont icontiaozhuan more_icontiaozhuan"></i>
-                        </router-link>
+                  <span v-if="scope.row.msgCount == 1 && !scope.row.isShowMore && !scope.row.isShowTooltip">
+                    {{scope.row.amount}}
+                  </span>
+                  <span v-else-if="scope.row.isShowTooltip">
+                    <span>{{ getAmount(scope.row.amount) }}</span>
+                    <el-tooltip :content="scope.row.tooltipContent" placement="top">
+                      <span :style="{ color: scope.row.tooltipContent === IBC ? '#D47D7B' : scope.row.tooltipContent === HashLock ? '#51A3A3' : '' }">
+                        {{ getAmountUnit(scope.row.amount) }}
+                      </span>   
+                    </el-tooltip>
+                  </span>
+                  <router-link v-else :to="`/tx?txHash=${scope.row.txHash}`">
+                    {{$t('ExplorerLang.table.more')}} <i class="iconfont icontiaozhuan more_icontiaozhuan"></i>              
+                  </router-link>
                 </template>
             </el-table-column>
             <!-- <el-table-column align="center" :min-width="ColumnMinWidth.message" :label="$t('ExplorerLang.table.message')">
-                <template slot-scope="scope">
-                    <span>{{scope.row.msgCount}} {{$t('ExplorerLang.unit.msgCountUnit')}}</span>
-                </template>
+              <template slot-scope="scope">
+                <span>{{scope.row.msgCount}} {{$t('ExplorerLang.unit.msgCountUnit')}}</span>
+              </template>
             </el-table-column> -->
             <el-table-column :min-width="ColumnMinWidth.address" class-name="from" :label="$t('ExplorerLang.table.from')">
                 <template slot-scope="scope">
@@ -115,7 +125,7 @@
                 </template>
             </el-table-column> -->
             <el-table-column v-if="isShowFee" align="right" class-name="fee" prop="Tx_Fee" :min-width="ColumnMinWidth.fee">
-                <template slot="header" slot-scope="scope">
+                <template slot="header">
                     <span>{{ $t('ExplorerLang.table.fee')}}</span>
                     <el-tooltip :content="mainTokenSymbol"
                                 placement="top">
@@ -137,7 +147,7 @@
     import Tools from "../../util/Tools";
     import {TxHelper} from "../../helper/TxHelper";
     import { TX_TYPE,TX_STATUS,ColumnMinWidth,monikerNum,decimals,TX_TYPE_DISPLAY, IRIS_ADDRESS_PREFIX, COSMOS_ADDRESS_PREFIX } from '../../constant';
-    import { addressRoute, formatMoniker, converCoin, getMainToken } from '@/helper/IritaHelper';
+    import { addressRoute, formatMoniker, converCoin, getMainToken, setDenomMap } from '@/helper/IritaHelper';
     import {getAmountByTx} from "../../helper/txListAmoutHelper";
     import prodConfig from '../../productionConfig';
 
@@ -175,12 +185,15 @@
                 mainTokenSymbol:'',
                 IRIS_ADDRESS_PREFIX,
                 COSMOS_ADDRESS_PREFIX,
-
+                denomMap: {},
+                IBC: 'IBC',
+                HashLock: 'Hash Lock'
             }
         },
         watch:{
             txData() {
-                this.formatTxData()
+              this.getDenomMap();
+              this.formatTxData();
             }
         },
         created(){
@@ -188,6 +201,7 @@
         },
         mounted(){
             this.setMainToken();
+            this.getDenomMap();
         },
         methods : {
             isValid(value){
@@ -206,6 +220,20 @@
             },
             formatAddress(address){
                 return Tools.formatValidatorAddress(address)
+            },
+            getAmount(amount) {
+              if (!amount) {
+                  return "";
+              }
+              let denomRule = /[0-9.]+/
+              return amount.match(denomRule)[0];
+            },
+            getAmountUnit(amount) {
+              if (!amount) {
+                  return "";
+              }
+              let denomRule = /[A-Za-z\/]+/
+              return amount.match(denomRule)[0];
             },
             async formatTxData() {
                 this.loading = true;
@@ -243,13 +271,12 @@
                         }
                         let isShowMore = false;
                         const type = tx.msgs && tx.msgs[0] && tx.msgs[0].type;
-                        if(type && (type === TX_TYPE.add_liquidity || type === TX_TYPE.remove_liquidity)) {
+                        if(type && (type === TX_TYPE.add_liquidity || type === TX_TYPE.remove_liquidity || type === TX_TYPE.swap_order)) {
                             isShowMore = true
                         }
                         if(tx.type === TX_TYPE.send) {
                             tx && tx.msgs && tx.msgs[0] && tx.msgs[0].msg && tx.msgs[0].msg.amount && tx.msgs[0].msg.amount.length > 1 ? isShowMore = true : ''
                         }
-
                         this.txDataList.push({
                                 txHash : tx.tx_hash,
                                 blockHeight : tx.height,
@@ -267,6 +294,8 @@
                                 amount: '',
                                 ageTime: Tools.formatAge(Tools.getTimestamp(),tx.time*1000,"ago",">"),
                                 isShowMore,
+                                isShowTooltip: false,
+                                tooltipContent: ''
                         })
                         clearInterval(this.txListTimer);
                         this.txListTimer = setInterval(() => {
@@ -286,8 +315,14 @@
                     }
                     if(amounts && amounts.length > 0) {
                         let amount = await Promise.all(amounts)
+                        let denomRule = /[A-Z]+/
                         this.txDataList.forEach((item,index) => {
-                            this.txDataList[index].amount = amount[index]
+                          let checkDenom = amount[index].match(denomRule)?.[0].toLowerCase()
+                          if(this.denomMap.has(checkDenom)){
+                            this.txDataList[index].isShowTooltip = true,
+                            this.txDataList[index].tooltipContent = this.denomMap.get(checkDenom) === 'ibc' ? 'IBC' : 'Hash Lock'
+                          }
+                          this.txDataList[index].amount = amount[index] 
                         })
                     }
                     this.$nextTick(() => {
@@ -297,6 +332,9 @@
                         });
                     });
                 }
+            },
+            async getDenomMap(){
+              this.denomMap = await setDenomMap()
             }
         },
         beforeDestroy() {
