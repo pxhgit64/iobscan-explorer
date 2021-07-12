@@ -179,7 +179,7 @@ export default {
     async getTransactionInformation() {
       try {
         const res = await getTxDetail(this.$route.query.txHash)
-        // console.log(res,'交易展示数据')
+        console.log(res, '交易展示数据')
         if (res) {
           this.monikers = res.monikers
           this.messages = res.msgs || []
