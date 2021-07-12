@@ -6,6 +6,7 @@ import moveDecimal from 'move-decimal-point'
 //import Constant from '../constant/index.js'
 //import { getConfig } from '@/helper/IritaHelper'
 import { utcOffset,isShowUTC } from '../productionConfig';
+import * as sha256 from 'sha256';
 
 //const displayToken2ActualTxToken = Math.pow(10, config.token.decimal);
 
@@ -20,6 +21,10 @@ BigNumber.config({
     }
 });
 export default class Tools {
+  static sha256(v){
+    if(!v) return '';
+    return sha256(String(v)) || '';
+  }
   /**
    * 根据展示的需求拼接字符串展示成 > xxdxxhxxmxxs ago 或者 xxdxxhxxmxxs ago 或者 xxdxxhxxmxxs
    */
