@@ -21,7 +21,6 @@ export class TxHelper {
                 denom_result = `ibc/${Tools.sha256(denom_add_prefix).toUpperCase()}`;
             }
         }
-        console.log('sssssssssss2:',denom_result);
         return denom_result;
     }
 
