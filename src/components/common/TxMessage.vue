@@ -1,6 +1,5 @@
 <template>
 	<div class="tx_message_content" v-if="hide">
-		{{'this is test data: '}}{{txType}}
 		<p>
 			<span>{{$t('ExplorerLang.transactionInformation.txType')}}：</span>
 			<span>{{TX_TYPE_DISPLAY[txType] || txType}}</span>
@@ -2331,10 +2330,22 @@
 					if (message) {
 						let msg = message.msg;
 						this.txType = message.type || '--';
-						this.viewSource = (this.txType !== TX_TYPE.update_client ? JSON.stringify({
-							msgs: this.msg,
-							events: this.events
-						}) : '')
+
+						if(this.eventsNew && this.eventsNew.length > 0) {
+							this.eventsNew.forEach((item) => {
+								if(item.msg_index === this.msgIndex) {
+									this.viewSource = (this.txType !== TX_TYPE.update_client ? JSON.stringify({
+										msgs: this.msg,
+										events: item.events
+									}) : '')
+								}
+							});
+						} else {
+							this.viewSource = (this.txType !== TX_TYPE.update_client ? JSON.stringify({
+								msgs: this.msg
+							}) : '')
+						}
+
 						switch (this.txType) {
 							case TX_TYPE.mint_nft:
 								this.denom = msg.denom || '--';
