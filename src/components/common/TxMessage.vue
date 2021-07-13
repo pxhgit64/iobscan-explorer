@@ -2341,6 +2341,7 @@
 								}
 							});
 						} else {
+							// compatible no eventsNew situation
 							this.viewSource = (this.txType !== TX_TYPE.update_client ? JSON.stringify({
 								msgs: this.msg
 							}) : '')
