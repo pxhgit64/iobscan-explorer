@@ -492,4 +492,13 @@ export default class Tools {
       } catch (e) {}
       return false;
     }
+
+    static MultKeyValueObjToOneMap (objArr) {
+      var map = new Map();
+      objArr.forEach(obj => {
+        map.set(obj.key, obj.value);
+      })  
+      return map;
+  }
+  
 }
