@@ -4,6 +4,14 @@
       <div class="txs_title">{{ $t('ExplorerLang.asset.issueTokenTxs') }}</div>
       <div class="native_asset_list_table_content">
         <el-table class="table" :empty-text="$t('ExplorerLang.table.emptyDescription')" :data="issueToken">
+          <el-table-column :label="$t('ExplorerLang.table.txHash')" class-name="hash_status" prop="txHash" :min-width="ColumnMinWidth.txHash">
+            <template v-slot:default="{ row }">
+              <img class="status_icon" :src="require(`../../assets/${row.status === 1 ? 'success.png' : 'failed.png'}`)" />
+              <el-tooltip :content="`${row.txHash}`">
+                <router-link :to="`/tx?txHash=${row.txHash}`">{{ Tools.formatTxHash(row.txHash) }} </router-link>
+              </el-tooltip>
+            </template>
+          </el-table-column>
           <el-table-column class-name="address" :label="$t('ExplorerLang.table.owner')" prop="owner" :min-width="ColumnMinWidth.address">
             <template v-slot:default="{ row }">
               <span class="remove_default_style">
@@ -27,14 +35,6 @@
               <router-link :to="'/block/' + row.block">{{ row.block }}</router-link>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('ExplorerLang.table.txHash')" class-name="hash_status" prop="txHash" :min-width="ColumnMinWidth.txHash">
-            <template v-slot:default="{ row }">
-              <img class="status_icon" :src="require(`../../assets/${row.status === 1 ? 'success.png' : 'failed.png'}`)" />
-              <el-tooltip :content="`${row.txHash}`">
-                <router-link :to="`/tx?txHash=${row.txHash}`">{{ Tools.formatTxHash(row.txHash) }} </router-link>
-              </el-tooltip>
-            </template>
-          </el-table-column>
           <el-table-column :label="$t('ExplorerLang.table.fee')" align="right" v-if="isShowFee" prop="fee" :width="ColumnMinWidth.fee">
               <template slot="header" slot-scope="scope">
                   <span>{{ $t('ExplorerLang.table.fee')}}</span>
@@ -55,6 +55,14 @@
       <div class="txs_title">{{ $t('ExplorerLang.asset.editTokenTxs') }}</div>
       <div class="native_asset_list_table_content">
         <el-table class="table" :empty-text="$t('ExplorerLang.table.emptyDescription')" :data="editToken">
+          <el-table-column class-name="hash_status" :label="$t('ExplorerLang.table.txHash')" prop="txHash" :min-width="ColumnMinWidth.txHash">
+            <template v-slot:default="{ row }">
+              <img class="status_icon" :src="require(`../../assets/${row.status === 1 ? 'success.png' : 'failed.png'}`)" />
+              <el-tooltip :content="`${row.txHash}`">
+                <router-link :to="`/tx?txHash=${row.txHash}`">{{ Tools.formatTxHash(row.txHash) }} </router-link>
+              </el-tooltip>
+            </template>
+          </el-table-column>
           <el-table-column class-name="symbol" :label="$t('ExplorerLang.table.token')" prop="token" :min-width="ColumnMinWidth.symbol">
             <template v-slot:default="{ row }">
               <router-link :to="'/assets/' + row.token"> {{ row.token }}</router-link>
@@ -76,14 +84,7 @@
               <router-link :to="'/block/' + row.block">{{ row.block }}</router-link>
             </template>
           </el-table-column>
-          <el-table-column class-name="hash_status" :label="$t('ExplorerLang.table.txHash')" prop="txHash" :min-width="ColumnMinWidth.txHash">
-            <template v-slot:default="{ row }">
-              <img class="status_icon" :src="require(`../../assets/${row.status === 1 ? 'success.png' : 'failed.png'}`)" />
-              <el-tooltip :content="`${row.txHash}`">
-                <router-link :to="`/tx?txHash=${row.txHash}`">{{ Tools.formatTxHash(row.txHash) }} </router-link>
-              </el-tooltip>
-            </template>
-          </el-table-column>
+
           <el-table-column :label="$t('ExplorerLang.table.fee')" align="right" prop="fee" v-if="isShowFee" :width="ColumnMinWidth.fee">
               <template slot="header"  slot-scope="scope">
                   <span>{{ $t('ExplorerLang.table.fee')}}</span>
@@ -104,6 +105,15 @@
       <div class="txs_title">{{ $t('ExplorerLang.asset.mintTokenTxs') }}</div>
       <div class="native_asset_list_table_content">
         <el-table class="table" :empty-text="$t('ExplorerLang.table.emptyDescription')" :data="mintToken">
+          <el-table-column class-name="hash_status" :label="$t('ExplorerLang.table.txHash')" prop="txHash" :min-width="ColumnMinWidth.txHash">
+            <template v-slot:default="{ row }">
+              <img class="status_icon" :src="require(`../../assets/${row.status === 1 ? 'success.png' : 'failed.png'}`)" />
+              <el-tooltip :content="`${row.txHash}`">
+                <router-link :to="`/tx?txHash=${row.txHash}`">{{ Tools.formatTxHash(row.txHash) }} </router-link>
+              </el-tooltip>
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('ExplorerLang.table.amount')" prop="amount" :min-width="ColumnMinWidth.amount"></el-table-column>
           <el-table-column class-name="symbol" :label="$t('ExplorerLang.table.token')" prop="token" :min-width="ColumnMinWidth.symbol">
             <template v-slot:default="{ row }">
               <router-link :to="'/assets/' + row.token"> {{ row.token }}</router-link>
@@ -131,18 +141,9 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('ExplorerLang.table.amount')" prop="amount" :min-width="ColumnMinWidth.amount"></el-table-column>
           <el-table-column :label="$t('ExplorerLang.table.block')" prop="block" :min-width="ColumnMinWidth.block">
             <template v-slot:default="{ row }">
               <router-link :to="'/block/' + row.block">{{ row.block }}</router-link>
-            </template>
-          </el-table-column>
-          <el-table-column class-name="hash_status" :label="$t('ExplorerLang.table.txHash')" prop="txHash" :min-width="ColumnMinWidth.txHash">
-            <template v-slot:default="{ row }">
-              <img class="status_icon" :src="require(`../../assets/${row.status === 1 ? 'success.png' : 'failed.png'}`)" />
-              <el-tooltip :content="`${row.txHash}`">
-                <router-link :to="`/tx?txHash=${row.txHash}`">{{ Tools.formatTxHash(row.txHash) }} </router-link>
-              </el-tooltip>
             </template>
           </el-table-column>
           <el-table-column :label="$t('ExplorerLang.table.fee')" align="right" prop="fee" v-if="isShowFee" :width="ColumnMinWidth.fee">
@@ -165,6 +166,15 @@
       <div class="txs_title">{{ $t('ExplorerLang.asset.burnTokenTxs') }}</div>
       <div class="native_asset_list_table_content">
         <el-table class="table" :empty-text="$t('ExplorerLang.table.emptyDescription')" :data="burnToken">
+          <el-table-column class-name="hash_status" :label="$t('ExplorerLang.table.txHash')" prop="txHash" :min-width="ColumnMinWidth.txHash">
+            <template v-slot:default="{ row }">
+              <img class="status_icon" :src="require(`../../assets/${row.status === 1 ? 'success.png' : 'failed.png'}`)" />
+              <el-tooltip :content="`${row.txHash}`">
+                <router-link :to="`/tx?txHash=${row.txHash}`">{{ Tools.formatTxHash(row.txHash) }} </router-link>
+              </el-tooltip>
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('ExplorerLang.table.amount')" prop="amount" :min-width="ColumnMinWidth.amount"></el-table-column>
           <el-table-column class-name="symbol" :label="$t('ExplorerLang.table.token')" prop="token" :min-width="ColumnMinWidth.symbol">
             <template v-slot:default="{ row }">
               <router-link :to="'/assets/' + row.token"> {{ row.token }}</router-link>
@@ -181,18 +191,9 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('ExplorerLang.table.amount')" prop="amount" :min-width="ColumnMinWidth.amount"></el-table-column>
           <el-table-column :label="$t('ExplorerLang.table.block')" prop="block" :min-width="ColumnMinWidth.block">
             <template v-slot:default="{ row }">
               <router-link :to="'/block/' + row.block">{{ row.block }}</router-link>
-            </template>
-          </el-table-column>
-          <el-table-column class-name="hash_status" :label="$t('ExplorerLang.table.txHash')" prop="txHash" :min-width="ColumnMinWidth.txHash">
-            <template v-slot:default="{ row }">
-              <img class="status_icon" :src="require(`../../assets/${row.status === 1 ? 'success.png' : 'failed.png'}`)" />
-              <el-tooltip :content="`${row.txHash}`">
-                <router-link :to="`/tx?txHash=${row.txHash}`">{{ Tools.formatTxHash(row.txHash) }} </router-link>
-              </el-tooltip>
             </template>
           </el-table-column>
           <el-table-column :label="$t('ExplorerLang.table.fee')" align="right" prop="fee" v-if="isShowFee" :width="ColumnMinWidth.fee">
@@ -215,6 +216,14 @@
       <div class="txs_title">{{ $t('ExplorerLang.asset.transferOwnerTxs') }}</div>
       <div class="native_asset_list_table_content" >
         <el-table class="table" :empty-text="$t('ExplorerLang.table.emptyDescription')" :data="transferToken">
+          <el-table-column class-name="hash_status" :label="$t('ExplorerLang.table.txHash')" prop="txHash" :min-width="ColumnMinWidth.txHash">
+            <template v-slot:default="{ row }">
+              <img class="status_icon" :src="require(`../../assets/${row.status === 1 ? 'success.png' : 'failed.png'}`)" />
+              <el-tooltip :content="`${row.txHash}`">
+                <router-link :to="`/tx?txHash=${row.txHash}`">{{ Tools.formatTxHash(row.txHash) }} </router-link>
+              </el-tooltip>
+            </template>
+          </el-table-column>
           <el-table-column class-name="symbol" :label="$t('ExplorerLang.table.token')" prop="token" :min-width="ColumnMinWidth.symbol">
             <template v-slot:default="{ row }">
               <router-link :to="'/assets/' + row.token"> {{ row.token }}</router-link>
@@ -243,14 +252,6 @@
               <router-link :to="'/block/' + row.block">{{ row.block }}</router-link>
             </template>
           </el-table-column>
-          <el-table-column class-name="hash_status" :label="$t('ExplorerLang.table.txHash')" prop="txHash" :min-width="ColumnMinWidth.txHash">
-            <template v-slot:default="{ row }">
-              <img class="status_icon" :src="require(`../../assets/${row.status === 1 ? 'success.png' : 'failed.png'}`)" />
-              <el-tooltip :content="`${row.txHash}`">
-                <router-link :to="`/tx?txHash=${row.txHash}`">{{ Tools.formatTxHash(row.txHash) }} </router-link>
-              </el-tooltip>
-            </template>
-          </el-table-column>
           <el-table-column :label="$t('ExplorerLang.table.fee')" align="right" prop="fee" v-if="isShowFee" :width="ColumnMinWidth.fee">
               <template slot="header" slot-scope="scope">
                   <span>{{ $t('ExplorerLang.table.fee')}}</span>
@@ -277,10 +278,12 @@ import { getNativeAssetsTxsApi } from '@/service/api'
 import { ColumnMinWidth, TX_TYPE, decimals } from '@/constant'
 import { converCoin, addressRoute, getMainToken } from '../../helper/IritaHelper'
 import prodConfig from '../../productionConfig'
+import parseTimeMixin from '../../mixins/parseTime'
 
 export default {
   name: 'AssetTxsComponent',
   components: { MPagination },
+  mixins: [parseTimeMixin],
   props: {
     symbol: {
       type:String,
@@ -316,12 +319,20 @@ export default {
   watch: {},
   created() {},
   mounted() {
-    this.getIssueToken()
-    this.getEditToken()
-    this.getMintToken()
-    this.getBurnToken()
-    this.getTransferToken()
     this.setMainToken()
+    Promise.all([
+      this.getIssueToken(),
+      this.getEditToken(),
+      this.getMintToken(),
+      this.getBurnToken(),
+      this.getTransferToken()
+    ])
+      .then(() => {
+         /**
+         * @description: from parseTimeMixin
+         */
+        return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time', true)
+      })
   },
   methods: {
       async setMainToken(){
@@ -351,7 +362,9 @@ export default {
                 txHash: item.tx_hash,
                 // fee: fee ? isShowDenom ? `${Tools.toDecimal(fee.amount, decimals.fee)} ${fee.denom.toUpperCase()}` || '--' : `${Tools.toDecimal(fee.amount, decimals.fee)}` : '--',
                 fee: fee ? `${Tools.toDecimal(fee.amount, decimals.fee)}` : '--',
-                time: Tools.getDisplayDate(item.time),
+                time: Tools.formatAge(Tools.getTimestamp(),item.time*1000,"ago"),
+                // record origin time
+                Time: item.time,
                 status: item.status,
               }
             })
@@ -382,7 +395,9 @@ export default {
                 txHash: item.tx_hash,
                 // fee: fee ? isShowDenom ? `${Tools.toDecimal(fee.amount, decimals.fee)} ${fee.denom.toUpperCase()}` || '--' : `${Tools.toDecimal(fee.amount, decimals.fee)}` : '--',
                 fee: fee ? `${Tools.toDecimal(fee.amount, decimals.fee)}` : '--',
-                time: Tools.getDisplayDate(item.time),
+                time: Tools.formatAge(Tools.getTimestamp(),item.time*1000,"ago"),
+                // record origin time
+                Time: item.time,
                 status: item.status,
               }
             })
@@ -415,7 +430,9 @@ export default {
                 txHash: item.tx_hash,
                 // fee: fee ?  isShowDenom ? `${Tools.toDecimal(fee.amount, decimals.fee)} ${fee.denom.toUpperCase()}` || '--' : `${Tools.toDecimal(fee.amount, decimals.fee)}` : '--',
                 fee: fee ? `${Tools.toDecimal(fee.amount, decimals.fee)}` : '--',
-                time: Tools.getDisplayDate(item.time),
+                time: Tools.formatAge(Tools.getTimestamp(),item.time*1000,"ago"),
+                // record origin time
+                Time: item.time,
                 status: item.status,
               }
             })
@@ -447,7 +464,9 @@ export default {
                 txHash: item.tx_hash,
                 // fee: fee ?  isShowDenom ? `${Tools.toDecimal(fee.amount, decimals.fee)} ${fee.denom.toUpperCase()}` || '--' : `${Tools.toDecimal(fee.amount, decimals.fee)}` : '--',
                 fee: fee ? `${Tools.toDecimal(fee.amount, decimals.fee)}` : '--',
-                time: Tools.getDisplayDate(item.time),
+                time: Tools.formatAge(Tools.getTimestamp(),item.time*1000,"ago"),
+                // record origin time
+                Time: item.time,
                 status: item.status,
               }
             })
@@ -479,7 +498,9 @@ export default {
                 txHash: item.tx_hash,
                 // fee: fee ? isShowDenom ? `${Tools.toDecimal(fee.amount, decimals.fee)} ${fee.denom.toUpperCase()}` || '--' : `${Tools.toDecimal(fee.amount, decimals.fee)}` : '--',
                 fee: fee ? `${Tools.toDecimal(fee.amount, decimals.fee)}` : '--',
-                time: Tools.getDisplayDate(item.time),
+                time: Tools.formatAge(Tools.getTimestamp(),item.time*1000,"ago"),
+                // record origin time
+                Time: item.time,
                 status: item.status,
               }
             })

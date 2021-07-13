@@ -150,10 +150,11 @@
     import { addressRoute, formatMoniker, converCoin, getMainToken, setDenomMap } from '@/helper/IritaHelper';
     import {getAmountByTx} from "../../helper/txListAmoutHelper";
     import prodConfig from '../../productionConfig';
-
+    import parseTimeMixin from '../../mixins/parseTime'
     export default {
         name : "TxList",
         components : {},
+        mixins: [parseTimeMixin],
         props:{
             txData:{
                 type:Array,
@@ -179,7 +180,6 @@
                 monikerNum,
                 feeDecimals: decimals.fee,
                 txDataList: [],
-                txListTimer:null,
                 colWidthList: [],
                 loading: false,
                 mainTokenSymbol:'',
@@ -292,18 +292,15 @@
                                 Tx_Fee: '',
                                 Time: tx.time,
                                 amount: '',
-                                ageTime: Tools.formatAge(Tools.getTimestamp(),tx.time*1000,"ago",">"),
+                                ageTime: Tools.formatAge(Tools.getTimestamp(),tx.time*1000,"ago"),
                                 isShowMore,
                                 isShowTooltip: false,
                                 tooltipContent: ''
                         })
-                        clearInterval(this.txListTimer);
-                        this.txListTimer = setInterval(() => {
-                            this.txDataList.map(item => {
-                                item.ageTime = Tools.formatAge(Tools.getTimestamp(),item.Time*1000,"ago",">");
-                                return item
-                            })
-                        },1000)
+                        /**
+                         * @description: from parseTimeMixin
+                         */
+                        this.parseTime(this.txDataList, 'Time', 'ageTime')
                     }
                     if(fees && fees.length > 0 && this.isShowFee) {
                         let fee = await Promise.all(fees);
@@ -336,9 +333,6 @@
             async getDenomMap(){
               this.denomMap = await setDenomMap()
             }
-        },
-        beforeDestroy() {
-            clearInterval(this.txListTimer)
         }
     }
 </script>

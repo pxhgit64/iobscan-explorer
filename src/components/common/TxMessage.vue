@@ -1,5 +1,6 @@
 <template>
 	<div class="tx_message_content" v-if="hide">
+		{{'this is test data: '}}{{txType}}
 		<p>
 			<span>{{$t('ExplorerLang.transactionInformation.txType')}}：</span>
 			<span>{{TX_TYPE_DISPLAY[txType] || txType}}</span>
@@ -2074,6 +2075,11 @@
 				<span>{{hashLock}}</span>
 			</p>
 		</div>
+		<!-- exclude UpdateClient -->
+		<p v-if="txType !== TX_TYPE.update_client" :style="{marginTop: '0.26rem'}">
+			<span>{{$t('ExplorerLang.transactionInformation.recvPacket.viewSource')}}：</span>
+			<LargeString :isShowPre="Tools.isJSON(viewSource)"  v-if="viewSource" :text="viewSource"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
+		</p>
 	</div>
 </template>
 
@@ -2301,6 +2307,7 @@
 				secret:'',
 				transfer: '',
 				tokenPair: '',
+				viewSource: '',
 				amountArray:[],
                 COSMOS_ADDRESS_PREFIX,
                 IRIS_ADDRESS_PREFIX,
@@ -2324,6 +2331,10 @@
 					if (message) {
 						let msg = message.msg;
 						this.txType = message.type || '--';
+						this.viewSource = (this.txType !== TX_TYPE.update_client ? JSON.stringify({
+							msgs: this.msg,
+							events: this.events
+						}) : '')
 						switch (this.txType) {
 							case TX_TYPE.mint_nft:
 								this.denom = msg.denom || '--';
