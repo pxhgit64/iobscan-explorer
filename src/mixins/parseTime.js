@@ -14,7 +14,7 @@ const parseTimeMixin = {
      * @param {*} parsedKey parsedKey
      * @return {*} null
      */
-    parseTime(txList = [], key, parsedKey) {
+    parseTime(txList, key, parsedKey) {
       clearInterval(this.txListTimer);
       this.txListTimer = setInterval(() => {
         txList.forEach(item => {

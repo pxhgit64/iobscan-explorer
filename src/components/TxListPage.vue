@@ -159,12 +159,8 @@
 				this.status.push(item)
 			})
 			this.getType();
-			this.getTxListByFilterCondition().then(() => {
-				/**
-				 * @description: from parseTimeMixin
-				 */
-				this.parseTime(this.txList, 'Time', 'Timestamp')
-			});
+			this.getTxListByFilterCondition()
+
 		},
 		methods: {
 			getParamsByUrlHash () {
@@ -515,6 +511,10 @@
 						console.error(e)
 					}
 				}
+				/**
+				 * @description: from parseTimeMixin
+				 */
+				this.parseTime(this.txList, 'Time', 'Timestamp')
 			},
 			formatAddress (address) {
 				return Tools.formatValidatorAddress(address)
