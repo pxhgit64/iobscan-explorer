@@ -331,7 +331,7 @@ export default {
          /**
          * @description: from parseTimeMixin
          */
-        return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time', true)
+        return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time')
       })
   },
   methods: {

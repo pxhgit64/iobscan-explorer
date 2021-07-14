@@ -12,33 +12,28 @@ const parseTimeMixin = {
      * @param {*} txLists need to parse list or lists
      * @param {*} key origin key
      * @param {*} parsedKey parsedKey
-     * @param {*} mutiple txLists is or not mutiple list set
      * @return {*} null
      */
-    parseTime(txLists, key, parsedKey, mutiple) {
+    parseTime(txList = [], key, parsedKey) {
       clearInterval(this.txListTimer);
       this.txListTimer = setInterval(() => {
-        if (mutiple) {
-          txLists.forEach(txList => {
-            txList.forEach((item) => {
-              item[parsedKey] = Tools.formatAge(
+        txList.forEach(item => {
+          if (Array.isArray(item)) {
+            item.forEach(subItem => {
+              subItem[parsedKey] = Tools.formatAge(
                 Tools.getTimestamp(),
-                item[key] * 1000,
-                "ago"
-              );
-              return item;
-            });
-          })
-        } else {
-          txLists.forEach((item) => {
+                subItem[key] * 1000,
+                this.$t('ExplorerLang.table.suffix')
+              )
+            })
+          } else {
             item[parsedKey] = Tools.formatAge(
               Tools.getTimestamp(),
               item[key] * 1000,
-              "ago"
-            );
-            return item;
-          });
-        }
+              this.$t('ExplorerLang.table.suffix')
+            )
+          }
+        })
       }, 1000);
     },
   },

@@ -158,9 +158,13 @@
 			statusArray.forEach(item => {
 				this.status.push(item)
 			})
-			
 			this.getType();
-			this.getTxListByFilterCondition();
+			this.getTxListByFilterCondition().then(() => {
+				/**
+				 * @description: from parseTimeMixin
+				 */
+				this.parseTime(this.txList, 'Time', 'Timestamp')
+			});
 		},
 		methods: {
 			getParamsByUrlHash () {
@@ -511,10 +515,6 @@
 						console.error(e)
 					}
 				}
-				/**
-				 * @description: from parseTimeMixin
-				 */
-				this.parseTime(this.txList, 'Time', 'Timestamp')
 			},
 			formatAddress (address) {
 				return Tools.formatValidatorAddress(address)
