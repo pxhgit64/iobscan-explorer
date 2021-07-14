@@ -390,10 +390,6 @@
 											isShowMore,
 											Time: item.time
 										})
-										/**
-										 * @description: from parseTimeMixin
-										 */
-										this.parseTime(this.txList, 'Time', 'Timestamp')
 									}
 								}
 							} else {
@@ -448,10 +444,6 @@
 												Timestamp: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
 												Time: item.time
 										})
-										/**
-										 * @description: from parseTimeMixin
-										 */
-										this.parseTime(this.txList, 'Time', 'Timestamp')
 									}
 								}
 							} else {
@@ -478,7 +470,7 @@
 								let msgsNumber = item.msgs ? item.msgs.length : 0
 								const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) :'--'
 								// const time = Tools.getDisplayDate(item.time)
-								const time = Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix'))
+								// const time = Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix'))
 
 								let amount = null
 								let msg = item.msgs && item.msgs[0]
@@ -509,8 +501,9 @@
 									'Tx_Fee': fee && fee.amount ?  this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
 									'Tx_Signer': item.signers[0] ? item.signers[0] : '--',
 									'Tx_Status': TxStatus[item.status],
-									Timestamp: time,
-									proposalLink: item.ex && item.ex.proposal_link
+									Timestamp: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
+									proposalLink: item.ex && item.ex.proposal_link,
+									Time: item.time
 								})
 							}
 						}
@@ -518,6 +511,10 @@
 						console.error(e)
 					}
 				}
+				/**
+				 * @description: from parseTimeMixin
+				 */
+				this.parseTime(this.txList, 'Time', 'Timestamp')
 			},
 			formatAddress (address) {
 				return Tools.formatValidatorAddress(address)
