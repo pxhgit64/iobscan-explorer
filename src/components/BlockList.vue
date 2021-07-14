@@ -88,14 +88,14 @@
 								time: Tools.getDisplayDate(item.time),
 								Time: item.time,
 								numTxs: item.txn,
-								ageTime: Tools.formatAge(Tools.getTimestamp(),item.time*1000,"",">")
+								ageTime: Tools.formatAge(Tools.getTimestamp(),item.time*1000,this.$t('ExplorerLang.table.suffix'),">")
 							}
 						})
 					}
 					clearInterval(this.blockListTimer);
 					this.blockListTimer = setInterval(() => {
 						this.blockList.map(item => {
-							item.ageTime = Tools.formatAge(Tools.getTimestamp(),item.Time*1000,"ago",">");
+							item.ageTime = Tools.formatAge(Tools.getTimestamp(),item.Time*1000,this.$t('ExplorerLang.table.suffix'),">");
 							return item
 						})
 					},1000)
