@@ -299,7 +299,7 @@
 					data.forEach(item => {
 						res.push(item.typeName)
 					})
-				} 
+				}
 				try {
 					if (res) {
 						let typeArray;
