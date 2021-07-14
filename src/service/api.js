@@ -124,8 +124,11 @@ export function getAllServiceTxTypes(){
 }
 
 export function getTxList(params){
-    const {txType, status, beginTime, endTime, pageNum, pageSize} = params;
-    let url = `txs?pageNum=${pageNum}&pageSize=${pageSize}&useCount=true`;
+    const {txType, status, beginTime, endTime, pageNum, pageSize, useCount} = params;
+    let url = `txs?pageNum=${pageNum}&pageSize=${pageSize}`;
+    if(useCount){
+        url += `&useCount=true`;
+    }
     if(txType){
         url += `&type=${txType}`;
     }
