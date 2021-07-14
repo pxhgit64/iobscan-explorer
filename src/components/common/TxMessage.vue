@@ -2331,23 +2331,23 @@
 						let msg = message.msg;
 						this.txType = message.type || '--';
 
-						(this.txType !== TX_TYPE.update_client) && (function () {
-							if(this.eventsNew && this.eventsNew.length > 0) {
-								this.eventsNew.forEach((item) => {
-									if(item.msg_index === this.msgIndex) {
-										this.viewSource = JSON.stringify({
-											msgs: this.msg,
+						(this.txType !== TX_TYPE.update_client) && (function (that) {
+							if(that.eventsNew && that.eventsNew.length > 0) {
+								that.eventsNew.forEach((item) => {
+									if(item.msg_index === that.msgIndex) {
+										that.viewSource = JSON.stringify({
+											msgs: that.msg,
 											events: item.events
 										})
 									}
 								})
 							} else {
 								// compatible no eventsNew situation
-								this.viewSource = JSON.stringify({
-									msgs: this.msg
+								that.viewSource = JSON.stringify({
+									msgs: that.msg
 								})
 							}
-						}())
+						}(this))
 
 						switch (this.txType) {
 							case TX_TYPE.mint_nft:
