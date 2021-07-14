@@ -30,49 +30,6 @@ async function setConfig(){
   window.sessionStorage.setItem('config',JSON.stringify(config));
 }
 
-export async function setDenomMap() {
-  let protocolEnums = {
-    'hashlock': 'hashlock',
-    'ibc': 'ibc'
-    // 'native': 'native',
-    // 'swap': 'swap',
-    // 'peg': 'peg'
-  }
-  let denomMap = new Map()
-  let { tokenData: tokenList } = await getConfig()
-  tokenList?.forEach(token =>{
-    if(protocolEnums[token.src_protocol]){
-      denomMap.set(token.symbol, token.src_protocol)
-    }          
-  })
-  return denomMap
-}
-
-export function setDenomTheme(denom, denomMap) {
-  let protocolColorEnums = {
-    'hashlock': '#51A3A3',
-    'ibc': '#D47D7B',
-    // 'native': '',
-    // 'swap': '',
-    // 'peg': ''
-  }
-  let protocolNameEnums = {
-    'hashlock': 'Hash Lock',
-    'ibc': 'IBC'
-  }
-  let denomRule = /[A-Z]+/
-  let denomTheme = {
-    denomColor: '',
-    tooltipContent: ''
-  }
-  let checkDenom = denom.match(denomRule)?.[0].toLowerCase()
-  if(denomMap.has(checkDenom)){
-    denomTheme.tooltipContent = protocolNameEnums[denomMap.get(checkDenom)]
-    denomTheme.denomColor = protocolColorEnums[denomMap.get(checkDenom)]
-  }
-  return denomTheme
-}
-
 export async function getConfig(){
     let config = window.sessionStorage.getItem('config');
     if (!config) {

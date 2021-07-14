@@ -147,8 +147,8 @@
     import Tools from "../../util/Tools";
     import {TxHelper} from "../../helper/TxHelper";
     import { TX_TYPE,TX_STATUS,ColumnMinWidth,monikerNum,decimals,TX_TYPE_DISPLAY, IRIS_ADDRESS_PREFIX, COSMOS_ADDRESS_PREFIX } from '../../constant';
-    import { addressRoute, formatMoniker, converCoin, getMainToken, setDenomMap, setDenomTheme } from '@/helper/IritaHelper';
-    import {getAmountByTx} from "../../helper/txListAmoutHelper";
+    import { addressRoute, formatMoniker, converCoin, getMainToken } from '@/helper/IritaHelper';
+    import { getAmountByTx, getDenomMap, getDenomTheme } from "../../helper/txListAmoutHelper";
     import prodConfig from '../../productionConfig';
 
     export default {
@@ -192,7 +192,7 @@
         },
         watch:{
             txData() {
-              this.getDenomMap();
+              this.doGetDenomMap();
               this.formatTxData();
             }
         },
@@ -201,7 +201,7 @@
         },
         mounted(){
             this.setMainToken();
-            this.getDenomMap();
+            this.doGetDenomMap();
         },
         methods : {
             isValid(value){
@@ -318,7 +318,7 @@
                     if(amounts && amounts.length > 0) {
                         let amount = await Promise.all(amounts)
                         this.txDataList.forEach((item, index) => {    
-                          this.txDataList[index].denomTheme = setDenomTheme(amount[index], this.denomMap)
+                          this.txDataList[index].denomTheme =getDenomTheme(amount[index], this.denomMap)
                           this.txDataList[index].amount = amount[index] 
                         })
                     }
@@ -330,8 +330,8 @@
                     });
                 }
             },
-            async getDenomMap(){
-              this.denomMap = await setDenomMap()
+            async doGetDenomMap(){
+              this.denomMap = await getDenomMap()
             }
         },
         beforeDestroy() {
