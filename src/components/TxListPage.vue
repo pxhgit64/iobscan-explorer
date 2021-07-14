@@ -92,9 +92,12 @@
 	import ValidationTxsList from '@/components/common/ValidationTxsList'
 	import GovTxsList from '@/components/common/GovTxsList'
 	import prodConfig from '../productionConfig';
+	import parseTimeMixin from '../mixins/parseTime'
+
 	export default {
 		name: "TransactionListPage",
 		components: {MPagination,DelegationTxsList,ValidationTxsList,GovTxsList},
+		mixins:[parseTimeMixin],
 		data () {
 			return {
 				isShowFee: prodConfig.fee.isShowFee,
@@ -155,9 +158,9 @@
 			statusArray.forEach(item => {
 				this.status.push(item)
 			})
-			
 			this.getType();
-			this.getTxListByFilterCondition();
+			this.getTxListByFilterCondition()
+
 		},
 		methods: {
 			getParamsByUrlHash () {
@@ -296,7 +299,7 @@
 					data.forEach(item => {
 						res.push(item.typeName)
 					})
-				} 
+				}
 				try {
 					if (res) {
 						let typeArray;
@@ -367,7 +370,7 @@
 										// if(type && type === TX_TYPE.withdraw_delegator_reward) {
 										// 	isShowMore = true
 										// }
-										const time = Tools.getDisplayDate(item.time)
+										// const time = Tools.getDisplayDate(item.time)
 										const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) :'--'
 										this.txList.push({
 											Tx_Hash: item.tx_hash,
@@ -383,8 +386,9 @@
 											Tx_Fee: fee && fee.amount ?  `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
 											Tx_Signer: item.signers[0] ? item.signers[0] : '--',
 											Tx_Status: TxStatus[item.status],
-											Timestamp: time,
-											isShowMore
+											Timestamp: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
+											isShowMore,
+											Time: item.time
 										})
 									}
 								}
@@ -415,7 +419,9 @@
 										let msgsNumber = item.msgs ? item.msgs.length : 0
 										const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) :'--';
 										const selfBonded = item.msgs && item.msgs.length === 1 ? item.msgs[0].msg && item.msgs[0].msg.value ? await converCoin(item.msgs[0].msg.value) : '--' : '--';
-										const time = Tools.getDisplayDate(item.time)
+										// const time = Tools.getDisplayDate(item.time)
+										const time = Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix'))
+
 										let OperatorAddr = item.msgs && item.msgs.length === 1 ? item.msgs[0] && TxHelper.getValidationTxsOperator(item.msgs[0]) : '--'
 										let OperatorMonikers
 										if(item.monikers.length) {
@@ -435,7 +441,8 @@
 												'Tx_Fee': fee && fee.amount ? this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
 												'Tx_Signer': item.signers[0] ? item.signers[0] : '--',
 												'Tx_Status': TxStatus[item.status],
-												Timestamp: time,
+												Timestamp: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
+												Time: item.time
 										})
 									}
 								}
@@ -462,7 +469,9 @@
 							for (const item of res.data) {
 								let msgsNumber = item.msgs ? item.msgs.length : 0
 								const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) :'--'
-								const time = Tools.getDisplayDate(item.time)
+								// const time = Tools.getDisplayDate(item.time)
+								// const time = Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix'))
+
 								let amount = null
 								let msg = item.msgs && item.msgs[0]
 								if(msg) {
@@ -492,8 +501,9 @@
 									'Tx_Fee': fee && fee.amount ?  this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
 									'Tx_Signer': item.signers[0] ? item.signers[0] : '--',
 									'Tx_Status': TxStatus[item.status],
-									Timestamp: time,
-									proposalLink: item.ex && item.ex.proposal_link
+									Timestamp: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
+									proposalLink: item.ex && item.ex.proposal_link,
+									Time: item.time
 								})
 							}
 						}
@@ -501,6 +511,10 @@
 						console.error(e)
 					}
 				}
+				/**
+				 * @description: from parseTimeMixin
+				 */
+				this.parseTime(this.txList, 'Time', 'Timestamp')
 			},
 			formatAddress (address) {
 				return Tools.formatValidatorAddress(address)

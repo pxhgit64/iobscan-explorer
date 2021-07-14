@@ -178,8 +178,8 @@ export const TX_TYPE_DISPLAY = {
   remove_liquidity: 'RemoveLiquidity',
   swap_order: 'SwapOrder',
   // Htlc
-  create_htlc: 'CreateHTLC',
-  claim_htlc: 'ClaimHTLC',
+  create_htlc: 'Create Hash Lock',
+  claim_htlc: 'Claim Hash Lock',
   // refund_htlc: 'RefundHTLC', // 删除
   // Guardian
   add_profiler: 'AddProfiler',
@@ -192,34 +192,34 @@ export const TX_TYPE_DISPLAY = {
   pause_feed: 'PauseFeed',
   edit_feed: 'EditFeed',
   // CrossChain 联盟链
-  recv_packet: 'RecvPacket',     //和公有链ibc交易类型名称一致
-  create_client: 'CreateClient', //和公有链ibc交易类型名称一致
-  update_client: 'UpdateClient', //和公有链ibc交易类型名称一致
+  recv_packet: 'IBC Transfer In',     //和公有链ibc交易类型名称一致
+  create_client: 'IBC Create Client', //和公有链ibc交易类型名称一致
+  update_client: 'IBC Update Client', //和公有链ibc交易类型名称一致
   // Identity
   create_identity: 'CreateIdentity',
   update_identity: 'UpdateIdentity',
   // IBC
-  transfer: 'Transfer',
-  timeout_packet: 'TimeoutPacket',
+  transfer: 'IBC Transfer Out',
+  timeout_packet: 'IBC Timeout Packet',
   // recv_packet: 'recv_packet',
 
   // IBC => Other
   // create_client: 'create_client',
   // update_client: 'update_client',
-  upgrade_client: 'UpgradeClient',
-  submit_misbehaviour: 'SubmitMisbehaviour',
-  connection_open_init: 'ConnectionOpenInit',
-  connection_open_try: 'ConnectionOpenTry',
-  connection_open_ack: 'ConnectionOpenAck',
-  connection_open_confirm: 'ConnectionOpenConfirm',
-  channel_open_init: 'ChannelOpenInit',
-  channel_open_try: 'ChannelOpenTry',
-  channel_open_ack: 'ChannelOpenAck',
-  channel_open_confirm: 'ChannelOpenConfirm',
-  channel_close_init: 'ChannelCloseInit',
-  channel_close_confirm: 'ChannelCloseConfirm',
-  timeout_on_close_packet: 'TimeoutOnClosePacket',
-  acknowledge_packet: 'AcknowledgePacket',
+  upgrade_client: 'IBC Upgrade Client',
+  submit_misbehaviour: 'IBC Submit Misbehaviour',
+  connection_open_init: 'IBC Connection Open Init',
+  connection_open_try: 'IBC Connection Open Try',
+  connection_open_ack: 'IBC Connection Open Ack',
+  connection_open_confirm: 'IBC Connection Open Confirm',
+  channel_open_init: 'IBC Channel Open Init',
+  channel_open_try: 'IBC Channel Open Try',
+  channel_open_ack: 'IBC Channel Open Ack',
+  channel_open_confirm: 'IBC Channel Open Confirm',
+  channel_close_init: 'IBC Channel Close Init',
+  channel_close_confirm: 'IBC Channel Close Confirm',
+  timeout_on_close_packet: 'IBC Timeout On Close Packet',
+  acknowledge_packet: 'IBC Acknowledge Packet',
 
   // Random
   request_rand: 'RequestRand',
@@ -233,7 +233,7 @@ export const LEVEL_TX_TYPE = {
   Coinswap: 'Coinswap',
   Identity: 'Identity',
   IBC: 'IBC',
-  HTLC: 'HTLC',
+  HTLC: 'Hash Lock',
   Oracle: 'Oracle',
   Random: 'Random',
   Record: 'Record',
@@ -268,7 +268,7 @@ export const ColumnMinWidth = {
   iaaAddress: '139',
   time: prodConfig.isShowUTC === false ? '158' : '205',
   txn: '115',
-  blockAge: '120',
+  blockAge: '150',
   // validatirName: '120',
   validatirName: '155',
   votingPower: '120',

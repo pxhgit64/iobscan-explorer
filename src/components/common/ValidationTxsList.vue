@@ -16,10 +16,29 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="Block" :label="$t('ExplorerLang.table.block')" :min-width="ColumnMinWidth.blockListHeight">
+        <el-table-column class-name="tx_type" prop="Tx_Type" :label="$t('ExplorerLang.table.txType')" :width="ColumnMinWidth.txType">
           <template v-slot:default="{ row }">
-            <router-link style="font-family: Arial;" :to="'/block/' + row.Block" :style="{ color: '$theme_c !important' }">{{ row.Block }} </router-link>
+              <el-tooltip :content="row.Tx_Type.join(',')"
+                          placement="top-start"
+                          :disabled="row.MsgsNum <= 1">
+                  <div class="ty_type_message">
+                      <span>{{getDisplayTxType(row.Tx_Type)}}</span>
+                      <span class="message_number" v-if="row.MsgsNum != 1">+{{row.MsgsNum - 1}}</span>
+                  </div>
+              </el-tooltip>
           </template>
+        </el-table-column>
+        <el-table-column prop="Self-Bonded" :label="$t('ExplorerLang.table.selfBonded')" :min-width="ColumnMinWidth.selfBond">
+          <template v-slot:default="{ row }">
+            <span>{{ row.SelfBonded }}</span>
+          </template>
+          <template slot="header" slot-scope="scope">
+                <span>{{ $t('ExplorerLang.table.selfBonded')}}</span>
+                <el-tooltip :content="mainTokenSymbol"
+                            placement="top">
+                    <i class="iconfont iconyiwen yiwen_icon" />
+                </el-tooltip>
+          </template >
         </el-table-column>
         <el-table-column class-name="moniker" :label="$t('ExplorerLang.table.name')" :min-width="ColumnMinWidth.validatirName">
           <template v-slot:default="{ row }">
@@ -45,33 +64,9 @@
             <span class="no_skip" v-show="/^[0]\d*$/.test(row.OperatorAddr) || row.OperatorAddr === '--'">--</span>
           </template>
         </el-table-column>
-        <el-table-column prop="Self-Bonded" :label="$t('ExplorerLang.table.selfBonded')" :min-width="ColumnMinWidth.selfBond">
+        <el-table-column prop="Block" :label="$t('ExplorerLang.table.block')" :min-width="ColumnMinWidth.blockListHeight">
           <template v-slot:default="{ row }">
-            <span>{{ row.SelfBonded }}</span>
-          </template>
-          <template slot="header" slot-scope="scope">
-                <span>{{ $t('ExplorerLang.table.selfBonded')}}</span>
-                <el-tooltip :content="mainTokenSymbol"
-                            placement="top">
-                    <i class="iconfont iconyiwen yiwen_icon" />
-                </el-tooltip>
-          </template >
-        </el-table-column>
-        <el-table-column class-name="tx_type" prop="Tx_Type" :label="$t('ExplorerLang.table.txType')" :width="ColumnMinWidth.txType">
-          <!-- <template v-slot:default="{ row }">
-            <el-tooltip :content="row.Tx_Type.join(',')" placement="top" :disabled="row.Tx_Type.length <= 1">
-              <span>{{ getDisplayTxType(row.Tx_Type) }}</span>
-            </el-tooltip>
-          </template> -->
-          <template v-slot:default="{ row }">
-              <el-tooltip :content="row.Tx_Type.join(',')"
-                          placement="top-start"
-                          :disabled="row.MsgsNum <= 1">
-                  <div class="ty_type_message">
-                      <span>{{getDisplayTxType(row.Tx_Type)}}</span>
-                      <span class="message_number" v-if="row.MsgsNum != 1">+{{row.MsgsNum - 1}}</span>
-                  </div>
-              </el-tooltip>
+            <router-link style="font-family: Arial;" :to="'/block/' + row.Block" :style="{ color: '$theme_c !important' }">{{ row.Block }} </router-link>
           </template>
         </el-table-column>
         <!-- <el-table-column align="center" prop="MsgsNum" :label="$t('ExplorerLang.table.message')" :min-width="ColumnMinWidth.message"> </el-table-column> -->

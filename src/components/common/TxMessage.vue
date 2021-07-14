@@ -2074,6 +2074,11 @@
 				<span>{{hashLock}}</span>
 			</p>
 		</div>
+		<!-- exclude UpdateClient -->
+		<p v-if="txType !== TX_TYPE.update_client" :style="{marginTop: '0.26rem'}">
+			<span>{{$t('ExplorerLang.transactionInformation.recvPacket.viewSource')}}：</span>
+			<LargeString :isShowPre="Tools.isJSON(viewSource)"  v-if="viewSource" :text="viewSource"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
+		</p>
 	</div>
 </template>
 
@@ -2301,6 +2306,7 @@
 				secret:'',
 				transfer: '',
 				tokenPair: '',
+				viewSource: '',
 				amountArray:[],
                 COSMOS_ADDRESS_PREFIX,
                 IRIS_ADDRESS_PREFIX,
@@ -2324,6 +2330,25 @@
 					if (message) {
 						let msg = message.msg;
 						this.txType = message.type || '--';
+
+						(this.txType !== TX_TYPE.update_client) && (function (that) {
+							if(that.eventsNew && that.eventsNew.length > 0) {
+								that.eventsNew.forEach((item) => {
+									if(item.msg_index === that.msgIndex) {
+										that.viewSource = JSON.stringify({
+											msgs: that.msg,
+											events: item.events
+										})
+									}
+								})
+							} else {
+								// compatible no eventsNew situation
+								that.viewSource = JSON.stringify({
+									msgs: that.msg
+								})
+							}
+						}(this))
+
 						switch (this.txType) {
 							case TX_TYPE.mint_nft:
 								this.denom = msg.denom || '--';
