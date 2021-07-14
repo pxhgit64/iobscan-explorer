@@ -362,7 +362,7 @@ export default {
                 txHash: item.tx_hash,
                 // fee: fee ? isShowDenom ? `${Tools.toDecimal(fee.amount, decimals.fee)} ${fee.denom.toUpperCase()}` || '--' : `${Tools.toDecimal(fee.amount, decimals.fee)}` : '--',
                 fee: fee ? `${Tools.toDecimal(fee.amount, decimals.fee)}` : '--',
-                time: Tools.formatAge(Tools.getTimestamp(),item.time*1000,"ago"),
+                time: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
                 // record origin time
                 Time: item.time,
                 status: item.status,
@@ -395,7 +395,7 @@ export default {
                 txHash: item.tx_hash,
                 // fee: fee ? isShowDenom ? `${Tools.toDecimal(fee.amount, decimals.fee)} ${fee.denom.toUpperCase()}` || '--' : `${Tools.toDecimal(fee.amount, decimals.fee)}` : '--',
                 fee: fee ? `${Tools.toDecimal(fee.amount, decimals.fee)}` : '--',
-                time: Tools.formatAge(Tools.getTimestamp(),item.time*1000,"ago"),
+                time: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
                 // record origin time
                 Time: item.time,
                 status: item.status,
@@ -430,7 +430,7 @@ export default {
                 txHash: item.tx_hash,
                 // fee: fee ?  isShowDenom ? `${Tools.toDecimal(fee.amount, decimals.fee)} ${fee.denom.toUpperCase()}` || '--' : `${Tools.toDecimal(fee.amount, decimals.fee)}` : '--',
                 fee: fee ? `${Tools.toDecimal(fee.amount, decimals.fee)}` : '--',
-                time: Tools.formatAge(Tools.getTimestamp(),item.time*1000,"ago"),
+                time: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
                 // record origin time
                 Time: item.time,
                 status: item.status,
@@ -464,7 +464,7 @@ export default {
                 txHash: item.tx_hash,
                 // fee: fee ?  isShowDenom ? `${Tools.toDecimal(fee.amount, decimals.fee)} ${fee.denom.toUpperCase()}` || '--' : `${Tools.toDecimal(fee.amount, decimals.fee)}` : '--',
                 fee: fee ? `${Tools.toDecimal(fee.amount, decimals.fee)}` : '--',
-                time: Tools.formatAge(Tools.getTimestamp(),item.time*1000,"ago"),
+                time: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
                 // record origin time
                 Time: item.time,
                 status: item.status,
@@ -498,7 +498,7 @@ export default {
                 txHash: item.tx_hash,
                 // fee: fee ? isShowDenom ? `${Tools.toDecimal(fee.amount, decimals.fee)} ${fee.denom.toUpperCase()}` || '--' : `${Tools.toDecimal(fee.amount, decimals.fee)}` : '--',
                 fee: fee ? `${Tools.toDecimal(fee.amount, decimals.fee)}` : '--',
-                time: Tools.formatAge(Tools.getTimestamp(),item.time*1000,"ago"),
+                time: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
                 // record origin time
                 Time: item.time,
                 status: item.status,

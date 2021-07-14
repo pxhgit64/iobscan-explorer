@@ -2340,7 +2340,7 @@
 											events: item.events
 										})
 									}
-								});
+								})
 							} else {
 								// compatible no eventsNew situation
 								this.viewSource = JSON.stringify({

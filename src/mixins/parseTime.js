@@ -1,6 +1,6 @@
 import Tools from "../util/Tools";
 
-var parseTimeMixin = {
+const parseTimeMixin = {
   data() {
     return {
       txListTimer: null
@@ -19,8 +19,8 @@ var parseTimeMixin = {
       clearInterval(this.txListTimer);
       this.txListTimer = setInterval(() => {
         if (mutiple) {
-          txLists.map(txList => {
-            txList.map((item) => {
+          txLists.forEach(txList => {
+            txList.forEach((item) => {
               item[parsedKey] = Tools.formatAge(
                 Tools.getTimestamp(),
                 item[key] * 1000,
@@ -30,7 +30,7 @@ var parseTimeMixin = {
             });
           })
         } else {
-          txLists.map((item) => {
+          txLists.forEach((item) => {
             item[parsedKey] = Tools.formatAge(
               Tools.getTimestamp(),
               item[key] * 1000,

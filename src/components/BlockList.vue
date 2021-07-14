@@ -88,7 +88,7 @@
 								time: Tools.getDisplayDate(item.time),
 								Time: item.time,
 								numTxs: item.txn,
-								ageTime: Tools.formatAge(Tools.getTimestamp(),item.time*1000,"ago",">")
+								ageTime: Tools.formatAge(Tools.getTimestamp(),item.time*1000,"",">")
 							}
 						})
 					}

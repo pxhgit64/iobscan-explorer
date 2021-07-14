@@ -292,7 +292,7 @@
                                 Tx_Fee: '',
                                 Time: tx.time,
                                 amount: '',
-                                ageTime: Tools.formatAge(Tools.getTimestamp(),tx.time*1000,"ago"),
+                                ageTime: Tools.formatAge(Tools.getTimestamp(),tx.time*1000, this.$t('ExplorerLang.table.suffix')),
                                 isShowMore,
                                 isShowTooltip: false,
                                 tooltipContent: ''

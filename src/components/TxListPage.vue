@@ -386,7 +386,7 @@
 											Tx_Fee: fee && fee.amount ?  `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
 											Tx_Signer: item.signers[0] ? item.signers[0] : '--',
 											Tx_Status: TxStatus[item.status],
-											Timestamp: Tools.formatAge(Tools.getTimestamp(),item.time*1000,"ago"),
+											Timestamp: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
 											isShowMore,
 											Time: item.time
 										})
@@ -424,7 +424,7 @@
 										const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) :'--';
 										const selfBonded = item.msgs && item.msgs.length === 1 ? item.msgs[0].msg && item.msgs[0].msg.value ? await converCoin(item.msgs[0].msg.value) : '--' : '--';
 										// const time = Tools.getDisplayDate(item.time)
-										const time = Tools.formatAge(Tools.getTimestamp(),item.time*1000,"ago")
+										const time = Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix'))
 
 										let OperatorAddr = item.msgs && item.msgs.length === 1 ? item.msgs[0] && TxHelper.getValidationTxsOperator(item.msgs[0]) : '--'
 										let OperatorMonikers
@@ -445,8 +445,13 @@
 												'Tx_Fee': fee && fee.amount ? this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
 												'Tx_Signer': item.signers[0] ? item.signers[0] : '--',
 												'Tx_Status': TxStatus[item.status],
-												Timestamp: time,
+												Timestamp: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
+												Time: item.time
 										})
+										/**
+										 * @description: from parseTimeMixin
+										 */
+										this.parseTime(this.txList, 'Time', 'Timestamp')
 									}
 								}
 							} else {
@@ -473,7 +478,7 @@
 								let msgsNumber = item.msgs ? item.msgs.length : 0
 								const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) :'--'
 								// const time = Tools.getDisplayDate(item.time)
-								const time = Tools.formatAge(Tools.getTimestamp(),item.time*1000,"ago")
+								const time = Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix'))
 
 								let amount = null
 								let msg = item.msgs && item.msgs[0]
