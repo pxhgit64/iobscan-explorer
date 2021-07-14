@@ -2548,13 +2548,13 @@
 									this.signer = msg.signer || '--';
 									let originalDenom = TxHelper.getOriginalDenomFromPacket(msg.packet);
 									if(msg.packet && msg.packet.data){
-									    this.sender = msg.packet.data.sender;
-									    this.receiver = msg.packet.data.receiver;
-                                        this.amount = await converCoin({
-                                            denom:originalDenom || msg.packet.data.denom,
-                                            amount:msg.packet.data.amount,
-                                        });
-                                    }
+                    this.sender = msg.packet.data.sender;
+                    this.receiver = msg.packet.data.receiver;
+                    this.amount = await converCoin({
+                        denom:originalDenom || msg.packet.data.denom,
+                        amount:msg.packet.data.amount,
+                      });
+                    }
 								}
 								break;
 							case TX_TYPE.create_identity:
@@ -3202,7 +3202,8 @@
 								this.receiverOnOtherChain = msg.receiver_on_other_chain || '--';
 								this.senderOnOtherChain = msg.sender_on_other_chain || '--';
 								if(msg.amount && msg.amount[0]) {
-									this.amount = `${msg.amount[0].amount} ${msg.amount[0].denom}`;
+                  let coin = await converCoin(msg.amount[0])
+									this.amount = `${coin.amount} ${coin.denom}`;
 								} else {
 									this.amount = '--';
 								}
@@ -3216,6 +3217,7 @@
 							break;
 							case TX_TYPE.claim_htlc:
 								let transfer;
+                let attributeMap;
 								(this.eventsNew || []).forEach((item) => {
 									if(item.msg_index === this.msgIndex) {
 										(item.events || []).forEach((events) => {
@@ -3229,19 +3231,27 @@
 														}
 													})
 												}
-												if(events.type === "transfer") {
-													(events.attributes || []).forEach(item => {
-														if(item.key === 'amount')  {
-															this.amount = item.value
-														}
-														if(item.key === 'recipient') {
-															this.recipient = item.value
-														}
-												})
+											  if(events.type === "transfer") {
+                          attributeMap = Tools.MultKeyValueObjToOneMap(events.attributes)
+                        //   (events.attributes || []).forEach(item => {
+												// 		if(item.key === 'amount')  {
+                        //       this.amount = item.value
+												// 		}
+												// 		if(item.key === 'recipient') {
+												// 			this.recipient = item.value
+												// 		}
+												// })
 											}
 										})
 									}
 								});
+                if(attributeMap.has('amount')){
+                  let coin = await converCoin(attributeMap.get('amount'))
+                  this.amount = `${coin.amount} ${coin.denom}`;
+                }
+                if(attributeMap.has('recipient')){
+                  this.recipient = attributeMap.get('recipient')
+                }
 								if(!this.recipient) {
 									this.recipient = '--'
 								}

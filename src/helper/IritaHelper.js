@@ -30,17 +30,6 @@ async function setConfig(){
   window.sessionStorage.setItem('config',JSON.stringify(config));
 }
 
-export async function setDenomMap() {
-  let denomMap = new Map()
-  let { tokenData: tokenList } = await getConfig()
-  tokenList?.forEach(token =>{
-    if(token.src_protocol === 'hashlock' || token.src_protocol === 'ibc'){
-      denomMap.set(token.symbol, token.src_protocol)
-    }          
-  })
-  return denomMap
-}
-
 export async function getConfig(){
     let config = window.sessionStorage.getItem('config');
     if (!config) {
