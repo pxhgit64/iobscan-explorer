@@ -526,35 +526,60 @@ export default {
         return
       }
       this.issueTokenCurrentPageNum = pageNum
-      this.getIssueToken()
+      this.getIssueToken().then(() => {
+         /**
+         * @description: from parseTimeMixin
+         */
+        return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time')
+      })
     },
     editTokenPageChange(pageNum) {
       if (this.editTokenCurrentPageNum == pageNum) {
         return
       }
       this.editTokenCurrentPageNum = pageNum
-      this.getEditToken()
+      this.getEditToken().then(() => {
+         /**
+         * @description: from parseTimeMixin
+         */
+        return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time')
+      })
     },
     mintTokenPageChange(pageNum) {
       if (this.mintTokenCurrentPageNum == pageNum) {
         return
       }
       this.mintTokenCurrentPageNum = pageNum
-      this.getMintToken()
+      this.getMintToken().then(() => {
+         /**
+         * @description: from parseTimeMixin
+         */
+        return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time')
+      })
     },
     burnTokenPageChange(pageNum) {
       if (this.burnTokenCurrentPageNum == pageNum) {
         return
       }
       this.burnTokenCurrentPageNum = pageNum
-      this.getBurnToken()
+      this.getBurnToken().then(() => {
+         /**
+         * @description: from parseTimeMixin
+         */
+        return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time')
+      })
     },
     transferTokenPageChange(pageNum) {
       if (this.transferTokenCurrentPageNum == pageNum) {
         return
       }
       this.transferTokenCurrentPageNum = pageNum
-      this.getTransferToken()
+      this.getTransferToken().then(() => {
+         /**
+         * @description: from parseTimeMixin
+         */
+        return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time')
+      })
     },
   },
 }
