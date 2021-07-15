@@ -342,6 +342,7 @@
             },
 			async getValidatorsInfo () {
 				let res = await getValidatorsInfoApi(this.$route.params.param)
+				res.delegator_num = this.delegations.total ?? '--';
 				this.validationInformation = res
 				this.validatorStatus = Tools.firstWordUpperCase(res.status)
 			},
@@ -349,6 +350,9 @@
 				const res = await getValidatorsDelegationsApi(this.$route.params.param, page, this.pageSize, this.delegations.useCount)
 				if(res.count) {
 					this.delegations.total = res.count;
+					if (this.validationInformation) {
+						this.validationInformation.delegator_num = res.count;
+					}
 					this.delegations.useCount = false;
 				}
 				this.delegations.items = []
