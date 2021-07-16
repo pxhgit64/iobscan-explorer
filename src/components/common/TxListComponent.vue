@@ -330,9 +330,6 @@
                     });
                 }
             },
-        },
-        beforeDestroy() {
-            clearInterval(this.txListTimer)
         }
     }
 </script>
