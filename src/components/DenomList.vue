@@ -88,10 +88,12 @@
     import MPagination from "./common/MPagination";
     import { ColumnMinWidth } from '../constant';
     import productionConfig from '@/productionConfig.js';
+    import parseTimeMixin from '../mixins/parseTime'
 
     export default {
         name: "DenomList",
         components: {MPagination},
+        mixins: [parseTimeMixin],
         data () {
             return {
                 ColumnMinWidth,
@@ -105,7 +107,12 @@
             }
         },
         mounted(){
-            this.getDenoms()
+            this.getDenoms().then(() => {
+                /**
+				 * @description: from parseTimeMixin
+				 */
+				this.parseTime('denomList', 'Time', 'time')
+            })
         },
         computed: {
 			isShowPlurality() {
@@ -141,7 +148,8 @@
                                 hash: denom.hash,
                                 nftCount: denom.nftCount,
                                 sender: denom.sender,
-                                time: Tools.getDisplayDate(denom.time),
+                                time: Tools.formatAge(Tools.getTimestamp(),denom.time*1000, this.$t('ExplorerLang.table.suffix')),
+                                Time: denom.time
                             }
                         });
                         this.count = res.count;
