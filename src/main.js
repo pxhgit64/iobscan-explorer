@@ -194,6 +194,9 @@ Vue.prototype.$prompt = MessageBox.prompt;
 Vue.prototype.$notify = Notification;
 Vue.prototype.$message = Message;
 
+window.addEventListener('beforeunload', ()=>{
+    sessionStorage.removeItem('config')
+}, false)
 
 Vue.config.productionTip = false;
 (async function(){

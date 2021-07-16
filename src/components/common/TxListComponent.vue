@@ -41,17 +41,17 @@
                   </el-tooltip>
                 </template > -->
                 <template slot-scope="scope">
-                  <span v-if="scope.row.msgCount == 1 && !scope.row.isShowMore && !scope.row.isShowTooltip">
-                    {{scope.row.amount}}
-                  </span>
-                  <span v-else-if="scope.row.isShowTooltip">
-                    <span>{{ getAmount(scope.row.amount) }}</span>
-                    <el-tooltip :content="scope.row.tooltipContent" placement="top">
-                      <span :style="{ color: scope.row.tooltipContent === IBC ? '#D47D7B' : scope.row.tooltipContent === HashLock ? '#51A3A3' : '' }">
+                  <span v-if="scope.row.msgCount == 1 && !scope.row.isShowMore">
+                    <span v-if="scope.row.denomTheme.tooltipContent">
+                      {{ getAmount(scope.row.amount) }}
+                      <el-tooltip  :content="scope.row.denomTheme.tooltipContent" placement="top">
+                      <span :style="{ color: scope.row.denomTheme.denomColor }">
                         {{ getAmountUnit(scope.row.amount) }}
                       </span>   
                     </el-tooltip>
-                  </span>
+                    </span>
+                    <span v-else>{{ scope.row.amount }}</span>
+                  </span>                 
                   <router-link v-else :to="`/tx?txHash=${scope.row.txHash}`">
                     {{$t('ExplorerLang.table.more')}} <i class="iconfont icontiaozhuan more_icontiaozhuan"></i>              
                   </router-link>
@@ -147,8 +147,8 @@
     import Tools from "../../util/Tools";
     import {TxHelper} from "../../helper/TxHelper";
     import { TX_TYPE,TX_STATUS,ColumnMinWidth,monikerNum,decimals,TX_TYPE_DISPLAY, IRIS_ADDRESS_PREFIX, COSMOS_ADDRESS_PREFIX } from '../../constant';
-    import { addressRoute, formatMoniker, converCoin, getMainToken, setDenomMap } from '@/helper/IritaHelper';
-    import {getAmountByTx} from "../../helper/txListAmoutHelper";
+    import { addressRoute, formatMoniker, converCoin, getMainToken } from '@/helper/IritaHelper';
+    import { getAmountByTx, getDenomMap, getDenomTheme } from "../../helper/txListAmoutHelper";
     import prodConfig from '../../productionConfig';
     import parseTimeMixin from '../../mixins/parseTime'
     export default {
@@ -192,7 +192,6 @@
         },
         watch:{
             txData() {
-              this.getDenomMap();
               this.formatTxData();
             }
         },
@@ -201,7 +200,6 @@
         },
         mounted(){
             this.setMainToken();
-            this.getDenomMap();
         },
         methods : {
             isValid(value){
@@ -267,16 +265,20 @@
                             })
                         }
                         if(this.isShowFee) {
-                            fees.push(tx.fee && tx.fee.amount && tx.fee.amount.length > 0 ? converCoin(tx.fee.amount[0]) :'--')
+                            fees.push(tx.fee && tx.fee.amount && tx.fee.amount.length > 0 ? await converCoin(tx.fee.amount[0]) :'--')
                         }
                         let isShowMore = false;
                         const type = tx.msgs && tx.msgs[0] && tx.msgs[0].type;
-                        if(type && (type === TX_TYPE.add_liquidity || type === TX_TYPE.remove_liquidity || type === TX_TYPE.swap_order)) {
+                        if(type && (type === TX_TYPE.add_liquidity || type === TX_TYPE.remove_liquidity)) {
                             isShowMore = true
                         }
                         if(tx.type === TX_TYPE.send) {
                             tx && tx.msgs && tx.msgs[0] && tx.msgs[0].msg && tx.msgs[0].msg.amount && tx.msgs[0].msg.amount.length > 1 ? isShowMore = true : ''
-                        }
+                            let denom = tx?.msgs?.[0]?.msg?.amount?.[0]?.denom
+                            if(denom !== undefined && /(swap|SWAP)/g.test(denom)) {
+                              isShowMore = true
+                            }
+                        } 
                         this.txDataList.push({
                                 txHash : tx.tx_hash,
                                 blockHeight : tx.height,
@@ -294,8 +296,10 @@
                                 amount: '',
                                 ageTime: Tools.formatAge(Tools.getTimestamp(),tx.time*1000, this.$t('ExplorerLang.table.suffix')),
                                 isShowMore,
-                                isShowTooltip: false,
-                                tooltipContent: ''
+                                denomTheme: {
+                                  denomColor: '',
+                                  tooltipContent: ''
+                                }
                         })
                         /**
                          * @description: from parseTimeMixin
@@ -312,13 +316,9 @@
                     }
                     if(amounts && amounts.length > 0) {
                         let amount = await Promise.all(amounts)
-                        let denomRule = /[A-Z]+/
-                        this.txDataList.forEach((item,index) => {
-                          let checkDenom = amount[index].match(denomRule)?.[0].toLowerCase()
-                          if(this.denomMap.has(checkDenom)){
-                            this.txDataList[index].isShowTooltip = true,
-                            this.txDataList[index].tooltipContent = this.denomMap.get(checkDenom) === 'ibc' ? 'IBC' : 'Hash Lock'
-                          }
+                        this.denomMap = await getDenomMap()
+                        this.txDataList.forEach((item, index) => {    
+                          this.txDataList[index].denomTheme =getDenomTheme(amount[index], this.denomMap)
                           this.txDataList[index].amount = amount[index] 
                         })
                     }
@@ -330,9 +330,9 @@
                     });
                 }
             },
-            async getDenomMap(){
-              this.denomMap = await setDenomMap()
-            }
+        },
+        beforeDestroy() {
+            clearInterval(this.txListTimer)
         }
     }
 </script>

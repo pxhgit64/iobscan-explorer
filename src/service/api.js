@@ -1,4 +1,5 @@
 import { HttpHelper } from '../helper/httpHelper';
+import { requestThrottler } from '../helper/throttleHttpHelper';
 import { TX_STATUS } from '../constant'
 import moment from 'moment';
 
@@ -21,10 +22,10 @@ function get(url){
 	});
 }
 
-async function post(url, payload){
+async function throttlerPost(url, payload){
   url = `/api/${url.replace(/^\//, '')}`;
   try{
-    let data = await HttpHelper.post(url, payload);
+    let data = await requestThrottler(url, payload);
     if(data && data.code == 0){
       return data;
     }else{
@@ -57,7 +58,7 @@ function getFromLcd(url){
 
 export async function getIbcToken(payload){
   const url = '/upload-token-info'   
-	return await post(url, payload);
+	return await throttlerPost(url, payload);
 }
 
 export function getDbStatistics(params){
@@ -124,8 +125,11 @@ export function getAllServiceTxTypes(){
 }
 
 export function getTxList(params){
-    const {txType, status, beginTime, endTime, pageNum, pageSize} = params;
-    let url = `txs?pageNum=${pageNum}&pageSize=${pageSize}&useCount=true`;
+    const {txType, status, beginTime, endTime, pageNum, pageSize, useCount} = params;
+    let url = `txs?pageNum=${pageNum}&pageSize=${pageSize}`;
+    if(useCount){
+        url += `&useCount=true`;
+    }
     if(txType){
         url += `&type=${txType}`;
     }

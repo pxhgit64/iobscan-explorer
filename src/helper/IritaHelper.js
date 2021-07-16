@@ -19,7 +19,7 @@ async function uploadIbcToken(denom){
   }    
   let { data } = await getIbcToken(payload);
     if(data?.symbol){
-      setConfig()
+      await setConfig()
       return data 
     } else {   
     }    
@@ -28,17 +28,6 @@ async function uploadIbcToken(denom){
 async function setConfig(){
   let config = await getConfigApi().catch((e)=>{throw e});
   window.sessionStorage.setItem('config',JSON.stringify(config));
-}
-
-export async function setDenomMap() {
-  let denomMap = new Map()
-  let { tokenData: tokenList } = await getConfig()
-  tokenList?.forEach(token =>{
-    if(token.src_protocol === 'hashlock' || token.src_protocol === 'ibc'){
-      denomMap.set(token.symbol, token.src_protocol)
-    }          
-  })
-  return denomMap
 }
 
 export async function getConfig(){
@@ -118,7 +107,7 @@ export async function converCoin (_coin) {
         //         coin.denom = (ibcDenomPrefix + res.denom_trace.base_denom).toUpperCase()
         //     }
         // }
-        const ibcTest = /ibc\/[0-9A-Za-z]{54}/ 
+        const ibcTest = /(ibc|IBC)\/[0-9A-Za-z]{54}/ 
         if(ibcTest.test(coin.denom)){
           const data = await uploadIbcToken(coin.denom)
           if(data?.symbol){
