@@ -19,7 +19,7 @@ async function uploadIbcToken(denom){
   }    
   let { data } = await getIbcToken(payload);
     if(data?.symbol){
-      setConfig()
+      await setConfig()
       return data 
     } else {   
     }    
@@ -107,7 +107,7 @@ export async function converCoin (_coin) {
         //         coin.denom = (ibcDenomPrefix + res.denom_trace.base_denom).toUpperCase()
         //     }
         // }
-        const ibcTest = /ibc\/[0-9A-Za-z]{54}/ 
+        const ibcTest = /(ibc|IBC)\/[0-9A-Za-z]{54}/ 
         if(ibcTest.test(coin.denom)){
           const data = await uploadIbcToken(coin.denom)
           if(data?.symbol){

@@ -192,7 +192,6 @@
         },
         watch:{
             txData() {
-              this.doGetDenomMap();
               this.formatTxData();
             }
         },
@@ -201,7 +200,6 @@
         },
         mounted(){
             this.setMainToken();
-            this.doGetDenomMap();
         },
         methods : {
             isValid(value){
@@ -267,16 +265,20 @@
                             })
                         }
                         if(this.isShowFee) {
-                            fees.push(tx.fee && tx.fee.amount && tx.fee.amount.length > 0 ? converCoin(tx.fee.amount[0]) :'--')
+                            fees.push(tx.fee && tx.fee.amount && tx.fee.amount.length > 0 ? await converCoin(tx.fee.amount[0]) :'--')
                         }
                         let isShowMore = false;
                         const type = tx.msgs && tx.msgs[0] && tx.msgs[0].type;
-                        if(type && (type === TX_TYPE.add_liquidity || type === TX_TYPE.remove_liquidity || type === TX_TYPE.swap_order)) {
+                        if(type && (type === TX_TYPE.add_liquidity || type === TX_TYPE.remove_liquidity)) {
                             isShowMore = true
                         }
                         if(tx.type === TX_TYPE.send) {
                             tx && tx.msgs && tx.msgs[0] && tx.msgs[0].msg && tx.msgs[0].msg.amount && tx.msgs[0].msg.amount.length > 1 ? isShowMore = true : ''
-                        }
+                            let denom = tx?.msgs?.[0]?.msg?.amount?.[0]?.denom
+                            if(denom !== undefined && /(swap|SWAP)/g.test(denom)) {
+                              isShowMore = true
+                            }
+                        } 
                         this.txDataList.push({
                                 txHash : tx.tx_hash,
                                 blockHeight : tx.height,
@@ -317,6 +319,7 @@
                     }
                     if(amounts && amounts.length > 0) {
                         let amount = await Promise.all(amounts)
+                        this.denomMap = await getDenomMap()
                         this.txDataList.forEach((item, index) => {    
                           this.txDataList[index].denomTheme =getDenomTheme(amount[index], this.denomMap)
                           this.txDataList[index].amount = amount[index] 
@@ -330,9 +333,6 @@
                     });
                 }
             },
-            async doGetDenomMap(){
-              this.denomMap = await getDenomMap()
-            }
         },
         beforeDestroy() {
             clearInterval(this.txListTimer)
