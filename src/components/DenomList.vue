@@ -107,12 +107,7 @@
             }
         },
         mounted(){
-            this.getDenoms().then(() => {
-                /**
-				 * @description: from parseTimeMixin
-				 */
-				this.parseTime('denomList', 'Time', 'time')
-            })
+            this.getDenoms()
         },
         computed: {
 			isShowPlurality() {
@@ -152,6 +147,10 @@
                                 Time: denom.time
                             }
                         });
+                        /**
+                         * @description: from parseTimeMixin
+                         */
+                        this.parseTime('denomList', 'Time', 'time')
                         this.count = res.count;
                         this.pageSize = res.pageSize;
                         this.pageNum = res.pageNum;

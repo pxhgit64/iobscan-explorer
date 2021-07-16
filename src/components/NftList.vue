@@ -138,12 +138,7 @@
 		},
 		mounted(){
 			this.getNftList();
-			this.getNftsByFilter().then(() => {
-				/**
-				 * @description: from parseTimeMixin
-				 */
-				this.parseTime('denomArray', 'Time', 'last_block_time')
-			});
+			this.getNftsByFilter()
             if(this.$store.state.tempDenomId){
                 this.$store.commit('SET_TEMP_DENOM_ID','');
             }
@@ -195,6 +190,10 @@
 							item.last_block_time = (item.last_block_time ? Tools.formatAge(Tools.getTimestamp(),item.last_block_time*1000, this.$t('ExplorerLang.table.suffix')) : '--')
 						});
 						this.denomArray = nftData.data
+						/**
+						 * @description: from parseTimeMixin
+						 */
+						this.parseTime('denomArray', 'Time', 'last_block_time')
 					}else {
 						this.allCount = 0
 						this.denomArray = []
