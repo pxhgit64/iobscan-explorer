@@ -121,62 +121,62 @@ export const TX_TYPE = {
 // 展示
 export const TX_TYPE_DISPLAY = {
   // service
-  define_service: 'DefineService',
-  bind_service: 'BindService',
-  call_service: 'CallService',
-  respond_service: 'RespondService',
-  update_service_binding: 'UpdateServiceBinding',
-  disable_service_binding: 'DisableServiceBinding',
-  enable_service_binding: 'EnableServiceBinding',
-  refund_service_deposit: 'RefundServiceDeposit',
-  pause_request_context: 'PauseRequestContext',
-  start_request_context: 'StartRequestContext',
-  kill_request_context: 'KillRequestContext',
-  update_request_context: 'UpdateRequestContext',
-  'service/set_withdraw_address': 'ServiceSetWithdrawAddress',
-  withdraw_earned_fees: 'WithdrawEarnedFees',
+  define_service: 'Define Service',
+  bind_service: 'Bind Service',
+  call_service: 'Call Service',
+  respond_service: 'Respond Service',
+  update_service_binding: 'Update Service Binding',
+  disable_service_binding: 'Disable Service Binding',
+  enable_service_binding: 'Enable Service Binding',
+  refund_service_deposit: 'Refund Service Deposit',
+  pause_request_context: 'Pause Request Context',
+  start_request_context: 'Start Request Context',
+  kill_request_context: 'Kill Request Context',
+  update_request_context: 'Update Request Context',
+  'service/set_withdraw_address': 'Service Set Withdraw Address',
+  withdraw_earned_fees: 'Withdraw Earned Fees',
    // Record
-   create_record: 'CreateRecord',
+   create_record: 'Create Record',
   // nft
-  burn_nft: 'NFTBurn',
-  transfer_nft: 'NFTTransfer',
-  edit_nft: 'NFTEdit',
-  issue_denom: 'IssueDenom',
-  mint_nft: 'NFTMint',
+  burn_nft: 'NFT Burn',
+  transfer_nft: 'NFT Transfer',
+  edit_nft: 'NFT Edit',
+  issue_denom: 'Issue Denom',
+  mint_nft: 'NFT Mint',
   // Token
-  issue_token: 'IssueToken',
-  edit_token: 'EditToken',
-  mint_token: 'MintToken',
-  transfer_token_owner: 'TransferTokenOwner',
-  burn_token: 'BurnToken',
+  issue_token: 'Issue Token',
+  edit_token: 'Edit Token',
+  mint_token: 'Mint Token',
+  transfer_token_owner: 'Transfer Token Owner',
+  burn_token: 'Burn Token',
   //Bank
   send: 'Transfer',
-  multisend: 'MultiSend',
+  multisend: 'Multi Send',
   //Crisis
   verify_invariant: 'VerifyInvariant',
   //Evidence
   submit_evidence: 'SubmitEvidence',
   //Staking
   begin_unbonding: 'Undelegate',
-  edit_validator: 'EditValidator',
-  create_validator: 'CreateValidator',
+  edit_validator: 'Edit Validator',
+  create_validator: 'Create Validator',
   delegate: 'Delegate',
-  begin_redelegate: 'BeginRedelegate',
+  begin_redelegate: 'Begin Redelegate',
   // Slashing
   unjail: 'Unjail',
   // Distribution
-  set_withdraw_address: 'SetWithdrawAddress',
-  withdraw_delegator_reward: 'WithdrawDelegatorReward',
-  withdraw_validator_commission: 'WithdrawValidatorCommission',
-  fund_community_pool: 'FundCommunityPool',
+  set_withdraw_address: 'Set Withdraw Address',
+  withdraw_delegator_reward: 'Withdraw Delegator Reward',
+  withdraw_validator_commission: 'Withdraw Validator Commission',
+  fund_community_pool: 'Fund Community Pool',
   // Gov
   deposit: 'Deposit',
   vote: 'Vote',
-  submit_proposal: 'SubmitProposal',
+  submit_proposal: 'Submit Proposal',
   // Coinswap
-  add_liquidity: 'AddLiquidity',
-  remove_liquidity: 'RemoveLiquidity',
-  swap_order: 'SwapOrder',
+  add_liquidity: 'Add Liquidity',
+  remove_liquidity: 'Remove Liquidity',
+  swap_order: 'Swap Order',
   // Htlc
   create_htlc: 'Create Hash Lock',
   claim_htlc: 'Claim Hash Lock',
@@ -187,10 +187,10 @@ export const TX_TYPE_DISPLAY = {
   add_trustee: 'AddTrustee',
   delete_trustee: 'DeleteTrustee',
   // Oracle
-  create_feed: 'CreateFeed',
-  start_feed: 'StartFeed',
-  pause_feed: 'PauseFeed',
-  edit_feed: 'EditFeed',
+  create_feed: 'Create Feed',
+  start_feed: 'Start Feed',
+  pause_feed: 'Pause Feed',
+  edit_feed: 'Edit Feed',
   // CrossChain 联盟链
   recv_packet: 'IBC Transfer In',     //和公有链ibc交易类型名称一致
   create_client: 'IBC Create Client', //和公有链ibc交易类型名称一致
@@ -222,7 +222,7 @@ export const TX_TYPE_DISPLAY = {
   acknowledge_packet: 'IBC Acknowledge Packet',
 
   // Random
-  request_rand: 'RequestRand',
+  request_rand: 'Request Rand',
 }
 
 export const LEVEL_TX_TYPE = {
