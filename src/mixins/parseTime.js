@@ -38,25 +38,7 @@ const parseTimeMixin = {
                   this.$t("ExplorerLang.table.suffix")
                 );
               });
-
-          // txList.forEach(item => {
-          //   if (Array.isArray(item)) {
-          //     item.forEach(subItem => {
-          //       subItem[parsedKey] = Tools.formatAge(
-          //         Tools.getTimestamp(),
-          //         subItem[key] * 1000,
-          //         this.$t('ExplorerLang.table.suffix')
-          //       )
-          //     })
-          //   } else {
-          //     item[parsedKey] = Tools.formatAge(
-          //       Tools.getTimestamp(),
-          //       item[key] * 1000,
-          //       this.$t('ExplorerLang.table.suffix')
-          //     )
-          //   }
-          // })
-        }, 3000));
+        }, 1000));
     },
   },
   beforeDestroy() {
