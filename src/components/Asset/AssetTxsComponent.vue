@@ -527,12 +527,6 @@ export default {
       }
       this.issueTokenCurrentPageNum = pageNum
       this.getIssueToken()
-      // .then(() => {
-      //    /**
-      //    * @description: from parseTimeMixin
-      //    */
-      //   return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time')
-      // })
     },
     editTokenPageChange(pageNum) {
       if (this.editTokenCurrentPageNum == pageNum) {
@@ -540,12 +534,6 @@ export default {
       }
       this.editTokenCurrentPageNum = pageNum
       this.getEditToken()
-      // .then(() => {
-      //    /**
-      //    * @description: from parseTimeMixin
-      //    */
-      //   return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time')
-      // })
     },
     mintTokenPageChange(pageNum) {
       if (this.mintTokenCurrentPageNum == pageNum) {
@@ -553,12 +541,6 @@ export default {
       }
       this.mintTokenCurrentPageNum = pageNum
       this.getMintToken()
-      // .then(() => {
-      //    /**
-      //    * @description: from parseTimeMixin
-      //    */
-      //   return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time')
-      // })
     },
     burnTokenPageChange(pageNum) {
       if (this.burnTokenCurrentPageNum == pageNum) {
@@ -566,12 +548,6 @@ export default {
       }
       this.burnTokenCurrentPageNum = pageNum
       this.getBurnToken()
-      // .then(() => {
-      //    /**
-      //    * @description: from parseTimeMixin
-      //    */
-      //   return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time')
-      // })
     },
     transferTokenPageChange(pageNum) {
       if (this.transferTokenCurrentPageNum == pageNum) {
@@ -579,12 +555,6 @@ export default {
       }
       this.transferTokenCurrentPageNum = pageNum
       this.getTransferToken()
-      // .then(() => {
-      //    /**
-      //    * @description: from parseTimeMixin
-      //    */
-      //   return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time')
-      // })
     },
   },
 }
