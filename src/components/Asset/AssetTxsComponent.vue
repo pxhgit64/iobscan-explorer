@@ -331,7 +331,7 @@ export default {
          /**
          * @description: from parseTimeMixin
          */
-        return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time')
+        return this.parseTime(['issueToken', 'editToken', 'mintToken', 'burnToken', 'transferToken'], 'Time', 'time')
       })
   },
   methods: {
@@ -526,60 +526,65 @@ export default {
         return
       }
       this.issueTokenCurrentPageNum = pageNum
-      this.getIssueToken().then(() => {
-         /**
-         * @description: from parseTimeMixin
-         */
-        return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time')
-      })
+      this.getIssueToken()
+      // .then(() => {
+      //    /**
+      //    * @description: from parseTimeMixin
+      //    */
+      //   return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time')
+      // })
     },
     editTokenPageChange(pageNum) {
       if (this.editTokenCurrentPageNum == pageNum) {
         return
       }
       this.editTokenCurrentPageNum = pageNum
-      this.getEditToken().then(() => {
-         /**
-         * @description: from parseTimeMixin
-         */
-        return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time')
-      })
+      this.getEditToken()
+      // .then(() => {
+      //    /**
+      //    * @description: from parseTimeMixin
+      //    */
+      //   return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time')
+      // })
     },
     mintTokenPageChange(pageNum) {
       if (this.mintTokenCurrentPageNum == pageNum) {
         return
       }
       this.mintTokenCurrentPageNum = pageNum
-      this.getMintToken().then(() => {
-         /**
-         * @description: from parseTimeMixin
-         */
-        return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time')
-      })
+      this.getMintToken()
+      // .then(() => {
+      //    /**
+      //    * @description: from parseTimeMixin
+      //    */
+      //   return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time')
+      // })
     },
     burnTokenPageChange(pageNum) {
       if (this.burnTokenCurrentPageNum == pageNum) {
         return
       }
       this.burnTokenCurrentPageNum = pageNum
-      this.getBurnToken().then(() => {
-         /**
-         * @description: from parseTimeMixin
-         */
-        return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time')
-      })
+      this.getBurnToken()
+      // .then(() => {
+      //    /**
+      //    * @description: from parseTimeMixin
+      //    */
+      //   return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time')
+      // })
     },
     transferTokenPageChange(pageNum) {
       if (this.transferTokenCurrentPageNum == pageNum) {
         return
       }
       this.transferTokenCurrentPageNum = pageNum
-      this.getTransferToken().then(() => {
-         /**
-         * @description: from parseTimeMixin
-         */
-        return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time')
-      })
+      this.getTransferToken()
+      // .then(() => {
+      //    /**
+      //    * @description: from parseTimeMixin
+      //    */
+      //   return this.parseTime([this.issueToken, this.editToken, this.mintToken, this.burnToken, this.transferToken], 'Time', 'time')
+      // })
     },
   },
 }

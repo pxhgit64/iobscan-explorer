@@ -300,7 +300,7 @@
                         /**
                          * @description: from parseTimeMixin
                          */
-                        this.parseTime(this.txDataList, 'Time', 'ageTime')
+                        this.parseTime('txDataList', 'Time', 'ageTime')
                     }
                     if(fees && fees.length > 0 && this.isShowFee) {
                         let fee = await Promise.all(fees);
