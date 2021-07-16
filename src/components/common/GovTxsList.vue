@@ -16,10 +16,35 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="Block" :label="$t('ExplorerLang.table.block')" :min-width="ColumnMinWidth.blockHeight">
+        <el-table-column class-name="tx_type" prop="Tx_Type" :label="$t('ExplorerLang.table.txType')" :min-width="ColumnMinWidth.govTxType">
+          <!-- <template v-slot:default="{ row }">
+            <el-tooltip :content="row.Tx_Type.join(',')" placement="top" :disabled="row.Tx_Type.length <= 1">
+              <span>{{ getDisplayTxType(row.Tx_Type) }}</span>
+            </el-tooltip>
+          </template> -->
           <template v-slot:default="{ row }">
-            <router-link style="font-family: Arial;" :to="'/block/' + row.Block" :style="{ color: '$theme_c !important' }">{{ row.Block }} </router-link>
+                <el-tooltip :content="row.Tx_Type.join(',')"
+                            placement="top-start"
+                            :disabled="row.MsgsNum <= 1">
+                    <div class="ty_type_message">
+                        <span>{{getDisplayTxType(row.Tx_Type)}}</span>
+                        <span class="message_number" v-if="row.MsgsNum != 1">+{{row.MsgsNum - 1}}</span>
+                    </div>
+                </el-tooltip>
           </template>
+        </el-table-column>
+        <el-table-column class-name="amount" prop="amount" align="right" :min-width="ColumnMinWidth.amount" :label="$t('ExplorerLang.table.amount')">
+          <template slot="header" slot-scope="scope">
+              <span>{{ $t('ExplorerLang.table.amount')}}</span>
+              <el-tooltip :content="mainTokenSymbol"
+                          placement="top">
+                  <i class="iconfont iconyiwen yiwen_icon" />
+              </el-tooltip>
+          </template >
+          <template v-slot:default="{ row }">
+                        <span v-if="row.MsgsNum == 1">{{row.amount || '--'}}</span>
+                        <router-link v-else :to="`/tx?txHash=${row.Tx_Hash}`">{{$t('ExplorerLang.table.more')}} <i class="iconfont icontiaozhuan more_icontiaozhuan"></i></router-link>
+            </template>
         </el-table-column>
         <el-table-column prop="proposalType" :label="$t('ExplorerLang.table.proposalType')" :min-width="ColumnMinWidth.proposalType">
           <template v-slot:default="{ row }">
@@ -39,34 +64,9 @@
             <span v-else>{{row.proposalTitle || '--'}}</span>
           </template>
         </el-table-column>
-        <el-table-column class-name="amount" prop="amount" align="right" :min-width="ColumnMinWidth.amount" :label="$t('ExplorerLang.table.amount')">
-          <template slot="header" slot-scope="scope">
-              <span>{{ $t('ExplorerLang.table.amount')}}</span>
-              <el-tooltip :content="mainTokenSymbol"
-                          placement="top">
-                  <i class="iconfont iconyiwen yiwen_icon" />
-              </el-tooltip>
-          </template >
+        <el-table-column prop="Block" :label="$t('ExplorerLang.table.block')" :min-width="ColumnMinWidth.blockHeight">
           <template v-slot:default="{ row }">
-                        <span v-if="row.MsgsNum == 1">{{row.amount || '--'}}</span>
-                        <router-link v-else :to="`/tx?txHash=${row.Tx_Hash}`">{{$t('ExplorerLang.table.more')}} <i class="iconfont icontiaozhuan more_icontiaozhuan"></i></router-link>
-            </template>
-        </el-table-column>
-        <el-table-column class-name="tx_type" prop="Tx_Type" :label="$t('ExplorerLang.table.txType')" :min-width="ColumnMinWidth.govTxType">
-          <!-- <template v-slot:default="{ row }">
-            <el-tooltip :content="row.Tx_Type.join(',')" placement="top" :disabled="row.Tx_Type.length <= 1">
-              <span>{{ getDisplayTxType(row.Tx_Type) }}</span>
-            </el-tooltip>
-          </template> -->
-          <template v-slot:default="{ row }">
-                <el-tooltip :content="row.Tx_Type.join(',')"
-                            placement="top-start"
-                            :disabled="row.MsgsNum <= 1">
-                    <div class="ty_type_message">
-                        <span>{{getDisplayTxType(row.Tx_Type)}}</span>
-                        <span class="message_number" v-if="row.MsgsNum != 1">+{{row.MsgsNum - 1}}</span>
-                    </div>
-                </el-tooltip>
+            <router-link style="font-family: Arial;" :to="'/block/' + row.Block" :style="{ color: '$theme_c !important' }">{{ row.Block }} </router-link>
           </template>
         </el-table-column>
         <!-- <el-table-column align="center" prop="MsgsNum" :label="$t('ExplorerLang.table.message')" :min-width="ColumnMinWidth.message"> </el-table-column> -->

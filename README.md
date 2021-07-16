@@ -19,7 +19,9 @@ step1 产品化配置
 
 step2 build
 ```
-npx cross-env VUE_APP_COSMOS_XP_ADDRESS=..., VUE_APP_IRIS_XP_ADDRESS=... && make setup_and_build
+make setup && npm run build:production
+
+##不同环境用各自的环境名称代替: npm run build:development/npm run build:qa/npm run build:testnet
 ```
 step3 导出dist静态文件夹到指定服务
 step4 设置代理  详细参考 “## proxy”
