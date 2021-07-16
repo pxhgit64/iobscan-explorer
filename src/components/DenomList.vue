@@ -65,7 +65,7 @@
                         </template>
                     </el-table-column>
                     <el-table-column :min-width="ColumnMinWidth.time"
-                                     :label="$t('ExplorerLang.table.createTime')"
+                                     :label="$t('ExplorerLang.table.timestamp')"
                                      prop="time"></el-table-column>
                 </el-table>
             </div>
