@@ -196,8 +196,6 @@
                     const res = await getTxList(params);
                     this.transactionArray = res.data;
                     this.txCount = res.count;
-                    this.pageNum = res.pageNum;
-                    this.pageSize = res.pageSize;
                 }catch (e) {
                     console.error(e);
                     // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));

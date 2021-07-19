@@ -53,6 +53,7 @@
 
                 </div>
             </div>
+
             <div class="service_information_bindings_content">
                 <h3 class="service_information_binding_title">
                     {{$t('ExplorerLang.serviceDetail.serviceBindings.providers')}}</h3>
@@ -119,7 +120,6 @@
                                   :total="providerCount"
                                   :page="providerPageNum"
                                   :page-change="providerPageChange">
-
                     </m-pagination>
                 </div>
             </div>
@@ -241,10 +241,10 @@
                 </div>
                 <div class="pagination_content" v-show="txCount > txPageSize">
                     <keep-alive>
-                        <m-pagination :page-size="txPageSize"
-                                      :total="txCount"
-                                      :page="txPageNum"
-                                      :page-change="pageChange">
+                        <m-pagination :page-size="Number(txPageSize)"
+                            :total="txCount"
+                            :page="Number(txPageNum)"
+                            :page-change="pageChange">
                         </m-pagination>
                     </keep-alive>
                 </div>
@@ -456,8 +456,6 @@
 
                     });
                     this.txCount = res.count;
-                    this.txPageNum = Number(res.pageNum);
-                    this.txPageSize = Number(res.pageSize);
                 } catch (e) {
                     console.error(e)
                     // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
