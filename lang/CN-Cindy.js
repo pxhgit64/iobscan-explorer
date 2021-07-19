@@ -104,7 +104,8 @@ export const ExplorerLang = {
         voted: 'voted',
         validators: 'Validators',
         sender: 'Sender',
-        more: 'More'
+        more: 'More',
+        suffix: 'ago'
     },
     unit:{
         ellipsis:' ,...',
