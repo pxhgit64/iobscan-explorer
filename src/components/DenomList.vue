@@ -65,7 +65,7 @@
                         </template>
                     </el-table-column>
                     <el-table-column :min-width="ColumnMinWidth.time"
-                                     :label="$t('ExplorerLang.table.createTime')"
+                                     :label="$t('ExplorerLang.table.timestamp')"
                                      prop="time"></el-table-column>
                 </el-table>
             </div>
@@ -88,10 +88,12 @@
     import MPagination from "./common/MPagination";
     import { ColumnMinWidth } from '../constant';
     import productionConfig from '@/productionConfig.js';
+    import parseTimeMixin from '../mixins/parseTime'
 
     export default {
         name: "DenomList",
         components: {MPagination},
+        mixins: [parseTimeMixin],
         data () {
             return {
                 ColumnMinWidth,
@@ -141,9 +143,14 @@
                                 hash: denom.hash,
                                 nftCount: denom.nftCount,
                                 sender: denom.sender,
-                                time: Tools.getDisplayDate(denom.time),
+                                time: Tools.formatAge(Tools.getTimestamp(),denom.time*1000, this.$t('ExplorerLang.table.suffix')),
+                                Time: denom.time
                             }
                         });
+                        /**
+                         * @description: from parseTimeMixin
+                         */
+                        this.parseTime('denomList', 'Time', 'time')
                         this.count = res.count;
                         this.pageSize = res.pageSize;
                         this.pageNum = res.pageNum;

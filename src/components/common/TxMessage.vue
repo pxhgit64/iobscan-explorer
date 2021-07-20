@@ -556,10 +556,10 @@
 			</p>
 		</div>
 		<div v-if="txType === TX_TYPE.recv_packet && prodConfig.txDetail && prodConfig.txDetail.ibc">
-			<p>
+			<!-- <p>
 				<span>{{$t('ExplorerLang.transactionInformation.recvPacket.packet')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(packet)"  v-if="packet" :text="packet"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
-			</p>
+			</p> -->
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.recvPacket.proof')}}：</span>
 				<span>{{proof}}</span>
@@ -593,12 +593,12 @@
 			</p>
 		</div>
 		<div v-if="txType === TX_TYPE.recv_packet && !(prodConfig.txDetail && prodConfig.txDetail.ibc)">
-			<p>
+			<!-- <p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.packet')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(packet)"
                              expand
                              v-if="packet" :text="packet"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
-			</p>
+			</p> -->
             <p>
                 <span>{{$t('ExplorerLang.transactionInformation.ibc.amount')}}</span>
                 <span>{{amount.amount}} {{ (amount.denom || '').toUpperCase()}}</span>
@@ -612,10 +612,10 @@
                 <span @click="addressRoute(receiver)" class="address_link">{{ receiver }}</span>
 			</p>
 
-			<p>
+			<!-- <p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.proofCommitment')}}：</span>
 				<LargeString v-if="proofCommitment" :text="proofCommitment"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
-			</p>
+			</p> -->
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.proofHeight')}}：</span>
 				<LargeString v-if="proofHeight" :text="proofHeight"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
@@ -741,10 +741,10 @@
 				<span>{{$t('ExplorerLang.transactionInformation.client.clientID')}}：</span>
 				<span>{{clientID}}</span>
 			</p>
-			<p>
+			<!-- <p>
 				<span>{{$t('ExplorerLang.transactionInformation.client.header')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(header)"  v-if="header" :text="header"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
-			</p>
+			</p> -->
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.signer')}}：</span>
 				<template>
@@ -1098,10 +1098,10 @@
 			</p>
 		</div>
 		<div v-if="txType === TX_TYPE.timeout_packet">
-			<p>
+			<!-- <p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.packet')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(packet)" v-if="packet" :text="packet"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
-			</p>
+			</p> -->
             <p>
                 <span>{{$t('ExplorerLang.transactionInformation.ibc.amount')}}</span>
                 <span>{{amount.amount}} {{ (amount.denom || '').toUpperCase()}}</span>
@@ -1114,10 +1114,10 @@
                 <span>{{$t('ExplorerLang.transactionInformation.ibc.to')}}：</span>
                 <span @click="addressRoute(receiver)" class="address_link">{{ receiver }}</span>
             </p>
-			<p>
+			<!-- <p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.proofUnreceived')}}：</span>
 				<LargeString v-if="proofUnreceived" :text="proofUnreceived"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
-			</p>
+			</p> -->
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.proofHeight')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(proofHeight)" v-if="proofHeight" :text="proofHeight"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
