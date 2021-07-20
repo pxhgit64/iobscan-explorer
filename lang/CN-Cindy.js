@@ -290,6 +290,7 @@ export const ExplorerLang = {
             proofData:'证明数据',
             clientID:'客户端ID',
             module:'模块',
+            viewSource: '查看源码',
         },
         client:{
             clientID:'客户端ID',
