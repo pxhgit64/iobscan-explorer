@@ -105,7 +105,10 @@ export const ExplorerLang = {
         validators: 'Validators',
         sender: 'Sender',
         more: 'More',
-        suffix: 'Ago'
+        suffix: 'Ago',
+        running: '运行中',
+        paused: '暂停',
+        completed: '完成'
     },
     unit:{
         ellipsis:' ,...',

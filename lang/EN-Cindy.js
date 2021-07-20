@@ -107,7 +107,10 @@ export const ExplorerLang = {
         validators: 'Validators',
         sender: 'Sender',
         more: 'More',
-        suffix: 'ago'
+        suffix: 'ago',
+        running: 'Running',
+        paused: 'Paused',
+        completed: 'Completed'
     },
     unit:{
         ellipsis:' ,...',
