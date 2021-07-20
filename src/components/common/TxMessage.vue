@@ -1286,16 +1286,16 @@
 			</p>
 		</div>
 		<div v-if="txType === TX_TYPE.withdraw_delegator_reward">
+      <p>
+				<span>{{$t('ExplorerLang.transactionInformation.staking.amount')}}</span>
+				<span>{{amount}}</span>
+			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.staking.from')}}</span>
 				<template>
 					<span v-if="fromMoniker === '--' && from === '--' ">{{ fromMoniker || from }}</span>
 					<span v-else @click="addressRoute(from)" class="address_link">{{ fromMoniker || from}}</span>
 				</template>
-			</p>
-			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.staking.amount')}}</span>
-				<span>{{amount}}</span>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.staking.to')}}</span>
@@ -1331,16 +1331,16 @@
 			</p>
 		</div>
 		<div v-if="txType === TX_TYPE.begin_unbonding">
+      <p>
+				<span>{{$t('ExplorerLang.transactionInformation.staking.amount')}}</span>
+				<span>{{amount}}</span>
+			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.staking.from')}}</span>
 				<template>
 					<span v-if="fromMoniker === '--' && from === '--' ">{{ fromMoniker || from }}</span>
 					<span v-else @click="addressRoute(from)" class="address_link">{{ fromMoniker || from}}</span>
 				</template>
-			</p>
-			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.staking.amount')}}</span>
-				<span>{{amount}}</span>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.staking.to')}}</span>
@@ -1397,16 +1397,16 @@
 			</p>
 		</div>
 		<div v-if="txType === TX_TYPE.delegate">
+      <p>
+				<span>{{$t('ExplorerLang.transactionInformation.staking.amount')}}</span>
+				<span>{{amount}}</span>
+			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.staking.from')}}</span>
 				<template>
 					<span v-if="fromMoniker === '--' && from === '--' ">{{ fromMoniker || from }}</span>
 					<span v-else @click="addressRoute(from)" class="address_link">{{ fromMoniker || from}}</span>
 				</template>
-			</p>
-			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.staking.amount')}}</span>
-				<span>{{amount}}</span>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.staking.to')}}</span>

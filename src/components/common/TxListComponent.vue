@@ -203,7 +203,7 @@
         },
         methods : {
             isValid(value){
-                return (!value || !value.length || value == '--') ? false : true;
+                return (!value || !value.length) ? false : true;
             },
             async setMainToken(){
                 let mainToken = await getMainToken();
