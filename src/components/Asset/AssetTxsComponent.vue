@@ -147,7 +147,7 @@
             </template>
           </el-table-column>
           <el-table-column :label="$t('ExplorerLang.table.fee')" align="right" prop="fee" v-if="isShowFee" :width="ColumnMinWidth.fee">
-              <template slot="header">
+              <template slot="header" slot-scope="scope">
                   <span>{{ $t('ExplorerLang.table.fee')}}</span>
                   <el-tooltip :content="mainTokenSymbol"
                               placement="top">
