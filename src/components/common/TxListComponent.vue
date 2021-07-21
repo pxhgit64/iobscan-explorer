@@ -68,7 +68,7 @@
                                 placement="top"
                                 :disabled="!isValid(scope.row.from)">
                         <span v-if="isValid(scope.row.from) && address !== scope.row.from "
-                              :class="(scope.row.from.startsWith(COSMOS_ADDRESS_PREFIX) || scope.row.from.startsWith(IRIS_ADDRESS_PREFIX))? 'address_link' : ''"
+                              class="address_link"
                               @click="addressRoute(scope.row.from)">
                             {{  formatMoniker(scope.row.fromMonikers,monikerNum.otherTable) || formatAddress(scope.row.from)}}
                         </span>
@@ -93,7 +93,7 @@
                                 :key="Math.random()"
                                 :disabled="!isValid(scope.row.to) || Array.isArray(scope.row.to)">
                         <span v-if="typeof scope.row.to=='string' && isValid(scope.row.to) && address !== scope.row.to"
-                              :class="(scope.row.to.startsWith(COSMOS_ADDRESS_PREFIX) || scope.row.to.startsWith(IRIS_ADDRESS_PREFIX))? 'address_link' : ''"
+                              class="address_link"
                               @click="addressRoute(scope.row.to)">
                             {{ formatMoniker(scope.row.toMonikers,monikerNum.otherTable) || formatAddress(scope.row.to)}}
                         </span>

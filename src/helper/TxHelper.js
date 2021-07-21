@@ -180,6 +180,10 @@ export class TxHelper {
                 res.from = msg.sender;
                 res.to = msg.recipient;
                 break;
+            case TX_TYPE.set_withdraw_address:
+                res.from = msg.delegator_address;
+                res.to = msg.withdraw_address;
+                break;
         }
         return res;
     }
