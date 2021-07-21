@@ -514,7 +514,7 @@
 				/**
 				 * @description: from parseTimeMixin
 				 */
-				this.parseTime(this.txList, 'Time', 'Timestamp')
+				this.parseTime('txList', 'Time', 'Timestamp')
 			},
 			formatAddress (address) {
 				return Tools.formatValidatorAddress(address)

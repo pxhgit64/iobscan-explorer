@@ -33,7 +33,7 @@
             </el-table-column>
             <!-- <el-table-column align="right" class-name="amount" prop="amount" :label="$t('ExplorerLang.table.amount')" :min-width="ColumnMinWidth.amountAndDenom"> -->
             <el-table-column align="right" class-name="amount" prop="amount" :label="$t('ExplorerLang.table.amount')" :width="colWidthList[2]">
-                <!-- <template slot="header">
+                <!-- <template slot="header" slot-scope="scope">
                   <span>{{ $t('ExplorerLang.table.amount')}}</span>
                   <el-tooltip :content="mainTokenSymbol"
                               placement="top">
@@ -130,7 +130,7 @@
                 </template>
             </el-table-column> -->
             <el-table-column v-if="isShowFee" align="right" class-name="fee" prop="Tx_Fee" :min-width="ColumnMinWidth.fee">
-                <template slot="header">
+                <template slot="header" slot-scope="scope">
                     <span>{{ $t('ExplorerLang.table.fee')}}</span>
                     <el-tooltip :content="mainTokenSymbol"
                                 placement="top">
@@ -309,7 +309,7 @@
                         /**
                          * @description: from parseTimeMixin
                          */
-                        this.parseTime(this.txDataList, 'Time', 'ageTime')
+                        this.parseTime('txDataList', 'Time', 'ageTime')
                     }
                     if(fees && fees.length > 0 && this.isShowFee) {
                         let fee = await Promise.all(fees);
@@ -335,9 +335,6 @@
                     });
                 }
             },
-        },
-        beforeDestroy() {
-            clearInterval(this.txListTimer)
         }
     }
 </script>

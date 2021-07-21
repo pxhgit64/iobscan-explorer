@@ -105,7 +105,7 @@ export const ExplorerLang = {
         validators: 'Validators',
         sender: 'Sender',
         more: 'More',
-        suffix: 'Ago',
+        suffix: 'ago',
         running: '运行中',
         paused: '暂停',
         completed: '完成'
@@ -293,6 +293,7 @@ export const ExplorerLang = {
             proofData:'证明数据',
             clientID:'客户端ID',
             module:'模块',
+            viewSource: '查看源码',
         },
         client:{
             clientID:'客户端ID',
