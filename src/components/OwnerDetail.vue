@@ -115,14 +115,14 @@
 							<span class="serviceNameText" v-if="scope.row.isChildren && scope.row.index==0">{{getRespondCount(scope.row.count)}}</span>
 						</template>
 					</el-table-column>
-					<el-table-column class-name="tx_type" :width="ColumnMinWidth.txType" :label="$t('ExplorerLang.table.txType')"
+					<el-table-column class-name="tx_type" :width="ColumnMinWidth.minTxType" :label="$t('ExplorerLang.table.txType')"
 					                 prop="txType"></el-table-column>
 					<el-table-column :min-width="ColumnMinWidth.state" :label="$t('ExplorerLang.table.requestStatus')">
 						<template slot-scope="scope">
 							<div v-if="scope.row.state" class="consumer_transaction_content_available">
 								<span class="consumer_transaction_content_available_icon"
 								      :style="`background:${getBgColorWithState(scope.row.state)}`"></span>
-								<span>{{scope.row.state}}</span>
+								<span>{{$t( 'ExplorerLang.table.' + getContentWithState(scope.row.state) )}}</span>
 							</div>
 							<div v-else>--</div>
 						</template>
@@ -980,6 +980,7 @@
 	                            });
 	                        });
 	                        let context = await getServiceContextsByServiceName(result.requestContextId || '');
+                          console.log(context)
 	                        if (context && context.result) {
 	                        	result.state = context.result.state;
 	                        }
@@ -1096,18 +1097,33 @@
 				}
 				return providers;
 			},
+      getContentWithState (state) {
+        let content = '';
+				switch (state) {
+					case 0:
+						content = 'running';
+						break;
+          case 1:
+						content = 'paused';
+						break;
+					case 2:
+						content = 'completed';
+						break;
+				}
+				return content;
+      },
 			getBgColorWithState (state) {
 				let bgColor = '';
 				switch (state) {
-					case 'running':
+					case 0:
 						bgColor = '#B1E96E';
 						break;
-					case 'completed':
-						bgColor = '#FFC456';
-						break;
-					case 'paused':
+          case 1:
 						bgColor = '#E96E6E';
 						break;
+					case 2:
+						bgColor = '#FFC456';
+						break;	
 				}
 				return bgColor;
 			},

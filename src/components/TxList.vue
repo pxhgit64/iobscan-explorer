@@ -194,10 +194,10 @@
 
                 try{
                     const res = await getTxList(params);
-                    this.transactionArray = res.data;
-                    this.txCount = res.count;
-                    this.pageNum = res.pageNum;
-                    this.pageSize = res.pageSize;
+                    if(this.pageNum === Number(res.pageNum)){
+                      this.transactionArray = res.data;
+                      this.txCount = res.count;
+                    }
                 }catch (e) {
                     console.error(e);
                     // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));

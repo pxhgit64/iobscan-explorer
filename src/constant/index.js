@@ -263,6 +263,7 @@ export const ColumnMinWidth = {
   blockHeight: '85',
   blockListHeight: '85',
   txType: '258',
+  minTxType: '150',
   govTxType: '120',
   address: '165',
   iaaAddress: '139',
