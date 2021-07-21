@@ -115,7 +115,7 @@
 							<span class="serviceNameText" v-if="scope.row.isChildren && scope.row.index==0">{{getRespondCount(scope.row.count)}}</span>
 						</template>
 					</el-table-column>
-					<el-table-column class-name="tx_type" :min-width="150" :label="$t('ExplorerLang.table.txType')"
+					<el-table-column class-name="tx_type" :width="ColumnMinWidth.minTxType" :label="$t('ExplorerLang.table.txType')"
 					                 prop="txType"></el-table-column>
 					<el-table-column :min-width="ColumnMinWidth.state" :label="$t('ExplorerLang.table.requestStatus')">
 						<template slot-scope="scope">

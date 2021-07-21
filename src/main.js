@@ -229,3 +229,16 @@ Vue.config.productionTip = false;
     queryMainToken();
 }())
 
+
+Vue.directive('debounce', {
+  inserted: function (el, binding) {
+    let [fn, event = "click", time = 300] = binding.value
+    let timer
+    console.log(el, binding, fn, event, time)
+    el.addEventListener(event, () => {
+      timer && clearTimeout(timer)
+      timer = setTimeout(() => fn(), time)
+    })
+  }
+})
+

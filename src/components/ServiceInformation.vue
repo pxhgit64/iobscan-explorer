@@ -421,19 +421,21 @@
                         this.txPageNum,
                         this.txPageSize
                     );
-                    let fees = [];
-                    let fee = [];
-                    if(res.data && res.data.length > 0) {
-                        for (const tx of res.data) {
-                            if(this.isShowFee) {
-                                fees.push(tx.fee && tx.fee.amount && tx.fee.amount.length > 0 ? converCoin(tx.fee.amount[0]) :'--')
-                            }
-                        }
-                    }
-                    if(fees && fees.length > 0 && this.isShowFee) {
-                        fee = await Promise.all(fees);
-                    }
-                    this.transactionArray = res.data.map((item,index) =>{
+                    if(this.txPageNum === Number(res.pageNum)){
+                      let fees = [];
+                      let fee = [];
+                      if(res.data && res.data.length > 0) {
+                          for (const tx of res.data) {
+                              if(this.isShowFee) {
+                                  fees.push(tx.fee && tx.fee.amount && tx.fee.amount.length > 0 ? converCoin(tx.fee.amount[0]) :'--')
+                              }
+                          }
+                      }
+                      if(fees && fees.length > 0 && this.isShowFee) {
+                          fee = await Promise.all(fees);
+                      }
+                      this.txCount = res.count;
+                      this.transactionArray = res.data.map((item,index) =>{
                         let addrObj = TxHelper.getFromAndToAddressFromMsg(item.msgs[0]);
                         let requestContextId = TxHelper.getContextId(item.msgs[0], item.events) || '--';
                         let from = (addrObj && addrObj.from) ? addrObj.from : '--',
@@ -455,7 +457,7 @@
                         };
 
                     });
-                    this.txCount = res.count;
+                    }
                 } catch (e) {
                     console.error(e)
                     // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
