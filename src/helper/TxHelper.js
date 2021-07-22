@@ -184,6 +184,9 @@ export class TxHelper {
                 res.from = msg.delegator_address;
                 res.to = msg.withdraw_address;
                 break;
+            case TX_TYPE.burn_token:
+                res.from = msg.sender;
+                break;
         }
         return res;
     }

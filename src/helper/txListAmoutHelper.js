@@ -296,7 +296,7 @@ export function getDenomTheme(denom, denomMap) {
     denomColor: '',
     tooltipContent: ''
   }
-  let checkDenom = denom.match(denomRule)?.[0].toLowerCase()
+  let checkDenom = String(denom).match(denomRule)?.[0].toLowerCase()
   if(denomMap.has(checkDenom)){
     denomTheme.tooltipContent = protocolNameEnums[denomMap.get(checkDenom)]
     denomTheme.denomColor = protocolColorEnums[denomMap.get(checkDenom)]
