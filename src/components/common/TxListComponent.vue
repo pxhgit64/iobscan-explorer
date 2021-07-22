@@ -77,7 +77,7 @@
                         </span>
                     </el-tooltip>
 
-                    <span v-else-if="scope.row.from === '--'">
+                    <span v-else-if="scope.row.from === '--' && Number(scope.row.msgCount) <= 1">
                       {{ formatMoniker(scope.row.fromMonikers,monikerNum.otherTable) || formatAddress(scope.row.from) }}
                     </span>
 
@@ -104,7 +104,7 @@
                             {{ `${scope.row.to.length} ${$t('ExplorerLang.unit.providers')}`}}
                         </router-link>
                     </el-tooltip>
-                    <span v-else-if="scope.row.to === '--'">
+                    <span v-else-if="scope.row.to === '--' && Number(scope.row.msgCount) <= 1">
                       {{ formatMoniker(scope.row.toMonikers,monikerNum.otherTable) || formatAddress(scope.row.to) }}
                     </span>
                     <router-link v-else :to="`/tx?txHash=${scope.row.txHash}`">
