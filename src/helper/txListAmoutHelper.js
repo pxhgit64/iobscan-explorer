@@ -1,5 +1,6 @@
 import {TX_TYPE,decimals} from "../constant";
-import { converCoin } from "../helper/IritaHelper";
+import { converCoin, getConfig } from "../helper/IritaHelper";
+import { TxHelper } from '../helper/TxHelper';
 import Tools from '@/util/Tools';
 export async function getAmountByTx (message, events, isShowDenom) {
 	let amountDecimals = decimals.amount
@@ -191,13 +192,14 @@ export async function getAmountByTx (message, events, isShowDenom) {
 				break;
 			// 联盟链和公有链 ibc交易类型名称一致
 			case TX_TYPE.recv_packet:
-                if(msg.packet && msg.packet.data) {
-                    let amountMaxUnit = await converCoin({
-                        amount:msg.packet.data.amount,
-                        denom:msg.packet.data.denom,
-                    });
-                    amount = isShowDenom ? `${Tools.toDecimal(amountMaxUnit.amount,amountDecimals)} ${amountMaxUnit.denom.toUpperCase()}` : `${Tools.toDecimal(amountMaxUnit.amount,amountDecimals)}`;
-                }
+        if(msg.packet && msg.packet.data) {    
+          let originalDenom = TxHelper.getOriginalDenomFromPacket(msg.packet);
+          let amountMaxUnit = await converCoin({
+            denom:originalDenom || msg.packet.data.denom,
+            amount:msg.packet.data.amount,
+          });
+          amount = isShowDenom ? `${Tools.toDecimal(amountMaxUnit.amount,amountDecimals)} ${amountMaxUnit.denom.toUpperCase()}` : `${Tools.toDecimal(amountMaxUnit.amount,amountDecimals)}`;  
+        }
 				break;
 			// 联盟链和公有链 ibc交易类型名称一致
 			case TX_TYPE.create_client:
@@ -258,3 +260,47 @@ export async function getAmountByTx (message, events, isShowDenom) {
 		return amount
 	}
 }
+
+export async function getDenomMap() {
+  let protocolEnums = {
+    'hashlock': 'hashlock',
+    'ibc': 'ibc'
+    // 'native': 'native',
+    // 'swap': 'swap',
+    // 'peg': 'peg'
+  }
+  let denomMap = new Map()
+  let { tokenData: tokenList } = await getConfig()
+  tokenList?.forEach(token =>{
+    if(protocolEnums[token.src_protocol]){
+      denomMap.set(token.symbol, token.src_protocol)
+    }          
+  })
+  return denomMap
+}
+
+export function getDenomTheme(denom, denomMap) {
+  let protocolColorEnums = {
+    'hashlock': '#51A3A3',
+    'ibc': '#D47D7B',
+    // 'native': '',
+    // 'swap': '',
+    // 'peg': ''
+  }
+  let protocolNameEnums = {
+    'hashlock': 'Hash Lock',
+    'ibc': 'IBC'
+  }
+  let denomRule = /[A-Z]+/
+  let denomTheme = {
+    denomColor: '',
+    tooltipContent: ''
+  }
+  let checkDenom = String(denom).match(denomRule)?.[0].toLowerCase()
+  if(denomMap.has(checkDenom)){
+    denomTheme.tooltipContent = protocolNameEnums[denomMap.get(checkDenom)]
+    denomTheme.denomColor = protocolColorEnums[denomMap.get(checkDenom)]
+  }
+  return denomTheme
+}
+

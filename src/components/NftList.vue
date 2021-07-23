@@ -22,7 +22,7 @@
 					<el-table-column :min-width="ColumnMinWidth.tokenId" :label="$t('ExplorerLang.table.tokenId')" >
 						<template slot-scope="scope">
 							<el-tooltip 
-										:content="scope.row.nft_name"
+										:content="scope.row.nft_id"
 										placement="top"
 										effect="dark"
 										:disabled="Tools.disabled(scope.row.nft_id)">
@@ -103,10 +103,12 @@
 	import { ColumnMinWidth } from '../constant';
 	import LargeString from './common/LargeString';
 	import productionConfig from '@/productionConfig.js';
+    import parseTimeMixin from '../mixins/parseTime'
 
 	export default {
 		name: "NftList",
 		components: {MPagination, LargeString},
+		mixins: [parseTimeMixin],
 		data () {
             let denom = '';
 		    if(this.$store.state.tempDenomId){
@@ -136,7 +138,7 @@
 		},
 		mounted(){
 			this.getNftList();
-			this.getNftsByFilter();
+			this.getNftsByFilter()
             if(this.$store.state.tempDenomId){
                 this.$store.commit('SET_TEMP_DENOM_ID','');
             }
@@ -184,9 +186,14 @@
 					if(nftData && nftData.data){
 						this.allCount = nftData.count;
 						nftData.data.forEach(item => {
-							item.last_block_time ?	item.last_block_time = Tools.getDisplayDate(item.last_block_time) : item.last_block_time = '--'
+							item.Time = (item.last_block_time ? item.last_block_time : '')
+							item.last_block_time = (item.last_block_time ? Tools.formatAge(Tools.getTimestamp(),item.last_block_time*1000, this.$t('ExplorerLang.table.suffix')) : '--')
 						});
 						this.denomArray = nftData.data
+						/**
+						 * @description: from parseTimeMixin
+						 */
+						this.parseTime('denomArray', 'Time', 'last_block_time')
 					}else {
 						this.allCount = 0
 						this.denomArray = []

@@ -1,9 +1,34 @@
-import { getConfig as getConfigApi,getIbcTransferByHash } from "@/service/api";
+import { getConfig as getConfigApi,getIbcTransferByHash, getIbcToken } from "@/service/api";
 import moveDecimal from 'move-decimal-point';
 import Tools from "../util/Tools";
 import { COSMOS_ADDRESS_PREFIX , IRIS_ADDRESS_PREFIX} from "@/constant";
 // import { ibcDenomPrefix } from '../constant';
 import {cfg} from "@/config";
+import md5 from "js-md5";
+
+async function md5Fun(hash){
+  return md5(hash.slice(5, -10).slice(3, -8))
+}
+
+async function uploadIbcToken(denom){
+  let key = await md5Fun(denom)
+  let payload = {
+    "denom": denom,
+    "key": key,
+    "chain": ''
+  }    
+  let { data } = await getIbcToken(payload);
+    if(data?.symbol){
+      await setConfig()
+      return data 
+    } else {   
+    }    
+}
+
+async function setConfig(){
+  let config = await getConfigApi().catch((e)=>{throw e});
+  window.sessionStorage.setItem('config',JSON.stringify(config));
+}
 
 export async function getConfig(){
     let config = window.sessionStorage.getItem('config');
@@ -82,8 +107,18 @@ export async function converCoin (_coin) {
         //         coin.denom = (ibcDenomPrefix + res.denom_trace.base_denom).toUpperCase()
         //     }
         // }
-        console.error('Denom did not match', _coin);
-        return coin;
+        const ibcTest = /(ibc|IBC)\/[0-9A-Za-z]{54}/ 
+        if(ibcTest.test(coin.denom)){
+          const data = await uploadIbcToken(coin.denom)
+          if(data?.symbol){
+            return { 'denom': data.symbol, 'amount': moveDecimal(String(coin.amount || 0),0-Number(data.scale)) } 
+          } else {
+            return coin;
+          }       
+        } else {
+          console.error('Denom did not match', _coin);
+          return coin;
+        }   
     }
     return displayCoin;
 }

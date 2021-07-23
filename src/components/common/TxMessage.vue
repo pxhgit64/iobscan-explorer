@@ -556,10 +556,10 @@
 			</p>
 		</div>
 		<div v-if="txType === TX_TYPE.recv_packet && prodConfig.txDetail && prodConfig.txDetail.ibc">
-			<p>
+			<!-- <p>
 				<span>{{$t('ExplorerLang.transactionInformation.recvPacket.packet')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(packet)"  v-if="packet" :text="packet"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
-			</p>
+			</p> -->
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.recvPacket.proof')}}：</span>
 				<span>{{proof}}</span>
@@ -593,12 +593,12 @@
 			</p>
 		</div>
 		<div v-if="txType === TX_TYPE.recv_packet && !(prodConfig.txDetail && prodConfig.txDetail.ibc)">
-			<p>
+			<!-- <p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.packet')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(packet)"
                              expand
                              v-if="packet" :text="packet"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
-			</p>
+			</p> -->
             <p>
                 <span>{{$t('ExplorerLang.transactionInformation.ibc.amount')}}</span>
                 <span>{{amount.amount}} {{ (amount.denom || '').toUpperCase()}}</span>
@@ -612,10 +612,10 @@
                 <span @click="addressRoute(receiver)" class="address_link">{{ receiver }}</span>
 			</p>
 
-			<p>
+			<!-- <p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.proofCommitment')}}：</span>
 				<LargeString v-if="proofCommitment" :text="proofCommitment"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
-			</p>
+			</p> -->
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.proofHeight')}}：</span>
 				<LargeString v-if="proofHeight" :text="proofHeight"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
@@ -741,10 +741,10 @@
 				<span>{{$t('ExplorerLang.transactionInformation.client.clientID')}}：</span>
 				<span>{{clientID}}</span>
 			</p>
-			<p>
+			<!-- <p>
 				<span>{{$t('ExplorerLang.transactionInformation.client.header')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(header)"  v-if="header" :text="header"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
-			</p>
+			</p> -->
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.signer')}}：</span>
 				<template>
@@ -1098,10 +1098,10 @@
 			</p>
 		</div>
 		<div v-if="txType === TX_TYPE.timeout_packet">
-			<p>
+			<!-- <p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.packet')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(packet)" v-if="packet" :text="packet"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
-			</p>
+			</p> -->
             <p>
                 <span>{{$t('ExplorerLang.transactionInformation.ibc.amount')}}</span>
                 <span>{{amount.amount}} {{ (amount.denom || '').toUpperCase()}}</span>
@@ -1114,10 +1114,10 @@
                 <span>{{$t('ExplorerLang.transactionInformation.ibc.to')}}：</span>
                 <span @click="addressRoute(receiver)" class="address_link">{{ receiver }}</span>
             </p>
-			<p>
+			<!-- <p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.proofUnreceived')}}：</span>
 				<LargeString v-if="proofUnreceived" :text="proofUnreceived"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
-			</p>
+			</p> -->
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.proofHeight')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(proofHeight)" v-if="proofHeight" :text="proofHeight"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
@@ -1286,16 +1286,16 @@
 			</p>
 		</div>
 		<div v-if="txType === TX_TYPE.withdraw_delegator_reward">
+      <p>
+				<span>{{$t('ExplorerLang.transactionInformation.staking.amount')}}</span>
+				<span>{{amount}}</span>
+			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.staking.from')}}</span>
 				<template>
 					<span v-if="fromMoniker === '--' && from === '--' ">{{ fromMoniker || from }}</span>
 					<span v-else @click="addressRoute(from)" class="address_link">{{ fromMoniker || from}}</span>
 				</template>
-			</p>
-			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.staking.amount')}}</span>
-				<span>{{amount}}</span>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.staking.to')}}</span>
@@ -1331,16 +1331,16 @@
 			</p>
 		</div>
 		<div v-if="txType === TX_TYPE.begin_unbonding">
+      <p>
+				<span>{{$t('ExplorerLang.transactionInformation.staking.amount')}}</span>
+				<span>{{amount}}</span>
+			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.staking.from')}}</span>
 				<template>
 					<span v-if="fromMoniker === '--' && from === '--' ">{{ fromMoniker || from }}</span>
 					<span v-else @click="addressRoute(from)" class="address_link">{{ fromMoniker || from}}</span>
 				</template>
-			</p>
-			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.staking.amount')}}</span>
-				<span>{{amount}}</span>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.staking.to')}}</span>
@@ -1397,16 +1397,16 @@
 			</p>
 		</div>
 		<div v-if="txType === TX_TYPE.delegate">
+      <p>
+				<span>{{$t('ExplorerLang.transactionInformation.staking.amount')}}</span>
+				<span>{{amount}}</span>
+			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.staking.from')}}</span>
 				<template>
 					<span v-if="fromMoniker === '--' && from === '--' ">{{ fromMoniker || from }}</span>
 					<span v-else @click="addressRoute(from)" class="address_link">{{ fromMoniker || from}}</span>
 				</template>
-			</p>
-			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.staking.amount')}}</span>
-				<span>{{amount}}</span>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.staking.to')}}</span>
@@ -2074,6 +2074,11 @@
 				<span>{{hashLock}}</span>
 			</p>
 		</div>
+		<!-- exclude UpdateClient -->
+		<p v-if="txType !== TX_TYPE.update_client" :style="{marginTop: '0.26rem'}">
+			<span>{{$t('ExplorerLang.transactionInformation.recvPacket.viewSource')}}：</span>
+			<LargeString :isShowPre="Tools.isJSON(viewSource)"  v-if="viewSource" :text="viewSource"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
+		</p>
 	</div>
 </template>
 
@@ -2301,6 +2306,7 @@
 				secret:'',
 				transfer: '',
 				tokenPair: '',
+				viewSource: '',
 				amountArray:[],
                 COSMOS_ADDRESS_PREFIX,
                 IRIS_ADDRESS_PREFIX,
@@ -2324,6 +2330,25 @@
 					if (message) {
 						let msg = message.msg;
 						this.txType = message.type || '--';
+
+						(this.txType !== TX_TYPE.update_client) && (function (that) {
+							if(that.eventsNew && that.eventsNew.length > 0) {
+								that.eventsNew.forEach((item) => {
+									if(item.msg_index === that.msgIndex) {
+										that.viewSource = JSON.stringify({
+											msgs: that.msg,
+											events: item.events
+										})
+									}
+								})
+							} else {
+								// compatible no eventsNew situation
+								that.viewSource = JSON.stringify({
+									msgs: that.msg
+								})
+							}
+						}(this))
+
 						switch (this.txType) {
 							case TX_TYPE.mint_nft:
 								this.denom = msg.denom || '--';
@@ -2546,14 +2571,15 @@
 									this.proofCommitment = msg.proof_commitment || '--';
 									this.proofHeight = msg.proof_height ? JSON.stringify(msg.proof_height) : '--';
 									this.signer = msg.signer || '--';
+									let originalDenom = TxHelper.getOriginalDenomFromPacket(msg.packet);
 									if(msg.packet && msg.packet.data){
-									    this.sender = msg.packet.data.sender;
-									    this.receiver = msg.packet.data.receiver;
-                                        this.amount = await converCoin({
-                                            denom:msg.packet.data.denom,
-                                            amount:msg.packet.data.amount,
-                                        });
-                                    }
+                    this.sender = msg.packet.data.sender;
+                    this.receiver = msg.packet.data.receiver;
+                    this.amount = await converCoin({
+                        denom:originalDenom || msg.packet.data.denom,
+                        amount:msg.packet.data.amount,
+                      });
+                    }
 								}
 								break;
 							case TX_TYPE.create_identity:
@@ -3126,11 +3152,12 @@
 								this.proofHeight = msg.proof_height ? JSON.stringify(msg.proof_height) : '--';
 								this.nextSequenceRecv = msg.next_sequence_recv || '--';
 								this.signer = msg.signer || '--';
+								let originalDenom = TxHelper.getOriginalDenomFromPacket(msg.packet);
                                 if(msg.packet && msg.packet.data){
                                     this.sender = msg.packet.data.sender;
                                     this.receiver = msg.packet.data.receiver;
                                     this.amount = await converCoin({
-                                        denom:msg.packet.data.denom,
+                                        denom:originalDenom || msg.packet.data.denom,
                                         amount:msg.packet.data.amount,
                                     });
                                 }
@@ -3200,7 +3227,8 @@
 								this.receiverOnOtherChain = msg.receiver_on_other_chain || '--';
 								this.senderOnOtherChain = msg.sender_on_other_chain || '--';
 								if(msg.amount && msg.amount[0]) {
-									this.amount = `${msg.amount[0].amount} ${msg.amount[0].denom}`;
+                  let coin = await converCoin(msg.amount[0])
+									this.amount = `${coin.amount} ${coin.denom}`;
 								} else {
 									this.amount = '--';
 								}
@@ -3214,6 +3242,7 @@
 							break;
 							case TX_TYPE.claim_htlc:
 								let transfer;
+                let attributeMap;
 								(this.eventsNew || []).forEach((item) => {
 									if(item.msg_index === this.msgIndex) {
 										(item.events || []).forEach((events) => {
@@ -3227,19 +3256,27 @@
 														}
 													})
 												}
-												if(events.type === "transfer") {
-													(events.attributes || []).forEach(item => {
-														if(item.key === 'amount')  {
-															this.amount = item.value
-														}
-														if(item.key === 'recipient') {
-															this.recipient = item.value
-														}
-												})
+											  if(events.type === "transfer") {
+                          attributeMap = Tools.MultKeyValueObjToOneMap(events.attributes)
+                        //   (events.attributes || []).forEach(item => {
+												// 		if(item.key === 'amount')  {
+                        //       this.amount = item.value
+												// 		}
+												// 		if(item.key === 'recipient') {
+												// 			this.recipient = item.value
+												// 		}
+												// })
 											}
 										})
 									}
 								});
+                if(attributeMap.has('amount')){
+                  let coin = await converCoin(attributeMap.get('amount'))
+                  this.amount = `${coin.amount} ${coin.denom}`;
+                }
+                if(attributeMap.has('recipient')){
+                  this.recipient = attributeMap.get('recipient')
+                }
 								if(!this.recipient) {
 									this.recipient = '--'
 								}

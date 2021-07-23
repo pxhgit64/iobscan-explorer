@@ -1,10 +1,11 @@
 import { HttpHelper } from '../helper/httpHelper';
+import { requestThrottler } from '../helper/throttleHttpHelper';
 import { TX_STATUS } from '../constant'
 import moment from 'moment';
 
 function get(url){
 	return new Promise(async (res,rej)=>{
-        url = `/api/${url.replace(/^\//, '')}`;
+    url = `/api/${url.replace(/^\//, '')}`;
 		try{
 			let data = await HttpHelper.get(url);
 			if(data && data.code == 0){
@@ -21,8 +22,24 @@ function get(url){
 	});
 }
 
+async function throttlerPost(url, payload){
+  url = `/api/${url.replace(/^\//, '')}`;
+  try{
+    let data = await requestThrottler(url, payload);
+    if(data && data.code == 0){
+      return data;
+    }else{
+      console.error(`error from ${url}:`,JSON.stringify(data));
+      return data;
+    }
+  }catch(err){
+    console.error(`error from ${url}:`,err.message);
+    return err;
+  }
+}
+
 function getFromLcd(url){
-    url = `/lcd/${url.replace(/^\//,'')}`;
+  url = `/lcd/${url.replace(/^\//,'')}`;
 	return new Promise(async (res,rej)=>{
 		try{
 			let data = await HttpHelper.get(url);
@@ -37,6 +54,11 @@ function getFromLcd(url){
 			rej(err);
 		}
 	})
+}
+
+export async function getIbcToken(payload){
+  const url = '/upload-token-info'   
+	return await throttlerPost(url, payload);
 }
 
 export function getDbStatistics(params){
@@ -344,7 +366,7 @@ export function getValidatorSetList (pageNum,pageSize,height) {
 }
 
 export function getConfig () {
-    const url = `/config`
+  const url = `/config`
 	return get(url)
 }
 

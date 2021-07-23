@@ -33,7 +33,7 @@
 							<el-table-column :min-width="ColumnMinWidth.txn" prop="numTxs" :label="$t('ExplorerLang.table.transactions')"></el-table-column>
 							<!-- <el-table-column v-if="productionConfig.blockList.validtors" :min-width="ColumnMinWidth.validatorValue" prop="validatorValue" :label="$t('ExplorerLang.table.validators')"></el-table-column> -->
 							<!-- <el-table-column v-if="productionConfig.blockList.votingPower" :min-width="ColumnMinWidth.votingPowerValue" prop="votingPowerValue" :label="$t('ExplorerLang.table.votingPower')"></el-table-column> -->
-							<el-table-column :min-width="ColumnMinWidth.time" prop="time" :label="$t('ExplorerLang.table.timestamp')"></el-table-column>
+							<el-table-column :min-width="ColumnMinWidth.time" prop="time" :label="$t('ExplorerLang.table.createTime')"></el-table-column>
 							<el-table-column :min-width="ColumnMinWidth.blockAge" prop="ageTime" :label="$t('ExplorerLang.table.age')"></el-table-column>
 						</el-table>
 					</div>
@@ -88,14 +88,14 @@
 								time: Tools.getDisplayDate(item.time),
 								Time: item.time,
 								numTxs: item.txn,
-								ageTime: Tools.formatAge(Tools.getTimestamp(),item.time*1000,"ago",">")
+								ageTime: Tools.formatAge(Tools.getTimestamp(),item.time*1000,this.$t('ExplorerLang.table.suffix'),"")
 							}
 						})
 					}
 					clearInterval(this.blockListTimer);
 					this.blockListTimer = setInterval(() => {
 						this.blockList.map(item => {
-							item.ageTime = Tools.formatAge(Tools.getTimestamp(),item.Time*1000,"ago",">");
+							item.ageTime = Tools.formatAge(Tools.getTimestamp(),item.Time*1000,this.$t('ExplorerLang.table.suffix'),"");
 							return item
 						})
 					},1000)

@@ -6,6 +6,7 @@ import moveDecimal from 'move-decimal-point'
 //import Constant from '../constant/index.js'
 //import { getConfig } from '@/helper/IritaHelper'
 import { utcOffset,isShowUTC } from '../productionConfig';
+import * as sha256 from 'sha256';
 
 //const displayToken2ActualTxToken = Math.pow(10, config.token.decimal);
 
@@ -20,6 +21,10 @@ BigNumber.config({
     }
 });
 export default class Tools {
+  static sha256(v){
+    if(!v) return '';
+    return sha256(String(v)) || '';
+  }
   /**
    * 根据展示的需求拼接字符串展示成 > xxdxxhxxmxxs ago 或者 xxdxxhxxmxxs ago 或者 xxdxxhxxmxxs
    */
@@ -36,7 +41,8 @@ export default class Tools {
     let minutes = Math.floor(minuteLevel / 60)
     let seconds = dateDiff % 60
 
-    let str = `${dayDiff ? `${dayDiff}d` : ''} ${hours ? `${hours}h` : ''} ${dayDiff && hours ? '' : minutes ? `${minutes}m` : ''} ${dayDiff || hours || minutes ? '' : seconds ? `${seconds}s` : ''}`
+    let str = `${dayDiff ? (dayDiff < 2 ? `${dayDiff} day` : `${dayDiff} days`) : ''} ${hours ? (hours < 2 ? `${hours} hr` : `${hours} hrs`) : ''} ${dayDiff ? '' : minutes ? (minutes < 2 ? `${minutes} min` : `${minutes} mins`) : ''} ${dayDiff || hours ? '' : seconds ? (seconds < 2 ? `${seconds} sec` : `${seconds} secs`) : ''}`
+
     if (prefix && suffix) {
       return `${prefix} ${str} ${suffix}`
     } else if (suffix) {
@@ -487,4 +493,13 @@ export default class Tools {
       } catch (e) {}
       return false;
     }
+
+    static MultKeyValueObjToOneMap (objArr) {
+      var map = new Map();
+      objArr.forEach(obj => {
+        map.set(obj.key, obj.value);
+      })  
+      return map;
+  }
+  
 }

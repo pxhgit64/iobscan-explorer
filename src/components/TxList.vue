@@ -69,6 +69,13 @@
             </div>
             <TxListComponent :txData="transactionArray"></TxListComponent>
             <div class="pagination_content">
+                <div class="tooltip_box">
+                  <span class="tooltip_title">Cross-chain TokenType:</span>
+                  <span class="tooltip_title_box">
+                    <span class="tooltip_title_IBC">{{ IBC }}</span>
+                    <span class="tooltip_title_HTLT">{{ HashLock }}</span>
+                  </span>
+                </div>
                 <keep-alive>
                     <m-pagination :page-size="Number(pageSize)"
                                   :total="txCount"
@@ -86,20 +93,20 @@
     import MPagination from "./common/MPagination";
     import TxListComponent from "./common/TxListComponent";
     import {TxHelper} from "../helper/TxHelper";
-    import {getAllTxTypes, getTxList} from '../service/api';
+    import {getAllTxTypes, getTxList } from '../service/api';
     import { TX_TYPE,TX_STATUS } from '../constant';
-
     export default {
         name : "TxList",
         components : {MPagination, TxListComponent},
         data(){
             const {txType, status, beginTime, endTime, pageNum, pageSize} = Tools.urlParser();
-
             return {
+                IBC: 'IBC',
+                HashLock: 'Hash Lock',
                 PickerOptions: {
-					disabledDate: (time) => {
-						return time.getTime() < new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
-					}
+					      disabledDate: (time) => {
+						      return time.getTime() < new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
+					      }
 				},
                 TX_TYPE,
                 TX_STATUS,
@@ -187,10 +194,10 @@
 
                 try{
                     const res = await getTxList(params);
-                    this.transactionArray = res.data;
-                    this.txCount = res.count;
-                    this.pageNum = res.pageNum;
-                    this.pageSize = res.pageSize;
+                    if(this.pageNum === Number(res.pageNum)){
+                      this.transactionArray = res.data;
+                      this.txCount = res.count;
+                    }
                 }catch (e) {
                     console.error(e);
                     // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
@@ -553,8 +560,51 @@
             }
             .pagination_content {
                 display: flex;
-                justify-content: flex-end;
+                justify-content: space-between;
                 margin: 0.1rem 0 0.2rem 0;
+                .tooltip_box{
+                  display: flex;
+                  align-items: center;
+                  background-color: white;
+                  padding: 0.05rem 0.2rem;
+                  font-size: $s12;
+                  color: #8d8b8b;
+                  .tooltip_title{
+                    margin-right: 0.24rem;
+                  }
+                  .tooltip_title_box{
+                    display: flex;
+                  }
+                   .tooltip_title_IBC {
+                      margin-right: 0.24rem;
+                      display: flex;
+                      align-items: center;
+                      position: relative;
+                      &::before{
+                        left: -0.12rem;
+                        content: ' ';
+                        position: absolute;
+                        height: 0.08rem;
+                        width: 0.08rem;
+                        border-radius: 0.04rem;
+                        background-color: #D47D78;
+                      }
+                    }
+                    .tooltip_title_HTLT{
+                      display: flex;
+                      align-items: center;
+                      position: relative;
+                      &::before{
+                        left: -0.12rem;
+                        content: ' ';
+                        position: absolute;
+                        height: 0.08rem;
+                        width: 0.08rem;
+                        border-radius: 0.04rem;
+                        background-color: #51A3A3;
+                      }
+                    }
+                }
             }
         }
     }

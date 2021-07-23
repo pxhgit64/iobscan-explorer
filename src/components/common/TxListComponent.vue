@@ -33,53 +33,67 @@
             </el-table-column>
             <!-- <el-table-column align="right" class-name="amount" prop="amount" :label="$t('ExplorerLang.table.amount')" :min-width="ColumnMinWidth.amountAndDenom"> -->
             <el-table-column align="right" class-name="amount" prop="amount" :label="$t('ExplorerLang.table.amount')" :width="colWidthList[2]">
-                <!-- <template slot="header">
-                    <span>{{ $t('ExplorerLang.table.amount')}}</span>
-                    <el-tooltip :content="mainTokenSymbol"
-                                placement="top">
-                        <i class="iconfont iconyiwen yiwen_icon" />
-                    </el-tooltip>
+                <!-- <template slot="header" slot-scope="scope">
+                  <span>{{ $t('ExplorerLang.table.amount')}}</span>
+                  <el-tooltip :content="mainTokenSymbol"
+                              placement="top">
+                      <i class="iconfont iconyiwen yiwen_icon" />
+                  </el-tooltip>
                 </template > -->
                 <template slot-scope="scope">
-                        <span v-if="scope.row.msgCount == 1 && !scope.row.isShowMore">{{scope.row.amount}}</span>
-                        <router-link v-else :to="`/tx?txHash=${scope.row.txHash}`">
-                            {{$t('ExplorerLang.table.more')}} <i class="iconfont icontiaozhuan more_icontiaozhuan"></i>
-                        </router-link>
+                  <span v-if="scope.row.msgCount == 1 && !scope.row.isShowMore">
+                    <span v-if="scope.row.denomTheme.tooltipContent">
+                      {{ getAmount(scope.row.amount) }}
+                      <el-tooltip  :content="scope.row.denomTheme.tooltipContent" placement="top">
+                      <span :style="{ color: scope.row.denomTheme.denomColor }">
+                        {{ getAmountUnit(scope.row.amount) }}
+                      </span>   
+                    </el-tooltip>
+                    </span>
+                    <span v-else>{{ scope.row.amount }}</span>
+                  </span>                 
+                  <router-link v-else :to="`/tx?txHash=${scope.row.txHash}`">
+                    {{$t('ExplorerLang.table.more')}} <i class="iconfont icontiaozhuan more_icontiaozhuan"></i>              
+                  </router-link>
                 </template>
             </el-table-column>
             <!-- <el-table-column align="center" :min-width="ColumnMinWidth.message" :label="$t('ExplorerLang.table.message')">
-                <template slot-scope="scope">
-                    <span>{{scope.row.msgCount}} {{$t('ExplorerLang.unit.msgCountUnit')}}</span>
-                </template>
+              <template slot-scope="scope">
+                <span>{{scope.row.msgCount}} {{$t('ExplorerLang.unit.msgCountUnit')}}</span>
+              </template>
             </el-table-column> -->
             <el-table-column :min-width="ColumnMinWidth.address" class-name="from" :label="$t('ExplorerLang.table.from')">
                 <template slot-scope="scope">
-                    <el-tooltip v-if="isValid(scope.row.from)" v-show="Number(scope.row.msgCount) <= 1" :content="scope.row.from"
+                    <el-tooltip v-if="isValid(scope.row.from) && Number(scope.row.msgCount) <= 1" :content="scope.row.from"
                                 placement="top"
                                 :disabled="!isValid(scope.row.from)">
                         <span v-if="isValid(scope.row.from) && address !== scope.row.from "
-                              :class="(scope.row.from.startsWith(COSMOS_ADDRESS_PREFIX) || scope.row.from.startsWith(IRIS_ADDRESS_PREFIX))? 'address_link' : ''"
+                              class="address_link"
                               @click="addressRoute(scope.row.from)">
                             {{  formatMoniker(scope.row.fromMonikers,monikerNum.otherTable) || formatAddress(scope.row.from)}}
                         </span>
                         <span v-else>
-                            {{  formatMoniker(scope.row.fromMonikers,monikerNum.otherTable) || formatAddress(scope.row.from)}}
+                            {{ formatMoniker(scope.row.fromMonikers,monikerNum.otherTable) || formatAddress(scope.row.from) }}
                         </span>
                     </el-tooltip>
-                    <router-link v-if="!isValid(scope.row.from) || Number(scope.row.msgCount) > 1"
-                                 :to="`/tx?txHash=${scope.row.txHash}`">
+
+                    <span v-else-if="scope.row.from === '--' && Number(scope.row.msgCount) <= 1">
+                      {{ formatMoniker(scope.row.fromMonikers,monikerNum.otherTable) || formatAddress(scope.row.from) }}
+                    </span>
+
+                    <router-link v-else :to="`/tx?txHash=${scope.row.txHash}`">
                         {{$t('ExplorerLang.table.more')}} <i class="iconfont icontiaozhuan more_icontiaozhuan"></i>
                     </router-link>
                 </template>
             </el-table-column>
             <el-table-column :min-width="ColumnMinWidth.address" class-name="to" :label="$t('ExplorerLang.table.to')">
                 <template slot-scope="scope">
-                    <el-tooltip v-show="Number(scope.row.msgCount) <= 1" :content="String(scope.row.to)"
+                    <el-tooltip  v-if="isValid(scope.row.to) && Number(scope.row.msgCount) <= 1" :content="String(scope.row.to)"
                                 placement="top"
                                 :key="Math.random()"
                                 :disabled="!isValid(scope.row.to) || Array.isArray(scope.row.to)">
                         <span v-if="typeof scope.row.to=='string' && isValid(scope.row.to) && address !== scope.row.to"
-                              :class="(scope.row.to.startsWith(COSMOS_ADDRESS_PREFIX) || scope.row.to.startsWith(IRIS_ADDRESS_PREFIX))? 'address_link' : ''"
+                              class="address_link"
                               @click="addressRoute(scope.row.to)">
                             {{ formatMoniker(scope.row.toMonikers,monikerNum.otherTable) || formatAddress(scope.row.to)}}
                         </span>
@@ -90,7 +104,10 @@
                             {{ `${scope.row.to.length} ${$t('ExplorerLang.unit.providers')}`}}
                         </router-link>
                     </el-tooltip>
-                    <router-link v-if="!isValid(scope.row.to) || Number(scope.row.msgCount) > 1" :to="`/tx?txHash=${scope.row.txHash}`">
+                    <span v-else-if="scope.row.to === '--' && Number(scope.row.msgCount) <= 1">
+                      {{ formatMoniker(scope.row.toMonikers,monikerNum.otherTable) || formatAddress(scope.row.to) }}
+                    </span>
+                    <router-link v-else :to="`/tx?txHash=${scope.row.txHash}`">
                         {{$t('ExplorerLang.table.more')}} <i class="iconfont icontiaozhuan more_icontiaozhuan"></i>
                     </router-link>
                 </template>
@@ -138,12 +155,13 @@
     import {TxHelper} from "../../helper/TxHelper";
     import { TX_TYPE,TX_STATUS,ColumnMinWidth,monikerNum,decimals,TX_TYPE_DISPLAY, IRIS_ADDRESS_PREFIX, COSMOS_ADDRESS_PREFIX } from '../../constant';
     import { addressRoute, formatMoniker, converCoin, getMainToken } from '@/helper/IritaHelper';
-    import {getAmountByTx} from "../../helper/txListAmoutHelper";
+    import { getAmountByTx, getDenomMap, getDenomTheme } from "../../helper/txListAmoutHelper";
     import prodConfig from '../../productionConfig';
-
+    import parseTimeMixin from '../../mixins/parseTime'
     export default {
         name : "TxList",
         components : {},
+        mixins: [parseTimeMixin],
         props:{
             txData:{
                 type:Array,
@@ -169,18 +187,19 @@
                 monikerNum,
                 feeDecimals: decimals.fee,
                 txDataList: [],
-                txListTimer:null,
                 colWidthList: [],
                 loading: false,
                 mainTokenSymbol:'',
                 IRIS_ADDRESS_PREFIX,
                 COSMOS_ADDRESS_PREFIX,
-
+                denomMap: {},
+                IBC: 'IBC',
+                HashLock: 'Hash Lock'
             }
         },
         watch:{
             txData() {
-                this.formatTxData()
+              this.formatTxData();
             }
         },
         created(){
@@ -206,6 +225,20 @@
             },
             formatAddress(address){
                 return Tools.formatValidatorAddress(address)
+            },
+            getAmount(amount) {
+              if (!amount) {
+                  return "";
+              }
+              let denomRule = /[0-9.]+/
+              return amount.match(denomRule)[0];
+            },
+            getAmountUnit(amount) {
+              if (!amount) {
+                  return "";
+              }
+              let denomRule = /[A-Za-z\/]+/
+              return amount.match(denomRule)[0];
             },
             async formatTxData() {
                 this.loading = true;
@@ -239,7 +272,7 @@
                             })
                         }
                         if(this.isShowFee) {
-                            fees.push(tx.fee && tx.fee.amount && tx.fee.amount.length > 0 ? converCoin(tx.fee.amount[0]) :'--')
+                            fees.push(tx.fee && tx.fee.amount && tx.fee.amount.length > 0 ? await converCoin(tx.fee.amount[0]) :'--')
                         }
                         let isShowMore = false;
                         const type = tx.msgs && tx.msgs[0] && tx.msgs[0].type;
@@ -248,8 +281,11 @@
                         }
                         if(tx.type === TX_TYPE.send) {
                             tx && tx.msgs && tx.msgs[0] && tx.msgs[0].msg && tx.msgs[0].msg.amount && tx.msgs[0].msg.amount.length > 1 ? isShowMore = true : ''
-                        }
-
+                            let denom = tx?.msgs?.[0]?.msg?.amount?.[0]?.denom
+                            if(denom !== undefined && /(swap|SWAP)/g.test(denom)) {
+                              isShowMore = true
+                            }
+                        } 
                         this.txDataList.push({
                                 txHash : tx.tx_hash,
                                 blockHeight : tx.height,
@@ -265,16 +301,17 @@
                                 Tx_Fee: '',
                                 Time: tx.time,
                                 amount: '',
-                                ageTime: Tools.formatAge(Tools.getTimestamp(),tx.time*1000,"ago",">"),
+                                ageTime: Tools.formatAge(Tools.getTimestamp(),tx.time*1000, this.$t('ExplorerLang.table.suffix')),
                                 isShowMore,
+                                denomTheme: {
+                                  denomColor: '',
+                                  tooltipContent: ''
+                                }
                         })
-                        clearInterval(this.txListTimer);
-                        this.txListTimer = setInterval(() => {
-                            this.txDataList.map(item => {
-                                item.ageTime = Tools.formatAge(Tools.getTimestamp(),item.Time*1000,"ago",">");
-                                return item
-                            })
-                        },1000)
+                        /**
+                         * @description: from parseTimeMixin
+                         */
+                        this.parseTime('txDataList', 'Time', 'ageTime')
                     }
                     if(fees && fees.length > 0 && this.isShowFee) {
                         let fee = await Promise.all(fees);
@@ -286,12 +323,10 @@
                     }
                     if(amounts && amounts.length > 0) {
                         let amount = await Promise.all(amounts)
-                        this.txDataList.forEach((item,index) => {
-
-                            if(amount[index] && amount[index].includes('SWAP')){
-                                this.txDataList[index].isShowMore = true;
-                            }
-                            this.txDataList[index].amount = amount[index]
+                        this.denomMap = await getDenomMap()
+                        this.txDataList.forEach((item, index) => {    
+                          this.txDataList[index].denomTheme =getDenomTheme(amount[index], this.denomMap)
+                          this.txDataList[index].amount = amount[index] 
                         })
                     }
                     this.$nextTick(() => {
@@ -301,10 +336,7 @@
                         });
                     });
                 }
-            }
-        },
-        beforeDestroy() {
-            clearInterval(this.txListTimer)
+            },
         }
     }
 </script>

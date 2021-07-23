@@ -53,6 +53,7 @@
 
                 </div>
             </div>
+
             <div class="service_information_bindings_content">
                 <h3 class="service_information_binding_title">
                     {{$t('ExplorerLang.serviceDetail.serviceBindings.providers')}}</h3>
@@ -119,7 +120,6 @@
                                   :total="providerCount"
                                   :page="providerPageNum"
                                   :page-change="providerPageChange">
-
                     </m-pagination>
                 </div>
             </div>
@@ -241,10 +241,10 @@
                 </div>
                 <div class="pagination_content" v-show="txCount > txPageSize">
                     <keep-alive>
-                        <m-pagination :page-size="txPageSize"
-                                      :total="txCount"
-                                      :page="txPageNum"
-                                      :page-change="pageChange">
+                        <m-pagination :page-size="Number(txPageSize)"
+                            :total="txCount"
+                            :page="Number(txPageNum)"
+                            :page-change="pageChange">
                         </m-pagination>
                     </keep-alive>
                 </div>
@@ -421,19 +421,21 @@
                         this.txPageNum,
                         this.txPageSize
                     );
-                    let fees = [];
-                    let fee = [];
-                    if(res.data && res.data.length > 0) {
-                        for (const tx of res.data) {
-                            if(this.isShowFee) {
-                                fees.push(tx.fee && tx.fee.amount && tx.fee.amount.length > 0 ? converCoin(tx.fee.amount[0]) :'--')
-                            }
-                        }
-                    }
-                    if(fees && fees.length > 0 && this.isShowFee) {
-                        fee = await Promise.all(fees);
-                    }
-                    this.transactionArray = res.data.map((item,index) =>{
+                    if(this.txPageNum === Number(res.pageNum)){
+                      let fees = [];
+                      let fee = [];
+                      if(res.data && res.data.length > 0) {
+                          for (const tx of res.data) {
+                              if(this.isShowFee) {
+                                  fees.push(tx.fee && tx.fee.amount && tx.fee.amount.length > 0 ? converCoin(tx.fee.amount[0]) :'--')
+                              }
+                          }
+                      }
+                      if(fees && fees.length > 0 && this.isShowFee) {
+                          fee = await Promise.all(fees);
+                      }
+                      this.txCount = res.count;
+                      this.transactionArray = res.data.map((item,index) =>{
                         let addrObj = TxHelper.getFromAndToAddressFromMsg(item.msgs[0]);
                         let requestContextId = TxHelper.getContextId(item.msgs[0], item.events) || '--';
                         let from = (addrObj && addrObj.from) ? addrObj.from : '--',
@@ -455,9 +457,7 @@
                         };
 
                     });
-                    this.txCount = res.count;
-                    this.txPageNum = Number(res.pageNum);
-                    this.txPageSize = Number(res.pageSize);
+                    }
                 } catch (e) {
                     console.error(e)
                     // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
