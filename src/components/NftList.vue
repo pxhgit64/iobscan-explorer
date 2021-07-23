@@ -22,7 +22,7 @@
 					<el-table-column :min-width="ColumnMinWidth.tokenId" :label="$t('ExplorerLang.table.tokenId')" >
 						<template slot-scope="scope">
 							<el-tooltip 
-										:content="scope.row.nft_name"
+										:content="scope.row.nft_id"
 										placement="top"
 										effect="dark"
 										:disabled="Tools.disabled(scope.row.nft_id)">
