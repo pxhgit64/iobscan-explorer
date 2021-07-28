@@ -251,6 +251,7 @@ a {
       width: 100%;
       padding: 0 0.15rem 0.15rem;
       background: #fff;
+      box-sizing: border-box;
       .avatar {
         background: $bg_avatar;
       }
