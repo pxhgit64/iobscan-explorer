@@ -307,7 +307,7 @@
 					</el-table-column>
 					<el-table-column :min-width="ColumnMinWidth.blockListHeight" :label="$t('ExplorerLang.table.block')">
 						<template slot-scope="scope">
-							<router-link :to="`/block/${scope.row.blockHeight}`">{{scope.row.height}}</router-link>
+							<router-link :to="`/block/${scope.row.height}`">{{scope.row.height}}</router-link>
 						</template>
 					</el-table-column>
 					<el-table-column :min-width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.timestamp')"
