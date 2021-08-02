@@ -6,6 +6,14 @@ import { COSMOS_ADDRESS_PREFIX , IRIS_ADDRESS_PREFIX} from "@/constant";
 import {cfg} from "@/config";
 import md5 from "js-md5";
 
+export function validatePositiveInteger(value){
+	if(value && +value < 1){
+    return 1
+	} else {
+    return value
+  }
+}
+
 async function md5Fun(hash){
   return md5(hash.slice(5, -10).slice(3, -8))
 }

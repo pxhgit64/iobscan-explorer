@@ -76,6 +76,11 @@ export function getBlockList(pageNum, pageSize, useCount=false){
 	return get(url);
 }
 
+export function getRangeBlockList(start, end, useCount=false){
+  let url = `blocks/range?start=${start || ''}&end=${end | ''}&useCount=${useCount}`;
+	return get(url);
+}
+
 export function getDenoms(pageNum, pageSize,denomNameOrId, needAll){
 	let url = `denoms`;
 	if(needAll){
