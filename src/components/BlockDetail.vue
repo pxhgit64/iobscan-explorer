@@ -431,7 +431,7 @@
 					display: flex;
 					align-items: center;
 				}
-				/deep/ .cell {
+				::v-deep .cell {
 					padding: 0 0.04rem;
 				}
 			}
@@ -485,11 +485,11 @@
 						}
 					}
 					
-					/deep/ .m-table-header {
+					::v-deep .m-table-header {
 						width: 12rem !important;
 					}
 					
-					/deep/ table.m_table {
+					::v-deep table.m_table {
 						min-width: 12rem !important;
 						text-align: left;
 					}

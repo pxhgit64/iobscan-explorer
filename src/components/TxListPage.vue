@@ -571,7 +571,7 @@
 						display: flex;
 						align-items: center;
 						
-						/deep/ .el-select {
+						::v-deep .el-select {
 							width: 1.3rem;
 							margin-right: 0.1rem;
 							
@@ -613,7 +613,7 @@
 						display: flex;
 						align-items: center;
 						
-						/deep/ .el-date-editor {
+						::v-deep .el-date-editor {
 							width: 1.3rem;
 							
 							.el-icon-circle-close {

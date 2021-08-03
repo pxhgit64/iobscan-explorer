@@ -408,7 +408,7 @@ export default {
               height: 0.6rem;
             }
           }
-          /deep/.el-submenu {
+          ::v-deep.el-submenu {
             .el-submenu__title {
               .el-submenu__icon-arrow {
                 color: inherit !important;

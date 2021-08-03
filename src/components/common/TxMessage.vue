@@ -3375,7 +3375,7 @@
 					background: $bg_cancel_c;
 					border-radius: 0.05rem;
 
-					/deep/ .el-table {
+					::v-deep .el-table {
 						background: $bg_cancel_c;
 
 						tr {
@@ -3455,7 +3455,7 @@
 
 					.record_list_content {
 
-						/deep/ .el-table {
+						::v-deep .el-table {
 
 							tr {
 

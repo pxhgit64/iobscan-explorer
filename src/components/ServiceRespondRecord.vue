@@ -410,7 +410,7 @@
                         font-weight: 600;
 
                     }
-                    /deep/ .el-select {
+                    ::v-deep .el-select {
                         width: 1.3rem;
                         margin-right: 0.22rem;
                         .el-input {

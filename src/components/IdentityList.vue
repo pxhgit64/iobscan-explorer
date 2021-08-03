@@ -170,7 +170,7 @@
                 .identity_list_header_content{
                     display: flex;
                     align-items: center;
-                    /deep/ .el-input{
+                    ::v-deep .el-input{
                         max-width: 3.5rem;
                         .el-input__inner{
                             padding-left: 0.07rem;
@@ -195,7 +195,7 @@
                     display: flex;
                     flex-direction:column;
                     justify-content: flex-start;
-                    /deep/ .el-input{
+                    ::v-deep .el-input{
                         margin-bottom:0.1rem;
                         .el-input__inner{
                             padding-left: 0.07rem;
@@ -225,7 +225,7 @@
             .identity_list_header_content{
                 width: 100%;
                 margin: 0rem 0 0.1rem 0;
-                /deep/ .el-input{
+                ::v-deep .el-input{
                     .el-input__inner{
                         font-size: $s14 !important;
                         &::-webkit-input-placeholder{
@@ -264,7 +264,7 @@
                     }
                 }
             }
-            /deep/ .nef_list_table_container{
+            ::v-deep .nef_list_table_container{
                 background: $bg_white_c;
                 border-radius: 0.05rem;
                 // border: 0.01rem solid $bd_first_c;
