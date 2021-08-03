@@ -72,7 +72,12 @@ export function getNetworkStatistics(params){
 }
 
 export function getBlockList(pageNum, pageSize, useCount=false){
-	let url = `blocks?pageNum=${pageNum || ''}&pageSize=${pageSize | ''}&useCount=${useCount}`;
+	let url = `blocks?pageNum=${pageNum || ''}&pageSize=${pageSize || ''}&useCount=${useCount}`;
+	return get(url);
+}
+
+export function getRangeBlockList(start, end, useCount=false){
+  let url = `blocks/range?start=${start || ''}&end=${end || ''}&useCount=${useCount}`;
 	return get(url);
 }
 

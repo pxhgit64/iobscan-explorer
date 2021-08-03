@@ -49,9 +49,10 @@
 <script>
 	import Tools from "../util/Tools"
 	import MPagination from "./common/MPagination";
-	import { getBlockList, getLatestBlock } from "../service/api";
+	import { getRangeBlockList, getLatestBlock } from "../service/api";
 	import { ColumnMinWidth } from '../constant';
 	import productionConfig from '@/productionConfig.js';
+  import { validatePositiveInteger } from '../helper/IritaHelper'
 
 	export default {
 		name: "BlockList",
@@ -64,21 +65,32 @@
 				pageSize: 20,
 				dataCount: 0,
 				latestBlockHeight:0,
+        dbHeight: 0,
 				blockList: [],
 				blockListTimer: null
 			}
 		},
 		mounted () {
-			this.getBlocks()
+			this.queryBlockList()
 		},
 		methods: {
-			async getBlocks () {
-				this.latestBlock();
-				try {
-					let blockData = await getBlockList(this.pageNumber, this.pageSize, true);
-					if(blockData){
-						this.dataCount = blockData.count;
-						this.blockList = blockData.data.map( item => {
+      async queryBlockList(){
+        await this.latestBlock();
+        this.getBlocks(true);	
+      },
+			async getBlocks(useCount = false) {
+  		  let start = this.dbHeight - (this.pageNumber - 1) * this.pageSize;
+  	  	let end = start - this.pageSize;
+				try {    
+					let blockList = await getRangeBlockList(start, validatePositiveInteger(end), useCount);
+          if(useCount){
+            this.dataCount = blockList?.count
+          }
+					if(blockList?.data){
+            if(blockList.data.length > this.pageSize){
+              blockList.data = blockList.data.slice(0, this.pageSize)
+            }
+						this.blockList = blockList.data.map( item => {
 							return{
 								proposerAddress:item.proposer_addr || '--',
 								proposerValue: item.proposer_moniker || ( item.proposer_addr || '--'),
@@ -108,6 +120,7 @@
 					let blockData = await getLatestBlock();
 					if(blockData){
 						this.latestBlockHeight = blockData.height;
+            this.dbHeight = blockData.dbHeight;
 					}
 				}catch (e) {
 					console.error(e)
