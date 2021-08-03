@@ -526,7 +526,7 @@
                 .service_information_transaction_condition_count {
 
                 }
-                /deep/ .el-select {
+                ::v-deep .el-select {
 
                 }
                 .search_btn {
@@ -648,7 +648,7 @@
                         font-weight: 600;
 
                     }
-                    /deep/ .el-select {
+                    ::v-deep .el-select {
                         width: 1.3rem;
                         margin-right: 0.22rem;
                         .el-input {
@@ -800,7 +800,7 @@
                         .service_information_transaction_condition_count {
                             margin-bottom: 0.1rem;
                         }
-                        /deep/ .el-select {
+                        ::v-deep .el-select {
                             width: 100%;
                             margin-bottom: 0.1rem;
 

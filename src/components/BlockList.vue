@@ -185,7 +185,7 @@
 								/*position: fixed;*/
 								/*z-index: 10;*/
 							}
-							/deep/ .el-table__body-wrapper {
+							::v-deep .el-table__body-wrapper {
 								overflow: auto;
 							}
 						}

@@ -186,7 +186,7 @@
                 .denom_list_header_content{
                     display: flex;
                     align-items: center;
-                    /deep/ .el-input{
+                    ::v-deep .el-input{
                         max-width: 3.5rem;
                         margin-left: 0.1rem;
                         .el-input__inner{
@@ -215,7 +215,7 @@
                     .denom_list_header_title{
                         margin-bottom:0.1rem;
                     }
-                    /deep/ .el-input{
+                    ::v-deep .el-input{
                         margin-bottom:0.1rem;
                         .el-input__inner{
                             padding-left: 0.07rem;
@@ -255,7 +255,7 @@
                     background: $bg_white_c;
                     text-indent: 0.2rem;
                 }
-                /deep/ .el-input{
+                ::v-deep .el-input{
                     .el-input__inner{
                         font-size: $s14 !important;
                         &::-webkit-input-placeholder{
@@ -296,7 +296,7 @@
             }
             .nef_list_table_container{
                 //margin-top: 0.05rem;
-                /deep/ .cell {
+                ::v-deep .cell {
 					padding: 0rem 0rem 0rem 0.15rem;
 				}
                 a{
