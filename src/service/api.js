@@ -77,7 +77,7 @@ export function getBlockList(pageNum, pageSize, useCount=false){
 }
 
 export function getRangeBlockList(start, end, useCount=false){
-  let url = `blocks/range?start=${start || ''}&end=${end | ''}&useCount=${useCount}`;
+  let url = `blocks/range?start=${start || ''}&end=${end || ''}&useCount=${useCount}`;
 	return get(url);
 }
 
