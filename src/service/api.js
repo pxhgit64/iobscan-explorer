@@ -434,7 +434,13 @@ export function getProposalDetailDepositorApi (id,pageNum, pageSize, useCount) {
 }
 
 export function getGovTxsApi(valAddress, pageNum, pageSize, useCount=true, type='', status='', beginTime='', endTime=''){
-    let url = `/txs/gov?pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}&type=${type}&status=${status}&address=${valAddress}&beginTime=${beginTime}&endTime=${endTime}`
+    let url = `/txs/gov?type=${type}&status=${status}&address=${valAddress}&beginTime=${beginTime}&endTime=${endTime}`
+    if(pageNum && pageSize){
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+      url += `&useCount=${useCount}`;
+    }
     return get(url);
 }
 

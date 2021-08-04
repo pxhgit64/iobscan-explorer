@@ -479,10 +479,12 @@
 					}
 				} else if (this.type === 'gov') {
 					try {
-						let res = await getGovTxsApi('', param.pageNumber, param.pageSize, true, param.txType, param.status, param.beginTime, param.endTime)
+						let res = await getGovTxsApi('', param.pageNumber, param.pageSize, useCount, param.txType, param.status, param.beginTime, param.endTime)
 						this.txList = [];
+            if(useCount){
+              this.count = res.count;
+            }
 						if(res.data && res.data.length > 0) {
-							this.count = res.count
 							for (const item of res.data) {
 								let msgsNumber = item.msgs ? item.msgs.length : 0
 								const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) :'--'
