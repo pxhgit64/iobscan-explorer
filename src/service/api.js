@@ -153,8 +153,14 @@ export function getTxList(params){
     return get(url);
 }
 
-export function getRelevanceTxList(type, contextId, pageNum, pageSize, useCount=false){
-    let url = `txs/relevance?pageNum=${pageNum}&pageSize=${pageSize}&type=${type}&contextId=${contextId}&useCount=${useCount}`;
+export function getRelevanceTxList(type, contextId, pageNum, pageSize, useCount){
+    let url = `txs/relevance?type=${type}&contextId=${contextId}`;
+    if(pageNum && pageSize){
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+        url += `&useCount=${useCount}`;
+    }
     return get(url);
 }
 

@@ -1170,6 +1170,10 @@
 				this.type = this.type_temp;
 				this.status = this.status_temp;
 				this.pageNum = 1;
+        let payload = {
+          type: this.type_temp,
+          status: this.status_temp
+        }
         if(this.helper.compare(payload)){
           this.getTxByAddress(null, null, true)
         }
