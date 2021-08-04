@@ -645,7 +645,7 @@
 	} from "@/service/api";
 	import BigNumber from 'bignumber.js'
 	import moveDecimal from 'move-decimal-point'
-	import {converCoin,getMainToken} from "../helper/IritaHelper"
+	import {converCoin,getMainToken,paginationHelper} from "../helper/IritaHelper"
 	export default {
 		name: "OwnerDetail",
 		components: {MPagination, TxListComponent, AddressInformationComponent, LargeString},
@@ -782,7 +782,8 @@
 				},
 				LargeStringMinHeight: 69,
 				LargeStringLineHeight:23,
-                mainTokenSymbol:'',
+        mainTokenSymbol:'',
+        helper: new paginationHelper(null, null)
 			}
 		},
 		watch: {
@@ -879,7 +880,8 @@
 								break
 							default:
 								this.isTx =true
-								this.getTxByAddress();
+                this.getTxByAddress(null, null ,true);
+                this.getTxByAddress(this.pageNum, this.pageSize);
 								this.getAllTxType();
 
 						}
@@ -943,11 +945,13 @@
 				}
 			},
 			//地址相关交易记录
-			async getTxByAddress () {
+			async getTxByAddress(pageNum, pageSize, useCount = false) {
 				try {
-					const res = await getAddressTxList(this.$route.params.param, this.type, this.status, this.pageNum, this.pageSize);
+					const res = await getAddressTxList(this.$route.params.param, this.type, this.status, pageNum, pageSize, useCount);
 					if (res) {
-						this.totalTxNumber = res.count;
+            if(useCount){
+              this.totalTxNumber = res.count;
+            }
 						this.txList = res.data;
 					}
 				} catch (e) {
@@ -957,7 +961,7 @@
 			},
 			pageChange (pageNum) {
 				this.pageNum = pageNum;
-				this.getTxByAddress()
+        this.getTxByAddress(this.pageNum, this.pageSize);
 				this.type ?  this.txTypeArray= TxHelper.getTxTypeArray(this.txTypeOption,this.type) : this.txTypeArray = ['']
 				this.status_temp = this.status
 				this.type_temp = this.type
@@ -1166,7 +1170,10 @@
 				this.type = this.type_temp;
 				this.status = this.status_temp;
 				this.pageNum = 1;
-				this.getTxByAddress();
+        if(this.helper.compare(payload)){
+          this.getTxByAddress(null, null, true)
+        }
+        this.getTxByAddress(this.pageNum, this.pageSize)
 			},
 			resetFilterCondition () {
 				this.type_temp = '';
@@ -1174,7 +1181,8 @@
 				this.type = '';
 				this.status = '';
 				this.pageNum = 1;
-				this.getTxByAddress();
+				this.getTxByAddress(null, null ,true);
+        this.getTxByAddress(this.pageNum, this.pageSize);
 				this.txTypeArray=['']
 			},
 			async getAllTxType () {

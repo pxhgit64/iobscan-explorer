@@ -205,8 +205,14 @@ export function getTxDetail(hash){
     return get(url);
 }
 
-export function getAddressTxList(address, type, status, pageNum=1, pageSize=10){
-    let url = `txs/addresses?pageNum=${pageNum}&pageSize=${pageSize}&address=${address}&type=${type}&status=${status}&useCount=true`;
+export function getAddressTxList(address, type, status, pageNum, pageSize, useCount){
+    let url = `txs/addresses?address=${address}&type=${type}&status=${status}`;
+    if(pageNum && pageSize){
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+      url += `&useCount=${useCount}`;
+    }
     return get(url);
 }
 
