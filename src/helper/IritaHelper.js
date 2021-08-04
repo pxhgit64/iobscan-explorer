@@ -6,8 +6,25 @@ import { COSMOS_ADDRESS_PREFIX , IRIS_ADDRESS_PREFIX} from "@/constant";
 import {cfg} from "@/config";
 import md5 from "js-md5";
 
+export class paginationHelper{
+  constructor(newEncodedPayload, oldEncodedPayload) {
+    this.newEncodedPayload = newEncodedPayload
+    this.oldEncodedPayload = oldEncodedPayload
+  }
+
+ compare = (payload) => {
+	this.newEncodedPayload = JSON.stringify(payload)
+	if(this.newEncodedPayload === this.oldEncodedPayload){
+		return false;
+	} else {
+		this.oldEncodedPayload = this.newEncodedPayload 
+		return true;
+	}	
+  }
+}
+
 export function validatePositiveInteger(value){
-	if(value && +value < 1){
+	if(+value === 0 || value && +value < 1){
     return 1
 	} else {
     return value

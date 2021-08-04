@@ -95,6 +95,7 @@
     import {TxHelper} from "../helper/TxHelper";
     import {getAllTxTypes, getTxList } from '../service/api';
     import { TX_TYPE,TX_STATUS } from '../constant';
+    import { paginationHelper } from '../helper/IritaHelper'
     export default {
         name : "TxList",
         components : {MPagination, TxListComponent},
@@ -104,10 +105,10 @@
                 IBC: 'IBC',
                 HashLock: 'Hash Lock',
                 PickerOptions: {
-					      disabledDate: (time) => {
-						      return time.getTime() < new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
-					      }
-				},
+					        disabledDate: (time) => {
+						        return time.getTime() < new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
+					        }
+				        },
                 TX_TYPE,
                 TX_STATUS,
                 transactionArray : [],
@@ -138,7 +139,8 @@
                 txStatus : '',
                 pageNum: pageNum ? pageNum : 1,
                 pageSize: pageSize ? pageSize : 30,
-                txTypeArray:['']
+                txTypeArray:[''],
+                helper: new paginationHelper(null, null)
             }
         },
         mounted(){
@@ -149,7 +151,7 @@
             getFilterTxs(param){
                 this.statusValue = Number(this.statusValue || 0);
                 this.pageNum = 1;
-                let url = `/#/txs?pageNum=${this.pageNum}&pageSize=${this.pageSize}&useCount=true`;
+                let url = `/#/txs?pageNum=${this.pageNum}&pageSize=${this.pageSize}`;
                 // if(this.txType){
                 //     url += `&txType=${this.txType}`;
                 // }
@@ -166,7 +168,17 @@
                     url += `&endTime=${this.endTime}`;
                 }
                 param == 'init' ? history.replaceState(null, null, url) : history.pushState(null, null, url);
-                this.getTxList();
+                let payload = {
+                   type: this.txType,
+                   status: this.statusValue,
+                   address: '',
+                   beginTime: this.beginTime,
+                   endTime: this.endTime
+                }
+                if(this.helper.compare(payload) || param == 'init'){
+                  this.getTxListData(null, null, true)
+                }
+                this.getTxListData(this.pageNum, this.pageSize)
             },
             /*filterTxByTxType(e){
                 if(e === 'allTxType' || e === undefined){
@@ -185,19 +197,23 @@
                 this.endTime = '';
                 history.pushState(null, null, `/#/txs?pageNum=${this.pageNum}&pageSize=${this.pageSize}&useCount=true`);
             },
-            async getTxList(){
-                const {txType, status, beginTime, endTime, pageNum, pageSize} = Tools.urlParser();
-                const params = {
-                    txType,status, beginTime, endTime, pageNum, pageSize,
-                    useCount:true
-                };
-
+            async getTxListData(pageNum, pageSize, useCount = false){
+                const {txType, status, beginTime, endTime} = Tools.urlParser();
+                let params = {txType, status, beginTime, endTime};
+                if(pageNum && pageSize){
+                  params = { ...params, pageNum, pageSize }
+                }
+                if(useCount){
+                  params = { ...params, useCount }
+                }
                 try{
                     const res = await getTxList(params);
                     if(this.pageNum === Number(res.pageNum)){
                       this.transactionArray = res.data;
-                      this.txCount = res.count;
                     }
+                    if(res?.count){
+			                this.txCount = res.count
+		                }
                 }catch (e) {
                     console.error(e);
                     // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
@@ -251,7 +267,8 @@
                 this.pageNum = 1;
                 this.pageSize = 30;
                 this.resetUrl();
-                this.getTxList()
+                this.getTxListData(null, null, true)
+                this.getTxListData(this.pageNum, this.pageSize)
                 this.txTypeArray=['']
             },
             /*getParamsByUrlHash(){
@@ -292,7 +309,7 @@
                 this.endTime = urlParams.urlParamShowEndTime ? urlParams.urlParamShowEndTime : '';*/
 
                 const {txType, status, beginTime, endTime, pageSize} = Tools.urlParser();
-                let url = `/#/txs?pageNum=${pageNum}&pageSize=${pageSize}&useCount=true`;
+                let url = `/#/txs?pageNum=${pageNum}&pageSize=${pageSize}&useCount=false`;
                 if(txType){
                     url += `&txType=${txType}`;
                     this.txTypeArray = TxHelper.getTxTypeArray(this.txTypeOption,txType)
@@ -320,7 +337,7 @@
                     this.endTime = ''
                 }
                 history.pushState(null, null, url);
-                this.getTxList();
+                this.getTxListData(this.pageNum, this.pageSize);
             },
             formatTxHash(TxHash){
                 if(TxHash){
