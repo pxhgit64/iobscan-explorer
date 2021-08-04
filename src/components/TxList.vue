@@ -211,7 +211,7 @@
                     if(this.pageNum === Number(res.pageNum)){
                       this.transactionArray = res.data;
                     }
-                    if(res?.count){
+                    if(useCount){
 			                this.txCount = res.count
 		                }
                 }catch (e) {

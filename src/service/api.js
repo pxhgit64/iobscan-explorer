@@ -323,8 +323,14 @@ export function getUnbondingDelegationsApi(valAddress,pageNum,pageSize,useCount)
     return get(url);
 }
 
-export function getDelegationTxsApi (valAddress, pageNum, pageSize, useCount=true, type='', status='', beginTime='', endTime='') {
-    let url = `/txs/staking?pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}&type=${type}&status=${status}&address=${valAddress}&beginTime=${beginTime}&endTime=${endTime}`
+export function getDelegationTxsApi(valAddress, pageNum, pageSize, useCount, type='', status='', beginTime='', endTime='') {
+    let url = `/txs/staking?type=${type}&status=${status}&address=${valAddress}&beginTime=${beginTime}&endTime=${endTime}`
+    if(pageNum && pageSize){
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+        url += `&useCount=${useCount}`;
+    }
     return get(url);
 }
 
