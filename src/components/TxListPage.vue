@@ -423,8 +423,10 @@
 					}
 				} else if (this.type === 'declaration') {
 					let res = await getValidationTxsApi('', param.pageNumber, param.pageSize, useCount, param.txType, param.status, param.beginTime, param.endTime)
-					try {
-						this.count = res.count;
+					try {		
+            if(useCount){
+              this.count = res.count;
+            }
 						if (res && res.data) {
 							this.totalPageNum = Math.ceil((res.data / this.pageSize) === 0 ? 1 : (res.data / this.pageSize));
 							if (res.data) {
