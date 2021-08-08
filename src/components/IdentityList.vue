@@ -90,25 +90,27 @@
             }
         },
         mounted(){
-            this.identities();
+            this.identities(null, null, true)
+            this.identities(this.pageNum, this.pageSize)
         },
         methods:{
             reset(){
                 this.input = '';
                 this.pageNum = 1;
-                this.identities()
+                this.identities(null, null, true)
+                this.identities(this.pageNum, this.pageSize)
             },
             pageChange(pageNum){
                 this.pageNum = pageNum;
-                this.identities()
+                this.identities(this.pageNum, this.pageSize)
             },
             handleSearchClick(){
                 this.pageNum = 1;
-                this.identities();
+                this.identities(this.pageNum, this.pageSize)
             },
-            async identities(){
+            async identities(pageNum, pageSize, useCount = false){
                 try {
-                    const res = await getIdentities(this.input, this.pageNum, this.pageSize);
+                    const res = await getIdentities(this.input, pageNum, pageSize, useCount);
                     if(res && res.data && Array.isArray(res.data) && res.data.length > 0){
                         this.identityList = res.data.map((item)=>{
                             let pubkey = (item.pubkeys || [])[0] || {};
@@ -123,7 +125,9 @@
                                 time: Tools.getDisplayDate(item.update_block_time) || '--'
                             }
                         });
-                        this.count = res.count;
+                        if(useCount){
+                          this.count = res.count;
+                        }
                     }else{
                         this.count = 0;
                         this.identityList = [];

@@ -287,7 +287,7 @@ export default {
       }
       if (type && type.length && this.requestContextId && this.requestContextId.length) {
         try {
-          const res = await getRelevanceTxList(type, this.requestContextId, pageNum, pageSize, useCount)
+          const res = await get(type, this.requestContextId, pageNum, pageSize, useCount)
           if (res) {
             if(useCount){
               this.txCount = res.count

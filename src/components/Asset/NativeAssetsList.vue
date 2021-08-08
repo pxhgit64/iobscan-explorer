@@ -56,13 +56,16 @@ export default {
   created() {
   },
   mounted() {
-    this.getNtvAssetsList()
+    this.getNtvAssetsList(null, null, true)
+    this.getNtvAssetsList(this.pageNumber,this.pageSize)
   },
   methods: {
-    async getNtvAssetsList() {
+    async getNtvAssetsList(currentPage, pageSize, useCount = false) {
             try{
-              let res = await getNativeAssetsListApi(this.pageNumber,this.pageSize,true)
-              this.dataCount = res && res.count ? res.count : 0
+              let res = await getNativeAssetsListApi(currentPage, pageSize, useCount)
+              if(useCount){
+                this.dataCount = res?.count ? res.count : 0
+              }
               let result = res && res.data ? res.data : null
               if (result) {
                 this.tableData =  
@@ -87,7 +90,7 @@ export default {
     pageChange(pageNum){
 				if (this.pageNumber == pageNum) {return;}
 				this.pageNumber = pageNum;
-				this.getNtvAssetsList()
+				this.getNtvAssetsList(this.pageNumber,this.pageSize)
 		}
   },
 }

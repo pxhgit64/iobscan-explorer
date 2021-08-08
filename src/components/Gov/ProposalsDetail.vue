@@ -387,8 +387,10 @@ export default {
   watch: {},
   created() {
     this.getProposalsDetail()
-    this.getVoter()
-    this.getDepositor()
+    this.getVoter(null, null, true)
+    this.getVoter(this.currentVoterPageNum, this.pageSize)
+    this.getDepositor(null, null, true)
+    this.getDepositor(this.currentDepositorPageNum, this.pageSize)
     this.setMainToken()
   },
   mounted() {},
@@ -533,18 +535,19 @@ export default {
     },
     pageChangeVoter(pageNum) {
       this.currentVoterPageNum = pageNum
-      this.getVoter()
+      this.getVoter(this.currentVoterPageNum, this.pageSize)
     },
     pageChangeDepositor(pageNum) {
       this.currentDepositorPageNum = pageNum
-      this.getDepositor()
+      this.getDepositor(this.currentDepositorPageNum, this.pageSize)
     },
     async filterVoteTx(item, index) {
       this.currentVoterPageNum = 1
       this.filterTab = item
       this.resetActiveStyle()
       this.filterTabArr[index].isActive = true
-      await this.getVoter()
+      await this.getVoter(null, null, true)
+      await this.getVoter(this.currentVoterPageNum, this.pageSize)
     },
     resetActiveStyle() {
       this.filterTabArr.map(item => {
@@ -562,11 +565,13 @@ export default {
     formatAddress(address) {
       return Tools.formatValidatorAddress(address)
     },
-    async getVoter() {
+    async getVoter(pageNum, pageSize, useCount = false) {
       try {
-        let res = await getProposalDetailVotersApi(this.$route.params.proposal_id, this.currentVoterPageNum, this.pageSize, true, this.filterTab)
+        let res = await getProposalDetailVotersApi(this.$route.params.proposal_id, pageNum, pageSize, useCount, this.filterTab)
         if (res) {
-          this.voterCount = res.count
+          if(useCount){
+            this.voterCount = res.count
+          }
           this.voterData = []
           if (res.data && res.data.length > 0) {
             this.voterData = res.data.map(voter => {
@@ -597,11 +602,13 @@ export default {
         console.error(e)
       }
     },
-    async getDepositor() {
+    async getDepositor(currentPageNum, pageSize, useCount = false) {
       try {
-        let res = await getProposalDetailDepositorApi(this.$route.params.proposal_id, this.currentDepositorPageNum, this.pageSize, true)
+        let res = await getProposalDetailDepositorApi(this.$route.params.proposal_id, currentPageNum, pageSize, useCount)
         if (res) {
-          this.depositorCount = res.count
+          if(useCount){
+            this.depositorCount = res.count
+          }  
           this.depositorData = []
           if (res.data && res.data.length > 0) {
             for (const depositor of res.data) {

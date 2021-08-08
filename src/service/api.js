@@ -81,21 +81,30 @@ export function getRangeBlockList(start, end, useCount=false){
 	return get(url);
 }
 
-export function getDenoms(pageNum, pageSize,denomNameOrId, needAll){
+export function getDenoms(pageNum, pageSize, useCount, needAll, denomNameOrId){
 	let url = `denoms`;
 	if(needAll){
 	    url += `?needAll=true`;
     }else{
-	    url += `?pageNum=${pageNum}&pageSize=${pageSize}&useCount=true`;
+	    url += `?pageNum=${pageNum}&pageSize=${pageSize}`;
 	    if(denomNameOrId){
 	        url += `&denomNameOrId=${denomNameOrId}`;
         }
     }
+    if(useCount){
+      url += `&useCount=${useCount}`;
+    }
 	return get(url);
 }
 
-export function getNfts(denom, nftId, owner, pageNum, pageSize, useCount=false){
-	let url = `nfts?pageNum=${pageNum||''}&pageSize=${pageSize||''}&useCount=${useCount}&denomId=${denom||''}&nftId=${nftId||''}&owner=${owner||''}`;
+export function getNfts(pageNum, pageSize, useCount, denom, nftId, owner){
+	let url = `nfts?denomId=${denom||''}&nftId=${nftId||''}&owner=${owner||''}`;
+  if(pageNum && pageSize){
+    url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+  }
+  if(useCount){
+    url += `&useCount=${useCount}`;
+  }
 	return get(url);
 }
 
@@ -131,15 +140,12 @@ export function getAllServiceTxTypes(){
 
 export function getTxList(params){
     const {txType, status, beginTime, endTime, pageNum, pageSize, useCount} = params;
-    let url = `txs?`;
+    let url = `txs?type=${txType}`;
     if(pageNum && pageSize){
-      url += `pageNum=${pageNum}&pageSize=${pageSize}`
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
     }
     if(useCount){
-        url += `useCount=${useCount}`;
-    }
-    if(txType){
-        url += `&type=${txType}`;
+        url += `&useCount=${useCount}`;
     }
     if(status){
         url += `&status=${status}`;
@@ -164,18 +170,36 @@ export function getRelevanceTxList(type, contextId, pageNum, pageSize, useCount)
     return get(url);
 }
 
-export function getTokenTxList(nftId, denom, pageNum, pageSize,){
-    let url = `txs/nfts?pageNum=${pageNum}&pageSize=${pageSize}&tokenId=${nftId}&denomId=${denom}&useCount=true`;
+export function getTokenTxList(nftId, denom, pageNum, pageSize, useCount){
+    let url = `txs/nfts?tokenId=${nftId}&denomId=${denom}`;
+    if(pageNum && pageSize){
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+        url += `&useCount=${useCount}`;
+    }
     return get(url);
 }
 
-export function getCallServiceWithAddress(consumerAddr, pageNum, pageSize, useCount=false){
-    let url = `txs/services/call-service?pageNum=${pageNum}&pageSize=${pageSize}&consumerAddr=${consumerAddr}&useCount=${useCount}`;
+export function getCallServiceWithAddress(pageNum, pageSize, useCount, consumerAddr){
+    let url = `txs/services/call-service?consumerAddr=${consumerAddr}`;
+    if(pageNum && pageSize){
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+        url += `&useCount=${useCount}`;
+    }
     return get(url);
 }
 
-export function getRespondServiceWithAddress(providerAddr, pageNum, pageSize, useCount=false){
-    let url = `txs/services/respond-service?pageNum=${pageNum}&pageSize=${pageSize}&providerAddr=${providerAddr}&useCount=${useCount}`;
+export function getRespondServiceWithAddress(providerAddr, pageNum, pageSize, useCount){
+    let url = `txs/services/respond-service?providerAddr=${providerAddr}`;
+    if(pageNum && pageSize){
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+        url += `&useCount=${useCount}`;
+    }
     return get(url);
 }
 
@@ -184,18 +208,30 @@ export function getServiceDetail(serviceName){
     return get(url);
 }
 
-export function getServiceBindingTxList(serviceName, pageNum, pageSize){
-    let url = `txs/services/providers?serviceName=${serviceName}&pageNum=${pageNum}&pageSize=${pageSize}&useCount=true`;
+export function getServiceBindingTxList(serviceName, pageNum, pageSize, useCount){
+    let url = `txs/services/providers?serviceName=${serviceName}`;
+    if(pageNum && pageSize){
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+        url += `&useCount=${useCount}`;
+    }
     return get(url);
 }
 
-export function getServiceTxList(type, status, serviceName,currentPageNum,pageSize,){
-    let url = `txs/services/tx?pageNum=${currentPageNum}&pageSize=${pageSize}&serviceName=${serviceName}&useCount=true`;
+export function getServiceTxList(type, status, serviceName,pageNum,pageSize,useCount){
+    let url = `txs/services/tx?serviceName=${serviceName}`;
     if(type){
         url += `&type=${type}`;
     }
     if(status==TX_STATUS.success || status === TX_STATUS.fail){
         url += `&status=${status}`;
+    }
+    if(pageNum && pageSize){
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+        url += `&useCount=${useCount}`;
     }
 
     return get(url);
@@ -227,10 +263,13 @@ export function getAddressTxList(address, type, status, pageNum, pageSize, useCo
 //     return get(url);
 // }
 
-export function getAllServiceTxList(pageNum, pageSize, iptVal){
-    let url = `txs/services?pageNum=${pageNum}&pageSize=${pageSize}&useCount=true`;
-    if(iptVal){
-        url += `&nameOrDescription=${iptVal}`;
+export function getAllServiceTxList(pageNum, pageSize, useCount, iptVal){
+    let url = `txs/services?nameOrDescription=${iptVal}`;
+    if(pageNum && pageSize){
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+      url += `&useCount=${useCount}`;
     }
     return get(url);
 }
@@ -263,16 +302,28 @@ export async function getServiceContextsByServiceName(requestContextId){
     return res;
 }
 
-export function getRespondServiceRecord(serviceName, provider, pageNum, pageSize){
-    let url = `txs/services/respond?serviceName=${serviceName}&provider=${provider}&pageNum=${pageNum}&pageSize=${pageSize}&useCount=true`;
+export function getRespondServiceRecord(serviceName, provider, pageNum, pageSize, useCount){
+    let url = `txs/services/respond?serviceName=${serviceName}&provider=${provider}`;
+    if(pageNum && pageSize){
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+      url += `&useCount=${useCount}`;
+    }
     return get(url);
 }
 
 export function getNodeInfo(){
     return getFromLcd('node_info');
 }
-export function getIdentities(identity, pageNum, pageSize){
-    let url = `identities?pageNum=${pageNum}&pageSize=${pageSize}&useCount=true&search=${identity}`;
+export function getIdentities(identity, pageNum, pageSize, useCount){
+    let url = `identities?search=${identity}`;
+    if(pageNum && pageSize){
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+      url += `&useCount=${useCount}`;
+    }
     return get(url);
 }
 
@@ -291,22 +342,46 @@ export function getIdentityDetail(identity){
 }
 
 export function getPubkeyListByIdentity(identity, pageNum, pageSize, useCount){
-    let url = `identities/pubkey?id=${identity}&pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}`;
+    let url = `identities/pubkey?id=${identity}`;
+    if(pageNum && pageSize){
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+      url += `&useCount=${useCount}`;
+    }
     return get(url);
 }
 
 export function getCertificateListByIdentity(identity, pageNum, pageSize, useCount){
-    let url = `identities/certificate?id=${identity}&pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}`;
+    let url = `identities/certificate?id=${identity}`;
+    if(pageNum && pageSize){
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+      url += `&useCount=${useCount}`;
+    }
     return get(url);
 }
 
 export function getTxListByIdentity(identity, pageNum, pageSize, useCount){
-    let url = `txs/identity?id=${identity}&pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}`;
+    let url = `txs/identity?id=${identity}`;
+    if(pageNum && pageSize){
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+      url += `&useCount=${useCount}`;
+    }
     return get(url);
 }
 
 export function getIdentityListByAddress(address, pageNum, pageSize, useCount){
-    let url = `identities/address?address=${address||''}&pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}`;
+    let url = `identities/address?address=${address||''}`;
+    if(pageNum && pageSize){
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+      url += `&useCount=${useCount}`;
+    }
     return get(url);
 }
 
@@ -326,12 +401,24 @@ export function getValidatorCommissionInfoApi(){
 }
 
 export function getValidatorsDelegationsApi(valAddress,pageNum,pageSize,useCount){
-    let url = `/staking/validators/${valAddress}/delegations?pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}`;
+    let url = `/staking/validators/${valAddress}/delegations?`;
+    if(pageNum && pageSize){
+      url += `pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+      url += `useCount=${useCount}`;
+    }
     return get(url);
 }
 
 export function getUnbondingDelegationsApi(valAddress,pageNum,pageSize,useCount){
-    let url = `/staking/validators/${valAddress}/unbonding-delegations?pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}`;
+    let url = `/staking/validators/${valAddress}/unbonding-delegations?`;
+    if(pageNum && pageSize){
+      url += `pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+      url += `useCount=${useCount}`;
+    }
     return get(url);
 }
 
@@ -362,13 +449,25 @@ export function getAddressInformationApi(address){
     return get(url);
 }
 
-export function getDelegationListApi(address,pageNum,pageSize,useCount=true){
-    let url = `/staking/delegators/${address}/delegations?pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}`;
+export function getDelegationListApi(address,pageNum,pageSize,useCount){
+    let url = `/staking/delegators/${address}/delegations?`;
+    if(pageNum && pageSize){
+      url += `pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+      url += `useCount=${useCount}`;
+    }
     return get(url);
 }
 
-export function getUnBondingDelegationListApi(address,pageNum,pageSize,useCount=true){
-    let url = `/staking/delegators/${address}/unbonding_delegations?pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}`;
+export function getUnBondingDelegationListApi(address,pageNum,pageSize,useCount){
+    let url = `/staking/delegators/${address}/unbonding_delegations?`;
+    if(pageNum && pageSize){
+      url += `pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+      url += `useCount=${useCount}`;
+    }
     return get(url);
 }
 
@@ -408,14 +507,26 @@ export function stakingBlockInformation(height) {
 }
 
 export function getNativeAssetsListApi(pageNum, pageSize, useCount) {
-    const url = `/asset/tokens?pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}`
-	return get(url)
+    const url = `/asset/tokens?`
+    if(pageNum && pageSize){
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+      url += `&useCount=${useCount}`;
+    }
+    return get(url)
 }
 
 export function getNativeAssetsTxsApi (pageNum, pageSize, useCount, type, symbol) {
-    let url = `/txs/asset?pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}&type=${type}`
+    let url = `/txs/asset?type=${type}`
     if (symbol) {
         url += `&symbol=${symbol}`
+    }
+    if(pageNum && pageSize){
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+      url += `&useCount=${useCount}`;
     }
 	return get(url)
 }
@@ -425,9 +536,15 @@ export function getNativeAssetDetailApi (symbol) {
 	return get(url)
 }
 
-export function getProposalsListApi (status,pageNum="",pageSize="", useCount=true) {
-    let url = `/gov/proposals?pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}&status=${status}`
-	return get(url)
+export function getProposalsListApi (status, pageNum,pageSize, useCount) {
+    let url = `/gov/proposals?status=${status}`
+    if(pageNum && pageSize){
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+      url += `&useCount=${useCount}`;
+    }
+    return get(url)
 }
 
 export function getProposalsDetailApi (id) {
@@ -435,14 +552,26 @@ export function getProposalsDetailApi (id) {
 	return get(url)
 }
 
-export function getProposalDetailVotersApi (id,pageNum, pageSize, useCount,voterType) {
-    let url = `/gov/proposals/${id}/voter?pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}&voterType=${voterType}`
-	return get(url)
+export function getProposalDetailVotersApi (id, pageNum, pageSize, useCount,voterType) {
+    let url = `/gov/proposals/${id}/voter?voterType=${voterType}`
+    if(pageNum && pageSize){
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+      url += `&useCount=${useCount}`;
+    }
+    return get(url)
 }
 
 export function getProposalDetailDepositorApi (id,pageNum, pageSize, useCount) {
-    let url = `/gov/proposals/${id}/depositor?pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}`
-	return get(url)
+    let url = `/gov/proposals/${id}/depositor?`
+    if(pageNum && pageSize){
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+      url += `&useCount=${useCount}`;
+    }
+    return get(url)
 }
 
 export function getGovTxsApi(valAddress, pageNum, pageSize, useCount=true, type='', status='', beginTime='', endTime=''){
@@ -457,12 +586,24 @@ export function getGovTxsApi(valAddress, pageNum, pageSize, useCount=true, type=
 }
 
 export function getDepositedProposalsApi (valAddress,pageNum,pageSize,useCount) {
-    let url = `/staking/validators/${valAddress}/deposit?pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}`;
+    let url = `/staking/validators/${valAddress}/deposit?`;
+    if(pageNum && pageSize){
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+      url += `&useCount=${useCount}`;
+    }
     return get(url);
 }
 
 export function getVotedProposalsApi (valAddress,pageNum,pageSize,useCount) {
-    let url = `/staking/validators/${valAddress}/votes?pageNum=${pageNum}&pageSize=${pageSize}&useCount=${useCount}`;
+    let url = `/staking/validators/${valAddress}/votes?`;
+    if(pageNum && pageSize){
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+    }
+    if(useCount){
+      url += `&useCount=${useCount}`;
+    }
     return get(url);
 }
 

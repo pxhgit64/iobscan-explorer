@@ -95,7 +95,6 @@
     import {TxHelper} from "../helper/TxHelper";
     import {getAllTxTypes, getTxList } from '../service/api';
     import { TX_TYPE,TX_STATUS } from '../constant';
-    import { paginationHelper } from '../helper/IritaHelper'
     export default {
         name : "TxList",
         components : {MPagination, TxListComponent},
@@ -140,7 +139,6 @@
                 pageNum: pageNum ? pageNum : 1,
                 pageSize: pageSize ? pageSize : 30,
                 txTypeArray:[''],
-                helper: new paginationHelper(null, null)
             }
         },
         mounted(){
@@ -168,16 +166,7 @@
                     url += `&endTime=${this.endTime}`;
                 }
                 param == 'init' ? history.replaceState(null, null, url) : history.pushState(null, null, url);
-                let payload = {
-                   type: this.txType,
-                   status: this.statusValue,
-                   address: '',
-                   beginTime: this.beginTime,
-                   endTime: this.endTime
-                }
-                if(this.helper.compare(payload) || param == 'init'){
-                  this.getTxListData(null, null, true)
-                }
+                this.getTxListData(null, null, true)
                 this.getTxListData(this.pageNum, this.pageSize)
             },
             /*filterTxByTxType(e){

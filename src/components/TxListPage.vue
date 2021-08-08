@@ -86,7 +86,7 @@
 	import {pageTitleConfig, TxStatus,decimals,TX_TYPE,TX_TYPE_DISPLAY} from "../constant";
 	import {TxHelper} from '@/helper/TxHelper.js';
 	import {getTypeStakingApi, getTypeDeclarationApi, getDelegationTxsApi, getValidationTxsApi,getGovTxsApi,getTypeGovApi} from "@/service/api";
-	import {converCoin,getMainToken,paginationHelper} from "../helper/IritaHelper";
+	import {converCoin,getMainToken} from "../helper/IritaHelper";
 	import {getAmountByTx} from "../helper/txListAmoutHelper";
 	import DelegationTxsList from '@/components/common/DelegationTxsList'
 	import ValidationTxsList from '@/components/common/ValidationTxsList'
@@ -138,7 +138,6 @@
 				urlParamsShowStartTime: this.getParamsByUrlHash().urlParamShowStartTime ? this.getParamsByUrlHash().urlParamShowStartTime : '',
 				urlParamsShowEndTime: this.getParamsByUrlHash().urlParamShowEndTime ? this.getParamsByUrlHash().urlParamShowEndTime : '',
 				type: '',
-        helper: new paginationHelper(null, null),
 			}
 		},
 		mounted () {
@@ -216,15 +215,7 @@
 				this.currentPageNum = 1;
 				sessionStorage.setItem('txpagenum', 1);
 				history.pushState(null, null, `/#${this.$route.path}?txType=${this.TxType}&status=${this.txStatus}&startTime=${this.urlParamsShowStartTime}&endTime=${this.urlParamsShowEndTime}&page=1`);
-				let payload = {
-            type: this.txType,
-            status: this.txStatus,
-            startTime: this.urlParamsShowStartTime,
-            endTime: this.urlParamsShowEndTime
-        }
-        if(this.helper.compare(payload)){
-          this.getTxListByFilterCondition(null, null, true)
-        }
+        this.getTxListByFilterCondition(null, null, true)
         this.getTxListByFilterCondition(this.currentPageNum, this.pageSize)
 			},
 			resetUrl () {
