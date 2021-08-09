@@ -307,7 +307,7 @@
 					</el-table-column>
 					<el-table-column :min-width="ColumnMinWidth.blockListHeight" :label="$t('ExplorerLang.table.block')">
 						<template slot-scope="scope">
-							<router-link :to="`/block/${scope.row.blockHeight}`">{{scope.row.height}}</router-link>
+							<router-link :to="`/block/${scope.row.height}`">{{scope.row.height}}</router-link>
 						</template>
 					</el-table-column>
 					<el-table-column :min-width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.timestamp')"
@@ -1511,7 +1511,7 @@
 		color: $t_link_c !important;
 	}
 
-	/deep/ .el-table__empty-block {
+	::v-deep .el-table__empty-block {
 		height: 0.48rem !important;
 		min-height: 0.48rem !important;
 	}
@@ -1689,7 +1689,7 @@
 						font-weight: 600;
 					}
 
-					/deep/.el-cascader{
+					::v-deep.el-cascader{
 						width: 1.3rem;
 						margin-right: 0.1rem;
 						.el-input{
@@ -1732,7 +1732,7 @@
 						}
 					}
 
-					/deep/ .el-select {
+					::v-deep .el-select {
 						width: 1.3rem;
 						margin-right: 0.22rem;
 
@@ -2101,7 +2101,7 @@
 						.address_transaction_condition_count {
 						}
 
-						/deep/ .el-select {
+						::v-deep .el-select {
 							.el-input {
 								.el-input__inner {
 								}
@@ -2273,7 +2273,7 @@
 							margin-bottom: 0.1rem;
 						}
 
-						/deep/ .el-select {
+						::v-deep .el-select {
 							width: 100%;
 							margin-bottom: 0.1rem;
 
@@ -2368,7 +2368,7 @@
 						.address_transaction_condition_count {
 						}
 
-						/deep/ .el-select {
+						::v-deep .el-select {
 
 							.el-input {
 								.el-input__inner {
@@ -2461,7 +2461,7 @@
 						.address_transaction_condition_count {
 						}
 
-						/deep/ .el-select {
+						::v-deep .el-select {
 							.el-input {
 								.el-input__inner {
 								}

@@ -181,7 +181,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    /deep/ .hash_status {
+    ::v-deep .hash_status {
         .cell {
             // margin-left: 0.1rem;
         }
@@ -202,10 +202,10 @@ export default {
                     }
                 }
             }
-            /deep/ .cell {
+            ::v-deep .cell {
               // padding: 0;
             }
-            /deep/ .amount {
+            ::v-deep .amount {
               padding-right: 0.2rem;
             }
         }

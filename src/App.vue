@@ -138,7 +138,7 @@ export default {
   .more_icontiaozhuan {
       font-size: 12px !important;
   }
-  td.from,td.hash_status,td.to,td.moniker,td.operator,td.signer,td.address,td.requestId,td.amount {
+  td.from,td.hash_status,td.to,td.moniker,td.operator,td.signer,td.address,td.requestId,td.amount,td.sender {
       font-family: DroidSansMono;
   }
   .table_overflow_x,

@@ -269,7 +269,7 @@
     a {
         color: $t_link_c !important;
     }
-    /deep/ .cell {
+    ::v-deep .cell {
         padding: 0 0.08rem;
     }
     .identity_detail_container {
@@ -338,7 +338,7 @@
                     margin-bottom: 0;
                 }
             }
-            /deep/ .identity_detail_bg{
+            ::v-deep .identity_detail_bg{
                 margin-top:0.48rem;
                 background: $bg_white_c;
                 padding:0.25rem;

@@ -251,36 +251,37 @@ a {
       width: 100%;
       padding: 0 0.15rem 0.15rem;
       background: #fff;
+      box-sizing: border-box;
       .avatar {
         background: $bg_avatar;
       }
 
-      /deep/ .cell {
+      ::v-deep .cell {
         padding: 0;
       }
-      /deep/ .delegators .cell {
+      ::v-deep .delegators .cell {
         // min-width: 1.21rem;
         min-width: 1.17rem;
         padding-right: 0.05rem;
       }
 
-      /deep/ .votingPower .cell {
+      ::v-deep .votingPower .cell {
         min-width: 1.26rem;
       }
-      // /deep/ .bondHeight .cell {
+      // ::v-deep .bondHeight .cell {
       //   padding-right: 0.07rem;
       // }
-      /deep/ .sort_table {
+      ::v-deep .sort_table {
         overflow-x: auto;
         .sort-caret.ascending,
         .sort-caret.descending {
           margin-left: 0.07rem;
         }
       }
-      /deep/ .el-table .descending .sort-caret.descending {
+      ::v-deep .el-table .descending .sort-caret.descending {
         border-top-color: $theme_c;
       }
-      /deep/ .el-table .ascending .sort-caret.ascending {
+      ::v-deep .el-table .ascending .sort-caret.ascending {
         border-bottom-color: $theme_c;
       }
       .pagination_content {
@@ -289,7 +290,7 @@ a {
         justify-content: flex-end;
         margin: 0.1rem 0 0.2rem 0;
       }
-      /deep/ .yiwen_icon {
+      ::v-deep .yiwen_icon {
           vertical-align: -0.1em;
           font-weight: normal;
           margin-top: 0.03rem;
