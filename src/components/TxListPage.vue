@@ -159,7 +159,8 @@
 				this.status.push(item)
 			})
 			this.getType();
-			this.getTxListByFilterCondition()
+      this.getTxListByFilterCondition(null, null, true)
+      this.getTxListByFilterCondition(this.currentPageNum, this.pageSize)
 
 		},
 		methods: {
@@ -208,13 +209,14 @@
 				this.startTime = urlParams.urlParamShowStartTime ? urlParams.urlParamShowStartTime : '';
 				this.endTime = urlParams.urlParamShowEndTime ? urlParams.urlParamShowEndTime : '';
 				history.pushState(null, null, `/#${path}?txType=${urlParams.txType ? urlParams.txType : ''}&status=${urlParams.txStatus ? urlParams.txStatus : ''}&startTime=${urlParams.urlParamShowStartTime ? urlParams.urlParamShowStartTime : ''}&endTime=${urlParams.urlParamShowEndTime ? urlParams.urlParamShowEndTime : ''}&page=${pageNum}`);
-				this.getTxListByFilterCondition();
+				this.getTxListByFilterCondition(this.currentPageNum, this.pageSize);
 			},
 			getFilterTxs () {
 				this.currentPageNum = 1;
 				sessionStorage.setItem('txpagenum', 1);
 				history.pushState(null, null, `/#${this.$route.path}?txType=${this.TxType}&status=${this.txStatus}&startTime=${this.urlParamsShowStartTime}&endTime=${this.urlParamsShowEndTime}&page=1`);
-				this.getTxListByFilterCondition();		
+        this.getTxListByFilterCondition(null, null, true)
+        this.getTxListByFilterCondition(this.currentPageNum, this.pageSize)
 			},
 			resetUrl () {
 				this.value = 'allTxType';
@@ -260,7 +262,8 @@
 			resetFilterCondition () {
 				this.getType();
 				this.resetUrl()
-				this.getTxListByFilterCondition();
+        this.getTxListByFilterCondition(null, null, true)
+        this.getTxListByFilterCondition(this.currentPageNum, this.pageSize)
 			},
 			getType () {
 				switch (this.$route.params.txType) {
@@ -322,12 +325,10 @@
 					console.error(e)
 				}
 			},
-			async getTxListByFilterCondition () {
+			async getTxListByFilterCondition (currentPageNum, pageSize, useCount = false) {
 				let mainToken = await getMainToken()
 				let urlParams = this.getParamsByUrlHash(), param = {};
 				param.type = this.type;
-				param.pageNumber = this.currentPageNum;
-				param.pageSize = this.pageSize;
 				param.txType = urlParams.txType ? urlParams.txType : '';
 				if (urlParams.txStatus) {
 					if (urlParams.txStatus === 'success') {
@@ -340,10 +341,15 @@
 				}
 				param.beginTime = urlParams.filterStartTime ? urlParams.filterStartTime : '';
 				param.endTime = urlParams.filterEndTime ? urlParams.filterEndTime : '';
+        if(currentPageNum && pageSize){
+          param = { ...param, pageNumber: currentPageNum, pageSize }
+        }
 				if (this.type === 'stake') {
-					let res = await getDelegationTxsApi('', param.pageNumber, param.pageSize, true, param.txType, param.status, param.beginTime, param.endTime)
+					let res = await getDelegationTxsApi('', param.pageNumber, param.pageSize, useCount, param.txType, param.status, param.beginTime, param.endTime)
 					try {
-						this.count = res.count;
+            if(useCount){
+              this.count = res.count
+            }
 						if (res && res.data) {
 							this.totalPageNum = Math.ceil((res.data / this.pageSize) === 0 ? 1 : (res.data / this.pageSize));
 							if (res.data) {
@@ -407,9 +413,11 @@
 						console.error(e)
 					}
 				} else if (this.type === 'declaration') {
-					let res = await getValidationTxsApi('', param.pageNumber, param.pageSize, true, param.txType, param.status, param.beginTime, param.endTime)
-					try {
-						this.count = res.count;
+					let res = await getValidationTxsApi('', param.pageNumber, param.pageSize, useCount, param.txType, param.status, param.beginTime, param.endTime)
+					try {		
+            if(useCount){
+              this.count = res.count;
+            }
 						if (res && res.data) {
 							this.totalPageNum = Math.ceil((res.data / this.pageSize) === 0 ? 1 : (res.data / this.pageSize));
 							if (res.data) {
@@ -462,10 +470,12 @@
 					}
 				} else if (this.type === 'gov') {
 					try {
-						let res = await getGovTxsApi('', param.pageNumber, param.pageSize, true, param.txType, param.status, param.beginTime, param.endTime)
+						let res = await getGovTxsApi('', param.pageNumber, param.pageSize, useCount, param.txType, param.status, param.beginTime, param.endTime)
 						this.txList = [];
+            if(useCount){
+              this.count = res.count;
+            }
 						if(res.data && res.data.length > 0) {
-							this.count = res.count
 							for (const item of res.data) {
 								let msgsNumber = item.msgs ? item.msgs.length : 0
 								const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) :'--'

@@ -343,8 +343,9 @@ export default {
       },
     async getIssueToken() {
       try {
-        let res = await this.getNativeAssets(this.issueTokenCurrentPageNum, this.pageSize, true, TX_TYPE.issue_token,this.symbol)
-        this.issueTokenTotalPageNum = res && res.count ? res.count : 0
+        let { count } = await this.getNativeAssets(null, null, true, TX_TYPE.issue_token,this.symbol)
+        this.issueTokenTotalPageNum = count ? count : 0
+        let res = await this.getNativeAssets(this.issueTokenCurrentPageNum, this.pageSize, false, TX_TYPE.issue_token,this.symbol)
         let result = res && res.data ? res.data : null
         if (result) {
           let isShowFee = this.isShowFee
@@ -378,8 +379,9 @@ export default {
     },
     async getEditToken() {
       try {
-        let res = await this.getNativeAssets(this.issueTokenCurrentPageNum, this.pageSize, true, TX_TYPE.edit_token,this.symbol)
-        this.editTokenTotalPageNum = res && res.count ? res.count : 0
+        let { count } = await this.getNativeAssets(null, null, true, TX_TYPE.edit_token,this.symbol)
+        this.editTokenTotalPageNum = count ? count : 0
+        let res = await this.getNativeAssets(this.issueTokenCurrentPageNum, this.pageSize, false, TX_TYPE.edit_token,this.symbol)
         let result = res && res.data ? res.data : null
         if (result) {
           let isShowFee = this.isShowFee
@@ -411,8 +413,9 @@ export default {
     },
     async getMintToken() {
       try {
-        let res = await this.getNativeAssets(this.issueTokenCurrentPageNum, this.pageSize, true, TX_TYPE.mint_token,this.symbol)
-        this.mintTokenTotalPageNum = res && res.count ? res.count : 0
+        let { count } = await this.getNativeAssets(null, null, true, TX_TYPE.mint_token,this.symbol)
+        this.mintTokenTotalPageNum = count ? count : 0
+        let res = await this.getNativeAssets(this.issueTokenCurrentPageNum, this.pageSize, false, TX_TYPE.mint_token,this.symbol)
         let result = res && res.data ? res.data : null
         if (result) {
           let isShowFee = this.isShowFee
@@ -446,8 +449,9 @@ export default {
     },
     async getBurnToken() {
       try {
-        let res = await this.getNativeAssets(this.burnTokenCurrentPageNum, this.pageSize, true, TX_TYPE.burn_token,this.symbol)
-        this.burnTokenTotalPageNum = res && res.count ? res.count : 0
+        let { count } = await this.getNativeAssets(null, null, true, TX_TYPE.burn_token,this.symbol)
+        this.burnTokenTotalPageNum = count ? count : 0
+        let res = await this.getNativeAssets(this.burnTokenCurrentPageNum, this.pageSize, false, TX_TYPE.burn_token,this.symbol)
         let result = res && res.data ? res.data : null
         if (result) {
           let isShowFee = this.isShowFee
@@ -480,8 +484,9 @@ export default {
     },
     async getTransferToken() {
       try {
-        let res = await this.getNativeAssets(this.issueTokenCurrentPageNum, this.pageSize, true, TX_TYPE.transfer_token_owner,this.symbol)
-        this.transferTokenTotalPageNum = res && res.count ? res.count : 0
+        let { count } = await this.getNativeAssets(null, null, true, TX_TYPE.transfer_token_owner,this.symbol)
+        this.transferTokenTotalPageNum = count ? count : 0
+        let res = await this.getNativeAssets(this.issueTokenCurrentPageNum, this.pageSize, false, TX_TYPE.transfer_token_owner,this.symbol)
         let result = res && res.data ? res.data : null
         if (result) {
           let isShowFee = this.isShowFee
@@ -512,7 +517,7 @@ export default {
         console.error(err)
       }
     },
-    async getNativeAssets (pageNum, pageSize, useCount, type, symbol) {
+    async getNativeAssets (pageNum, pageSize, useCount = false, type, symbol) {
       let res;
       if(!symbol) {
         res = await getNativeAssetsTxsApi(pageNum, pageSize, useCount, type)

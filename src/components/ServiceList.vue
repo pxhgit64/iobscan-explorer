@@ -111,17 +111,20 @@
 			}
 		},
 		mounted () {
-			this.getServiceList();
+      this.getServiceList(null, null, true);
+			this.getServiceList(this.pageNum,this.pageSize);
 		},
 		methods:{
-			async getServiceList(){
+			async getServiceList(pageNum, pageSize, useCount = false){
                 try {
-                    let serviceList = await getAllServiceTxList(this.pageNum,this.pageSize, this.iptVal);
+                    let serviceList = await getAllServiceTxList(pageNum, pageSize, useCount, this.iptVal);
                     if(serviceList && serviceList.data){
-                        this.serviceList = serviceList.data;
+                      if(useCount){
                         this.txCount = serviceList.count;
-                        for(let service of this.serviceList){
-                            getServiceBindingByServiceName(service.serviceName).then((bindings)=>{
+                      }
+                        for(let service of serviceList.data){
+                            try {
+                                let bindings = await getServiceBindingByServiceName(service.serviceName);                           
                                 if(bindings.result){
                                     service.bindList.forEach((s)=>{
                                         s.bindTime = Tools.getDisplayDate(s.bindTime);
@@ -136,6 +139,7 @@
                                 }
                             });                           
                         }
+                        this.serviceList = serviceList.data;
                     }
                 }catch (e) {
                     console.error(e);
@@ -152,11 +156,12 @@
 			},
 			pageChange(pageNum) {
 				this.pageNum = pageNum;
-				this.getServiceList();
+        this.getServiceList(this.pageNum,this.pageSize);
 			},
             handleSearchClick(){
                 this.pageNum = 1;
-                this.getServiceList();
+                this.getServiceList(null, null, true)
+                this.getServiceList(this.pageNum,this.pageSize);
             },
             reset(){
                 this.iptVal = '';

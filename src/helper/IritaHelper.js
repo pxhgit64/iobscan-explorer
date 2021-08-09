@@ -7,7 +7,7 @@ import {cfg} from "@/config";
 import md5 from "js-md5";
 
 export function validatePositiveInteger(value){
-	if(value && +value < 1){
+	if(+value === 0 || value && +value < 1){
     return 1
 	} else {
     return value

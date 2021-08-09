@@ -317,13 +317,20 @@
 		async created () {
 			this.mainToken = await getMainToken();
 			this.getValidatorsInfo()
-			this.getDelegations()
-			this.getUnbondingDelegations()
-			this.getDepositedProposals()
-			this.getVotedProposals()
-			this.getDelegationTxs()
-			this.getValidationTxs()
-			this.getGovTxs()
+      this.getDelegations(null, null, true)
+			this.getDelegations(1, this.pageSize, false)
+      this.getUnbondingDelegations(null, null, true)
+			this.getUnbondingDelegations(1, this.pageSize, false)
+      this.getDepositedProposals(null, null, true)
+			this.getDepositedProposals(1, this.pageSize, false)
+      this.getVotedProposals(null, null, true)
+			this.getVotedProposals(1, this.pageSize, false)
+      this.getDelegationTxs(null, null, true)
+			this.getDelegationTxs(1, this.pageSize, false)
+      this.getValidationTxs(null, null, true)
+			this.getValidationTxs(1, this.pageSize, false)
+      this.getGovTxs(null, null, true)
+			this.getGovTxs(1, this.pageSize, false)
 		},
 		mounted () {
 		    this.setMainToken();
@@ -346,15 +353,14 @@
 				this.validationInformation = res
 				this.validatorStatus = Tools.firstWordUpperCase(res.status)
 			},
-			async getDelegations (page = 1) {
-				const res = await getValidatorsDelegationsApi(this.$route.params.param, page, this.pageSize, this.delegations.useCount)
-				if(res.count) {
-					this.delegations.total = res.count;
-					if (this.validationInformation) {
-						this.validationInformation.delegator_num = res.count;
-					}
-					this.delegations.useCount = false;
-				}
+			async getDelegations (pageNum, pageSize, useCount = false) {
+				const res = await getValidatorsDelegationsApi(this.$route.params.param, pageNum, pageSize, useCount)
+        if(useCount){
+          this.delegations.total = res?.count;
+          if (this.validationInformation) {
+            this.validationInformation.delegator_num = res?.count;
+          }
+        }	
 				this.delegations.items = []
 				for (const item of res.data) {
 					let amount = await converCoin(item.amount)
@@ -371,12 +377,11 @@
 				}
 				this.changedHeight()
 			},
-			async getUnbondingDelegations (page = 1) {
-				const res = await getUnbondingDelegationsApi(this.$route.params.param, page, this.pageSize, this.unbondingDelegations.useCount)
-				if(res.count) {
-					this.unbondingDelegations.total = res.count;
-					this.unbondingDelegations.useCount = false;
-				}
+			async getUnbondingDelegations (pageNum, pageSize, useCount = false) {
+				const res = await getUnbondingDelegationsApi(this.$route.params.param, pageNum, pageSize, useCount)
+        if(useCount){
+          this.unbondingDelegations.total = res.count;
+        }	
 				this.unbondingDelegations.items = []
 				for (const item of res.data) {
 					let amount = await converCoin({
@@ -406,9 +411,11 @@
 					}
 				})
 			},
-			async getDelegationTxs (page = 1) {
-				const res = await getDelegationTxsApi(this.$route.params.param, page, this.pageSize)
-				this.delegationTxs.total = res.count
+			async getDelegationTxs (pageNum, pageSize, useCount = false) {
+				const res = await getDelegationTxsApi(this.$route.params.param, pageNum, pageSize, useCount)
+        if(useCount){
+          this.delegationTxs.total = res.count
+        }	
 				this.delegationTxs.currentPage = res.pageNum
 				this.delegationTxs.items = []
 				for (const item of res.data) {
@@ -448,9 +455,11 @@
 					})
 				}
 			},
-			async getValidationTxs (page = 1) {
-				const res = await getValidationTxsApi(this.$route.params.param, page, this.pageSize)
-				this.validationTxs.total = res.count
+			async getValidationTxs (pageNum, pageSize, useCount = false) {
+				const res = await getValidationTxsApi(this.$route.params.param, pageNum, pageSize, useCount)
+        if(useCount){
+          this.validationTxs.total = res.count
+        }
 				this.validationTxs.currentPage = res.pageNum
 				this.validationTxs.items = []
 				for (const item of res.data) {
@@ -481,12 +490,14 @@
 					})
 				}
 			},
-			async getDepositedProposals (page = 1) {
+			async getDepositedProposals (pageNum, pageSize, useCount = false) {
 				try {
-					const res = await getDepositedProposalsApi(this.$route.params.param, page, this.pageSize, true)
+					const res = await getDepositedProposalsApi(this.$route.params.param, pageNum, pageSize, useCount)
 					this.depositedProposals.items = []
 					if(res) {
-						this.depositedProposals.total = res.count
+            if(useCount){
+              this.depositedProposals.total = res.count
+            }	
 						if(res.data && res.data.length > 0) {
 							for (const deposit of res.data) {
 								let deposits = null;
@@ -510,12 +521,14 @@
 					console.error(e)
 				}
 			},
-			async getVotedProposals (page = 1) {
+			async getVotedProposals (pageNum, pageSize, useCount = false) {
 				try {
-					const res = await getVotedProposalsApi(this.$route.params.param, page, this.pageSize, true)
+					const res = await getVotedProposalsApi(this.$route.params.param, pageNum, pageSize, useCount)
 					this.votedProposals.items = []
 					if(res) {
-						this.votedProposals.total = res.count
+            if(useCount){
+              this.votedProposals.total = res.count;
+            }	
 						if(res.data && res.data.length > 0) {
 							this.votedProposals.items = res.data.map(vote => {
 								return {
@@ -533,12 +546,14 @@
 					console.error(e)
 				}
 			},
-			async getGovTxs (page = 1) {
+			async getGovTxs (pageNum, pageSize, useCount = false) {
 				try {
-						let res = await getGovTxsApi(this.$route.params.param, page, this.pageSize);
+						let res = await getGovTxsApi(this.$route.params.param, pageNum, pageSize, useCount);
 						this.govTxs.items = [];
 						if(res.data && res.data.length > 0) {
-							this.govTxs.total = res.count
+              if(useCount){
+                this.govTxs.total = res.count
+              }					
 							this.govTxs.currentPage = res.pageNum
 							for (const item of res.data) {
 								let msgsNumber = item.msgs ? item.msgs.length : 0

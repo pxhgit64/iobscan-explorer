@@ -119,7 +119,8 @@
 						this.owner = nftDetail.owner;
 						this.tokenData = nftDetail.tokenData || '--';
 						this.tokenUri = nftDetail.tokenUri || '--';
-						this.getTokenTx()
+						this.getTokenTx(null, null, true);
+            this.getTokenTx(this.pageNum ,this.pageSize);
 					}
 				}catch (e) {
 					console.error(e)
@@ -127,10 +128,10 @@
 			},
             pageChange(pageNum){
 			    this.pageNum = pageNum;
-			    this.getTokenTx();
+			    this.getTokenTx(this.pageNum ,this.pageSize);
             },
-			async getTokenTx(){
-                const res = await getTokenTxList(this.tokenID,this.$route.query.denom,this.pageNum ,this.pageSize );
+			async getTokenTx(currentPage, pageSize, useCount = false){
+                const res = await getTokenTxList(this.tokenID,this.$route.query.denom, currentPage, pageSize, useCount);
                 try {
                     this.txListByToken = res.data;
                     this.count = res.count;

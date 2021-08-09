@@ -192,12 +192,13 @@
         },
         mounted(){
             this.getServiceInfo();
-            this.getRespondTxList()
+            this.getRespondTxList(null, null, true);
+            this.getRespondTxList(this.txPageNum, this.txPageSize);
         },
         methods : {
             pageChange(pageNum){
                 this.txPageNum = pageNum;
-                this.getRespondTxList();
+                this.getRespondTxList(this.txPageNum, this.txPageSize);
             },
             async getServiceInfo(){
                 try {
@@ -229,13 +230,14 @@
                 }
             },
 
-            async getRespondTxList(){
+            async getRespondTxList(pageNum, pageSize, useCount = false){
                 try {
                     const res = await getRespondServiceRecord(
                         this.$route.params.serviceName,
                         this.$route.params.provider,
-                        this.txPageNum,
-                        this.txPageSize
+                        pageNum, 
+                        pageSize, 
+                        useCount                       
                     );
                     this.txList = res.data.map((item) =>{
                         return {
@@ -249,7 +251,9 @@
                             respondStatus : item.respondStatus,
                         };
                     });
-                    this.txCount = res.count;
+                    if(useCount){
+                      this.txCount = res.count;
+                    }
                     this.txPageNum = Number(res.pageNum);
                     this.txPageSize = Number(res.pageSize);
                 } catch (e) {

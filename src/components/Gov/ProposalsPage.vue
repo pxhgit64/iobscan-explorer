@@ -168,14 +168,15 @@ export default {
   computed: {},
   watch: {},
   created() {
-    this.getProposalsList();
+    this.getProposalsList("", null, null, true);
+    this.getProposalsList("", this.pageNum, this.pageSize);
     this.getProposalsByStatus();
   },
   mounted() {},
   methods: {
-    async getProposalsList() {
+    async getProposalsList(status, currentPage, pageSize, useCount = false) {
       try {
-        let res = await getProposalsListApi("", this.pageNum, this.pageSize, true);
+        let res = await getProposalsListApi(status, currentPage, pageSize, useCount);
         if (res && res.data && res.data.length > 0) {
           this.count = res.count;
           this.tableData = res.data.map(proposal => {
@@ -419,7 +420,7 @@ export default {
         return;
       }
       this.pageNum = pageNum;
-      this.getProposalsList();
+      this.getProposalsList("", this.pageNum, this.pageSize);
       this.getProposalsByStatus();
     },
     formatGrahpChildren(arr, color) {

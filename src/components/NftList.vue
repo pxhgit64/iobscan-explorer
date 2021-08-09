@@ -212,7 +212,7 @@
 			},
 			async getNftList(){
 				try {
-					let denomData = await getDenoms(null, null, null, true);
+					let denomData = await getDenoms(null, null, true, true);
 					if(denomData){
 						let nftList = denomData.data.map(item => {
 							return {

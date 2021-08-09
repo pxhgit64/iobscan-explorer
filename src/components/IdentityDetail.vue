@@ -157,8 +157,10 @@
         },
         mounted(){
             this.getIdentityDetail();
-            this.getPubkeyList();
-            this.getCertificateList();
+            this.getPubkeyList(null, null, true);
+            this.getPubkeyList(this.pubkeyListPageNum, this.pubkeyListPageSize);
+            this.getCertificateList(null, null, true);
+            this.getCertificateList(this.certificateListPageNum, this.certificateListPageSize);
             this.getTxList();
         },
         methods : {
@@ -180,23 +182,25 @@
             pubkeyPageChange(pageNum){
                 if(this.pubkeyListPageNum === pageNum) return;
                 this.pubkeyListPageNum = pageNum;
-                this.getPubkeyList();
+                this.getPubkeyList(this.pubkeyListPageNum, this.pubkeyListPageSize);
             },
             certificatePageChange(pageNum){
                 if(this.certificateListPageNum === pageNum) return;
                 this.certificateListPageNum = pageNum;
-                this.getCertificateList();
+                this.getCertificateList(this.certificateListPageNum, this.certificateListPageSize);
             },
             txPageChange(pageNum){
                 if(this.txListPageNum === pageNum) return;
                 this.txListPageNum = pageNum;
                 this.getTxList();
             },
-            async getPubkeyList(){
+            async getPubkeyList(pageNum, pageSize, useCount = false){
                 try {
-                    const res = await getPubkeyListByIdentity(this.id, this.pubkeyListPageNum, this.pubkeyListPageSize, true);
+                    const res = await getPubkeyListByIdentity(this.id, pageNum, pageSize, useCount);
                     if(res){
-                        this.pubkeyListCount = res.count;
+                        if(useCount){
+                          this.pubkeyListCount = res.count;
+                        } 
                         this.pubkeyList = res.data.map((item) =>{
                             let result = {
                                 pubkey: (item.pubkey || {}).pubkey || '',
@@ -210,12 +214,14 @@
                 } catch (e) {
                     console.error(e);
                 }
-            },
-            async getCertificateList(){
+            },           
+            async getCertificateList(pageNum, pageSize, useCount = false){
                 try {
-                    const res = await getCertificateListByIdentity(this.id, this.certificateListPageNum, this.certificateListPageSize, true);
+                    const res = await getCertificateListByIdentity(this.id, pageNum, pageSize, useCount);
                     if(res){
-                        this.certificateListCount = res.count;
+                        if(useCount){
+                          this.certificateListCount = res.count;
+                        }            
                         this.certificateList = res.data.map((item) =>{
                             let result = {
                                 certificate: item.certificate || '--',

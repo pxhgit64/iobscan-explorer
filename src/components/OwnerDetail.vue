@@ -782,7 +782,7 @@
 				},
 				LargeStringMinHeight: 69,
 				LargeStringLineHeight:23,
-                mainTokenSymbol:'',
+        mainTokenSymbol:'',
 			}
 		},
 		watch: {
@@ -790,9 +790,12 @@
 				this.address = this.$route.params.param;
 				this.getAssetList();
 				this.getTxByAddress();
-				this.getConsumerTxList();
-				this.getRspondRecordList();
-				this.getProviderTxList();
+        this.getConsumerTxList(null, null, true)
+        this.getConsumerTxList(this.consumerTxPageNum, this.consumerTxPageSize)
+        this.getRspondRecordList(null, null, true);
+        this.getRspondRecordList(this.respondRecordPageNum, this.respondRecordPageSize);
+				this.getProviderTxList(null, null, true);
+        this.getProviderTxList(1, 1000);
 			},
 			totalDelegatorReward (totalDelegatorReward) {
 				this.getAssetList()
@@ -831,24 +834,30 @@
 					this.getAddressInformation()
 					this.getRewardsItems()
 					this.getAssetList()
-					this.getDelegationList()
-					this.getUnBondingDelegationList()
-
+          this.getDelegationList(null, null, true)
+					this.getDelegationList(1,1000)
+					this.getUnBondingDelegationList(null, null, true)
+          this.getUnBondingDelegationList(1,1000)
 				}
 				if(moduleSupport('103', prodConfig.navFuncList)){
 					this.tabList.push(this.nftCount)
-					this.getNftList()
+					this.getNftList(null, null, true)
+          this.getNftList(this.assetPageNum, this.assetPageSize)
 				}
 				if(moduleSupport('106', prodConfig.navFuncList)){
 					this.tabList.push(this.identity)
-					this.getIdentityList();
+          this.getIdentityList(null, null, true);
+					this.getIdentityList(this.identityPageNum, this.identityPageSize);
 
 				}
 				if(moduleSupport('105', prodConfig.navFuncList)){
 					this.tabList.push(this.iService)
-					this.getRspondRecordList();
-					this.getProviderTxList();
-					this.getConsumerTxList();
+					this.getRspondRecordList(null, null, true);
+          this.getRspondRecordList(this.respondRecordPageNum, this.respondRecordPageSize);
+          this.getProviderTxList(null, null, true);
+					this.getProviderTxList(1, 1000);   
+          this.getConsumerTxList(null, null, true)
+          this.getConsumerTxList(this.consumerTxPageNum, this.consumerTxPageSize)
 
 				}
 				this.tabList.push(this.tx)
@@ -879,7 +888,8 @@
 								break
 							default:
 								this.isTx =true
-								this.getTxByAddress();
+                this.getTxByAddress(null, null ,true);
+                this.getTxByAddress(this.pageNum, this.pageSize);
 								this.getAllTxType();
 
 						}
@@ -895,13 +905,15 @@
 			},
 			assetPageChange (pageNum) {
 				this.assetPageNum = pageNum;
-				this.getNftList()
+				this.getNftList(this.assetPageNum, this.assetPageSize)
 			},
-			async getNftList () {
+			async getNftList (pageNum, pageSize, useCount = false) {
 				try {
-					let nftData = await getNfts('', '', this.$route.params.param, this.assetPageNum, this.assetPageSize, true);
+					let nftData = await getNfts(pageNum, pageSize, useCount, '', '', this.$route.params.param);
 					if (nftData && nftData.data) {
-						this.assetCount = nftData.count;
+            if(useCount){
+              this.assetCount = nftData.count;
+            }			
 						this.assetArray = nftData.data.map(item => {
 							return {
 								id: item.nft_id,
@@ -922,13 +934,15 @@
 			//身份id列表
 			identityPageChange (pageNum) {
 				this.identityPageNum = pageNum;
-				this.getIdentityList()
+				this.getIdentityList(this.identityPageNum, this.identityPageSize)
 			},
-			async getIdentityList () {
+			async getIdentityList (pageNum, pageSize, useCount = false) {
 				try {
-					const res = await getIdentityListByAddress(this.$route.params.param, this.identityPageNum, this.identityPageSize, true);
+					const res = await getIdentityListByAddress(this.$route.params.param, pageNum, pageSize, useCount);
 					if (res) {
-						this.identityCount = res.count;
+            if(useCount){
+              this.identityCount = res.count;
+            } 
 						this.identityList = res.data.map((item) => {
 							return {
 								id: item.identities_id,
@@ -943,11 +957,13 @@
 				}
 			},
 			//地址相关交易记录
-			async getTxByAddress () {
+			async getTxByAddress(pageNum, pageSize, useCount = false) {
 				try {
-					const res = await getAddressTxList(this.$route.params.param, this.type, this.status, this.pageNum, this.pageSize);
+					const res = await getAddressTxList(this.$route.params.param, this.type, this.status, pageNum, pageSize, useCount);
 					if (res) {
-						this.totalTxNumber = res.count;
+            if(useCount){
+              this.totalTxNumber = res.count;
+            }
 						this.txList = res.data;
 					}
 				} catch (e) {
@@ -957,17 +973,19 @@
 			},
 			pageChange (pageNum) {
 				this.pageNum = pageNum;
-				this.getTxByAddress()
+        this.getTxByAddress(this.pageNum, this.pageSize);
 				this.type ?  this.txTypeArray= TxHelper.getTxTypeArray(this.txTypeOption,this.type) : this.txTypeArray = ['']
 				this.status_temp = this.status
 				this.type_temp = this.type
 			},
 			//服务调用-消费者
-			async getConsumerTxList () {
+			async getConsumerTxList (pageNum, pageSize, useCount = false) {
 				try {
-					const res = await getCallServiceWithAddress(this.$route.params.param, this.consumerTxPageNum, this.consumerTxPageSize, true);
+					const res = await getCallServiceWithAddress(pageNum, pageSize, useCount, this.$route.params.param);
 					if (res) {
-						this.consumerTxCount = res.count;
+             if(useCount){
+              this.consumerTxCount = res.count;
+            }			
 						this.consumerTxList = [];
 						for (let item of res.data) {
 							let result = {
@@ -1022,14 +1040,16 @@
 			},
 			consumerTxPageChange (pageNum) {
 				this.consumerTxPageNum = pageNum;
-				this.getConsumerTxList()
+				this.getConsumerTxList(this.consumerTxPageNum, this.consumerTxPageSize)
 			},
 			//响应记录
-			async getRspondRecordList () {
+			async getRspondRecordList (pageNum, pageSize, useCount = false) {
 				try {
-					const res = await getRespondServiceRecord('', this.$route.params.param, this.respondRecordPageNum, this.respondRecordPageSize);
+					const res = await getRespondServiceRecord('', this.$route.params.param, pageNum, pageSize, useCount);
 					if (res) {
-						this.respondRecordCount = res.count;
+            if(useCount){
+              this.respondRecordCount = res.count;
+            }
 						this.respondRecordList = (res.data || []).map(tx => {
 							tx.type = TX_TYPE_DISPLAY[tx.type]
 							return tx
@@ -1043,12 +1063,12 @@
 			},
 			respondRecordPageChange (pageNum) {
 				this.respondRecordPageNum = pageNum;
-				this.getRspondRecordList()
+        this.getRspondRecordList(this.respondRecordPageNum, this.respondRecordPageSize);
 			},
 			//服务调用-提供者
-			async getProviderTxList () {
+			async getProviderTxList (pageNum, pageSize, useCount = false) {
 				try {
-					const res = await getRespondServiceWithAddress(this.$route.params.param, 1, 1000);
+					const res = await getRespondServiceWithAddress(this.$route.params.param, pageNum, pageSize, useCount);
 					if (res) {
 						this.providerTxList = [];
 						for (let item of res.data) {
@@ -1166,7 +1186,8 @@
 				this.type = this.type_temp;
 				this.status = this.status_temp;
 				this.pageNum = 1;
-				this.getTxByAddress();
+        this.getTxByAddress(null, null, true)
+        this.getTxByAddress(this.pageNum, this.pageSize)
 			},
 			resetFilterCondition () {
 				this.type_temp = '';
@@ -1174,7 +1195,8 @@
 				this.type = '';
 				this.status = '';
 				this.pageNum = 1;
-				this.getTxByAddress();
+				this.getTxByAddress(null, null ,true);
+        this.getTxByAddress(this.pageNum, this.pageSize);
 				this.txTypeArray=['']
 			},
 			async getAllTxType () {
@@ -1285,9 +1307,9 @@
 				}
 				return newArray
 			},
-			async getDelegationList () {
+			async getDelegationList (pageNum, pageSize, useCount = false) {
 				try {
-					const {data: res} = await getDelegationListApi(this.$route.params.param,1,1000)
+					const {data: res} = await getDelegationListApi(this.$route.params.param,pageNum, pageSize, useCount)
 					if (res && res.length > 0) {
 						let copyResult = JSON.parse(JSON.stringify(res));
 						this.delegationPageNationArrayData = this.pageNation(copyResult);
@@ -1296,7 +1318,9 @@
 						} else {
 							this.flDelegationNextPage = false;
 						}
-						this.delegationCountNum = res.length;
+            if(useCount){
+              this.delegationCountNum = res.count;
+            }	
 						this.delegationPageChange(this.delegationCurrentPage);
 						if (res.length > 0) {
 							// res.forEach(async (item) => {
@@ -1329,9 +1353,9 @@
 					console.error(e)
 				}
 			},
-			async getUnBondingDelegationList () {
+			async getUnBondingDelegationList (pageNum, pageSize, useCount = false) {
 				try {
-					const {data: res} = await getUnBondingDelegationListApi(this.$route.params.param,1,1000)
+					const {data: res} = await getUnBondingDelegationListApi(this.$route.params.param, pageNum, pageSize, useCount)
 					if (res && res.length > 0) {
 						let copyResult = JSON.parse(JSON.stringify(res));
 						this.unBondingDelegationPageNationArrayData = this.pageNation(copyResult);
@@ -1340,7 +1364,9 @@
 						} else {
 							this.flUnBondingDelegationNextPage = false
 						}
-						this.unBondingDelegationCountNum = res.length;
+            if(useCount){
+              this.unBondingDelegationCountNum = res.count;
+            }
 						this.unBondingDelegationPageChange(this.unBondingDelegationCurrentPage);
 						if (res.length > 0) {
 							// res.forEach(async (item) => {

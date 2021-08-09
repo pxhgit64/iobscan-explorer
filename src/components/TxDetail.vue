@@ -257,7 +257,8 @@ export default {
             case TX_TYPE.recv_packet:
               break
           }
-          this.relevanceTxList()
+          this.relevanceTxList(null, null, true)
+          this.relevanceTxList(this.pageNum, this.pageSize)
         }
       } catch (e) {
           console.error(e)
@@ -272,9 +273,9 @@ export default {
     pageChange(pageNum) {
       if (this.pageNum === pageNum) return
       this.pageNum = pageNum
-      this.relevanceTxList()
+      this.relevanceTxList(this.pageNum, this.pageSize)
     },
-    async relevanceTxList() {
+    async relevanceTxList(pageNum, pageSize, useCount = false) {
       let type = ''
       switch (this.txType) {
         case TX_TYPE.call_service:
@@ -286,9 +287,11 @@ export default {
       }
       if (type && type.length && this.requestContextId && this.requestContextId.length) {
         try {
-          const res = await getRelevanceTxList(type, this.requestContextId, this.pageNum, this.pageSize, true)
+          const res = await get(type, this.requestContextId, pageNum, pageSize, useCount)
           if (res) {
-            this.txCount = res.count
+            if(useCount){
+              this.txCount = res.count
+            }
             this.relevanceTxs = res.data.map(tx => {
               let result = {
                 status: tx.status,
