@@ -137,11 +137,11 @@
                                         })
                                     })
                                 }
-                            });                           
+                            } catch(e){};                           
                         }
                         this.serviceList = serviceList.data;
                     }
-                }catch (e) {
+                } catch (e) {
                     console.error(e);
                     // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
                 }
