@@ -566,10 +566,10 @@ export function getProposalDetailVotersApi (id, pageNum, pageSize, useCount,vote
 export function getProposalDetailDepositorApi (id,pageNum, pageSize, useCount) {
     let url = `/gov/proposals/${id}/depositor?`
     if(pageNum && pageSize){
-      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+      url += `pageNum=${pageNum}&pageSize=${pageSize}`
     }
     if(useCount){
-      url += `&useCount=${useCount}`;
+      url += `useCount=${useCount}`;
     }
     return get(url)
 }

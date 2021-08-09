@@ -571,7 +571,17 @@ export default {
         if (res) {
           if(useCount){
             this.voterCount = res.count
-          }
+            let statistical = res.statistical
+            if (statistical) {
+              this.filterTabArr.forEach(item => {
+                item.value = statistical[item.key]
+              })
+              this.voteDetailsYes = statistical.yes
+              this.voteDetailsNo = statistical.no
+              this.voteDetailsNoWithVeto = statistical.no_with_veto
+              this.voteDetailsAbstain = statistical.abstain
+            }
+          } 
           this.voterData = []
           if (res.data && res.data.length > 0) {
             this.voterData = res.data.map(voter => {
@@ -586,17 +596,7 @@ export default {
                 time: voter.timestamp ? Tools.getDisplayDate(voter.timestamp) : '--',
               }
             })
-          }
-          let statistical = res.statistical
-          if (statistical) {
-            this.filterTabArr.forEach(item => {
-              item.value = statistical[item.key]
-            })
-            this.voteDetailsYes = statistical.yes
-            this.voteDetailsNo = statistical.no
-            this.voteDetailsNoWithVeto = statistical.no_with_veto
-            this.voteDetailsAbstain = statistical.abstain
-          }
+          }          
         }
       } catch (e) {
         console.error(e)
