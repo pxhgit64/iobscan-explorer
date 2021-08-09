@@ -430,7 +430,7 @@
                         .tooltip_content {
 							padding: 0 0 0 0.1rem;
                         }
-                        /deep/.el-cascader{
+                        ::v-deep.el-cascader{
                             width: 1.3rem;
                             margin-right: 0.1rem;
                             .el-input{
@@ -472,7 +472,7 @@
                                 }
                             }
                         }
-                        /deep/ .el-select {
+                        ::v-deep .el-select {
                             width: 1.3rem;
                             margin-right: 0.1rem;
                             .el-input {
@@ -504,7 +504,7 @@
 
 
                         }
-                        /deep/ .el-date-editor {
+                        ::v-deep .el-date-editor {
                             width: 1.3rem;
                             .el-icon-circle-close {
                                 display: none !important;

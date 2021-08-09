@@ -48,7 +48,7 @@ a {
       font-size: $s18;
       font-weight: bold;
     }
-    /deep/ .txs_title {
+    ::v-deep .txs_title {
       margin-left: 0 !important;
     }
   }

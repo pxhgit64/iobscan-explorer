@@ -567,7 +567,7 @@ export default {
 
 <style lang="scss" scoped>
 
-// /deep/ th.is-right {
+// ::v-deep th.is-right {
 //   text-align: center;
 // }
 

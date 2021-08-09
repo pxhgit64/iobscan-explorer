@@ -53,21 +53,22 @@
                         </el-table-column>
                         <el-table-column :min-width="ColumnMinWidth.available" :label="$t('ExplorerLang.table.isAvailable')">
                             <template slot-scope="scope">
-                            <div class="service_information_available_container">
-                                <img class="service_tx_status"
-                                    v-if="scope.row.available"
-                                    src="../assets/true.png"/>
-                                <img class="service_tx_status"
-                                    v-else
-                                    src="../assets/false.png"/>
-                                <span>
-                                    {{scope.row.isAvailable}}
-                                </span>
-                            </div>
-                        </template>
+                                <div class="service_information_available_container">
+                                    <img class="service_tx_status"
+                                        v-if="(typeof scope.row.available !== 'undefined')"
+                                        :src="require(`../assets/${scope.row.available?'true':'false'}.png`)"/>
+                                    <span>
+                                        {{(typeof scope.row.available == 'undefined')?'--':(scope.row.available?'True':'False')}}
+                                    </span>
+                                </div>
+                            </template>
                         </el-table-column>
                         <!-- <el-table-column :min-width="ColumnMinWidth.price" :label="$t('ExplorerLang.table.price')" prop="price"></el-table-column> -->
-                        <el-table-column :min-width="ColumnMinWidth.qos" :label="$t('ExplorerLang.table.minBlock')" prop="qos"></el-table-column>
+                        <el-table-column :min-width="ColumnMinWidth.qos" :label="$t('ExplorerLang.table.minBlock')">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.qos||'--'}}</span>
+                            </template>
+                        </el-table-column>
                         <el-table-column :width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.bindTime')" prop="bindTime"></el-table-column>
                     </el-table>
                 </div>	
@@ -129,21 +130,16 @@
                                         s.bindTime = Tools.getDisplayDate(s.bindTime);
                                         bindings.result.forEach((b)=>{
                                             if(s.provider === b.provider){
-                                                s.isAvailable = b.available ? 'True' : 'False';
                                                 s.available = b.available;
                                                 s.price = JSON.parse(b.pricing).price;
-                                                s.qos = `${b.qos} ${this.$t('ExplorerLang.unit.blocks')}`;
+                                                s.qos = `${b.qos??'--'} ${this.$t('ExplorerLang.unit.blocks')}`;
                                             }
                                         })
                                     })
                                 }
-                            } catch (e) {
-                                console.error(e)
-                            }
+                            });                           
                         }
                         this.serviceList = serviceList.data;
-   
-
                     }
                 }catch (e) {
                     console.error(e);
@@ -192,7 +188,7 @@
                 display: flex;
                 align-items: center;
                 .el-select{
-                    /deep/ .el-input{
+                    ::v-deep .el-input{
                         width: 1.8rem;
                         .el-input__inner{
                             padding-left: 0.07rem;
@@ -213,7 +209,7 @@
                     }
                 }
 
-                /deep/ .el-input{
+                ::v-deep .el-input{
                     min-width: 3.5rem;
                     .el-input__inner{
                         padding-left: 0.07rem;
@@ -242,7 +238,7 @@
                 display: flex;
                 .el-select{
                     // margin-bottom:0.1rem;
-                    /deep/ .el-input{
+                    ::v-deep .el-input{
                         //width: 1.8rem;
                         .el-input__inner{
                             padding-left: 0.07rem;
@@ -262,7 +258,7 @@
                     }
                 }
 
-                /deep/ .el-input{
+                ::v-deep .el-input{
                     // margin-bottom:0.1rem;
                     .el-input__inner{
                         padding-left: 0.07rem;
@@ -294,7 +290,7 @@
 		.service_list_content_wrap{
 			margin: 0 auto;
             padding:0 0.15rem;
-            /deep/.el-table{
+            ::v-deep.el-table{
                 .cell{
                     padding-left:0 !important;
                 }
@@ -330,7 +326,7 @@
 			}
             .nft_list_header_content{
                 .el-select{
-                    /deep/ .el-input{
+                    ::v-deep .el-input{
                         .el-input__inner{
                             font-size: $s14 !important;
                             &::-webkit-input-placeholder{
@@ -343,7 +339,7 @@
                     }
                 }
 
-                /deep/ .el-input{
+                ::v-deep .el-input{
                     .el-input__inner{
                         font-size: $s14 !important;
                         border: 0.01rem solid $bd_first_c;
@@ -377,7 +373,7 @@
                     display: flex;
 
 
-                    /deep/.el-select{
+                    ::v-deep.el-select{
                         width: 1.3rem;
                         .el-input{
                             .el-input__inner{
@@ -407,7 +403,7 @@
                         }
 
                     }
-                    /deep/.el-date-editor{
+                    ::v-deep.el-date-editor{
                         width: 1.3rem;
                         .el-icon-circle-close{
                             display: none !important;

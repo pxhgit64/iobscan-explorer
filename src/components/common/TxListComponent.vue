@@ -342,7 +342,7 @@
 </script>
 
 <style scoped lang="scss">
-    /deep/.columns-fit {
+    ::v-deep.columns-fit {
         // .el-table__header-wrapper, .el-table__body-wrapper {
         //     visibility: hidden;
         // }
@@ -367,7 +367,7 @@
     a {
         color: $t_link_c !important;
     }
-    /deep/ .hash_status {
+    ::v-deep .hash_status {
         .cell {
             // margin-left: 0.05rem;
         }
@@ -388,24 +388,24 @@
             justify-content: flex-end;
             margin: 0.1rem 0 0.2rem 0;
         }
-        /deep/ .cell {
+        ::v-deep .cell {
             // padding: 0 0.04rem;
         }
     }
-    /deep/ .hash_status .cell {
+    ::v-deep .hash_status .cell {
         padding-left:20px;
         padding-right: 0px;
     }
-    /deep/ .amount  .cell {
+    ::v-deep .amount  .cell {
         padding-right:10px;
     }
-    /deep/ .from .cell {
+    ::v-deep .from .cell {
         padding-left:40px;
     }
-    /deep/ .fee  .cell {
+    ::v-deep .fee  .cell {
         padding-right: 28px;
     }
-    /deep/ .block  .cell {
+    ::v-deep .block  .cell {
         padding-left: 0px;
     }
 </style>
