@@ -82,18 +82,18 @@ export function getRangeBlockList(start, end, useCount=false){
 }
 
 export function getDenoms(pageNum, pageSize, useCount, needAll, denomNameOrId){
-	let url = `denoms`;
+	let url = `denoms?`;
 	if(needAll){
-	    url += `?needAll=true`;
-    }else{
-	    url += `?pageNum=${pageNum}&pageSize=${pageSize}`;
-	    if(denomNameOrId){
-	        url += `&denomNameOrId=${denomNameOrId}`;
-        }
+	    url += `needAll=${needAll}`;
+  } else if(pageNum && pageSize){
+    url += `pageNum=${pageNum}&pageSize=${pageSize}`;
+    if(denomNameOrId){
+      url += `&denomNameOrId=${denomNameOrId}`;
     }
-    if(useCount){
-      url += `&useCount=${useCount}`;
-    }
+  }
+  if(useCount){
+    url += `&useCount=${useCount}`;
+  }
 	return get(url);
 }
 
@@ -406,10 +406,10 @@ export function getValidatorCommissionInfoApi(){
 export function getValidatorsDelegationsApi(valAddress,pageNum,pageSize,useCount){
     let url = `/staking/validators/${valAddress}/delegations?`;
     if(pageNum && pageSize){
-      url += `pageNum=${pageNum}&pageSize=${pageSize}`
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
     }
     if(useCount){
-      url += `useCount=${useCount}`;
+      url += `&useCount=${useCount}`;
     }
     return get(url);
 }
@@ -417,10 +417,10 @@ export function getValidatorsDelegationsApi(valAddress,pageNum,pageSize,useCount
 export function getUnbondingDelegationsApi(valAddress,pageNum,pageSize,useCount){
     let url = `/staking/validators/${valAddress}/unbonding-delegations?`;
     if(pageNum && pageSize){
-      url += `pageNum=${pageNum}&pageSize=${pageSize}`
+      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
     }
     if(useCount){
-      url += `useCount=${useCount}`;
+      url += `&useCount=${useCount}`;
     }
     return get(url);
 }
@@ -510,7 +510,7 @@ export function stakingBlockInformation(height) {
 }
 
 export function getNativeAssetsListApi(pageNum, pageSize, useCount) {
-    const url = `/asset/tokens?`
+    let url = `/asset/tokens?`
     if(pageNum && pageSize){
       url += `&pageNum=${pageNum}&pageSize=${pageSize}`
     }

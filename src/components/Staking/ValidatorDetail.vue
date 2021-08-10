@@ -317,20 +317,15 @@
 		async created () {
 			this.mainToken = await getMainToken();
 			this.getValidatorsInfo()
-      this.getDelegations(null, null, true)
-			this.getDelegations(1, this.pageSize, false)
-      this.getUnbondingDelegations(null, null, true)
-			this.getUnbondingDelegations(1, this.pageSize, false)
-      this.getDepositedProposals(null, null, true)
-			this.getDepositedProposals(1, this.pageSize, false)
-      this.getVotedProposals(null, null, true)
-			this.getVotedProposals(1, this.pageSize, false)
+			this.getDelegations(1, this.pageSize, true)
+			this.getUnbondingDelegations(1, this.pageSize, true)
+			this.getDepositedProposals(1, this.pageSize, true)
+			this.getVotedProposals(1, this.pageSize, true)
       this.getDelegationTxs(null, null, true)
-			this.getDelegationTxs(1, this.pageSize, false)
+			this.getDelegationTxs(1, this.pageSize)
       this.getValidationTxs(null, null, true)
-			this.getValidationTxs(1, this.pageSize, false)
-      this.getGovTxs(null, null, true)
-			this.getGovTxs(1, this.pageSize, false)
+			this.getValidationTxs(1, this.pageSize)
+			this.getGovTxs(1, this.pageSize, true)
 		},
 		mounted () {
 		    this.setMainToken();
@@ -341,19 +336,19 @@
 					this[key](page)
 				}
 			},
-            async setMainToken(){
-                let mainToken = await getMainToken();
-                if(mainToken && mainToken.symbol){
-                    this.mainTokenSymbol = mainToken.symbol.toUpperCase();
-                }
-            },
+      async setMainToken(){
+          let mainToken = await getMainToken();
+          if(mainToken && mainToken.symbol){
+              this.mainTokenSymbol = mainToken.symbol.toUpperCase();
+          }
+      },
 			async getValidatorsInfo () {
 				let res = await getValidatorsInfoApi(this.$route.params.param)
 				res.delegator_num = this.delegations.total ?? '--';
 				this.validationInformation = res
 				this.validatorStatus = Tools.firstWordUpperCase(res.status)
 			},
-			async getDelegations (pageNum, pageSize, useCount = false) {
+			async getDelegations(pageNum, pageSize = 5, useCount = false) {
 				const res = await getValidatorsDelegationsApi(this.$route.params.param, pageNum, pageSize, useCount)
         if(useCount){
           this.delegations.total = res?.count;
@@ -377,7 +372,7 @@
 				}
 				this.changedHeight()
 			},
-			async getUnbondingDelegations (pageNum, pageSize, useCount = false) {
+			async getUnbondingDelegations (pageNum, pageSize = 5, useCount = false) {
 				const res = await getUnbondingDelegationsApi(this.$route.params.param, pageNum, pageSize, useCount)
         if(useCount){
           this.unbondingDelegations.total = res.count;
@@ -411,7 +406,7 @@
 					}
 				})
 			},
-			async getDelegationTxs (pageNum, pageSize, useCount = false) {
+			async getDelegationTxs (pageNum, pageSize = 5, useCount = false) {
 				const res = await getDelegationTxsApi(this.$route.params.param, pageNum, pageSize, useCount)
         if(useCount){
           this.delegationTxs.total = res.count
@@ -455,7 +450,7 @@
 					})
 				}
 			},
-			async getValidationTxs (pageNum, pageSize, useCount = false) {
+			async getValidationTxs (pageNum, pageSize = 5, useCount = false) {
 				const res = await getValidationTxsApi(this.$route.params.param, pageNum, pageSize, useCount)
         if(useCount){
           this.validationTxs.total = res.count
@@ -490,7 +485,7 @@
 					})
 				}
 			},
-			async getDepositedProposals (pageNum, pageSize, useCount = false) {
+			async getDepositedProposals (pageNum, pageSize = 5, useCount = false) {
 				try {
 					const res = await getDepositedProposalsApi(this.$route.params.param, pageNum, pageSize, useCount)
 					this.depositedProposals.items = []
@@ -521,7 +516,7 @@
 					console.error(e)
 				}
 			},
-			async getVotedProposals (pageNum, pageSize, useCount = false) {
+			async getVotedProposals (pageNum, pageSize = 5, useCount = false) {
 				try {
 					const res = await getVotedProposalsApi(this.$route.params.param, pageNum, pageSize, useCount)
 					this.votedProposals.items = []
@@ -546,7 +541,7 @@
 					console.error(e)
 				}
 			},
-			async getGovTxs (pageNum, pageSize, useCount = false) {
+			async getGovTxs (pageNum, pageSize = 5, useCount = false) {
 				try {
 						let res = await getGovTxsApi(this.$route.params.param, pageNum, pageSize, useCount);
 						this.govTxs.items = [];

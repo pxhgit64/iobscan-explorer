@@ -137,11 +137,12 @@
 			}
 		},
 		mounted(){
-			this.getNftList();
-			this.getNftsByFilter()
-            if(this.$store.state.tempDenomId){
-                this.$store.commit('SET_TEMP_DENOM_ID','');
-            }
+			this.getNftList(null, null, true, true);
+      this.getNftsByFilter(null, null, true);
+      this.getNftsByFilter(this.currentPageNum, this.pageSize);
+      if(this.$store.state.tempDenomId){
+        this.$store.commit('SET_TEMP_DENOM_ID','');
+      }
 		},
 		computed: {
 			isShowPlurality() {
@@ -161,20 +162,22 @@
 				this.currentPageNum = 1;
 				this.tokenId = '';
 				this.owner = '';
-				this.getNftsByFilter()
+        this.getNftsByFilter(null, null, true);
+        this.getNftsByFilter(this.currentPageNum, this.pageSize);
 			},
 			pageChange(pageNum){
 				this.currentPageNum = pageNum;
 				// if(sessionStorage.getItem('selectDenom')){
 				// 	this.denom = sessionStorage.getItem('selectDenom')
 				// }
-				this.getNftsByFilter()
+        this.getNftsByFilter(this.currentPageNum, this.pageSize);
 			},
-            handleSearchClick(){
-                this.currentPageNum = 1;
-			    this.getNftsByFilter();
-            },
-			async getNftsByFilter(){
+      handleSearchClick(){
+          this.currentPageNum = 1;
+          this.getNftsByFilter(null, null, true);
+			    this.getNftsByFilter(this.currentPageNum, this.pageSize);
+      },
+			async getNftsByFilter(pageNum, pageSize, useCount = false){
 				if (Tools.isBech32(this.input)) {
 					this.owner = this.input;
 				}
@@ -182,9 +185,11 @@
 					this.tokenId =  this.input;
 				}
 				try {
-					let nftData = await getNfts(this.denom, this.tokenId, this.owner, this.currentPageNum, this.pageSize, true);
+					let nftData = await getNfts(pageNum, pageSize, useCount, this.denom, this.tokenId, this.owner);
 					if(nftData && nftData.data){
-						this.allCount = nftData.count;
+            if(useCount){
+              this.allCount = nftData.count;
+            }
 						nftData.data.forEach(item => {
 							item.Time = (item.last_block_time ? item.last_block_time : '')
 							item.last_block_time = (item.last_block_time ? Tools.formatAge(Tools.getTimestamp(),item.last_block_time*1000, this.$t('ExplorerLang.table.suffix')) : '--')
@@ -210,9 +215,9 @@
 				}
 				return Tools.formatValidatorAddress(address)
 			},
-			async getNftList(){
+			async getNftList(pageNum, pageSize, useCount = false, needAll = false){
 				try {
-					let denomData = await getDenoms(null, null, true, true);
+					let denomData = await getDenoms(pageNum, pageSize, useCount, needAll);
 					if(denomData){
 						let nftList = denomData.data.map(item => {
 							return {
