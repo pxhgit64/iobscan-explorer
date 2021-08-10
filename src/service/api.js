@@ -140,12 +140,15 @@ export function getAllServiceTxTypes(){
 
 export function getTxList(params){
     const {txType, status, beginTime, endTime, pageNum, pageSize, useCount} = params;
-    let url = `txs?type=${txType}`;
+    let url = `txs?`;
     if(pageNum && pageSize){
-      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+      url += `pageNum=${pageNum}&pageSize=${pageSize}`
     }
     if(useCount){
-        url += `&useCount=${useCount}`;
+        url += `useCount=${useCount}`;
+    }
+    if(txType){
+        url += `&type=${txType}`;
     }
     if(status){
         url += `&status=${status}`;
@@ -566,10 +569,10 @@ export function getProposalDetailVotersApi (id, pageNum, pageSize, useCount,vote
 export function getProposalDetailDepositorApi (id,pageNum, pageSize, useCount) {
     let url = `/gov/proposals/${id}/depositor?`
     if(pageNum && pageSize){
-      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+      url += `pageNum=${pageNum}&pageSize=${pageSize}`
     }
     if(useCount){
-      url += `&useCount=${useCount}`;
+      url += `useCount=${useCount}`;
     }
     return get(url)
 }
