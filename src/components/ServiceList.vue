@@ -137,7 +137,9 @@
                                         })
                                     })
                                 }
-                            } catch(e){};                           
+                            } catch(e) {
+                                console.error(e);
+                            };                           
                         }
                         this.serviceList = serviceList.data;
                     }
