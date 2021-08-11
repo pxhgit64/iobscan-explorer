@@ -375,7 +375,7 @@
 			async getUnbondingDelegations (pageNum, pageSize = 5, useCount = false) {
 				const res = await getUnbondingDelegationsApi(this.$route.params.param, pageNum, pageSize, useCount)
         if(useCount){
-          this.unbondingDelegations.total = res.count;
+          this.unbondingDelegations.total = res?.count;
         }	
 				this.unbondingDelegations.items = []
 				for (const item of res.data) {
@@ -409,7 +409,7 @@
 			async getDelegationTxs (pageNum, pageSize = 5, useCount = false) {
 				const res = await getDelegationTxsApi(this.$route.params.param, pageNum, pageSize, useCount)
         if(useCount){
-          this.delegationTxs.total = res.count
+          this.delegationTxs.total = res?.count
         }	
 				this.delegationTxs.currentPage = res.pageNum
 				this.delegationTxs.items = []
@@ -453,7 +453,7 @@
 			async getValidationTxs (pageNum, pageSize = 5, useCount = false) {
 				const res = await getValidationTxsApi(this.$route.params.param, pageNum, pageSize, useCount)
         if(useCount){
-          this.validationTxs.total = res.count
+          this.validationTxs.total = res?.count
         }
 				this.validationTxs.currentPage = res.pageNum
 				this.validationTxs.items = []

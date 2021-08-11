@@ -118,10 +118,10 @@
 			async getServiceList(pageNum, pageSize, useCount = false){
                 try {
                     let serviceList = await getAllServiceTxList(pageNum, pageSize, useCount, this.iptVal);
-                    if(serviceList && serviceList.data){
-                      if(useCount){
-                        this.txCount = serviceList.count;
-                      }
+                    if(useCount){
+                      this.txCount = serviceList?.count;
+                    }
+                    if(serviceList && serviceList.data){          
                         for(let service of serviceList.data){
                             try {
                                 let bindings = await getServiceBindingByServiceName(service.serviceName);                           

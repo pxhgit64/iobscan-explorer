@@ -910,10 +910,10 @@
 			async getNftList (pageNum, pageSize, useCount = false) {
 				try {
 					let nftData = await getNfts(pageNum, pageSize, useCount, '', '', this.$route.params.param);
-					if (nftData && nftData.data) {
-            if(useCount){
-              this.assetCount = nftData.count;
-            }			
+					if(useCount){
+              this.assetCount = nftData?.count;
+            }	
+          if (nftData && nftData.data) { 		
 						this.assetArray = nftData.data.map(item => {
 							return {
 								id: item.nft_id,
@@ -1319,7 +1319,7 @@
 							this.flDelegationNextPage = false;
 						}
             if(useCount){
-              this.delegationCountNum = res.count;
+              this.delegationCountNum = res?.count;
             }	
 						this.delegationPageChange(this.delegationCurrentPage);
 						if (res.length > 0) {
@@ -1365,7 +1365,7 @@
 							this.flUnBondingDelegationNextPage = false
 						}
             if(useCount){
-              this.unBondingDelegationCountNum = res.count;
+              this.unBondingDelegationCountNum = res?.count;
             }
 						this.unBondingDelegationPageChange(this.unBondingDelegationCurrentPage);
 						if (res.length > 0) {
