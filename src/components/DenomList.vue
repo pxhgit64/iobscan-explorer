@@ -107,7 +107,8 @@
             }
         },
         mounted(){
-            this.getDenoms()
+          this.getDenoms(null, null, true)
+          this.getDenoms(this.pageNum, this.pageSize)
         },
         computed: {
 			isShowPlurality() {
@@ -118,7 +119,8 @@
             reset(){
                 this.input = '';
                 this.pageNum = 1;
-                this.getDenoms()
+                this.getDenoms(null, null, true)
+                this.getDenoms(this.pageNum, this.pageSize)
             },
             handleNftCountClick(denomId){
                 this.$router.push(`/nftAsset?denomId=${denomId}`);
@@ -126,15 +128,16 @@
             },
             pageChange(pageNum){
                 this.pageNum = pageNum;
-                this.getDenoms()
+                this.getDenoms(this.pageNum, this.pageSize)
             },
             handleSearchClick(){
                 this.pageNum = 1;
-                this.getDenoms();
+                this.getDenoms(null, null, true)
+                this.getDenoms(this.pageNum, this.pageSize)
             },
-            async getDenoms(){
+            async getDenoms(pageNum, pageSize, useCount = false, needAll = false){
                 try {
-                    const res = await getDenoms(this.pageNum, this.pageSize, this.input, false);
+                    const res = await getDenoms(pageNum, pageSize, useCount, needAll, this.input);
                     if(res && res.data && Array.isArray(res.data) && res.data.length > 0){
                         this.denomList = res.data.map((denom)=>{
                             return {
