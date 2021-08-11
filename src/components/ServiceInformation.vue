@@ -378,6 +378,9 @@
             async getServiceBindingList(pageNum, pageSize, useCount = false){
                 try {
                     const serviceList = await getServiceBindingTxList(this.$route.query.serviceName, pageNum, pageSize, useCount);
+                    if(useCount){
+                      this.providerCount = Number(serviceList?.count);
+                    }
                     if(serviceList && serviceList.data){
                         let bindings = await getServiceBindingByServiceName(this.$route.query.serviceName);
                         if(bindings.result){
@@ -395,9 +398,6 @@
                                     }
                                 })
                             })
-                        }
-                        if(useCount){
-                          this.providerCount = Number(serviceList.count);
                         }
                         this.serviceList = serviceList.data;
                         this.providerPageSize = Number(serviceList.pageSize);
@@ -439,7 +439,7 @@
                           fee = await Promise.all(fees);
                       }
                       if(useCount){
-                        this.txCount = res.count;
+                        this.txCount = res?.count;
                       }
                       this.transactionArray = res.data.map((item,index) =>{
                         let addrObj = TxHelper.getFromAndToAddressFromMsg(item.msgs[0]);

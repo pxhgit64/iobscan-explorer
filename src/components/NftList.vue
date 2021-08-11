@@ -186,10 +186,10 @@
 				}
 				try {
 					let nftData = await getNfts(pageNum, pageSize, useCount, this.denom, this.tokenId, this.owner);
+          if(useCount){
+            this.allCount = nftData?.count;
+          }
 					if(nftData && nftData.data){
-            if(useCount){
-              this.allCount = nftData.count;
-            }
 						nftData.data.forEach(item => {
 							item.Time = (item.last_block_time ? item.last_block_time : '')
 							item.last_block_time = (item.last_block_time ? Tools.formatAge(Tools.getTimestamp(),item.last_block_time*1000, this.$t('ExplorerLang.table.suffix')) : '--')

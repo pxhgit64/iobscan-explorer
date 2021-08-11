@@ -111,6 +111,9 @@
             async identities(pageNum, pageSize, useCount = false){
                 try {
                     const res = await getIdentities(this.input, pageNum, pageSize, useCount);
+                    if(useCount){
+                        this.count = res?.count;
+                    }
                     if(res && res.data && Array.isArray(res.data) && res.data.length > 0){
                         this.identityList = res.data.map((item)=>{
                             let pubkey = (item.pubkeys || [])[0] || {};
@@ -124,10 +127,7 @@
                                 txHash: item.update_tx_hash || '--',
                                 time: Tools.getDisplayDate(item.update_block_time) || '--'
                             }
-                        });
-                        if(useCount){
-                          this.count = res.count;
-                        }
+                        })
                     }else{
                         this.count = 0;
                         this.identityList = [];

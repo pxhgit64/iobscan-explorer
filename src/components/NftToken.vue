@@ -131,14 +131,17 @@
 			    this.getTokenTx(this.pageNum ,this.pageSize);
             },
 			async getTokenTx(currentPage, pageSize, useCount = false){
-                const res = await getTokenTxList(this.tokenID,this.$route.query.denom, currentPage, pageSize, useCount);
-                try {
-                    this.txListByToken = res.data;
-                    this.count = res.count;
-                }catch (e) {
-                		console.error(e);
-                    this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
-                }
+        try {
+            const res = await getTokenTxList(this.tokenID,this.$route.query.denom, currentPage, pageSize, useCount);
+            
+            this.txListByToken = res?.data;
+            if(useCount){
+              this.count = res?.count;
+            }
+        }catch (e) {
+            console.error(e);
+            this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
+        }
 			},
 			formatTxHash(TxHash){
 				if(TxHash){

@@ -252,7 +252,7 @@
                         };
                     });
                     if(useCount){
-                      this.txCount = res.count;
+                      this.txCount = res?.count;
                     }
                     this.txPageNum = Number(res.pageNum);
                     this.txPageSize = Number(res.pageSize);

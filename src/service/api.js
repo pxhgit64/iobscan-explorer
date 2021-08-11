@@ -267,12 +267,15 @@ export function getAddressTxList(address, type, status, pageNum, pageSize, useCo
 // }
 
 export function getAllServiceTxList(pageNum, pageSize, useCount, iptVal){
-    let url = `txs/services?nameOrDescription=${iptVal}`;
+    let url = `txs/services?`;
     if(pageNum && pageSize){
-      url += `&pageNum=${pageNum}&pageSize=${pageSize}`
+      url += `pageNum=${pageNum}&pageSize=${pageSize}`
     }
     if(useCount){
-      url += `&useCount=${useCount}`;
+      url += `useCount=${useCount}`;
+    }
+    if(iptVal){
+      url += `&nameOrDescription=${iptVal}`;
     }
     return get(url);
 }
