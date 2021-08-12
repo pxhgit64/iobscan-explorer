@@ -168,7 +168,8 @@ export default {
   computed: {},
   watch: {},
   created() {
-    this.getProposalsList("", this.pageNum, this.pageSize, true);
+    this.getProposalsList("", null, null, true);
+    this.getProposalsList("", this.pageNum, this.pageSize);
     this.getProposalsByStatus();
   },
   mounted() {},

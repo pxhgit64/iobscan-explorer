@@ -199,10 +199,7 @@
 						 * @description: from parseTimeMixin
 						 */
 						this.parseTime('denomArray', 'Time', 'last_block_time')
-					}else {
-						this.allCount = 0
-						this.denomArray = []
-					}
+					}    
 				}catch (e) {
 					this.allCount = 0
 					this.denomArray = []

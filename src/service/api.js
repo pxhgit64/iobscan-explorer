@@ -543,12 +543,15 @@ export function getNativeAssetDetailApi (symbol) {
 }
 
 export function getProposalsListApi (status, pageNum,pageSize, useCount) {
-    let url = `/gov/proposals?status=${status}`
+    let url = `/gov/proposals?`
     if(pageNum && pageSize){
       url += `&pageNum=${pageNum}&pageSize=${pageSize}`
     }
     if(useCount){
       url += `&useCount=${useCount}`;
+    }
+    if(status){
+      url += `&status=${status}`;
     }
     return get(url)
 }

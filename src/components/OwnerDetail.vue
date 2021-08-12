@@ -2003,11 +2003,10 @@
 			}
 
 				 .pagination_content {
-                display: flex;
-                justify-content: space-between;
                 margin: 0.1rem 0 0.2rem 0;
                 .tooltip_box{
                   display: flex;
+                  margin-right: 1em;
                   align-items: center;
                   background-color: white;
                   padding: 0.05rem 0.2rem;
@@ -2226,7 +2225,16 @@
 			}
 		}
 	}
-
+  @media screen and (min-width: 768px){
+    .address_container_content {
+      .address_content_wrap {
+        .pagination_content {
+          display: flex;
+          justify-content: space-between; 
+        }
+      }
+    }
+  }
 	@media screen and (max-width: 768px) {
 		.address_container_content {
 			.address_content_wrap {
@@ -2315,7 +2323,12 @@
 				}
 
 				.pagination_content {
-				}
+          display: -webkit-box;
+          overflow-x: auto;
+          .tooltip_box{
+            margin-right: 1em;
+          }  
+        }
 			}
 		}
 	}

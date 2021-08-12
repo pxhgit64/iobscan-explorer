@@ -356,7 +356,7 @@
                 .tx_content_header_wrap{
                     display: flex;
                     justify-content: flex-start;
-                }
+                }      
             }
 
         }
@@ -381,9 +381,28 @@
                             margin-right: 0.26rem !important;
                         }
                     }
-                }
+                }         
             }
 
+        }
+        @media screen and (max-width: 768px){
+          .tx_content_wrap{
+            .pagination_content {
+              display: -webkit-box;
+              overflow-x: auto;
+              .tooltip_box{
+                margin-right: 1em;
+              }   
+            }
+          }
+        }
+         @media screen and (min-width: 768px){
+          .tx_content_wrap{
+            .pagination_content {
+              display: flex;
+              justify-content: space-between; 
+            }
+          }
         }
         .tx_content_wrap {
             margin: 0 auto;
@@ -565,8 +584,6 @@
                 margin-right:0.05rem;
             }
             .pagination_content {
-                display: flex;
-                justify-content: space-between;
                 margin: 0.1rem 0 0.2rem 0;
                 .tooltip_box{
                   display: flex;

@@ -74,24 +74,21 @@
 			this.queryBlockList()
 		},
 		methods: {
-			async queryBlockList(){
+      async queryBlockList(){
 				await this.latestBlock();
 				this.getBlocks();
 				let data = await getRangeBlockList(null, null, true);
 				this.dataCount = (data && data.count) || 0;
 			},
 			async getBlocks(useCount = false) {
-				let start = this.dbHeight - (this.pageNumber - 1) * this.pageSize;
+        let start = this.dbHeight - (this.pageNumber - 1) * this.pageSize;
 				let end = start - this.pageSize;
 				try {    
 					let blockList = await getRangeBlockList(start, validatePositiveInteger(end), useCount);
-					if(useCount){
-						this.dataCount = blockList?.count
-					}
-					if(blockList?.data){
-						if(blockList.data.length > this.pageSize){
-						blockList.data = blockList.data.slice(0, this.pageSize)
-						}
+					if(blockList?.data && blockList?.data.length > 0){
+            if(blockList.data.length > this.pageSize){
+              blockList.data = blockList.data.slice(0, this.pageSize)
+            }
 						this.blockList = blockList.data.map( item => {
 							return{
 								proposerAddress:item.proposer_addr || '--',
