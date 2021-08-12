@@ -5,12 +5,13 @@
         <div class="header_logo_content" @click="logoClick">
           <img class="header_logo_content_icon" v-if="logoImg.length" :src="logoImg" alt="" />
           <div :style="`color:${(prodConfig.nav || {}).color || ''}`">
-            <p>{{ (prodConfig.logo || {}).title || 'CSChain-Bond' }}</p>
-            <p>{{ (prodConfig.logo || {}).subTitle || '债券应用链浏览器' }}</p>
+            <p class="header_logo_content_title">{{ (prodConfig.logo || {}).title || 'CSChain-Bond' }}</p>
+            <p class="header_logo_content_subTitle">{{ (prodConfig.logo || {}).subTitle }}</p>
           </div>
         </div>
         <div class="header_menu">
           <el-menu
+            popper-class="tooltip"
             :default-active="activeIndex2"
             class="el-menu-demo"
             mode="horizontal"
@@ -20,7 +21,7 @@
             :active-text-color="(prodConfig.nav || {}).activeTextColor || '#fff'"
           >
             <component v-for="(item, index) in menuList" :is="item.children ? 'el-submenu' : 'el-menu-item'" :index="String(index + 1)" :key="index">
-              <router-link v-if="!item.children" :to="item.link">{{ item.title }}</router-link>
+              <router-link v-if="!item.children" :to="item.link || ''">{{ item.title }}</router-link>
               <template v-else>
                 <template slot="title">
                   {{ item.title }}
@@ -34,9 +35,8 @@
             </component>
           </el-menu>
         </div>
-        <div class="header_mobile_menu" @click="featureShow = !featureShow">
-          <span v-if="netWorkArray.length !== 0" style="color:white;font-size: 0.12rem;font-family: PingFangSC-Regular, PingFang SC">{{netWorkArray[0].netWorkSelectOption}}</span>
-          <!-- <img class="menu_btn" src="../../assets/menu.png" /> -->
+        <div class="header_mobile_menu" v-if="flShowNetwork">
+          <span v-if="netWorkArray.length !== 0" style="color:white;font-size: 0.12rem;font-family: Arial">{{mainnet.network_name}}</span>
         </div>
       </div>
       <div class="header_input_content" :style="`background-color:${(prodConfig.nav || {}).bgColor || ''}`" v-if="searchShow">
@@ -50,19 +50,20 @@
           </div>
         </div>
       </div>
-      <div v-show="moduleSupport('110', prodConfig.navFuncList)" class="header_network_container" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
+      <div v-show="flShowNetwork" class="header_network_container" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
           <span style="color: #fff">
-              <i style="font-size: 0.24rem;padding-right: 0.02rem;" class="iconfont iconiris"></i>
+              <i style="font-size: 0.24rem;padding-right: 0.02rem;" :class="mainnet.icon"></i>
               <i style="font-size: 0.08rem" class="iconfont iconwangluoqiehuanjiantou"></i>
           </span>
           <ul class="network_list_container" v-show="flShowNetworkLogo && netWorkArray.length !== 0" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
               <li class="network_list_item"
+                  :class="item.network_id == constant.CHAINID.STARGATE ? 'stargate_icon' : ''"
                   v-for="item in netWorkArray"
-                  :key="item.chain_id"
-                  @click="windowOpenUrl(item.host)"><i :class="item.icon"></i>{{item.netWorkSelectOption}}</li>
+                  :key="item.network_id"
+                  @click="windowOpenUrl(item.uri)"><i :class="item.icon"></i>{{item.network_name}}</li>
           </ul>
       </div>
-      
+
       <div class="use_feature_mobile" v-if="featureShow">
         <div v-for="(item, index) in menuList" class="mobile_tab_item_wrap" :key="String(index)" :style="`color:${(prodConfig.nav || {}).color || ''}`">
           <span class="mobile_tab_item" @click="mobileMenuDidClick(item, index, false)" v-if="!item.children">
@@ -83,18 +84,17 @@
             </transition>
           </div>
         </div>
-        <div v-show="moduleSupport('110', prodConfig.navFuncList)" class="mobile_tab_item_wrap" :style="`color:${(prodConfig.nav || {}).color || ''}`">
-              
+        <div v-show="flShowNetwork" class="mobile_tab_item_wrap" :style="`color:${(prodConfig.nav || {}).color || ''}`">
               <div class="mobile_tab_item_children_container" >
                   <span class="mobile_tab_item mobile_tab_item_has_children" @click="flShowNetWork">
-                    Network
+                    {{$t('ExplorerLang.Navigation.network')}}
                     <img src="../../assets/expanding.svg" v-show="!flShowNetWorkMenu" class="mobile_tab_item_icon" />
                     <img src="../../assets/retract.svg" v-show="flShowNetWorkMenu" class="mobile_tab_item_icon" />
                   </span>
                   <transition name="fade">
                     <ul class="mobile_tab_item_sub_children_container" v-show="flShowNetWorkMenu && netWorkArray.length !== 0">
-                        <li class="mobile_tab_item mobile_tab_item_child" v-for="item in netWorkArray" :key="item.chain_id">
-                            <a style="color:white;" :href="item.host">{{item.netWorkSelectOption}}</a>
+                        <li class="mobile_tab_item mobile_tab_item_child" v-for="item in netWorkArray" :key="item.network_id">
+                            <a style="color:white;" :href="item.uri" target='_blank'>{{item.network_name}}</a>
                         </li>
                     </ul>
                   </transition>
@@ -106,11 +106,11 @@
 </template>
 <script>
 import Tools from '../../util/Tools'
-import constant,{ addrPrefix, ModuleMap } from '../../constant'
+import constant,{ ModuleMap,product } from '../../constant'
 import prodConfig from '../../productionConfig'
-import { getBlockWithHeight, getTxDetail, getAddressTxList } from '../../service/api'
+import { getBlockWithHeight, getTxDetail, getAddressTxList } from '@/service/api'
 import { moduleSupport } from "@/helper/ModulesHelper"
-import axios from 'axios'
+import { getConfig, addressRoute, getMainToken } from "@/helper/IritaHelper"
 export default {
   data() {
     return {
@@ -123,10 +123,14 @@ export default {
       menuList: [],
       searchShow: false,
       expandingList: [],
+      flShowNetwork:false,
       flShowNetworkLogo:false,
       netWorkArray:[],
-      currentNetworkClass:'',
+      // currentNetworkClass:'',
       flShowNetWorkMenu:false,
+      mainnet:{},
+      constant,
+        mainToken:'',
     }
   },
   computed: {
@@ -138,15 +142,13 @@ export default {
       return img
     },
   },
-  beforeMount() {
-    this.menuList = this.loadModules(prodConfig.navFuncList)
-  },
   created() {
-    this.getConfig()
+    this.getConfigApi()
   },
   mounted() {
     // this.$Crypto.getCrypto('iris', 'testnet');
-    this.setActiveIndex()
+    this.setActiveIndex();
+      this.menuList = this.loadModules(prodConfig.navFuncList)
   },
   watch: {
     $route: {
@@ -168,16 +170,19 @@ export default {
           } else if (ModuleMap[item.id]) {
             let menu = ModuleMap[item.id]
             if (item.title) {
-              menu.title = item.title
+              menu.title = item.title.replace('\$\{mainToken\}', this.$store.state.mainToken)
             }
             menuList.push(menu)
           }
           if (item == '1000') {
-            this.searchShow = true
+            this.searchShow = true;
+          }
+          if (item == '1001') {
+            this.flShowNetwork = true;
           }
         })
       }
-      return menuList
+       return menuList;
     },
     handleSelect(key, keyPath) {},
     handleParentTitleClick(index) {
@@ -250,7 +255,7 @@ export default {
       try {
         const res = await getAddressTxList(this.searchInputValue, '', '', 1, 10)
         if (res) {
-          this.$router.push(`/address/${this.searchInputValue}`)
+          addressRoute.call(this,this.searchInputValue)
           this.clearSearchContent()
         } else {
           this.toSearchResultPage()
@@ -279,72 +284,63 @@ export default {
       this.searchInputValue = ''
     },
     showNetWorkLogo(){
-				this.flShowNetworkLogo = true;
+		this.flShowNetworkLogo = true;
     },
 		hideNetWorkLogo(){
-				this.flShowNetworkLogo = false;
+		this.flShowNetworkLogo = false;
     },
-    async getConfig () {
-        const { data: res } = await axios.get(`https://www.irisplorer.io/api/config`)
-        this.handleConfigs(res.configs)
-				// Service.commonInterface({headerConfig:{}},(res) => {
-				// 	try {
-				// 		sessionStorage.setItem('skinEnvInformation',JSON.stringify(res));
-        //                 if(res.cur_env === constant.ENVCONFIG.TESTNET || res.cur_env === constant.ENVCONFIG.MAINNET){
-        //                     this.$store.commit('hideTestSkinStyle',false)
-        //                 }
-				// 		this.flShowLogo = true;
-				// 		this.toggleTestnetLogo(res);
-				// 		this.setCurrentSelectOption(res.cur_env, res.chain_id, res.configs);
-				// 		this.setEnvConfig(res);
-				// 		this.handleConfigs(res.configs);
-        //                 this.setNetWorkLogo();
-        //                 this.flShowHeaderNetwork = true;
-				// 		this.chainId = `${res.chain_id.toUpperCase()} ${res.cur_env.toUpperCase()}`;
-				// 		res.configs.forEach(item => {
-				// 			if (res.cur_env === item.env && res.chain_id === item.chain_id) {
-				// 				if (item.show_faucet && item.show_faucet === 1) {
-				// 					this.flShowFaucet = true;
-				// 					sessionStorage.setItem("Show_faucet", JSON.stringify(1))
-				// 				} else {
-				// 					this.flShowFaucet = false;
-				// 					sessionStorage.setItem("Show_faucet", JSON.stringify(0))
-				// 				}
-				// 			}
-				// 		})
-				// 	}catch (e) {
-				// 		console.error(e);
-				// 		this.explorerLogo = require("../../assets/logo.png")
-				// 	}
-        // });
+    async getConfigApi () {
+        let config = await getConfig();
+        this.handleConfigs(config.networkData);
     },
-    handleConfigs (configs) {
-				this.netWorkArray = configs.map(item => {
-					if(item.network_name === constant.CHAINID.IRISHUB){
-              item.icon = 'iconfont iconiris'
-          }else if(item.network_name === constant.CHAINID.FUXI){
+    handleConfigs (configs=[]) {
+      this.netWorkArray = configs.map(item => {
+          if(item.network_id === constant.CHAINID.IRISHUB){
+                item.icon = 'iconfont iconiris'
+          }else if(item.network_id === constant.CHAINID.FUXI){
               item.icon = 'iconfont iconfuxi1'
-          }else if(item.network_name === constant.CHAINID.NYANCAT){
+          }else if(item.network_id === constant.CHAINID.NYANCAT){
               item.icon = 'iconfont iconcaihongmao'
-          }else if(item.network_name === constant.CHAINID.GOZTESTNET){
+          }else if(item.network_id === constant.CHAINID.GOZTESTNET){
               item.icon = 'iconfont iconGOZ'
-          } else if (item.network_name === constant.CHAINID.BIFROST) {
+          } else if (item.network_id === constant.CHAINID.BIFROST) {
               item.icon = 'iconfont iconBI-01'
+          } else if (item.network_id === constant.CHAINID.STARGATE) {
+              item.icon = 'iconfont iconStargate'
+          } else if (item.network_id === constant.CHAINID.COSMOSHUB) {
+              item.icon = 'iconfont iconCosmosHub'
           }
-					item.netWorkSelectOption = `${Tools.firstWordUpperCase(item.env)} ${item.chain_id.toLocaleUpperCase()}`;
-					return item
-        });
-				this.netWorkArray = this.netWorkArray.filter(item => {
-					return item.env !== constant.ENVCONFIG.DEV && item.env !== constant.ENVCONFIG.QA && item.env !== constant.ENVCONFIG.STAGE
-        });
-        // console.log(this.netWorkArray)
+          if (item.is_main) {
+              this.mainnet = {...item};
+          }
+          return item
+      })
+      switch (prodConfig.product) {
+        case product.bifrost:
+          this.mainnet = {icon:'iconfont iconBI-01'};
+          break;
+        case product.stargate:
+          this.mainnet = {icon:'iconfont iconStargate'};
+          break;
+        case product.cosmosHub:
+          this.mainnet = {icon:'iconfont iconCosmosHub'};
+          break;
+        case product.nyancat:
+          this.mainnet = {icon:'iconfont iconcaihongmao'};
+          break;
+        case product.irishub:
+          this.mainnet = {icon:'iconfont iconiris'};
+          break;
+        default:
+          break;
+      }
     },
     windowOpenUrl (url) {
-				window.open(url)
+		  window.open(url)
     },
     flShowNetWork() {
       this.flShowNetWorkMenu = !this.flShowNetWorkMenu
-    }
+    },
   },
 }
 </script>
@@ -355,7 +351,8 @@ export default {
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 10;
+  z-index: 10000;
+  font-family: Arial;
 
   .header_content {
     max-width: 12rem;
@@ -376,7 +373,7 @@ export default {
         margin-right: 0.2rem;
         height: 0.6rem;
         font-size: $s12;
-        font-family: PingFangSC-Regular, PingFang SC;
+        font-family: Arial;
         color: $t_white_c;
         text-align: left;
         line-height: 1.3;
@@ -386,8 +383,13 @@ export default {
           margin-right: 0.12rem;
         }
         .header_logo_content_title {
+            font-weight: bold;
+            letter-spacing: 0.011rem;
+            font-size: $s14;
         }
         .header_logo_content_subTitle {
+          color:rgba(255,255,255,0.85);
+          font-size: $s12;
         }
       }
 
@@ -406,12 +408,14 @@ export default {
               height: 0.6rem;
             }
           }
-          /deep/.el-submenu {
+          ::v-deep.el-submenu {
             .el-submenu__title {
               .el-submenu__icon-arrow {
                 color: inherit !important;
               }
+                padding:0 12px;
             }
+
           }
         }
         .el-menu.el-menu--horizontal {
@@ -420,6 +424,10 @@ export default {
       }
       .header_mobile_menu {
         display: none;
+        font-size: $s12;
+        span {
+          color: $t_white_c;
+        }
         .menu_btn {
           width: 0.2rem;
           height: 0.2rem;
@@ -503,16 +511,21 @@ export default {
               white-space: nowrap;
               padding: 0 0.2rem;
               cursor: pointer;
-              font-size: 0.14rem;
+              font-size: $s14;
               display: flex;
               &:hover{
                   background: #F6F7FF;
               }
               i{
-                  font-size: 0.18rem;
+                  font-size: $s18;
                   color: var(--titleColor);
                   padding-right: 0.2rem;
               }
+          }
+          .stargate_icon {
+            i {
+              font-size: $s14;
+            }
           }
           .network_list_item:last-child{
               padding-bottom: 0.05rem;
@@ -531,7 +544,7 @@ export default {
         cursor: pointer;
         color: inherit;
         font-size: $s14;
-        font-family: PingFangSC-Regular, PingFang SC;
+        font-family: Arial;
         text-align: left;
         padding: 0.05rem 0;
         width: 100%;

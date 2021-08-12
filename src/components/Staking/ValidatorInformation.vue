@@ -27,6 +27,8 @@
 					</p>
 					<!-- details 详情 -->
 					<p class="validation_information_details" v-if="details">{{details}}</p>
+					<!-- security_contact  -->
+					<p class="validation_information_details" v-if="securityContact">{{securityContact}}</p>
 					<!-- 没有网站、身份、详情，则显示没有信息 -->
 					<p class="validation_information_no_more" v-if="!website && !identity && !details">~ {{$t('ExplorerLang.validatorDetail.validatorInformation.validatorTip')}} ~</p>
 				</div>
@@ -34,22 +36,22 @@
 				<div class="validation_information_asset_information_content">
 					<!-- 根据validatorStatus显示验证人的状态 -->
 					<div class="validation_information_status_content">
-						<span class="status_btn" v-if="validatorStatus === 'Active'">{{$t('ExplorerLang.staking.status.active')}}</span>
+						<span class="status_btn" v-if="validatorStatus === validator_Status.active">{{$t('ExplorerLang.staking.status.active')}}</span>
 						<span
 								class="status_btn"
 								style="background-color: #3DA87E;"
-								v-if="validatorStatus === 'Candidate'"
+								v-if="validatorStatus === validator_Status.candidate"
 						>{{$t('ExplorerLang.staking.status.candidate')}}</span>
 						<span
 								class="status_btn"
 								style="background-color: #FA7373;"
-								v-if="validatorStatus === 'Jailed'"
+								v-if="validatorStatus === validator_Status.jailed"
 						>{{$t('ExplorerLang.staking.status.jailed')}}</span>
 					</div>
 					<!-- 展示详细的数据 -->
 					<ul class="validation_information_list_content">
 						<!-- 循环 li -->
-						<li class="validation_information_item" v-for="(item, index) in validationAssetInfoArr" :key="index" v-show="showVotingPower(validatorStatus,item.label)">
+						<li class="validation_information_item" v-for="(item, index) in validationAssetInfoArr" :key="index" v-show="showVotingPower(validatorStatus,item.dataName)">
 							<!-- 左侧 -->
 							<div class="validation_information_item_label_content">
 								<!-- 标题 -->
@@ -66,8 +68,8 @@
 										<!-- 判断是否需要显示提示信息 -->
 										<el-tooltip v-if="item.isCopyIcon" :content="`${item.value}`">
 											<!-- 判断是否为地址链接，不是则直接渲染 -->
-											<span v-if="item.flAddressLink" style="font-family: Consolas,Menlo;">{{formatAddress(item.value)}}</span>
-											<router-link style="font-family: Consolas,Menlo;" v-if="!item.flAddressLink" :to="'/address/'+ item.value" :style="{color: item.isValidatorAddress ? '' :'$theme_c !important'}">{{formatAddress(item.value)}}</router-link>
+											<span v-if="item.flAddressLink" style="font-family: Arial;">{{formatAddress(item.value)}}</span>
+											<router-link style="font-family: Arial;" v-if="!item.flAddressLink" :to="'/address/'+ item.value" :style="{color: item.isValidatorAddress ? '' :'$theme_c !important'}">{{formatAddress(item.value)}}</router-link>
 										</el-tooltip>
 										<!-- 不用显示复制的图标 直接渲染数据 -->
 										<span v-if="!item.isCopyIcon">
@@ -75,7 +77,7 @@
 										</span>
 										<!-- 判断是否需要显示复制图标 -->
 										<!-- 封装好的组件，直接用，使用了插件Clipboard可复制文本到剪贴板 -->
-										<m-clip v-if="item.isCopyIcon" style="margin-left: 0.06rem;cursor: pointer;" :text="item.value ? item.value : ''" ></m-clip>
+										<m-clip v-if="item.isCopyIcon" style="margin-left: 0.06rem;" :text="item.value ? item.value : ''" ></m-clip>
 									</span>
 								</p>
 							</div>
@@ -92,6 +94,7 @@
 	import Tools from "../../util/Tools.js";
 	import { getValidatorWithdrawAddrApi } from "@/service/api"
 	import axios from "../../axios/index.js";
+	import { validator_Status } from '@/constant'
 	export default {
 		name: "ValidationInformation",
 		components: {MClip},
@@ -107,6 +110,8 @@
 		},
 		data () {
 			return {
+				percentageFixedNumber:4,
+				validator_Status,
 				// 验证人的信息
 				informationData:"",
 				// 验证人图标的大写字母
@@ -121,6 +126,7 @@
 				identity:'',
 				// 详情
 				details:'',
+				securityContact:'',
 				// 验证人的状态
 				validationStatus:'',
 				// 是否有链接需跳转
@@ -184,17 +190,17 @@
 						isCopyIcon:false,
 						flAddressLink:false,
 					},
-					{
-						label:this.$t('ExplorerLang.validatorDetail.validatorInformation.validationAssetInfoArr.bondHeight'),
-						dataName:'bond_height',
-						value:'',
-						isToolTip:false,
-						isCopyIcon:false,
-						flAddressLink:false,
-					},
+					// {
+					// 	label:this.$t('ExplorerLang.validatorDetail.validatorInformation.validationAssetInfoArr.bondHeight'),
+					// 	dataName:'bond_height',
+					// 	value:'',
+					// 	isToolTip:false,
+					// 	isCopyIcon:false,
+					// 	flAddressLink:false,
+					// },
 					{
 						label:this.$t('ExplorerLang.validatorDetail.validatorInformation.validationAssetInfoArr.unbondingHeight'),
-						dataName:'unbond_height',
+						dataName:'unbonding_height',
 						value:'',
 						isToolTip:false,
 						isCopyIcon:false,
@@ -220,15 +226,6 @@
 			}
 		},
 		watch:{
-			// validationInformation: {
-			// 	handler: () => {
-			// 		this.informationData = this.validationInformation;
-			// 		// 处理后台返回的数据
-			// 		this.handlePropsData()
-			// 	},
-			// 	deep: true,
-			// 	// immediate: true
-			// }
 			validationInformation(){
 				this.informationData = this.validationInformation;
 				// 处理后台返回的数据
@@ -246,14 +243,14 @@
 			},
 			// 控制右侧详细信息 是否展示和隐藏
 			showVotingPower(validatorStatus,labelName){
-				if(validatorStatus === 'Candidate' || validatorStatus === 'Jailed'){
-					if(labelName === 'Voting Power:' || labelName === 'Bond Height:'){
+				if(validatorStatus ===  this.validator_Status.candidate || validatorStatus === this.validator_Status.jailed){
+					if(labelName === 'self_power' || labelName === 'bond_height' || labelName==='uptime' || labelName === 'missed_blocks_count'){
 						return false
 					}else {
 						return true
 					}
 				}else {
-					if(labelName === 'Jailed Until:' || labelName === 'Unbonding Height:'){
+					if(labelName === 'jailed_until' || labelName === 'unbonding_height'){
 						return false
 					}
 					return true
@@ -270,6 +267,7 @@
 				this.validatorIconHref = information.icons ? information.icons : replaceMoniker ? '' : require('../../assets/default_validator_icon.svg');
 				this.moniker = information.description.moniker;
 				this.website = information.description.website ? information.description.website : '';
+				this.securityContact = information.description.security_contact ? information.description.security_contact : '';
 				if(information.description.identity){
 					// 如果有identity数据，发送请求，拿到keyBaseName
 					this.getKeyBaseName(information.description.identity)
@@ -283,13 +281,13 @@
 							item.value = Tools.FormatUptime(information[item.dataName]);
 						}else if(item.dataName === 'self_power') {
 							item.value = information.status === "active"
-								? `${information.self_power} (${this.formatPerNumber((information.self_power / information.total_power) * 100)} %)`
+								? `${information.self_power} (${Tools.formatPerNumber((information.self_power / information.total_power) * 100,this.percentageFixedNumber)}%)`
 								: "";
 						}else if(item.dataName === 'missed_blocks_count'){
 							item.value = `${information.missed_blocks_count} in ${information.stats_blocks_window} blocks`;
 						}else if(item.dataName === 'jailed_until'){
-							item.value = new Date(information[item.dataName]).getTime() ? Tools.format2UTC(information[item.dataName]) : "--";
-						}else {
+							item.value = new Date(Number(information[item.dataName])).getTime() ? Tools.getDisplayDate(information[item.dataName]) : "--";
+						} else {
 							item.value = information[item.dataName];
 						}
 					}
@@ -335,20 +333,7 @@
 				} catch (e) {
 					console.error(e)
 				}
-			},
-			// 处理Voting Power:中的value值
-			formatPerNumber(num) {
-				if (typeof num === "number" && !Object.is(num, NaN)) {
-					let afterPoint = String(num).split(".")[1];
-					let afterPointLong = (afterPoint && afterPoint.length) || 0;
-					if (afterPointLong > 2 && num !== 0) {
-						return num.toFixed(4);
-					} else {
-						return num.toFixed(2);
-					}
-				}
-				return num;
-			},
+			}
 		}
 	}
 </script>
@@ -363,10 +348,10 @@ a {
 	.validation_information_wrap{
 		max-width: 12.8rem;
 		margin: 0 auto;
-		border:0.01rem solid #E7E9EB;
+		// border:0.01rem solid $bd_first_c;
 		.validation_information_content{
 			width: 100%;
-			background: #fff;
+			background: $bg_white_c;
 			display: grid;
 			grid-template-columns: repeat(2,50%);
 			.validation_information_header_content{
@@ -379,7 +364,7 @@ a {
 					width: 1.2rem;
 					height: 1.2rem;
 					border-radius: 0.6rem;
-					background: #E0E8FF;
+					background: $bg_avatar;
 					overflow: hidden;
 					display: flex;
 					align-items: center;
@@ -390,19 +375,19 @@ a {
 						width: 100%;
 					}
 					span{
-						font-size: 0.52rem;
+						font-size: $s52;
 					}
 				}
 				.validation_information_moniker{
 					margin-top: 0.1rem;
-					font-size: 0.2rem;
+					font-size:  $s20;
 					line-height: 0.23rem;
 					font-weight: bold;
 				}
 				.validation_information_website{
 					margin-top: 0.15rem;
 					.validation_website_link{
-						font-size: 0.14rem;
+						font-size:  $s14;
 						line-height: 0.16rem;
 						color:$theme_c;
 						cursor: pointer;
@@ -412,33 +397,33 @@ a {
 					margin-top: 0.1rem;
 					.validation_information_link{
 						color:$theme_c !important;
-						font-size: 0.14rem;
+						font-size:  $s14;
 						line-height: 0.16rem;
 					}
 					.validation_information_not_link{
 						color:$t_first_c;
-						font-size: 0.14rem;
+						font-size:  $s14;
 						line-height: 0.16rem;
 					}
 				}
 				.validation_information_details{
 					max-width: 5rem;
 					margin-top: 0.1rem;
-					font-size: 0.14rem;
+					font-size:  $s14;
 					line-height: 0.21rem;
 					color: $t_first_c;
 				}
 				.validation_information_no_more{
 					margin-top: 0.55rem;
 					color: $t_second_c;
-					font-size: 0.14rem;
+					font-size:  $s14;
 					line-height: 0.21rem;
 				}
 			}
 			.validation_information_asset_information_content{
 				box-sizing: border-box;
 				margin: 0.3rem 0;
-				border-left: 0.01rem dashed #D7DCE0;
+				border-left: 0.01rem dashed $bd_second_c;
 				padding:0 0 0.3rem 0.7rem;
 				.validation_information_status_content{
 					.status_btn{
@@ -446,7 +431,7 @@ a {
 						line-height: 0.26rem;
 						padding: 0.05rem 0.16rem;
 						background: $theme_c;
-						color:#fff;
+						color: $t_white_c;
 						border-radius: 0.13rem;
 					}
 				}
@@ -455,7 +440,7 @@ a {
 						display: grid;
 						grid-template-columns: repeat(1,1.5rem auto);
 						margin-top: 0.16rem;
-						font-size: 0.14rem;
+						font-size:  $s14;
 						.validation_information_item_label_content{
 							span{
 								color: $t_second_c;
@@ -467,7 +452,7 @@ a {
 						.validation_information_item_value_content{
 							display: flex;
 							span{
-								word-break: break-all;
+								word-break: break-word;
 							}
 							.validation_information_item_value{
 								margin-right: 0.06rem;
@@ -492,7 +477,7 @@ a {
 						margin:0.3rem 0.15rem;
 					}
 					.validation_information_asset_information_content{
-						border-top: 0.01rem solid #D7DCE0;
+						border-top: 0.01rem solid $bd_second_c;
 						margin: 0.15rem;
 						padding: 0.3rem 0 0 0;
 						border-left: none;

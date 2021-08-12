@@ -13,6 +13,7 @@ let title = prodConfig.title || '',
     text_color_link = textColor.link || '#3264fd',
     button_color_common = ((prodConfig.button || {}).color || {}).common || 'white',
     button_bgColor_common = ((prodConfig.button || {}).bgColor || {}).common || '#3264FD';
+    background_color_common = prodConfig.background || '#F8F8F8';
 
 replaceEnv([
         "./public/index.html",
@@ -27,7 +28,8 @@ replaceEnv([
         text_color_fourth : text_color_fourth,
         text_color_link : text_color_link,
         button_color_common : button_color_common,
-        button_bgColor_common : button_bgColor_common
+        button_bgColor_common : button_bgColor_common,
+        background_color_common : background_color_common,
     }
 );
 

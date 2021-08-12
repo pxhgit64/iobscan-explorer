@@ -16,15 +16,16 @@
                         </div>
                     </div>
                 </div>
-                <el-table class="table" :data="identityList" :empty-text="$t('ExplorerLang.table.emptyDescription')">
+                <el-table class="table table_overflow_x" :data="identityList" :empty-text="$t('ExplorerLang.table.emptyDescription')">
                     <el-table-column :min-width="ColumnMinWidth.identity" :label="$t('ExplorerLang.table.identity')">
                         <template slot-scope="scope">
-                            <el-tooltip :content="scope.row.id"
+                            <!-- <el-tooltip :content="scope.row.id"
                                         placement="top"
                                         effect="dark"
                                         :disabled="!Tools.isValid(scope.row.id)">
                                 <router-link :to="`/identity/${scope.row.id}`">{{formatStr20(scope.row.id)}}</router-link>
-                            </el-tooltip>
+                            </el-tooltip> -->
+                            <router-link :to="`/identity/${scope.row.id}`">{{scope.row.id}}</router-link>
                         </template>
                     </el-table-column>
                     <el-table-column :min-width="ColumnMinWidth.address"
@@ -89,26 +90,30 @@
             }
         },
         mounted(){
-            this.identities();
+            this.identities(null, null, true)
+            this.identities(this.pageNum, this.pageSize)
         },
         methods:{
             reset(){
                 this.input = '';
                 this.pageNum = 1;
-                this.identities()
+                this.identities(null, null, true)
+                this.identities(this.pageNum, this.pageSize)
             },
             pageChange(pageNum){
                 this.pageNum = pageNum;
-                this.identities()
+                this.identities(this.pageNum, this.pageSize)
             },
             handleSearchClick(){
                 this.pageNum = 1;
-                this.identities();
+                this.identities(this.pageNum, this.pageSize)
             },
-            async identities(){
+            async identities(pageNum, pageSize, useCount = false){
                 try {
-                    const res = await getIdentities(this.input, this.pageNum, this.pageSize);
-                    console.log(res)
+                    const res = await getIdentities(this.input, pageNum, pageSize, useCount);
+                    if(useCount){
+                        this.count = res?.count;
+                    }
                     if(res && res.data && Array.isArray(res.data) && res.data.length > 0){
                         this.identityList = res.data.map((item)=>{
                             let pubkey = (item.pubkeys || [])[0] || {};
@@ -122,10 +127,7 @@
                                 txHash: item.update_tx_hash || '--',
                                 time: Tools.getDisplayDate(item.update_block_time) || '--'
                             }
-                        });
-                        this.count = res.count;
-                        this.pageSize = res.pageSize;
-                        this.pageNum = res.pageNum;
+                        })
                     }else{
                         this.count = 0;
                         this.identityList = [];
@@ -144,12 +146,12 @@
                     return Tools.formatTxHash(TxHash)
                 }
             },
-            formatStr20(str){
-                if (str && str.length > 20) {
-                    return `${str.substr(0,20)}...`;
-                }
-                return str || '';
-            },
+            // formatStr20(str){
+            //     if (str && str.length > 20) {
+            //         return `${str.substr(0,20)}...`;
+            //     }
+            //     return str || '';
+            // },
             formatUrl(url){
                 if (!(/^http:\/\/|^https:\/\//).test(url)) {
                     return `http://${url}`;
@@ -172,7 +174,7 @@
                 .identity_list_header_content{
                     display: flex;
                     align-items: center;
-                    /deep/ .el-input{
+                    ::v-deep .el-input{
                         max-width: 3.5rem;
                         .el-input__inner{
                             padding-left: 0.07rem;
@@ -197,7 +199,7 @@
                     display: flex;
                     flex-direction:column;
                     justify-content: flex-start;
-                    /deep/ .el-input{
+                    ::v-deep .el-input{
                         margin-bottom:0.1rem;
                         .el-input__inner{
                             padding-left: 0.07rem;
@@ -218,7 +220,7 @@
             margin: 0 auto;
             padding:0 0.15rem;
             .identity_list_header_title{
-                margin: 0.3rem 0 0.1rem 0.27rem;
+                margin: 0.3rem 0 0.16rem 0rem;
                 font-size: $s18;
                 color: $t_first_c;
                 line-height: 0.21rem;
@@ -227,7 +229,7 @@
             .identity_list_header_content{
                 width: 100%;
                 margin: 0rem 0 0.1rem 0;
-                /deep/ .el-input{
+                ::v-deep .el-input{
                     .el-input__inner{
                         font-size: $s14 !important;
                         &::-webkit-input-placeholder{
@@ -262,14 +264,15 @@
                         padding: 0.05rem 0.18rem;
                         font-size: $s14;
                         line-height: 0.2rem;
+                        white-space: nowrap;
                     }
                 }
             }
-            /deep/ .nef_list_table_container{
+            ::v-deep .nef_list_table_container{
                 background: $bg_white_c;
                 border-radius: 0.05rem;
-                border: 0.01rem solid $bd_first_c;
-                margin: 0.2rem 0;
+                // border: 0.01rem solid $bd_first_c;
+                // margin: 0.2rem 0;
                 padding: 0.24rem 0.28rem 0.36rem 0.28rem;
                 a{
                     cursor:pointer;

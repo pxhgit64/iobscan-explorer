@@ -10,9 +10,11 @@ import lang from 'element-ui/lib/locale/lang/en';
 import locale from 'element-ui/lib/locale';
 import VueI18n from 'vue-i18n';
 import prodConfig from "./productionConfig";
-/*引入自定义过滤器*/
-import filters from './filters';
-Vue.use(filters);
+import adjustColumnWidth from '@/helper/adjustColumnWidth';
+import {getMainToken} from "@/helper/IritaHelper";
+
+Vue.prototype.$adjustColumnWidth = adjustColumnWidth;
+
 /*引入自定义修饰器*/
 import directives from './directives';
 Vue.use(directives);
@@ -192,11 +194,50 @@ Vue.prototype.$prompt = MessageBox.prompt;
 Vue.prototype.$notify = Notification;
 Vue.prototype.$message = Message;
 
+window.addEventListener('beforeunload', ()=>{
+    sessionStorage.removeItem('config')
+}, false)
 
 Vue.config.productionTip = false;
-new Vue({
-  i18n,
-  router,
-  store,
-  render: h => h(App),
-}).$mount('#app')
+(async function(){
+    let failedIndex = 0;
+    async function queryMainToken(){
+        let mainToken = await getMainToken().catch(()=>{
+            if(failedIndex <= 4){
+                setTimeout(()=>{
+                    queryMainToken()
+                    failedIndex++;
+                }, 500)
+            }else{
+                render({symbol:''});
+            }
+        });
+        if(mainToken){
+            render(mainToken)
+        }
+
+    }
+    function render(token){
+        store.state.mainToken = token && token.symbol.toUpperCase();
+        new Vue({
+            i18n,
+            router,
+            store,
+            render: h => h(App),
+        }).$mount('#app')
+    }
+    queryMainToken();
+}())
+
+
+Vue.directive('debounce', {
+  inserted: function (el, binding) {
+    let [fn, event = "click", time = 300] = binding.value
+    let timer
+    el.addEventListener(event, () => {
+      timer && clearTimeout(timer)
+      timer = setTimeout(() => fn(), time)
+    })
+  }
+})
+

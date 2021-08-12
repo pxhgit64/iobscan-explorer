@@ -1,19 +1,21 @@
 <template>
 	<div class="service_list_container_content">
 		<div class="service_list_content_wrap">
-			<div class="service_list_title">
-                {{ txCount }} {{$t('ExplorerLang.service.services')}}
-            </div>
-            <div class="nft_list_header_content">
-                <el-input v-model="iptVal"
-                          @change="handleSearchClick"
-                          :placeholder="$t('ExplorerLang.service.placeHolder')"></el-input>
-                <div class="tx_type_mobile_content">
-                    <div class="search_btn" @click="handleSearchClick">{{$t('ExplorerLang.nftAsset.search')}}</div>
-                    <div class="reset_btn" @click="reset"><i class="iconfont iconzhongzhi"></i></div>
+            <div class="service_list_content_wrap_title">
+                <div class="service_list_title">
+                    {{ txCount }} {{$t('ExplorerLang.service.services')}}{{txCount > 1 && $t('ExplorerLang.service.services').length > 2 ? 's':'' }}
+                </div>
+                <div class="nft_list_header_content">
+                    <el-input v-model="iptVal"
+                            @change="handleSearchClick"
+                            :placeholder="$t('ExplorerLang.service.placeHolder')"></el-input>
+                    <div class="tx_type_mobile_content">
+                        <div class="search_btn" @click="handleSearchClick">{{$t('ExplorerLang.nftAsset.search')}}</div>
+                        <div class="reset_btn" @click="reset"><i class="iconfont iconzhongzhi"></i></div>
+                    </div>
                 </div>
             </div>
-			<div class="service_list_content" v-for="service in serviceList">
+			<div class="service_list_content" v-for="(service,index) in serviceList" :key="index">
                 <div class="service_list_top">
                     <span class="service_list_service_name bold_name">
                         <router-link :to="`/service?serviceName=${service.serviceName}`">
@@ -26,49 +28,50 @@
                         </router-link>
                     </span>
                 </div>
-
-				<el-table class="table" :data="service.bindList" :empty-text="$t('ExplorerLang.table.emptyDescription')">
-					<el-table-column :min-width="ColumnMinWidth.address" :label="$t('ExplorerLang.table.provider')">
-						<template slot-scope="scope">
-							<span>
-                                <el-tooltip placement="top" :content="scope.row.provider">
-                                    <router-link :to="`/address/${scope.row.provider}`">
-                                        {{Tools.formatValidatorAddress(scope.row.provider)}}
-                                    </router-link>
-                                </el-tooltip>
-							</span>
-						</template>
-					</el-table-column>
-					<el-table-column :min-width="180" :label="$t('ExplorerLang.table.respondTimes')">
-						<template slot-scope="scope">
-							<span>
-								<router-link
-                                        :to="`service/respond/${service.serviceName}/${scope.row.provider}`">
-                                        {{`${scope.row.respondTimes} ${$t('ExplorerLang.unit.time')}`}}
-                                    </router-link>
-							</span>
-						</template>
-					</el-table-column>
-					<el-table-column :min-width="ColumnMinWidth.available" :label="$t('ExplorerLang.table.isAvailable')">
-                        <template slot-scope="scope">
-                        <div class="service_information_available_container">
-                            <img class="service_tx_status"
-                                 v-if="scope.row.available"
-                                 src="../assets/true.png"/>
-                            <img class="service_tx_status"
-                                 v-else
-                                 src="../assets/false.png"/>
-                            <span>
-                                {{scope.row.isAvailable}}
-                            </span>
-                        </div>
-
-                    </template>
-                    </el-table-column>
-                    <!-- <el-table-column :min-width="ColumnMinWidth.price" :label="$t('ExplorerLang.table.price')" prop="price"></el-table-column> -->
-					<el-table-column :min-width="ColumnMinWidth.qos" :label="$t('ExplorerLang.table.minBlock')" prop="qos"></el-table-column>
-					<el-table-column :min-width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.bindTime')" prop="bindTime"></el-table-column>
-				</el-table>
+                <div class="table">
+                    <el-table :data="service.bindList" :empty-text="$t('ExplorerLang.table.emptyDescription')">
+                        <el-table-column class-name="address" :min-width="ColumnMinWidth.address" :label="$t('ExplorerLang.table.provider')">
+                            <template slot-scope="scope">
+                                <span>
+                                    <el-tooltip placement="top" :content="scope.row.provider">
+                                        <router-link :to="`/address/${scope.row.provider}`">
+                                            {{Tools.formatValidatorAddress(scope.row.provider)}}
+                                        </router-link>
+                                    </el-tooltip>
+                                </span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column :min-width="ColumnMinWidth.respondTimes" :label="$t('ExplorerLang.table.respondTimes')">
+                            <template slot-scope="scope">
+                                <span>
+                                    <router-link
+                                            :to="`service/respond/${service.serviceName}/${scope.row.provider}`">
+                                            {{`${scope.row.respondTimes} ${$t('ExplorerLang.unit.time')}`}}
+                                        </router-link>
+                                </span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column :min-width="ColumnMinWidth.available" :label="$t('ExplorerLang.table.isAvailable')">
+                            <template slot-scope="scope">
+                                <div class="service_information_available_container">
+                                    <img class="service_tx_status"
+                                        v-if="(typeof scope.row.available !== 'undefined')"
+                                        :src="require(`../assets/${scope.row.available?'true':'false'}.png`)"/>
+                                    <span>
+                                        {{(typeof scope.row.available == 'undefined')?'--':(scope.row.available?'True':'False')}}
+                                    </span>
+                                </div>
+                            </template>
+                        </el-table-column>
+                        <!-- <el-table-column :min-width="ColumnMinWidth.price" :label="$t('ExplorerLang.table.price')" prop="price"></el-table-column> -->
+                        <el-table-column :min-width="ColumnMinWidth.qos" :label="$t('ExplorerLang.table.minBlock')">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.qos||'--'}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column :width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.bindTime')" prop="bindTime"></el-table-column>
+                    </el-table>
+                </div>	
 			</div>
 			<div class="pagination_content" v-if="txCount > pageSize">
 				<m-pagination :page-size="pageSize"
@@ -108,40 +111,41 @@
 			}
 		},
 		mounted () {
-			this.getServiceList();
+      this.getServiceList(null, null, true);
+			this.getServiceList(this.pageNum,this.pageSize);
 		},
 		methods:{
-			async getServiceList(){
+			async getServiceList(pageNum, pageSize, useCount = false){
                 try {
-                    let serviceList = await getAllServiceTxList(this.pageNum,this.pageSize, this.iptVal);
-                    if(serviceList && serviceList.data){
-                        console.log(serviceList)
-                        for(let service of serviceList.data){
-                            let bindings = await getServiceBindingByServiceName(service.serviceName);
-
-                            if(bindings.result){
-                                service.bindList.forEach((s)=>{
-                                    s.bindTime = Tools.getDisplayDate(s.bindTime);
-                                    bindings.result.forEach((b)=>{
-                                        if(s.provider === b.provider){
-                                            s.isAvailable = b.available ? 'True' : 'False';
-                                            s.available = b.available;
-                                            s.price = JSON.parse(b.pricing).price;
-                                            s.qos = `${b.qos} ${this.$t('ExplorerLang.unit.blocks')}`;
-                                        }
-                                    })
-                                })
-                            }
-                        }
-                        console.log(serviceList)
-                        this.serviceList = serviceList.data;
-
-                        this.txCount = serviceList.count;
-
+                    let serviceList = await getAllServiceTxList(pageNum, pageSize, useCount, this.iptVal);
+                    if(useCount){
+                      this.txCount = serviceList?.count;
                     }
-                }catch (e) {
+                    if(serviceList && serviceList.data){          
+                        for(let service of serviceList.data){
+                            try {
+                                let bindings = await getServiceBindingByServiceName(service.serviceName);                           
+                                if(bindings.result){
+                                    service.bindList.forEach((s)=>{
+                                        s.bindTime = Tools.getDisplayDate(s.bindTime);
+                                        bindings.result.forEach((b)=>{
+                                            if(s.provider === b.provider){
+                                                s.available = b.available;
+                                                s.price = JSON.parse(b.pricing).price;
+                                                s.qos = `${b.qos??'--'} ${this.$t('ExplorerLang.unit.blocks')}`;
+                                            }
+                                        })
+                                    })
+                                }
+                            } catch(e) {
+                                console.error(e);
+                            };                           
+                        }
+                        this.serviceList = serviceList.data;
+                    }
+                } catch (e) {
                     console.error(e);
-                    this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
+                    // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
                 }
 			},
 			formatTxHash(TxHash){
@@ -154,11 +158,12 @@
 			},
 			pageChange(pageNum) {
 				this.pageNum = pageNum;
-				this.getServiceList();
+        this.getServiceList(this.pageNum,this.pageSize);
 			},
             handleSearchClick(){
                 this.pageNum = 1;
-                this.getServiceList();
+                this.getServiceList(null, null, true)
+                this.getServiceList(this.pageNum,this.pageSize);
             },
             reset(){
                 this.iptVal = '';
@@ -185,7 +190,7 @@
                 display: flex;
                 align-items: center;
                 .el-select{
-                    /deep/ .el-input{
+                    ::v-deep .el-input{
                         width: 1.8rem;
                         .el-input__inner{
                             padding-left: 0.07rem;
@@ -206,8 +211,8 @@
                     }
                 }
 
-                /deep/ .el-input{
-                    max-width: 3.5rem;
+                ::v-deep .el-input{
+                    min-width: 3.5rem;
                     .el-input__inner{
                         padding-left: 0.07rem;
                         height: 0.32rem;
@@ -233,11 +238,9 @@
             }
             .nft_list_header_content{
                 display: flex;
-                flex-direction:column;
-                justify-content: flex-start;
                 .el-select{
-                    margin-bottom:0.1rem;
-                    /deep/ .el-input{
+                    // margin-bottom:0.1rem;
+                    ::v-deep .el-input{
                         //width: 1.8rem;
                         .el-input__inner{
                             padding-left: 0.07rem;
@@ -257,8 +260,8 @@
                     }
                 }
 
-                /deep/ .el-input{
-                    margin-bottom:0.1rem;
+                ::v-deep .el-input{
+                    // margin-bottom:0.1rem;
                     .el-input__inner{
                         padding-left: 0.07rem;
                         height: 0.32rem;
@@ -271,15 +274,25 @@
                 }
                 .tx_type_mobile_content{
                     justify-content: flex-end;
-                    margin-bottom:0.1rem;
+                    // margin-bottom:0.1rem;
                 }
             }
 
         }
+        @media screen and (max-width: 540px){ 
+            .service_list_content_wrap_title {
+                flex-direction: column;
+                .nft_list_header_content {
+                   .el-input,.tx_type_mobile_content {
+                       margin-bottom: 0px;
+                   }
+                }
+            }
+        }
 		.service_list_content_wrap{
 			margin: 0 auto;
             padding:0 0.15rem;
-            /deep/.el-table{
+            ::v-deep.el-table{
                 .cell{
                     padding-left:0 !important;
                 }
@@ -300,21 +313,22 @@
 
                 }
             }
-
+            .service_list_content_wrap_title{
+                display: flex;
+                margin: 0.3rem 0 0.16rem 0rem;
+            }
 			.service_list_title{
                 text-align: left;
-                margin: 0.3rem 0 0.15rem 0;
-                width: 100%;
+                margin-right: 0.2rem;
+                line-height: 0.32rem;
                 box-sizing: border-box;
                 font-size: $s18;
                 font-weight: 600;
                 color: $t_first_c;
 			}
             .nft_list_header_content{
-                width: 100%;
-                margin: 0.3rem 0 0.1rem 0;
                 .el-select{
-                    /deep/ .el-input{
+                    ::v-deep .el-input{
                         .el-input__inner{
                             font-size: $s14 !important;
                             &::-webkit-input-placeholder{
@@ -327,9 +341,10 @@
                     }
                 }
 
-                /deep/ .el-input{
+                ::v-deep .el-input{
                     .el-input__inner{
                         font-size: $s14 !important;
+                        border: 0.01rem solid $bd_first_c;
                         &::-webkit-input-placeholder{
                             font-size: $s14 !important;
                         }
@@ -360,7 +375,7 @@
                     display: flex;
 
 
-                    /deep/.el-select{
+                    ::v-deep.el-select{
                         width: 1.3rem;
                         .el-input{
                             .el-input__inner{
@@ -390,7 +405,7 @@
                         }
 
                     }
-                    /deep/.el-date-editor{
+                    ::v-deep.el-date-editor{
                         width: 1.3rem;
                         .el-icon-circle-close{
                             display: none !important;
@@ -440,6 +455,7 @@
                         padding: 0.05rem 0.18rem;
                         font-size: $s14;
                         line-height: 0.2rem;
+                        white-space: nowrap;
                     }
                 }
             }
@@ -450,7 +466,8 @@
                 padding:0.28rem 0.28rem 0.18rem 0.28rem;
                 background: $bg_white_c;
                 border-radius:5px;
-                border:1px solid rgba(215,215,215,1);
+                // border:1px solid $bd_first_c;
+                overflow-x: auto;
                 .service_information_available_container{
                     display:flex;
                     align-items: center;
@@ -469,7 +486,17 @@
                         font-weight:600;
                     }
                 }
-
+                .table {
+                    overflow-x: auto;
+                    .el-table {
+                        min-width: 10rem;
+                    }
+                }
+            }
+            @media (max-width: 767px) {
+                .service_list_content {
+                    padding: 0.28rem 0.12rem 0.18rem 0.12rem;
+                }
             }
 		}
 		.pagination_content{

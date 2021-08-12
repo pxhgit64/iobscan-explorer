@@ -14,29 +14,40 @@
 					<span>{{denomName || denomId}}</span>
 				</div>
 				<div class="nft_token_information_item">
-					<span>{{$t('ExplorerLang.nftDetail.id')}}：</span>
-					<span>{{nftName || tokenID}}</span>
+					<span>{{$t('ExplorerLang.nftDetail.tokenName')}}：</span>
+					<span>{{nftName}}</span>
+				</div>
+				<div class="nft_token_information_item">
+					<span>{{$t('ExplorerLang.nftDetail.tokenId')}}：</span>
+					<span>{{tokenID}}</span>
 				</div>
 				<div class="nft_token_information_item">
 					<span>{{$t('ExplorerLang.nftDetail.schema')}}：</span>
-					<span>{{schema || '--'}}</span>
+					<LargeString :isShowPre="Tools.isJSON(schema)" v-if="schema" :text="schema" :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight" />
 				</div>
 				<div class="nft_token_information_item">
 					<span>{{$t('ExplorerLang.nftDetail.data')}}：</span>
-					<span>{{tokenData}}</span>
+					<LargeString :isShowPre="Tools.isJSON(tokenData)" v-if="tokenData" :text="tokenData" :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
 				</div>
 				<div class="nft_token_information_item">
 					<span>{{$t('ExplorerLang.nftDetail.creator')}}：</span>
-					<span>{{creator}}</span>
+					<span>
+						<router-link :to="`/address/${creator}`">{{creator}}</router-link>
+					</span>
 				</div>
-				
-				
-				
 				<div class="nft_token_information_item">
 					<span>{{$t('ExplorerLang.nftDetail.uri')}}：</span>
-					<span v-if="tokenUri && tokenUri !== '--'">
+					<!-- <span v-if="tokenUri && tokenUri !== '--'">
 						<a :href="tokenUri" target="_blank">{{tokenUri}}</a>
 					</span>
+					<span v-else>--</span> -->
+
+					<div class="wrap" v-if="tokenUri && tokenUri !== '[do-not-modify]'">
+								<a class="text" v-if="Tools.testUrl(tokenUri)" :href="tokenUri" target="_blank">{{tokenUri}}</a>
+								<a class="text" v-else-if="startStr(tokenUri)" :href="'http://' + tokenUri" target="_blank">{{tokenUri}}</a>
+								<span class="text" v-else>{{tokenUri}}</span>
+					</div>
+					<span v-else-if=" tokenUri === '[do-not-modify]'">{{tokenUri}}</span>
 					<span v-else>--</span>
 				</div>
 			</div>
@@ -56,12 +67,14 @@
 	import { getNftDetail, getTokenTxList } from "../service/api"
 	import Tools from "../util/Tools"
     import MPagination from "./common/MPagination";
-    import { TX_TYPE,TX_STATUS } from '../constant';
+	import { TX_TYPE,TX_STATUS } from '../constant';
+	import LargeString from './common/LargeString';
 	export default {
 		name: "NftToken",
-		components:{ MPagination, TxListComponent },
+		components:{ MPagination, TxListComponent,LargeString },
 		data() {
 			return {
+				Tools,
 				TX_TYPE,
 				TX_STATUS,
 				owner:'',
@@ -81,7 +94,9 @@
 				tokenUri:'',
                 denomName:'',
                 nftName:'',
-				denomId:''
+				denomId:'',
+				LargeStringMinHeight: 95,
+				LargeStringLineHeight: 19
 			}
 		},
 		mounted () {
@@ -91,22 +106,21 @@
 			async getTokenInformation(){
 				try {
 					let nftDetail = await getNftDetail(this.$route.query.denom, this.$route.query.tokenId);
-					console.log('----',nftDetail)
 
 					if(nftDetail){
 						this.creator = (nftDetail.denomDetail || {}).creator;
-						this.schema = (nftDetail.denomDetail || {}).json_schema;
+						this.schema = (nftDetail.denomDetail || {}).json_schema || '--';
 						this.name = nftDetail.denom;
-						this.tokenID = nftDetail.nft_id;
+						this.tokenID = nftDetail.nft_id || '--';
 						this.denomName = nftDetail.denom_name;
 						this.denomId = nftDetail.denom_id;
-						this.nftName = nftDetail.nft_name;
+						this.nftName = nftDetail.nft_name || '--';
 						// this.primaryKey = nftDetail.primary_key;
 						this.owner = nftDetail.owner;
-						this.tokenData = nftDetail.tokenData;
-						this.tokenUri = nftDetail.tokenUri;
-						
-						this.getTokenTx()
+						this.tokenData = nftDetail.tokenData || '--';
+						this.tokenUri = nftDetail.tokenUri || '--';
+						this.getTokenTx(null, null, true);
+            this.getTokenTx(this.pageNum ,this.pageSize);
 					}
 				}catch (e) {
 					console.error(e)
@@ -114,19 +128,20 @@
 			},
             pageChange(pageNum){
 			    this.pageNum = pageNum;
-			    this.getTokenTx();
+			    this.getTokenTx(this.pageNum ,this.pageSize);
             },
-			async getTokenTx(){
-                const res = await getTokenTxList(this.tokenID,this.$route.query.denom,this.pageNum ,this.pageSize );
-                try {
-                    // console.log(res)
-                    this.txListByToken = res.data;
-                    this.count = res.count;
-                    // console.log(this.txListByToken)
-                }catch (e) {
-                		console.error(e);
-                    this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
-                }
+			async getTokenTx(currentPage, pageSize, useCount = false){
+        try {
+            const res = await getTokenTxList(this.tokenID,this.$route.query.denom, currentPage, pageSize, useCount);
+            
+            this.txListByToken = res?.data;
+            if(useCount){
+              this.count = res?.count;
+            }
+        }catch (e) {
+            console.error(e);
+            this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
+        }
 			},
 			formatTxHash(TxHash){
 				if(TxHash){
@@ -135,6 +150,9 @@
 			},
 			formatAddress(address){
 				return Tools.formatValidatorAddress(address)
+			},
+			startStr(url){
+				return url.startsWith('www.')
 			},
 		}
 	}
@@ -159,7 +177,7 @@
 			}
 			.nft_token_information_content{
 				box-sizing: border-box;
-				border: 0.01rem solid $bd_second_c;
+				// border: 0.01rem solid $bd_second_c;
 				border-radius: 0.04rem;
 				background: $bg_white_c;
 				padding: 0.2rem;
@@ -179,6 +197,17 @@
 						color: $t_first_c;
 						flex: 1;
 						word-break:break-all;
+					}
+					.wrap {
+						.text {
+							flex: 1;
+							text-align: left;
+							font-size: $s14;
+							color: $t_first_c;
+							word-break: break-all;
+							line-height: 0.20rem;
+							font-weight: normal;
+						}
 					}
 				}
 				.nft_token_information_item:last-child{

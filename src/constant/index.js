@@ -1,20 +1,17 @@
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
-import prodConfig from "../productionConfig.js";
+import prodConfig from '../productionConfig.js'
 Vue.use(VueI18n)
 
 const i18n = new VueI18n({
-  locale:prodConfig.lang == 'EN' ? 'EN' : 'CN',
+  locale: prodConfig.lang == 'EN' ? 'EN' : 'CN',
   messages: {
-    "CN" : require('../../lang/CN-Cindy'),
-    "EN" : require('../../lang/EN-Cindy')
-  }
+    CN: require('../../lang/CN-Cindy'),
+    EN: require('../../lang/EN-Cindy'),
+  },
 })
 
-export const addrPrefix = {
-  accAddr: 'caa',
-}
-
+// 链上
 export const TX_TYPE = {
   // service
   define_service: 'define_service',
@@ -29,6 +26,9 @@ export const TX_TYPE = {
   start_request_context: 'start_request_context',
   kill_request_context: 'kill_request_context',
   update_request_context: 'update_request_context',
+  service_set_withdraw_address: 'service/set_withdraw_address',
+  withdraw_earned_fees: 'withdraw_earned_fees',
+  // Record
   create_record: 'create_record',
   // nft
   burn_nft: 'burn_nft',
@@ -41,6 +41,7 @@ export const TX_TYPE = {
   edit_token: 'edit_token',
   mint_token: 'mint_token',
   transfer_token_owner: 'transfer_token_owner',
+  burn_token: 'burn_token',
   //Bank
   send: 'send',
   multisend: 'multisend',
@@ -72,7 +73,7 @@ export const TX_TYPE = {
   // Htlc
   create_htlc: 'create_htlc',
   claim_htlc: 'claim_htlc',
-  refund_htlc: 'refund_htlc',
+  // refund_htlc: 'refund_htlc', //删除
   // Guardian
   add_profiler: 'add_profiler',
   delete_profiler: 'delete_profiler',
@@ -83,12 +84,163 @@ export const TX_TYPE = {
   start_feed: 'start_feed',
   pause_feed: 'pause_feed',
   edit_feed: 'edit_feed',
-  // IBC
-  recv_packet: 'recv_packet',
-  create_client: 'create_client',
-  update_client: 'update_client',
+  // CrossChain 联盟链
+  recv_packet: 'recv_packet',     //和公有链ibc交易类型名称一致
+  create_client: 'create_client', //和公有链ibc交易类型名称一致
+  update_client: 'update_client', //和公有链ibc交易类型名称一致
+  // Identity
   create_identity: 'create_identity',
   update_identity: 'update_identity',
+  // IBC
+  transfer: 'transfer',
+  timeout_packet: 'timeout_packet',
+  // recv_packet: 'recv_packet',
+
+  // IBC => Other
+  // create_client: 'create_client',
+  // update_client: 'update_client',
+  upgrade_client: 'upgrade_client',
+  submit_misbehaviour: 'submit_misbehaviour',
+  connection_open_init: 'connection_open_init',
+  connection_open_try: 'connection_open_try',
+  connection_open_ack: 'connection_open_ack',
+  connection_open_confirm: 'connection_open_confirm',
+  channel_open_init: 'channel_open_init',
+  channel_open_try: 'channel_open_try',
+  channel_open_ack: 'channel_open_ack',
+  channel_open_confirm: 'channel_open_confirm',
+  channel_close_init: 'channel_close_init',
+  channel_close_confirm: 'channel_close_confirm',
+  timeout_on_close_packet: 'timeout_on_close_packet',
+  acknowledge_packet: 'acknowledge_packet',
+
+  // Random
+  request_rand: 'request_rand',
+}
+
+// 展示
+export const TX_TYPE_DISPLAY = {
+  // service
+  define_service: 'Define Service',
+  bind_service: 'Bind Service',
+  call_service: 'Call Service',
+  respond_service: 'Respond Service',
+  update_service_binding: 'Update Service Binding',
+  disable_service_binding: 'Disable Service Binding',
+  enable_service_binding: 'Enable Service Binding',
+  refund_service_deposit: 'Refund Service Deposit',
+  pause_request_context: 'Pause Request Context',
+  start_request_context: 'Start Request Context',
+  kill_request_context: 'Kill Request Context',
+  update_request_context: 'Update Request Context',
+  'service/set_withdraw_address': 'Service Set Withdraw Address',
+  withdraw_earned_fees: 'Withdraw Earned Fees',
+   // Record
+   create_record: 'Create Record',
+  // nft
+  burn_nft: 'NFT Burn',
+  transfer_nft: 'NFT Transfer',
+  edit_nft: 'NFT Edit',
+  issue_denom: 'Issue Denom',
+  mint_nft: 'NFT Mint',
+  // Token
+  issue_token: 'Issue Token',
+  edit_token: 'Edit Token',
+  mint_token: 'Mint Token',
+  transfer_token_owner: 'Transfer Token Owner',
+  burn_token: 'Burn Token',
+  //Bank
+  send: 'Transfer',
+  multisend: 'Multi Send',
+  //Crisis
+  verify_invariant: 'VerifyInvariant',
+  //Evidence
+  submit_evidence: 'SubmitEvidence',
+  //Staking
+  begin_unbonding: 'Undelegate',
+  edit_validator: 'Edit Validator',
+  create_validator: 'Create Validator',
+  delegate: 'Delegate',
+  begin_redelegate: 'Begin Redelegate',
+  // Slashing
+  unjail: 'Unjail',
+  // Distribution
+  set_withdraw_address: 'Set Withdraw Address',
+  withdraw_delegator_reward: 'Withdraw Delegator Reward',
+  withdraw_validator_commission: 'Withdraw Validator Commission',
+  fund_community_pool: 'Fund Community Pool',
+  // Gov
+  deposit: 'Deposit',
+  vote: 'Vote',
+  submit_proposal: 'Submit Proposal',
+  // Coinswap
+  add_liquidity: 'Add Liquidity',
+  remove_liquidity: 'Remove Liquidity',
+  swap_order: 'Swap Order',
+  // Htlc
+  create_htlc: 'Create Hash Lock',
+  claim_htlc: 'Claim Hash Lock',
+  // refund_htlc: 'RefundHTLC', // 删除
+  // Guardian
+  add_profiler: 'AddProfiler',
+  delete_profiler: 'DeleteProfiler',
+  add_trustee: 'AddTrustee',
+  delete_trustee: 'DeleteTrustee',
+  // Oracle
+  create_feed: 'Create Feed',
+  start_feed: 'Start Feed',
+  pause_feed: 'Pause Feed',
+  edit_feed: 'Edit Feed',
+  // CrossChain 联盟链
+  recv_packet: 'IBC Transfer In',     //和公有链ibc交易类型名称一致
+  create_client: 'IBC Create Client', //和公有链ibc交易类型名称一致
+  update_client: 'IBC Update Client', //和公有链ibc交易类型名称一致
+  // Identity
+  create_identity: 'CreateIdentity',
+  update_identity: 'UpdateIdentity',
+  // IBC
+  transfer: 'IBC Transfer Out',
+  timeout_packet: 'IBC Timeout Packet',
+  // recv_packet: 'recv_packet',
+
+  // IBC => Other
+  // create_client: 'create_client',
+  // update_client: 'update_client',
+  upgrade_client: 'IBC Upgrade Client',
+  submit_misbehaviour: 'IBC Submit Misbehaviour',
+  connection_open_init: 'IBC Connection Open Init',
+  connection_open_try: 'IBC Connection Open Try',
+  connection_open_ack: 'IBC Connection Open Ack',
+  connection_open_confirm: 'IBC Connection Open Confirm',
+  channel_open_init: 'IBC Channel Open Init',
+  channel_open_try: 'IBC Channel Open Try',
+  channel_open_ack: 'IBC Channel Open Ack',
+  channel_open_confirm: 'IBC Channel Open Confirm',
+  channel_close_init: 'IBC Channel Close Init',
+  channel_close_confirm: 'IBC Channel Close Confirm',
+  timeout_on_close_packet: 'IBC Timeout On Close Packet',
+  acknowledge_packet: 'IBC Acknowledge Packet',
+
+  // Random
+  request_rand: 'Request Rand',
+}
+
+export const LEVEL_TX_TYPE = {
+  Transfer: 'Transfer',
+  Staking: 'Staking',
+  iService: 'iService',
+  NFT: 'NFT',
+  Coinswap: 'Coinswap',
+  Identity: 'Identity',
+  IBC: 'IBC',
+  HTLC: 'Hash Lock',
+  Oracle: 'Oracle',
+  Random: 'Random',
+  Record: 'Record',
+  Asset: 'Asset',
+  Gov: 'Gov',
+  Other: 'Others',
+  crossChain: 'CrossChain'
 }
 
 export const TX_STATUS = {
@@ -103,36 +255,92 @@ export const ValidatorStatus = {
 }
 
 export const ColumnMinWidth = {
-  txHash: '120',
-  blockHeight: '90',
-  txType: '130',
-  address: '120',
-  time: '180',
-  txn: '',
-  blockAge: '120',
-  validatirName: '120',
+  txHash: '135',
+  txHashShort: '113', // Validator Details
+  addressTxHash: '135',
+  respondHash: '138',
+  requestHash: '138',
+  blockHeight: '85',
+  blockListHeight: '85',
+  txType: '258',
+  minTxType: '150',
+  govTxType: '120',
+  address: '165',
+  iaaAddress: '139',
+  time: prodConfig.isShowUTC === false ? '158' : '205',
+  txn: '115',
+  blockAge: '150',
+  // validatirName: '120',
+  validatirName: '155',
   votingPower: '120',
   publickKey: '450',
-  denom: '155',
-  tokenId: '150',
+  denom: '150',
+  tokenId: '120',
   denomId: '150',
-  schema: '450',
-  URI: '120',
-  respondTimes: '100',
+  schema: '380',
+  URI: '260',
+  respondTimes: '129',
   available: '100',
-  qos: '120',
-  requestId: '130',
-  state: '120',
-  serviceName: '120',
+  qos: '195',
+  // requestId: '150',
+  requestId: '155',
+  state: '127',
+  serviceName: '135',
   No: '50',
   price: '120',
   deposit: '120',
   nftCount: '100',
-  identity: '220',
+  identity: '300',
   idPubKey: '220',
+  idPubKeyFull: '650',
   pubKeyAlgo: '120',
   certificate: '220',
+  certificateFull: '650',
   credentials: '220',
+  commission: '110',
+  bondedTokens: '155',
+  uptime: '100',
+  // selfBond: '125',
+  selfBond: '130',
+  delegators: '121',
+  bondHeight: '122',
+  unbondingHeight: '155',
+  // amount: '115',
+  amount: '130',
+  amountAndDenom: '150',
+  delegationsAmount: '165',
+  delegationTxsAmount: '155',
+  delegationTxsFrom: '146',
+  shares: '251',
+  fee: '85',
+  // feeAndDenom: "110",
+  consensus: '340',
+  proposerPriority: '200',
+  message: '90',
+  validatorMoniker: '150',
+  validatorSelfBond: '150',
+  nftListDenom: '100',
+  nftListDate: '280',
+  // timestamp: '145',
+  timestamp:  prodConfig.isShowUTC === false ? '158' : '205',
+  symbol: '121',
+  assetListowner: '430',
+  totalSupply: '160',
+  maxSupply: '150',
+  mintable: '120',
+  proposalId: '56',
+  proposalID: '105',
+  proposalTitle: '185',
+  proposalType: '173',
+  proposalStatusIcon: '133',
+  proposalStatus: '115',
+  strip: '120',
+  voteOption: '120',
+  submited: '128',
+  proposer: '245',
+  validatorValue: '120',
+  votingPowerValue: '120',
+  ownerDetailDelegationsAmount: '135',
 }
 
 export const ModuleMap = {
@@ -165,7 +373,7 @@ export const ModuleMap = {
     link: '/identities',
   },
   '107': {
-    title: 'Vaildators',
+    title: 'Validators',
     link: '/staking',
   },
   '108': {
@@ -176,201 +384,167 @@ export const ModuleMap = {
     title: 'Validation Txs',
     link: '/txs/validations',
   },
+  '110': {
+    title: 'Native Asset',
+    link: '/assets/ntvassets',
+  },
+  '111': {
+    title: 'Native Asset',
+    link: '/assets/ntvassetstxs',
+  },
+  '112': {
+    title: 'Proposals',
+    link: '/gov/proposals',
+  },
+  '113': {
+    title: 'Gov Txs',
+    link: '/txs/governance',
+  },
+   '114': {
+    title: '${mainToken} Rich List',
+    link: '/stats/rich',
+  },
+   '115': {
+    title: '${mainToken} Stats',
+    link: '/stats/stats',
+  },
+
 }
-
-export const CHAINNAME = 'iris'
-
-const Denom = {}
-Denom.IRISATTO = 'iris-atto'
-Denom.IRIS = 'iris'
 
 const CHAINID = {}
-CHAINID.IRISHUB = 'irishub'
-CHAINID.FUXI = 'fuxi'
-CHAINID.NYANCAT = 'nyancat'
-CHAINID.QA = 'rainbow-qa'
-CHAINID.DEV = 'rainbow-dev'
-CHAINID.GOZTESTNET = 'goz-testnet'
-CHAINID.BIFROST = 'bifrost'
+CHAINID.IRISHUB = 'Mainnet IRISHUB'
+CHAINID.FUXI = 'Testnet FUXI'
+CHAINID.NYANCAT = 'Testnet NYANCAT'
+CHAINID.GOZTESTNET = 'Testnet GOZ'
+CHAINID.BIFROST = 'Testnet BIFROST'
+CHAINID.STARGATE = 'Testnet STARGATE'
+CHAINID.COSMOSHUB = 'Mainnet CosmosHub'
 
-
-const TxType = {};
-TxType.TRANSFER = 'Transfer';
-TxType.BURN = 'Burn';
-TxType.SETMEMOREGEXP = 'SetMemoRegexp';
-TxType.CREATEVALIDATOR ='CreateValidator';
-TxType.EDITVALIDATOR = 'EditValidator';
-TxType.UNJAIL = 'Unjail';
-TxType.DELEGATE = 'Delegate';
-TxType.BEGINREDELEGATE = 'BeginRedelegate';
-TxType.SETWITHDRAWADDRESS = 'SetWithdrawAddress';
-TxType.BEGINUNBONDING = 'BeginUnbonding';
-TxType.WITHDRAWDELEGATORREWARD = 'WithdrawDelegatorReward';
-TxType.WITHDRAWDELEGATORREWARDSALL = 'WithdrawDelegatorRewardsAll';
-TxType.WITHDRAWVALIDATORREWARDSALL = 'WithdrawValidatorRewardsAll';
-TxType.SUBMITPROPOSAL = 'SubmitProposal';
-TxType.DEPOSIT = 'Deposit';
-TxType.VOTE = 'Vote';
-TxType.ISSUETOKEN = 'IssueToken';
-TxType.EDITTOKEN = 'EditToken';
-TxType.MINTTOKEN = 'MintToken';
-TxType.TRANSFERTOKENOWNER = 'TransferTokenOwner';
-TxType.CREATEGATEWAY = 'CreateGateway';
-TxType.EDITGATEWAY = 'EditGateway';
-TxType.TRANSFERGATEWAYOWNER = 'TransferGatewayOwner';
-TxType.REQUESTRAND = 'RequestRand';
-TxType.ADDPROFILER = 'AddProfiler';
-TxType.ADDTRUSTEE = 'AddTrustee';
-TxType.DELETEPROFIKER = 'DeleteProfiler';
-TxType.DELETETRUSTEE = 'DeleteTrustee';
-TxType.CLAIMHTLC = 'ClaimHTLC';
-TxType.CREATEHTLC = 'CreateHTLC';
-TxType.REFUNDHTLC = 'RefundHTLC';
-TxType.ADDLIQUIDITY = 'AddLiquidity';
-TxType.REMOVELIQUIDITY = 'RemoveLiquidity';
-TxType.SWAPORDER = 'SwapOrder';
-TxType.TRANSFERS = 'Transfers';
-TxType.WITHDRAWADDRESS = 'WithdrawAddress';
-TxType.STAKES = 'Stakes';
-TxType.GOVERNANCE = 'Governance';
-TxType.DECLARATIONS = 'Declarations';
-
-const RADIXDENOM = {};
-
-RADIXDENOM.IRISATTO = 'iris-atto';
-RADIXDENOM.IRISATTONUMBER = '1000000000000000000';
-RADIXDENOM.IRISMILLI = 'iris-milli';
-RADIXDENOM.IRISMILLINUMBER = '1000000000000000';
-RADIXDENOM.IRISMICRO = 'iris-micro';
-RADIXDENOM.IRISMICRONUMBER = '1000000000000';
-RADIXDENOM.IRISNANO = 'iris-nano';
-RADIXDENOM.IRISNANONUMBER = '1000000000';
-RADIXDENOM.IRISPICO = 'iris-pico';
-RADIXDENOM.IRISPICONUMBER = '1000000';
-RADIXDENOM.IRISFEMTO = 'iris-femto';
-RADIXDENOM.IRISFEMTONUMBER = '1000';
-RADIXDENOM.IRIS = 'iris';
-RADIXDENOM.IRISNUMBER = '1';
-
-export const pageTitleConfig  = {
-	BlockchainBlocks:'Block List',
-	BlockchainBlocksBlockDetails:'Block Details',
-	BlockchainTransactions:'Transaction List',
-	BlockchainTransactionsTransactionDetails:'Transaction Details',
-	StakingValidators:'Validator List',
-	StakingValidatorsValidatorDetails:'Validator Details',
-	StakingDelegationTxs:'Delegation Txs List',
-	StakingValidationTxs:'Validation Txs List',
-	Transfer:'Transfer List',
-	AssetNativeAsset:'Native Asset List',
-	AssetNativeAssetTxs:'Native Asset Txs List',
-	GovParameters:'Parameter List',
-	GovProposals:'Proposal List',
-	GovProposalsProposalDetails:'Proposal Details',
-	GovGovTxs:'Gov Txs List',
-	StatsIRISRichList:'IRIS Rich List',
-	StatsIRISRichListAddress:'Address',
-	StatsIRISStats:'IRIS Stats Analyse',
+export const pageTitleConfig = {
+  BlockchainBlocks: 'Block List',
+  BlockchainBlocksBlockDetails: 'Block Details',
+  BlockchainTransactions: 'Transaction List',
+  BlockchainTransactionsTransactionDetails: 'Transaction Details',
+  StakingValidators: 'Validator List',
+  StakingValidatorsValidatorDetails: 'Validator Details',
+  StakingDelegationTxs: 'Delegation Txs List',
+  StakingValidationTxs: 'Validation Txs List',
+  Transfer: 'Transfer List',
+  AssetNativeAsset: 'Native Asset List',
+  AssetNativeAssetTxs: 'Native Asset Txs List',
+  GovParameters: 'Parameter List',
+  GovProposals: 'Proposal List',
+  GovProposalsProposalDetails: 'Proposal Details',
+  GovGovTxs: 'Gov Txs List',
+  StatsRichList: '${mainToken} Rich List',
+  StatsRichListAddress: 'Address',
+  StatsStats: '${mainToken} Stats Analyse',
 }
 
-const TRANSACTIONMESSAGENAME = {};
-TRANSACTIONMESSAGENAME.TXTYPE = i18n.t('ExplorerLang.transactionInformation.transactionMessage.TxType');
-TRANSACTIONMESSAGENAME.FROM = i18n.t('ExplorerLang.transactionInformation.transactionMessage.from');
-TRANSACTIONMESSAGENAME.AMOUNT = i18n.t('ExplorerLang.transactionInformation.transactionMessage.amount');
-TRANSACTIONMESSAGENAME.TO = i18n.t('ExplorerLang.transactionInformation.transactionMessage.to');
-TRANSACTIONMESSAGENAME.OWNER = 'Owner :';
-TRANSACTIONMESSAGENAME.MEMOREGEXP = 'MemoRegexp :';
-TRANSACTIONMESSAGENAME.OPERATORADDRESS = i18n.t('ExplorerLang.transactionInformation.transactionMessage.operatorAddress');
-TRANSACTIONMESSAGENAME.MONIKER = i18n.t('ExplorerLang.transactionInformation.transactionMessage.moniker');
-TRANSACTIONMESSAGENAME.IDENTITY = i18n.t('ExplorerLang.transactionInformation.transactionMessage.identity');
-TRANSACTIONMESSAGENAME.SELFBONDED = i18n.t('ExplorerLang.transactionInformation.transactionMessage.selfBonded');
-TRANSACTIONMESSAGENAME.OWNERADDRESS = i18n.t('ExplorerLang.transactionInformation.transactionMessage.ownerAddress');
-TRANSACTIONMESSAGENAME.CONSENSUSPUBKEY = i18n.t('ExplorerLang.transactionInformation.transactionMessage.consensusPubkey');
-TRANSACTIONMESSAGENAME.COMMISSIONRATE = i18n.t('ExplorerLang.transactionInformation.transactionMessage.commissionRate');
-TRANSACTIONMESSAGENAME.WEBSITE = i18n.t('ExplorerLang.transactionInformation.transactionMessage.website');
-TRANSACTIONMESSAGENAME.DETAILS = i18n.t('ExplorerLang.transactionInformation.transactionMessage.details');
-TRANSACTIONMESSAGENAME.SHARES = i18n.t('ExplorerLang.transactionInformation.transactionMessage.shares');
-TRANSACTIONMESSAGENAME.TOSHARES = i18n.t('ExplorerLang.transactionInformation.transactionMessage.toShares');//'Shares : ' 此处有空格
-TRANSACTIONMESSAGENAME.ENDTIME = i18n.t('ExplorerLang.transactionInformation.transactionMessage.endTime');
-TRANSACTIONMESSAGENAME.NEWADDRESS = i18n.t('ExplorerLang.transactionInformation.transactionMessage.withdrawAddress');
-TRANSACTIONMESSAGENAME.ORIGINALADDRESS = i18n.t('ExplorerLang.transactionInformation.transactionMessage.delegatorAddress');
-TRANSACTIONMESSAGENAME.PROPOSER = 'Proposer :';
-TRANSACTIONMESSAGENAME.TITLE = 'Title :';
-TRANSACTIONMESSAGENAME.INITIALDEPOSIT = 'Initial Deposit :';
-TRANSACTIONMESSAGENAME.DESCRIPTION = 'Description :';
-TRANSACTIONMESSAGENAME.PROPOSALTYPE = 'Proposal Type :';
-TRANSACTIONMESSAGENAME.DEPOSITOR = 'Depositor :';
-TRANSACTIONMESSAGENAME.PROPOSALID = 'Proposal ID :';
-TRANSACTIONMESSAGENAME.DEPOSIT = 'Deposit :';
-TRANSACTIONMESSAGENAME.VOTER = 'Voter :';
-TRANSACTIONMESSAGENAME.OPTION = 'Option :';
-TRANSACTIONMESSAGENAME.FAMILY = 'Family :';
-TRANSACTIONMESSAGENAME.SOURCE = 'Source :';
-TRANSACTIONMESSAGENAME.GATEWAY = 'Gateway :';
-TRANSACTIONMESSAGENAME.SYMBOL = 'Symbol :';
-TRANSACTIONMESSAGENAME.CANONICALSYMBOL = 'Canonical Symbol :';
-TRANSACTIONMESSAGENAME.NAME = 'Name :';
-TRANSACTIONMESSAGENAME.DECIMAL = 'Decimal :';
-TRANSACTIONMESSAGENAME.SYMBOLMINALIAS = 'SymbolMinAlias :';
-TRANSACTIONMESSAGENAME.INITIALSUPPLY = 'InitialSupply :';
-TRANSACTIONMESSAGENAME.MAXSUPPLY = 'MaxSupply :';
-TRANSACTIONMESSAGENAME.MINTABLE = 'Mintable :';
-TRANSACTIONMESSAGENAME.TOKENID = 'TokenId :';
-TRANSACTIONMESSAGENAME.ORIGINALOWNER = 'Original Owner :';
-TRANSACTIONMESSAGENAME.NEWOWNER = 'New Owner :';
-TRANSACTIONMESSAGENAME.BLOCKINTERVAL = 'Block Interval :';
-TRANSACTIONMESSAGENAME.REQUESTID = 'Request ID :';
-TRANSACTIONMESSAGENAME.RANDHEIGHT = 'Rand Height :';
-TRANSACTIONMESSAGENAME.HASHLOCK = 'Hash Lock :';
-TRANSACTIONMESSAGENAME.TIMELOCK = 'Time Lock :';
-TRANSACTIONMESSAGENAME.TIMESTAMP = 'Timestamp :';
-TRANSACTIONMESSAGENAME.EXPIRYHEIGHT = 'Expiry Height :';
-TRANSACTIONMESSAGENAME.CROSSCHAINREVEIVER = 'Cross-chain Receiver :';
-TRANSACTIONMESSAGENAME.SECRET = 'Secret :';
-TRANSACTIONMESSAGENAME.PARAMETER = 'Parameter :';
-TRANSACTIONMESSAGENAME.SOFTWARE = 'Software :';
-TRANSACTIONMESSAGENAME.VERSION = 'Version :';
-TRANSACTIONMESSAGENAME.SWITCHHEIGHT = 'Switch Height :';
-TRANSACTIONMESSAGENAME.TRESHOLD = 'Treshold :';
-TRANSACTIONMESSAGENAME.ADDRESS = 'Address :';
-TRANSACTIONMESSAGENAME.ADDRESSBY = 'Added By :';
-TRANSACTIONMESSAGENAME.DELETEDBY = 'Deleted By :';
-TRANSACTIONMESSAGENAME.USAGE = 'Usage :';
-TRANSACTIONMESSAGENAME.DESTADDRESS = 'DestAddress :';
-TRANSACTIONMESSAGENAME.PERCENT = 'Percent :';
-TRANSACTIONMESSAGENAME.CANONICALSYMBOL = 'CanonicalSymbol :';
-TRANSACTIONMESSAGENAME.MINUNITALIAS = 'MinUnitAlias :';
+export const PubKeyAlgorithm = {
+  '0': 'UnknownPubKeyAlgorithm',
+  '1': 'RSA',
+  '2': 'DSA',
+  '3': 'ECDSA',
+  '4': 'ED25519',
+  '5': 'SM2',
+}
 
+export const TxStatus = {
+  '0': 'Fail',
+  '1': 'Success',
+}
 
-TRANSACTIONMESSAGENAME.INPUTADDRESS = 'Input Address :';
-TRANSACTIONMESSAGENAME.OUTPUTADDRESS = 'Output Address :';
-TRANSACTIONMESSAGENAME.INPUT = 'Input :';
-TRANSACTIONMESSAGENAME.OUTPUT = 'Output :';
-TRANSACTIONMESSAGENAME.DEADLINE = 'Deadline :';
-TRANSACTIONMESSAGENAME.ISBUYORDER = 'Is Buy Order :';
+export const numFormat = {
+  num: '0.00',
+}
 
-TRANSACTIONMESSAGENAME.MAXTOKEN = 'Max Token :';
-TRANSACTIONMESSAGENAME.EXACTIRISAMT = 'Exact IRIS Amount :';
-TRANSACTIONMESSAGENAME.MINLIQUIDITY = 'MinLiquidity :';
-TRANSACTIONMESSAGENAME.SENDER = 'Sender :';
+export const validator_Status = {
+  active: 'Active',
+  candidate: 'Candidate',
+  jailed: 'Jailed',
+}
 
-
-TRANSACTIONMESSAGENAME.MINTOKEN = 'Min Token :';
-TRANSACTIONMESSAGENAME.WITHDRAWLIQUIDITY = 'Withdraw Liquidity :';
-TRANSACTIONMESSAGENAME.MINIRISAMT = 'Min IRIS Amount :';
-
-const ENVCONFIG = {};
-ENVCONFIG.DEV = 'dev';
-ENVCONFIG.QA = 'qa';
-ENVCONFIG.STAGE = 'stage';
-ENVCONFIG.TESTNET = 'testnet';
-ENVCONFIG.MAINNET = 'mainnet';
+export const decimals = {
+  amount: 2,
+  fee: prodConfig.fee && prodConfig.fee.decimals || 2,
+  shares: 4,
+}
 
 export default {
-  Denom,
   CHAINID,
-  TxType,
-  RADIXDENOM,
-  TRANSACTIONMESSAGENAME,
-  ENVCONFIG
 }
+
+export const monikerNum = {
+  validatorList: 8,
+  home: 12,
+  otherTable: 11,
+}
+
+export const proposalStatus = {
+  passed: 'Passed',
+  rejected: 'Rejected',
+  votingPeriod: 'VotingPeriod',
+  depositPeriod: 'DepositPeriod',
+}
+
+export const proposalType = {
+  ParameterChangeProposal: 'ParameterChange',
+  SoftwareUpgradeProposal: 'SoftwareUpgrade',
+  CancelSoftwareUpgradeProposal: 'CancelSoftwareUpgrade',
+  CommunityPoolSpendProposal: 'CommunityPoolSpend',
+  TextProposal:'Text'
+}
+
+export const voteOptions = {
+  1: 'yes',
+  2: 'abstain',
+  3: 'no',
+  4: 'no_with_veto'
+}
+
+export const formatVoteOptions = {
+  'yes': 'Yes',
+  'abstain': 'Abstain',
+  'no': 'No',
+  'no_with_veto': 'NoWithVeto'
+}
+
+// 需和配置文件的产品名一致
+export const product = {
+  bifrost: 'Bifrost',
+  stargate: 'STARGATE',
+  cosmosHub: 'Cosmos Hub',
+  nyancat: 'NYANCAT',
+  irishub: 'IRISHUB',
+  cschainOtc: 'CSChain-OTC'
+}
+
+export const ibcDenomPrefix = 'ibc/'
+
+export const DISTRIBUTION = {
+    '1-5':{
+        name:'No. 1-5',
+    },
+    '6-10':{
+        name:'No. 6-10',
+    },
+    '11-50':{
+        name:'No. 11-50',
+    },
+    '51-100':{
+        name:'No. 51-100',
+    },
+    '101-500':{
+        name:'No. 101-500',
+    },
+    '501-1000':{
+        name:'No. 501-1000',
+    },
+    '1001-':{
+        name:'No. 1001-',
+    },
+}
+
+export const COSMOS_ADDRESS_PREFIX = 'cosmos';
+export const IRIS_ADDRESS_PREFIX = 'iaa';

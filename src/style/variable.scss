@@ -8,13 +8,14 @@ $s16: 0.16rem;
 $s18: 0.18rem;
 $s20: 0.2rem;
 $s22: 0.22rem;
+$s52: 0.52rem; // 新增
 $s100: 1rem;
 $s200: 2rem;
 
 // text-color
 // $t_first_c: #171D44;  					//一级文字色
 // $t_second_c: #787C99;					//二级文字色
-// $t_third_c: #C0C4CC;					//三级文字色
+// $t_third_c: #C0C4CC;					   //三级文字色
 // $t_fourth_c: rgba(255,255,255,0.5);		//四级文字色
 // $t_link_c: #3264fd;						//链接文字色
 $t_white_c: white;						//纯白
@@ -23,14 +24,19 @@ $t_white_c: white;						//纯白
 // background-color 
 $bg_main_c: #3264FD;                    //主题色
 $bg_highlight_c: #e9ecef;				//高亮
-$bg_cancel_c: #F8F8F8;					//通用背景色
-// $bg_button_c: #3264FD;					//按钮背景色
+// $bg_cancel_c: #F8F8F8;					//通用背景色
+$bg_avatar:#E0E8FF;                     //头像背景色
+// $bg_button_c: #3264FD;				  //按钮背景色
 $bg_white_c: #fff;						//纯白
+$bg_candidate_c: #3DA87E;               //候选按钮背景色
+$bg_jailed_c: #FA7373;                  //监禁按钮背景色
+
 
 // border-color 
 $bd_first_c: #D7D7D7;  					//一级边框色
 $bd_second_c: #dee2e6;					//二级边框色
 $bd_third_c: #F3F5F6;					//三级边框色
+
 
 .table{
 	color:$t_first_c;

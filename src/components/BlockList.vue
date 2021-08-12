@@ -10,19 +10,30 @@
 								<router-link :to="`/block/${latestBlockHeight}`">{{latestBlockHeight}}</router-link>
 							</span>
 						</div>
-						<div class="pagination_content">
+						<!-- <div class="pagination_content">
 							<m-pagination :page-size="pageSize" :total="dataCount" :page="pageNumber" :page-change="pageChange"></m-pagination>
-						</div>
+						</div> -->
 					</div>
 					<div class="block_list_pagination_content">
-						<el-table class="table"  :data="blockList" stripe :empty-text="$t('ExplorerLang.table.emptyDescription')">
-							<el-table-column :min-width="ColumnMinWidth.blockHeight" :label="$t('ExplorerLang.table.block')">
+						<el-table class="table"  :data="blockList" :empty-text="$t('ExplorerLang.table.emptyDescription')">
+							<el-table-column :min-width="ColumnMinWidth.blockListHeight" :label="$t('ExplorerLang.table.block')">
 								<template slot-scope="scope">
 									<router-link :to="`/block/${scope.row.height}`">{{scope.row.height}}</router-link>
 								</template>
 							</el-table-column>
+							<el-table-column class-name="address" v-if="productionConfig.blockList.proposer" :min-width="ColumnMinWidth.proposer" :label="$t('ExplorerLang.table.proposer')">
+								<template slot-scope="scope">
+										<span v-if="scope.row.proposerAddress !== '' && scope.row.proposerAddress !== '--'">
+											<router-link class="common_link_style" :to="`/staking/${scope.row.proposerAddress}`">{{scope.row.proposerValue}}</router-link>
+										</span>
+										<span v-if="scope.row.proposerAddress === '' && scope.row.proposerValue">{{scope.row.proposerValue}}</span>
+										<span v-if="scope.row.proposerAddress === '--'">--</span>
+								</template>
+							</el-table-column>
 							<el-table-column :min-width="ColumnMinWidth.txn" prop="numTxs" :label="$t('ExplorerLang.table.transactions')"></el-table-column>
-							<el-table-column :min-width="ColumnMinWidth.time" prop="time" :label="$t('ExplorerLang.table.timestamp')"></el-table-column>
+							<!-- <el-table-column v-if="productionConfig.blockList.validtors" :min-width="ColumnMinWidth.validatorValue" prop="validatorValue" :label="$t('ExplorerLang.table.validators')"></el-table-column> -->
+							<!-- <el-table-column v-if="productionConfig.blockList.votingPower" :min-width="ColumnMinWidth.votingPowerValue" prop="votingPowerValue" :label="$t('ExplorerLang.table.votingPower')"></el-table-column> -->
+							<el-table-column :min-width="ColumnMinWidth.time" prop="time" :label="$t('ExplorerLang.table.createTime')"></el-table-column>
 							<el-table-column :min-width="ColumnMinWidth.blockAge" prop="ageTime" :label="$t('ExplorerLang.table.age')"></el-table-column>
 						</el-table>
 					</div>
@@ -38,46 +49,65 @@
 <script>
 	import Tools from "../util/Tools"
 	import MPagination from "./common/MPagination";
-	import { getBlockList, getLatestBlock } from "../service/api";
+	import { getRangeBlockList, getLatestBlock } from "../service/api";
 	import { ColumnMinWidth } from '../constant';
+	import productionConfig from '@/productionConfig.js';
+  import { validatePositiveInteger } from '../helper/IritaHelper'
+
 	export default {
 		name: "BlockList",
 		components: {MPagination},
 		data() {
 			return {
 				ColumnMinWidth,
+				productionConfig,
 				pageNumber: 1,
 				pageSize: 20,
 				dataCount: 0,
 				latestBlockHeight:0,
+        dbHeight: 0,
 				blockList: [],
 				blockListTimer: null
 			}
 		},
 		mounted () {
-			this.getBlocks()
+			this.queryBlockList()
 		},
 		methods: {
-			async getBlocks () {
-				this.latestBlock();
-				try {
-					let blockData = await getBlockList(this.pageNumber, this.pageSize, true);
-					if(blockData){
-						this.dataCount = blockData.count;
-						this.blockList = blockData.data.map( item => {
+      async queryBlockList(){
+        await this.latestBlock();
+        this.getBlocks(true);	
+      },
+			async getBlocks(useCount = false) {
+  		  let start = this.dbHeight - (this.pageNumber - 1) * this.pageSize;
+  	  	let end = start - this.pageSize;
+				try {    
+					let blockList = await getRangeBlockList(start, validatePositiveInteger(end), useCount);
+          if(useCount){
+            this.dataCount = blockList?.count
+          }
+					if(blockList?.data){
+            if(blockList.data.length > this.pageSize){
+              blockList.data = blockList.data.slice(0, this.pageSize)
+            }
+						this.blockList = blockList.data.map( item => {
 							return{
+								proposerAddress:item.proposer_addr || '--',
+								proposerValue: item.proposer_moniker || ( item.proposer_addr || '--'),
+								// validatorValue: `${item.precommit_validator_num || 0} / ${item.total_validator_num || 0}`,
+								// votingPowerValue: item.precommit_voting_power ? `${Tools.formatPerNumber((Number(item.precommit_voting_power) / item.total_voting_power) * 100)} %` : '--',
 								height: item.height,
 								time: Tools.getDisplayDate(item.time),
 								Time: item.time,
 								numTxs: item.txn,
-								ageTime: Tools.formatAge(Tools.getTimestamp(),item.time*1000,"ago",">")
+								ageTime: Tools.formatAge(Tools.getTimestamp(),item.time*1000,this.$t('ExplorerLang.table.suffix'),"")
 							}
 						})
 					}
 					clearInterval(this.blockListTimer);
 					this.blockListTimer = setInterval(() => {
 						this.blockList.map(item => {
-							item.ageTime = Tools.formatAge(Tools.getTimestamp(),item.Time*1000,"ago",">");
+							item.ageTime = Tools.formatAge(Tools.getTimestamp(),item.Time*1000,this.$t('ExplorerLang.table.suffix'),"");
 							return item
 						})
 					},1000)
@@ -90,6 +120,7 @@
 					let blockData = await getLatestBlock();
 					if(blockData){
 						this.latestBlockHeight = blockData.height;
+            this.dbHeight = blockData.dbHeight;
 					}
 				}catch (e) {
 					console.error(e)
@@ -152,6 +183,7 @@
                             flex-direction:column;
                             .pagination_content{
                                 width:100%;
+								margin: -0.1rem 0 0.1rem 0;
                             }
                         }
                     }
@@ -161,9 +193,13 @@
                         width:100%;
                         overflow-x: auto;
 						.el-table{
+							overflow-x: auto;
 							.el-table__header-wrapper{
 								/*position: fixed;*/
 								/*z-index: 10;*/
+							}
+							::v-deep .el-table__body-wrapper {
+								overflow: auto;
 							}
 						}
                         @media screen and (min-width: 910px) and (max-width: 1280px){
@@ -180,7 +216,7 @@
 
 
 					.block_list_current_height_content{
-						padding:0.3rem 0 0.1rem 0;
+						padding:0.3rem 0 0.16rem 0;
 						text-align: left;
                         display:flex;
                         align-items: center;

@@ -2,40 +2,7 @@
 	<div class="home_container">
 		<div class="home_content_wrap">
 			<div class="home_content_header_content">
-				<ul class="home_content_header_top_content">
-					<li class="home_content_header_top_item_content" v-show="(prodConfig.homeCard || {}).lestBlock">
-						<p class="home_content_header_top_item_title"><i class="iconfont iconBlocks"></i>{{$t('ExplorerLang.home.blockHeight')}}</p>
-						<p class="home_content_header_top_center_content"><router-link :to="`block/${block_height}`">{{block_height}}</router-link></p>
-						<p class="home_content_header_top_footer_content"></p>
-					</li>
-					<li class="home_content_header_top_item_content" v-show="(prodConfig.homeCard || {}).txCount">
-						<p class="home_content_header_top_item_title"><i class="iconfont iconTransactions"></i>{{$t('ExplorerLang.home.transactions')}}</p>
-						<p class="home_content_header_top_center_content"><router-link :to="`/txs`">{{transactionNumber}}</router-link></p>
-						<p class="home_content_header_top_footer_content">{{transactionTime}}</p>
-					</li>
-					<li class="home_content_header_top_item_content" v-show="(prodConfig.homeCard || {}).avgBlockTime">
-						<p class="home_content_header_top_item_title"><i class="iconfont iconAvgBlockTime"></i>{{$t('ExplorerLang.home.avgBlockTime')}}</p>
-						<p class="home_content_header_top_center_content">{{`${ageTime} ${$t('ExplorerLang.unit.second')}`}}</p>
-						<p class="home_content_header_top_footer_content">{{$t('ExplorerLang.home.last100Blocs')}}</p>
-					</li>
-				</ul>
-				<ul class="home_content_header_bottom_content" >
-					<li class="home_content_header_bottom_item_content" v-show="(prodConfig.homeCard || {}).validatorCount">
-						<p class="home_content_header_bottom_title"><i class="iconfont iconVotingPower"></i>{{$t('ExplorerLang.home.validators')}}</p>
-						<p class="home_content_header_bottom_footer">{{validatorNumber}}</p>
-					</li>
-					<li class="home_content_header_bottom_item_content" v-show="(prodConfig.homeCard || {}).serviceCount">
-						<p class="home_content_header_bottom_title"><i class="iconfont iconservice"></i>{{$t('ExplorerLang.home.services')}}</p>
-						<p class="home_content_header_bottom_footer">
-							<router-link v-if="serverNumber" :to="`/services`">{{serverNumber}}</router-link>
-							<span v-else >--</span>
-						</p>
-					</li>
-					<li class="home_content_header_bottom_item_content" v-show="(prodConfig.homeCard || {}).assetCount">
-						<p class="home_content_header_bottom_title"><i class="iconfont iconAssets"></i>{{$t('ExplorerLang.home.assets')}}</p>
-						<p class="home_content_header_bottom_footer"><router-link :to="`/nftAsset`">{{assetsNumber}}</router-link></p>
-					</li>
-				</ul>
+				<StatisticalBar />
 			</div>
 			<div class="home_block_and_transaction_content">
 				<div class="home_block_content">
@@ -49,7 +16,7 @@
 						</div>
 					</div>
 					<ul class="home_block_bottom_content">
-						<div v-for="item in latestBlockArray" :class="item.flShowTranslationalAnimation ? 'animation ' : '' ">
+						<div v-for="(item,index) in latestBlockArray" :key="index" :class="item.flShowTranslationalAnimation ? 'animation ' : '' ">
 							<li class="home_block_list_item_content"
 							    :class="item.showAnimation === 'show' ? 'fadeIn_animation' : '' ">
 								<p class="home_block_time_content">
@@ -62,7 +29,7 @@
 								</p>
 							</li>
 						</div>
-					
+
 					</ul>
 				</div>
 				<div class="home_transaction_content">
@@ -75,65 +42,88 @@
 							<router-link :to="`/txs`">{{$t('ExplorerLang.home.viewAll')}}</router-link>
 						</div>
 					</div>
-					<ul class="home_transaction_bottom_content">
-						<li class="home_transaction_list_item_content" v-for="item in latestTransaction">
+					<ul class="home_transaction_bottom_content" v-if="latestTransaction && latestTransaction.length">
+						<li class="home_transaction_list_item_content" v-for="(item,index) in latestTransaction" :key="index">
 							<p class="home_transaction_time_content">
 								<span class="home_transaction" >
-									{{$t('ExplorerLang.home.tx')}}<router-link :to="`/tx?txHash=${item.hash}`">{{`${item.hash.substr(0,16)}...`}}</router-link>
+									{{$t('ExplorerLang.home.tx')}}
+									<el-tooltip effect="dark" :content="item.hash" placement="top">
+										<router-link :to="`/tx?txHash=${item.hash}`">{{`${item.hash.substr(0,hashLength)}...`}}</router-link>
+									</el-tooltip>
 								</span>
 								<span class="home_age_time">{{item.txAgeTime}}</span>
 							</p>
 							<p class="home_tx_type_content">
-								<span class="home_tx_type">{{item.txType}}</span>
+								<!-- <span class="home_tx_type">{{item.txType}}</span> -->
+								<el-tooltip :content="item.txType.join(',')"
+											placement="top"
+											:disabled="item.txType.length <= 1">
+									<span class="home_tx_type">{{getDisplayTxType(item.txType)}}</span>
+								</el-tooltip>
 								<span class="home_tx_time">{{item.time}}</span>
 							</p>
 						</li>
 					</ul>
+					<ul class="home_transaction_bottom_content" v-else>
+						<li style="padding-top: 15px">{{$t('ExplorerLang.message.noTransaction')}}</li>
+					</ul>
 				</div>
 			</div>
+			<div class="home_proposal_container">
+                <div class="home_proposal_container_content" v-for="item in votingPeriodDatas" :key="item.proposal_id">
+                    <div class="home_proposal_item_bar">
+                        <m-voting-card :votingBarObj="item" :showTitle="true"></m-voting-card>
+                    </div>
+                </div>
+                <div class="home_proposal_container_content"  v-for="v in depositPeriodDatas" :key="v.proposal_id">
+                    <div class="home_proposal_item_bar">
+                        <m-deposit-card :depositObj="v" :showTitle="true"></m-deposit-card>
+                    </div>
+                </div>
+            </div>
 		</div>
 	</div>
 </template>
 
 <script>
 	import Tools from "../util/Tools";
-	import prodConfig from "../productionConfig"
-	import { getStatistics, getBlockList } from "../service/api";
-	import {getTxList} from "../service/api";
-	import { TX_TYPE,TX_STATUS } from '../constant';
-
+	import { getBlockList,getTxList } from "../service/api";
+	import StatisticalBar from './common/StatisticalBar';
+	import MDepositCard from "./common/MDepositCard";
+	import MVotingCard from "./common/MVotingCard";
+	import { getProposalsListApi } from '@/service/api.js';
+	import {proposalStatus,TX_TYPE_DISPLAY} from '../constant';
+	import {moduleSupport} from "../helper/ModulesHelper";
+	import prodConfig from "../productionConfig";
     export default {
 		name: "Home",
+		components: {StatisticalBar,MDepositCard,MVotingCard},
 		data () {
 			return {
-				prodConfig:prodConfig,
-				TX_TYPE,
-				TX_STATUS,
-				block_height: 0,
-				transactionNumber: 0,
-				transactionTime:"",
-				ageTime:"",
-				validatorNumber: 0,
-				userNumber: 0,
-				assetsNumber: 0,
-				serverNumber:0,
 				syncTimer:null,
 				latestBlockArray:[],
 				latestTransaction:[],
 				blocksTimer: null,
 				transfersTimer:null,
+				screenWidth: document.body.clientWidth,
+				depositPeriodDatas:[],
+				votingPeriodDatas: [],
+                txTimer:null,
 			}
 		},
 		mounted () {
-			this.getNavigation();
 			this.getLastBlocks();
 			this.getTransaction();
+			this.gov();
 			clearInterval(this.syncTimer )
 			this.syncTimer = setInterval(() => {
-				this.getNavigation();
 				this.getLastBlocks();
+			},8000);
+			this.txTimer = setInterval(() => {
 				this.getTransaction();
-			},5000)
+			},12530);//这个时间为了不跟block接口同时请求
+
+			window.addEventListener("resize",this.monitorScreenWidth,false)
 		},
 		watch:{
 			latestBlockArray(latestBlockArray){
@@ -144,25 +134,24 @@
 						}
 					})
 				},1000)
+			},
+		},
+		computed: {
+			hashLength() {
+				if(this.screenWidth < 400 ) {
+					return 10
+				}
+				return 16
 			}
 		},
 		methods:{
-			async getNavigation(){
-				try{
-					let statistics = await getStatistics();
-					if(statistics){
-						this.block_height = statistics.blockHeight;
-						this.transactionNumber = statistics.txCount;
-						this.validatorNumber = statistics.validatorCount;
-						this.transactionTime = Tools.getDisplayDate(statistics.latestBlockTime);
-						this.ageTime = statistics.avgBlockTime;
-						this.assetsNumber = statistics.assetCount;
-						this.serverNumber = statistics.serviceCount;
-					}
-				}catch(err){
-					console.error(err);
-				}
-			},
+			getDisplayTxType(types=[]){
+                let type = TX_TYPE_DISPLAY[types[0]] || types[0] || '';
+                if (type && types.length > 1) {
+                    type += this.$t('ExplorerLang.unit.ellipsis');
+                }
+                return type;
+            },
 			async getLastBlocks(){
 				try{
 					let blockData = await getBlockList(1, 10, false);
@@ -206,7 +195,6 @@
                 };
                 try {
                     const res = await getTxList(params);
-                    // console.log('tx list:',res)
                     if(res){
                         for (let txIndex = 0; txIndex < res.data.length; txIndex++){
                             let lastTxTime = Tools.getTimestamp();
@@ -232,11 +220,12 @@
                                 showAnimation: item.showAnimation ? item.showAnimation : '',
                                 hash: item.tx_hash,
                                 time: Tools.getDisplayDate(item.time),
-                                txType: item.type,
+                                // txType: item.msgs ? (item.msgs.length > 1 ? '--' : item.msgs[0].type) : '--',
+                                txType: (item.msgs || []).map(item=>item.type),
                                 Time: item.time,
                                 txAgeTime: Tools.formatAge(Tools.getTimestamp(),item.time*1000,"ago",">")
                             }
-                        });
+						});
                         clearInterval(this.transfersTimer);
                         this.transfersTimer = setInterval(()=> {
                             this.latestTransaction = this.latestTransaction.map(item => {
@@ -265,12 +254,39 @@
 			},
 			componentAgeTime(beginTime,endTime){
 				return ((Number(new Date(beginTime).getTime()) - Number(new Date(endTime).getTime())) /1000/ 100).toFixed(2)
+			},
+			monitorScreenWidth() {
+				this.screenWidth = document.body.clientWidth
+			},
+			async getProposalsByStatus() {
+				try {
+					let res = await getProposalsListApi(`${proposalStatus.votingPeriod},${proposalStatus.depositPeriod}`)
+					if (res && res.data && res.data.length > 0) {
+						this.depositPeriodDatas = res.data.filter(v => v.status === proposalStatus.depositPeriod)
+						this.depositPeriodDatas = this.depositPeriodDatas.sort((a, b) => {
+							return b.proposal_id - a.proposal_id
+						})
+						this.votingPeriodDatas = res.data.filter(v => v.status === proposalStatus.votingPeriod)
+						this.votingPeriodDatas = this.votingPeriodDatas.sort((a, b) => {
+							return b.proposal_id - a.proposal_id
+						})
+					}
+				} catch (e) {
+					console.error(e)
+				}
+			},
+			gov() {
+				if(moduleSupport('112', prodConfig.navFuncList)) {
+					this.getProposalsByStatus();
+				}
 			}
 		},
 		destroyed () {
 			clearInterval(this.blocksTimer);
 			clearInterval(this.transfersTimer);
-			clearInterval(this.syncTimer )
+			clearInterval(this.syncTimer)
+			clearInterval(this.txTimer)
+			window.removeEventListener("resize",this.monitorScreenWidth);
 		}
 	}
 </script>
@@ -287,80 +303,10 @@
 			.home_content_header_content{
 				display: flex;
 				flex-direction: column;
-				.home_content_header_top_content{
-					display: flex;
-					margin-top: 0.3rem;
-					.home_content_header_top_item_content{
-						flex: 1;
-						max-width:32.3%;
-						margin:0 0.2rem 0 0;
-						border-radius: 0.04rem;
-						border: 0.01rem solid $bd_second_c;
-						background: $bg_white_c;
-						text-align: left;
-						box-sizing: border-box;
-						padding: 0.14rem;
-						font-size: $s14;
-						i{
-							color: $theme_c;
-							margin-right: 0.1rem;
-						}
-						.home_content_header_top_center_content{
-							font-size: $s20;
-							margin-top: 0.35rem;
-						}
-						.home_content_header_top_footer_content{
-							font-size: $s10;
-							color: $t_second_c;
-							margin-top: 0.1rem;
-						}
-					}
-					.home_content_header_top_item_content:first-child{
-						// margin-left: 0;
-					}
-					.home_content_header_top_item_content:last-child{
-						margin-right: 0;
-					}
-				}
-				.home_content_header_bottom_content{
-					display: flex;
-					margin-top: 0.2rem;
-					.home_content_header_bottom_item_content{
-						flex: 1;
-						max-width:32.3%;
-						margin:0 0.2rem 0 0;
-						border-radius: 0.04rem;
-						border: 0.01rem solid $bd_second_c;
-						background: $bg_white_c;
-						text-align: left;
-						box-sizing: border-box;
-						padding: 0.14rem;
-						font-size: $s14;
-						i{
-							color: $theme_c;
-							margin-right: 0.1rem;
-						}
-						.home_content_header_bottom_footer{
-							margin-top: 0.35rem;
-							color: $t_first_c;
-							font-size: $s20;
-							line-height: 0.23rem;
-							a{
-								color: $t_link_c;
-							}
-						}
-					}
-					.home_content_header_bottom_item_content:first-child{
-						// margin-left: 0;
-					}
-					.home_content_header_bottom_item_content:last-child{
-						margin-right: 0;
-					}
-				}
 			}
 			.home_block_and_transaction_content{
 				display: flex;
-				margin: 0.2rem 0 1rem 0;
+				margin: 0.2rem 0 0.6rem 0;
 				.home_block_content{
 					flex: 1;
 					margin-right: 0.2rem;
@@ -389,7 +335,7 @@
 								color: $t_link_c;
 							}
 							border-bottom: 0.01rem solid $t_link_c;
-							
+
 						}
 					}
 					.home_block_bottom_content{
@@ -426,7 +372,7 @@
 							animation:translational_animation 1.1s infinite;
 						}
 					}
-					
+
 				}
 				.home_transaction_content{
 					flex: 1;
@@ -453,7 +399,7 @@
 								color: $t_link_c;
 							}
 							border-bottom: 0.01rem solid $t_link_c;
-							
+
 						}
 					}
 					.home_transaction_bottom_content{
@@ -489,6 +435,34 @@
 					}
 				}
 			}
+			.home_proposal_container {
+                display: flex;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                box-sizing: border-box;
+				   text-align: left;
+				   margin: -0.2rem 0 0.4rem;
+                .home_proposal_container_content{
+					margin-bottom: 0.2rem;
+                    .home_proposal_item_bar {
+                        min-width: 5.9rem;
+                        flex: 1;
+                        width: auto;
+                        margin-right: 0.4rem;
+						.deposit_card_content {
+							min-height: 2.1rem !important;
+						}
+                    }
+
+                    .home_proposal_item_bar:nth-child(even) {
+                        margin-right: 0;
+                    }
+
+                    .home_proposal_item_bar:last-child {
+                        margin-right: 0;
+                    }
+                }
+            }
 		}
 	}
 	.fadeIn_animation{
@@ -514,42 +488,6 @@
 		.home_container{
 			.home_content_wrap{
 				.home_content_header_content{
-					.home_content_header_top_content{
-						margin-top: 0.05rem;
-						flex-direction:column;
-						height:auto;
-						.home_content_header_top_item_content{
-							width:100%;
-							max-width:100%;
-							padding: 0.14rem;
-							margin:0.05rem 0;
-							.home_content_header_top_center_content{
-								margin-top: 0.2rem;
-							}
-						}
-						
-						.home_content_header_top_item_content:last-child{
-						
-						}
-					}
-					.home_content_header_bottom_content{
-						margin-top: 0rem;
-						height:auto;
-						flex-direction:column;
-						.home_content_header_bottom_item_content{
-							width:100%;
-							max-width:100%;
-							padding: 0.14rem;
-							margin:0.05rem 0;
-							.home_content_header_bottom_footer{
-								margin-top: 0.2rem;
-							}
-						}
-						
-						.home_content_header_bottom_item_content:last-child{
-						
-						}
-					}
 				}
 				.home_block_and_transaction_content{
 					flex-direction:column;
@@ -558,10 +496,10 @@
 						.home_block_top_content{
 							.home_block_top_title{
 								i{
-								
+
 								}
 								span{
-								
+
 								}
 							}
 							.home_block_view_all{
@@ -571,67 +509,220 @@
 							}
 						}
 						.home_block_bottom_content{
-							
+
 							.home_block_list_item_content{
-								
+
 								.home_block_time_content{
-									
+
 									.home_block{
 										a{
-										
+
 										}
 									}
 								}
 								.home_tx_time_content{
-									
+
 									.home_tx{
 										span{
-										
+
 										}
 									}
 								}
 							}
 							.animation{
-							
+
 							}
 						}
-						
+
 					}
 					.home_transaction_content{
 						margin-top:0.2rem;
 						.home_transaction_top_content{
-							
+
 							.home_transaction_top_title{
 								i{
-								
+
 								}
 								span{
-								
+
 								}
 							}
 							.home_transaction_view_all{
 								a{
-								
+
 								}
-								
-								
+
+
 							}
 						}
 						.home_transaction_bottom_content{
-							
+
 							.home_transaction_list_item_content{
-								
+
 								.home_transaction_time_content{
-									
+
 									.home_transaction{
-										
+
 										a{
-										
+
 										}
 									}
 								}
 								.home_tx_type_content{
-								
+
+								}
+							}
+						}
+					}
+				}
+				.home_proposal_container{
+					display: flex;
+					flex-direction: column;
+					.home_proposal_item_bar{
+						margin-right: 0;
+					}
+					.home_proposal_item_bar:nth-child(even){
+						margin-right: 0;
+					}
+					.home_proposal_item_bar:last-child{
+						margin-right: 0;
+					}
+				}
+			}
+		}
+	}
+	@media screen and (min-width: 1000px) and (max-width: 1248px){
+		.home_container{
+			.home_content_wrap {
+				.home_proposal_container{
+					display: flex;
+					flex-direction: column;
+					.home_proposal_item_bar{
+						margin-right: 0;
+					}
+					.home_proposal_item_bar:nth-child(even){
+						margin-right: 0;
+					}
+					.home_proposal_item_bar:last-child{
+						margin-right: 0;
+					}
+				}
+			}
+		}
+
+	}
+	@media screen and (max-width: 910px){
+		.home_container{
+			.home_content_wrap{
+				.home_proposal_container{
+					display: flex;
+					flex-direction: column;
+					margin-bottom: 0.2rem;
+					.home_proposal_container_content{
+						width: 100%;
+						overflow-x: auto;
+						overflow-y: hidden;
+						.home_proposal_item_bar{
+							margin-right: 0;
+							margin-bottom: 0.2rem;
+							min-width: 3.45rem;
+							.deposit_card_content{
+								margin-bottom: 0;
+							}
+						}
+
+					}
+
+				}
+			}
+		}
+	}
+	@media screen and (max-width: 405px) {
+		.home_container{
+			.home_content_wrap{
+				.home_content_header_content{
+				}
+				.home_block_and_transaction_content{
+					margin: 0.2rem 0 0.3rem 0;
+					.home_block_content{
+						padding: 0.27rem 0.12rem 0.18rem 0.12rem;
+						.home_block_top_content{
+							.home_block_top_title{
+								i{
+
+								}
+								span{
+
+								}
+							}
+							.home_block_view_all{
+								a{
+
+								}
+							}
+						}
+						.home_block_bottom_content{
+
+							.home_block_list_item_content{
+
+								.home_block_time_content{
+
+									.home_block{
+										a{
+
+										}
+									}
+								}
+								.home_tx_time_content{
+
+									.home_tx{
+										span{
+
+										}
+									}
+								}
+							}
+							.animation{
+
+							}
+						}
+
+					}
+					.home_transaction_content{
+						padding: 0.27rem 0.12rem 0.18rem 0.12rem;
+						.home_transaction_top_content{
+
+							.home_transaction_top_title{
+								i{
+
+								}
+								span{
+
+								}
+							}
+							.home_transaction_view_all{
+								a{
+
+								}
+
+
+							}
+						}
+						.home_transaction_bottom_content{
+
+							.home_transaction_list_item_content{
+
+								.home_transaction_time_content{
+
+									.home_transaction{
+
+										a{
+
+										}
+									}
+								}
+								.home_tx_type_content{
+
 								}
 							}
 						}
@@ -640,5 +731,4 @@
 			}
 		}
 	}
-
 </style>

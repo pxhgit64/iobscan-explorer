@@ -8,7 +8,7 @@
 				<el-table class="table" :data="validatorList" :empty-text="$t('ExplorerLang.table.emptyDescription')">
 					<el-table-column :min-width="ColumnMinWidth.No" :label="$t('ExplorerLang.table.number')" prop="index" ></el-table-column>
 					<el-table-column :min-width="ColumnMinWidth.validatirName" :label="$t('ExplorerLang.table.name')" prop="name"></el-table-column>
-					<el-table-column :min-width="ColumnMinWidth.address" :label="$t('ExplorerLang.table.operator')">
+					<el-table-column :min-width="ColumnMinWidth.address" v-if="operatorShow" :label="$t('ExplorerLang.table.operator')">
 						<template slot-scope="scope">
 							<el-tooltip :content="scope.row.operator"
 							            placement="top"
@@ -44,6 +44,7 @@
 				pageNumber:1,
 				pageSize: 100,
 				validatorList: [],
+				operatorShow:false,
 				status:'bonded',
 				validatorStatusTitleList:[
 					{
@@ -76,7 +77,6 @@
 				this.validatorStatusTitleList.forEach( item => {
 					item.isActive = false
 				});
-				// localStorage.setItem('validatorTabIndex',index);
 				this.validatorStatusTitleList[index].isActive = true;
 				this.status = this.validatorStatusTitleList[index]['name'];
 				// this.getValidatorStatus(index);
@@ -101,6 +101,9 @@
 					let validatorsData = await getValidatorList(this.status == ValidatorStatus.unbonded, this.pageNumber, this.pageSize, true);
 					if(validatorsData && validatorsData.data && validatorsData.data.length){
 						this.validatorList = validatorsData.data.map((item,index) => {
+							if (item.operator && item.operator.length) {
+								this.operatorShow = true;
+							}
 							return {
 								index:index + 1,
 								name: item.name,
@@ -178,12 +181,12 @@
 
         }
 		.validator_list_content_wrap{
-			padding:0.05rem 0.15rem 0 0.15rem;
+			padding:0rem 0.15rem 0 0.15rem;
 			margin: 0 auto;
             box-sizing: border-box;
 			.validator_table_list_content{
 				background: $bg_white_c;
-				margin-top: 0.1rem;
+				margin-top: 0.16rem;
 			}
 		}
 	}

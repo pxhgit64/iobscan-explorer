@@ -3,8 +3,11 @@
 </template>
 
 <script>
-	import Constant from "../constant"
+	import Constant,{ product } from "../constant"
+	import productionConfig from '@/productionConfig.js';
 	import bigNumber from "bignumber.js"
+	import Tools from "@/util/Tools"
+    import { getMainToken } from "@/helper/IritaHelper";
 	var echarts = require('echarts/lib/echarts')
 	require('echarts/lib/component/legend')
 	require('echarts/lib/component/tooltip')
@@ -22,6 +25,8 @@
 				testnetFuXiThemeStyle:["#0C4282","#FFA300","#67E523","#8E66FF"],
 				testnetNyancatThemeStyle:["#0D9388","#FFA300","#67E523","#8E66FF"],
 				defaultThemeStyle:["#0580D3","#FFA300","#67E523","#8E66FF"],
+				stargateThemeStyle:["#6958CA","#FFA300","#67E523","#5A9FFF"],
+                mainTokenSymbol:'',
 			}
 		},
 		watch:{
@@ -38,12 +43,16 @@
 			}
 		},
 		mounted () {
-			// setTimeout(() => {
-			// 	this.initCharts();
-			// },400)
-		},
+		    this.setMainToken();
+        },
 		methods:{
-			initCharts(){
+            async setMainToken(){
+                let mainToken = await getMainToken();
+                if(mainToken && mainToken.symbol){
+                    this.mainTokenSymbol = mainToken.symbol.toUpperCase();
+                }
+            },
+			async initCharts(){
 				this.addressInformationCharts = echarts.init(document.getElementById('address_information_chart'));
 				let echartsOption = {
 					tooltip: {
@@ -51,8 +60,8 @@
 						position:{
 							left: 10,
 						},
-						formatter: function (data) {
-							return `<span style="max-width: 1.2rem;word-break: break-all;">${data.name}: <br/>${new bigNumber(data.value).toFormat()} IRIS (${data.data.formatPercent}%)</span>`
+						formatter: (data) => {
+							return `<span style="max-width: 1.2rem;word-break: break-all;">${data.name}: <br/>${new bigNumber(data.value).toFormat()} ${this.mainTokenSymbol} (${data.data.formatPercent}%)</span>`
 						}
 					},
 					legend: {
@@ -70,7 +79,7 @@
 								show: false,
 								position: 'center'
 							},
-						
+
 							emphasis: {
 								label: {
 									show: false,
@@ -84,16 +93,14 @@
 						}
 					]
 				};
-				// if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.IRISHUB){
-				// 	this.themeStyleArray = this.mainnetThemeStyle;
-				// }else if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.FUXI){
-				// 	this.themeStyleArray = this.testnetFuXiThemeStyle;
-				// }else if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.NYANCAT){
-				// 	this.themeStyleArray = this.testnetNyancatThemeStyle;
-				// }else {
-				// 	this.themeStyleArray = this.defaultThemeStyle;
-				// }
-				this.themeStyleArray = this.mainnetThemeStyle;
+				switch (productionConfig.product) {
+					case product.stargate:
+						this.themeStyleArray = this.stargateThemeStyle;
+						break;
+					default:
+						this.themeStyleArray = this.mainnetThemeStyle;
+						break;
+				}
 				let seriesData = this.echartData.map( (item,index )=> {
 					return {
 						value: item.numberValue,
@@ -105,7 +112,7 @@
 					}
 				});
 				echartsOption.series[0].data = seriesData;
-				
+
 				this.addressInformationCharts.setOption(echartsOption)
 			}
 		}

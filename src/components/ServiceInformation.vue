@@ -9,14 +9,16 @@
                 <h3 class="service_information_definition_title">
                     {{$t('ExplorerLang.serviceDetail.primary')}}
                 </h3>
-                <div class="service_information_content">
+                <div class="service_information_content" :class="productionConfig.lang === 'CN' ? 'cn': ''">
                     <p class="service_information_text_content">
                         <span>{{$t('ExplorerLang.serviceDetail.description')}}：</span>
                         <span>{{description}}</span>
                     </p>
                     <p class="service_information_text_content">
                         <span>{{$t('ExplorerLang.serviceDetail.author')}}：</span>
-                        <span>{{author}}</span>
+                        <span>
+                            <router-link :to="`/address/${author}`">{{author}}</router-link>
+                        </span>
                     </p>
                     <p class="service_information_text_content">
                         <span>{{$t('ExplorerLang.serviceDetail.authorDescription')}}：</span>
@@ -24,7 +26,7 @@
                     </p>
                     <p class="service_information_text_content">
                         <span>{{$t('ExplorerLang.serviceDetail.schema')}}：</span>
-                        <span>{{schemas}}</span>
+                        <LargeString :isShowPre="Tools.isJSON(schemas)" v-if="schemas" :text="schemas"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
                     </p>
                     <p class="service_information_text_content">
                         <span>{{$t('ExplorerLang.serviceDetail.tags')}}：</span>
@@ -40,7 +42,9 @@
                     </p>
                     <p class="service_information_text_content">
                         <span>{{$t('ExplorerLang.serviceDetail.height')}}：</span>
-                        <span>{{height}}</span>
+                        <span>
+                            <router-link :to="`/block/${height}`">{{height}}</router-link>
+                        </span>
                     </p>
                     <p class="service_information_text_content">
                         <span>{{$t('ExplorerLang.serviceDetail.time')}}：</span>
@@ -49,12 +53,13 @@
 
                 </div>
             </div>
+
             <div class="service_information_bindings_content">
                 <h3 class="service_information_binding_title">
                     {{$t('ExplorerLang.serviceDetail.serviceBindings.providers')}}</h3>
                 <div class="service_information_bindings_table_content">
                     <el-table class="table" :data="serviceList" :empty-text="$t('ExplorerLang.table.emptyDescription')">
-                        <el-table-column :min-width="ColumnMinWidth.address"
+                        <el-table-column class-name="address" :min-width="ColumnMinWidth.address"
                                          :label="$t('ExplorerLang.table.provider')">
                             <template slot-scope="scope">
                                 <span>
@@ -72,7 +77,7 @@
                                 <span>
                                     <router-link
                                             :to="`service/respond/${$route.query.serviceName}/${scope.row.provider}`">
-                                        {{`${scope.row.respondTimes} ${$t('ExplorerLang.unit.time')}`}} 
+                                        {{`${scope.row.respondTimes} ${$t('ExplorerLang.unit.time')}`}}
                                     </router-link>
                                 </span>
                             </template>
@@ -105,7 +110,7 @@
                         <el-table-column :min-width="ColumnMinWidth.time"
                                          :label="$t('ExplorerLang.table.bindTime')"
                                          prop="bindTime"></el-table-column>
-                        <el-table-column :min-width="ColumnMinWidth.time"
+                        <el-table-column :width="ColumnMinWidth.time"
                                          :label="$t('ExplorerLang.table.disabledTime')"
                                          prop="disabledTime"></el-table-column>
                     </el-table>
@@ -115,7 +120,6 @@
                                   :total="providerCount"
                                   :page="providerPageNum"
                                   :page-change="providerPageChange">
-
                     </m-pagination>
                 </div>
             </div>
@@ -128,13 +132,13 @@
                     <span class="service_information_transaction_condition_count">
                         {{`${txCount} ${$t('ExplorerLang.unit.Txs')}`}}
                     </span>
-                    <el-select v-model="type" filterable>
+                    <el-select popper-class="tooltip" v-model="type" filterable>
                         <el-option v-for="(item, index) in txTypeOption"
                                    :key="index"
                                    :label="item.label"
                                    :value="item.value"></el-option>
                     </el-select>
-                    <el-select v-model="status">
+                    <el-select popper-class="tooltip" v-model="status">
                         <el-option v-for="(item, index) in statusOpt"
                                    :key="index"
                                    :label="item.label"
@@ -152,7 +156,7 @@
 
                 <div class="service_information_transaction_table_content">
                     <el-table class="table" :data="transactionArray" :empty-text="$t('ExplorerLang.table.emptyDescription')">
-                        <el-table-column :min-width="ColumnMinWidth.txHash" :label="$t('ExplorerLang.table.txHash')">
+                        <el-table-column class-name="hash_status" :min-width="ColumnMinWidth.txHash" :label="$t('ExplorerLang.table.txHash')">
                             <template slot-scope="scope">
                                 <img class="service_tx_status"
                                      v-if="scope.row.status === TX_STATUS.success"
@@ -168,17 +172,36 @@
 
                             </template>
                         </el-table-column>
-                        <el-table-column :min-width="ColumnMinWidth.txType" :label="$t('ExplorerLang.table.txType')"
-                                         prop="type"></el-table-column>
+                        <el-table-column class-name="tx_type" :width="ColumnMinWidth.txType" :label="$t('ExplorerLang.table.txType')">
+                            <template slot-scope="scope">
+                                <el-tooltip :content="scope.row.type.join(',')"
+                                            placement="top-start"
+                                            :disabled="scope.row.msgCount <= 1">
+                                    <div class="ty_type_message">
+                                        <span>{{getDisplayTxType(scope.row.type)}}</span>
+                                        <span class="message_number" v-if="scope.row.msgCount != 1">+{{scope.row.msgCount - 1}}</span>
+                                    </div>
+                                </el-tooltip>
+                            </template>
+                        </el-table-column>
 
-                        <el-table-column :min-width="ColumnMinWidth.requestId" :label="$t('ExplorerLang.table.requestId')">
+                        <el-table-column class-name="requestId" :min-width="ColumnMinWidth.requestId" :label="$t('ExplorerLang.table.requestId')">
                             <template slot-scope="scope">
                                 <el-tooltip placement="top" :content="scope.row.id" :disabled="!isValid(scope.row.id)">
                                     <span>{{formatAddress(scope.row.id)}}</span>
                                 </el-tooltip>
                             </template>
                         </el-table-column>
-                        <el-table-column :min-width="ColumnMinWidth.address" :label="$t('ExplorerLang.table.from')">
+                        <el-table-column v-if="isShowFee" prop="fee" :label="$t('ExplorerLang.table.fee')" align="right" :min-width="ColumnMinWidth.fee">
+                            <template slot="header" slot-scope="scope">
+                                <span>{{ $t('ExplorerLang.table.fee')}}</span>
+                                <el-tooltip :content="mainTokenSymbol"
+                                            placement="top">
+                                    <i class="iconfont iconyiwen yiwen_icon" />
+                                </el-tooltip>
+                            </template >
+                        </el-table-column>
+                        <el-table-column class-name="from" :min-width="ColumnMinWidth.address" :label="$t('ExplorerLang.table.from')">
                             <template slot-scope="scope">
 
                                 <el-tooltip placement="top" :content="scope.row.from"
@@ -191,7 +214,7 @@
                             </template>
                         </el-table-column>
 
-                        <el-table-column :min-width="ColumnMinWidth.address" :label="$t('ExplorerLang.table.to')">
+                        <el-table-column class-name="to" :min-width="ColumnMinWidth.address" :label="$t('ExplorerLang.table.to')">
                             <template slot-scope="scope">
                                 <el-tooltip placement="top" :content="String(scope.row.to)"
                                             :key="Math.random()"
@@ -212,16 +235,16 @@
                             </template>
                         </el-table-column>
 
-                        <el-table-column :min-width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.timestamp')" 
+                        <el-table-column :min-width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.timestamp')"
                                          prop="timestamp"></el-table-column>
                     </el-table>
                 </div>
                 <div class="pagination_content" v-show="txCount > txPageSize">
                     <keep-alive>
-                        <m-pagination :page-size="txPageSize"
-                                      :total="txCount"
-                                      :page="txPageNum"
-                                      :page-change="pageChange">
+                        <m-pagination :page-size="Number(txPageSize)"
+                            :total="txCount"
+                            :page="Number(txPageNum)"
+                            :page-change="pageChange">
                         </m-pagination>
                     </keep-alive>
                 </div>
@@ -234,7 +257,7 @@
 <script>
     import Tools from "../util/Tools"
     import MPagination from "./common/MPagination";
-    import { TX_STATUS,ColumnMinWidth } from '../constant';
+    import { TX_STATUS,ColumnMinWidth,decimals,TX_TYPE_DISPLAY } from '../constant';
     import {
         getAllServiceTxTypes,
         getServiceDetail,
@@ -243,13 +266,19 @@
         getServiceBindingByServiceName
     } from "../service/api";
     import { TxHelper } from "../helper/TxHelper";
-
+    import LargeString from './common/LargeString';
+    import { converCoin, getMainToken } from '@/helper/IritaHelper';
+    import productionConfig from '@/productionConfig.js'
     export default {
         name : "ServiceInformation",
-        components : {MPagination},
+        components : {MPagination,LargeString},
         data(){
             return {
+                isShowFee: productionConfig.fee.isShowFee,
+                isShowDenom: productionConfig.fee.isShowDenom,
+                feeDecimals: decimals.fee,
                 TX_STATUS,
+                productionConfig,
                 ColumnMinWidth,
                 from : '',
                 chainId : '',
@@ -297,19 +326,30 @@
                         label : this.$t('ExplorerLang.common.allTxType')
                     },
                 ],
-
+                LargeStringMinHeight: 80,
+                LargeStringLineHeight:16,
+                mainTokenSymbol:'',
             }
         },
         mounted(){
             this.getServiceInformation();
-            this.getServiceBindingList();
-            this.getServiceTransaction();
+            this.getServiceBindingList(null, null, true);
+            this.getServiceBindingList(this.providerPageNum, this.providerPageSize);
+            this.getServiceTransaction(null, null, true);
+            this.getServiceTransaction(this.txPageNum,this.txPageSize);
             this.getAllTxType();
+            this.setMainToken();
         },
         methods : {
             pageChange(pageNum){
                 this.txPageNum = pageNum;
-                this.getServiceTransaction();
+                this.getServiceTransaction(this.txPageNum,this.txPageSize);
+            },
+            async setMainToken(){
+                let mainToken = await getMainToken();
+                if(mainToken && mainToken.symbol){
+                    this.mainTokenSymbol = mainToken.symbol.toUpperCase();
+                }
             },
             isValid(value){
                 return (!value || !value.length || value=="--") ? false : true;
@@ -317,7 +357,6 @@
             async getServiceInformation(){
                 const res = await getServiceDetail(this.$route.query.serviceName);
                 try {
-                    console.log('---', res)
                     if(res.msgs && res.msgs.length > 0 && res.msgs[0].msg){
                         const {author, author_description, description, name, schemas, tags} = res.msgs[0].msg;
                         this.author = author;
@@ -333,16 +372,17 @@
 
                 } catch (e) {
                     console.error(e);
-                    this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
+                    // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
                 }
             },
-            async getServiceBindingList(){
+            async getServiceBindingList(pageNum, pageSize, useCount = false){
                 try {
-                    const serviceList = await getServiceBindingTxList(this.$route.query.serviceName, this.providerPageNum, this.providerPageSize);
-                    console.log(serviceList)
+                    const serviceList = await getServiceBindingTxList(this.$route.query.serviceName, pageNum, pageSize, useCount);
+                    if(useCount){
+                      this.providerCount = Number(serviceList?.count);
+                    }
                     if(serviceList && serviceList.data){
                         let bindings = await getServiceBindingByServiceName(this.$route.query.serviceName);
-                        console.log(bindings)
                         if(bindings.result){
                             serviceList.data.forEach((s) =>{
                                 s.bindTime = Tools.getDisplayDate(s.bindTime);
@@ -359,58 +399,74 @@
                                 })
                             })
                         }
-                        console.log(serviceList)
                         this.serviceList = serviceList.data;
-                        this.providerCount = Number(serviceList.count);
                         this.providerPageSize = Number(serviceList.pageSize);
                         this.providerPageNum = Number(serviceList.pageNum);
                     }
                 } catch (e) {
                     console.error(e)
-                    this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
+                    // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
                 }
 
 
             },
             async providerPageChange(pageNum){
                 this.providerPageNum = pageNum;
-                this.getServiceBindingList();
+                this.getServiceBindingList(this.providerPageNum, this.providerPageSize);
             },
 
-            async getServiceTransaction(){
+            async getServiceTransaction(pageNum, pageSize, useCount = false){
                 try {
                     const res = await getServiceTxList(
                         this.txType,
                         this.txStatus,
                         this.$route.query.serviceName,
-                        this.txPageNum,
-                        this.txPageSize
+                        pageNum, 
+                        pageSize, 
+                        useCount
                     );
-
-                    this.transactionArray = res.data.map((item) =>{
+                    if(this.txPageNum === Number(res.pageNum)){
+                      let fees = [];
+                      let fee = [];
+                      if(res.data && res.data.length > 0) {
+                          for (const tx of res.data) {
+                              if(this.isShowFee) {
+                                  fees.push(tx.fee && tx.fee.amount && tx.fee.amount.length > 0 ? converCoin(tx.fee.amount[0]) :'--')
+                              }
+                          }
+                      }
+                      if(fees && fees.length > 0 && this.isShowFee) {
+                          fee = await Promise.all(fees);
+                      }
+                      if(useCount){
+                        this.txCount = res?.count;
+                      }
+                      this.transactionArray = res.data.map((item,index) =>{
                         let addrObj = TxHelper.getFromAndToAddressFromMsg(item.msgs[0]);
                         let requestContextId = TxHelper.getContextId(item.msgs[0], item.events) || '--';
                         let from = (addrObj && addrObj.from) ? addrObj.from : '--',
-                            to = (addrObj && addrObj.to) ? addrObj.to : '--';
+                            to = (addrObj && addrObj.to) ? addrObj.to : '--',
+                            msgs = item.msgs || [{}];
                         return {
-                            type : item.type,
+                            // type : item.msgs.length > 1 ? '--' : item.msgs[0].type,
+                            type : (item.msgs || []).map(item=>TX_TYPE_DISPLAY[item.type] || item.type),
+                            msgCount: item.msgs.length,
                             from,
                             status : item.status,
                             txHash : item.hash,
                             id : requestContextId,
                             to,
+                            // fee: fee[index] && fee[index].amount ?  this.isShowDenom ? `${Tools.toDecimal(fee[index].amount,this.feeDecimals)} ${fee[index].denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee[index].amount,this.feeDecimals)}` : '--',
+                            fee: fee[index] && fee[index].amount ? `${Tools.toDecimal(fee[index].amount,this.feeDecimals)}` : '--',
                             height : item.height,
                             timestamp : Tools.getDisplayDate(item.time)
                         };
 
                     });
-                    console.log(this.transactionArray);
-                    this.txCount = res.count;
-                    this.txPageNum = Number(res.pageNum);
-                    this.txPageSize = Number(res.pageSize);
+                    }
                 } catch (e) {
                     console.error(e)
-                    this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
+                    // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
                 }
             },
             async getAllTxType(){
@@ -419,7 +475,7 @@
                     res.data.forEach((type) =>{
                         this.txTypeOption.push({
                             value : type.typeName,
-                            item : type.typeName,
+                            label : TX_TYPE_DISPLAY[type.typeName],
                         });
                     });
                 } catch (e) {
@@ -432,13 +488,15 @@
                 this.txStatus = this.status;
                 this.txType = this.type;
                 this.txPageNum = 1;
-                this.getServiceTransaction();
+                this.getServiceTransaction(null,null,true);
+                this.getServiceTransaction(this.txPageNum,this.txPageSize);
             },
             resetFilterCondition(){
                 this.txStatus = this.status = '';
                 this.txType = this.type = '';
-                this.txPageNum = 1;
-                this.getServiceTransaction();
+                this.txPageNum = 1;  
+                this.getServiceTransaction(null,null,true);
+                this.getServiceTransaction(this.txPageNum,this.txPageSize);          
             },
             formatTxHash(TxHash){
                 if(TxHash){
@@ -447,6 +505,17 @@
             },
             formatAddress(address){
                 return Tools.formatValidatorAddress(address)
+            },
+            getDisplayTxType(types=[]){
+                let type = types[0] || '';
+                if (type && types.length > 1) {
+                    types.forEach(item => {
+                        if(type.length > item.length) {
+                            type = item
+                        }
+                    })
+                }
+                return type;
             },
         }
     }
@@ -460,14 +529,13 @@
     @media screen and (max-width: 910px){
         .service_information_content_wrap{
             width:100%;
-            padding:0 0.15rem;
             box-sizing: border-box;
             .service_information_transaction_condition_container{
                 .service_information_transaction_condition_count {
-                    
+
                 }
-                /deep/ .el-select {
-                    
+                ::v-deep .el-select {
+
                 }
                 .search_btn {
 
@@ -499,7 +567,7 @@
                 padding: 0.25rem 0.27rem 0.2rem 0.27rem;
                 margin-bottom: 0.48rem;
                 border-radius: 5px;
-                border: 1px solid $bd_first_c;
+                // border: 1px solid $bd_first_c;
                 .service_information_definition_title {
                     font-size: $s18;
                     color: $t_first_c;
@@ -529,7 +597,7 @@
                             color: $t_first_c;
                             flex: 1;
                             text-align: left;
-                            word-break: break-all;
+                            word-break: break-word;
                         }
                     }
                     .service_information_text_content:last-child {
@@ -544,7 +612,8 @@
                 padding: 0.25rem 0.27rem 0.2rem 0.27rem;
                 margin-bottom: 0.48rem;
                 border-radius: 5px;
-                border: 1px solid $bd_first_c;
+                // border: 1px solid $bd_first_c;
+                overflow-x: auto;
                 .service_information_binding_title {
                     font-size: $s18;
                     color: $t_first_c;
@@ -553,6 +622,7 @@
                     text-align: left;
                 }
                 .service_information_bindings_table_content {
+                    min-width: 11.44rem;
                     background: $bg_white_c;
                     .service_information_available_container {
                         display: flex;
@@ -561,11 +631,12 @@
                 }
             }
             .service_information_transaction_content {
+                margin-bottom: 0.2rem;
                 background: $bg_white_c;
                 box-sizing: border-box;
                 padding: 0.25rem 0.27rem 0.2rem 0.27rem;
                 border-radius: 5px;
-                border: 1px solid $bd_first_c;
+                // border: 1px solid $bd_first_c;
                 .service_information_transaction_title {
                     font-size: $s18;
                     color: $t_first_c;
@@ -585,7 +656,7 @@
                         font-weight: 600;
 
                     }
-                    /deep/ .el-select {
+                    ::v-deep .el-select {
                         width: 1.3rem;
                         margin-right: 0.22rem;
                         .el-input {
@@ -627,6 +698,7 @@
                             padding: 0.05rem 0.18rem;
                             font-size: $s14;
                             line-height: 0.2rem;
+                            white-space: nowrap;
                         }
                         .reset_btn {
                             cursor: pointer;
@@ -677,6 +749,7 @@
             .service_information_content_wrap {
 
                 .service_information_definition_content {
+                    padding: 0.12rem;
                     .service_information_definition_title {
 
                     }
@@ -685,12 +758,30 @@
                         .service_information_text_content {
 
                             span:nth-of-type(1) {
-                                min-width: 1rem;
+                                min-width: 1.4rem;
+                                margin-right: 0.16rem;
+                                word-break: break-word;
                             }
                             span:last-child {
 
                             }
                         }
+
+                        .service_information_text_content:last-child {
+
+                        }
+                    }
+                    .cn {
+                        .service_information_text_content {
+
+                            span:nth-of-type(1) {
+                                min-width: 0.8rem !important;
+                            }
+                            span:last-child {
+
+                            }
+                        }
+
                         .service_information_text_content:last-child {
 
                         }
@@ -717,7 +808,7 @@
                         .service_information_transaction_condition_count {
                             margin-bottom: 0.1rem;
                         }
-                        /deep/ .el-select {
+                        ::v-deep .el-select {
                             width: 100%;
                             margin-bottom: 0.1rem;
 

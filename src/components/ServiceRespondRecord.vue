@@ -9,19 +9,18 @@
                 </span>
                 <span class="service_respond_record_provider">
                     {{$t('ExplorerLang.serviceDetail.provider')}}
+                    <span class="service_respond_record_provider_content">
+                        <router-link :to="`/address/${$route.params.provider}`">
+                            {{$route.params.provider}}
+                        </router-link>
+                    </span>
                 </span>
-                <span class="service_respond_record_provider_content">
-                    <router-link :to="`/address/${$route.params.provider}`">
-                        {{$route.params.provider}}
-                    </router-link>
-                </span>
-
             </p>
             <div class="service_respond_record_definition_content">
                 <h3 class="service_respond_record_definition_title">
                     {{$t('ExplorerLang.serviceDetail.primary')}}
                 </h3>
-                <div class="service_respond_record_content">
+                <div class="service_respond_record_content" :class="productionConfig.lang === 'CN' ? 'cn': ''">
                     <p class="service_respond_record_text_content">
                         <span>{{$t('ExplorerLang.table.isAvailable')}}:</span>
                         <span>{{isAvailable}}</span>
@@ -34,10 +33,10 @@
                         <span>{{$t('ExplorerLang.serviceDetail.serviceBindings.qos')}}:</span>
                         <span>{{`${qos} ${$t('ExplorerLang.unit.blocks')}`}} </span>
                     </p>
-                    <!-- <p class="service_respond_record_text_content">
+                    <p v-if="isShowFee" class="service_respond_record_text_content">
                         <span>{{$t('ExplorerLang.serviceDetail.serviceBindings.deposit')}}:</span>
                         <span>{{deposit}}</span>
-                    </p> -->
+                    </p>
                     <p class="service_respond_record_text_content">
                         <span>{{$t('ExplorerLang.serviceDetail.serviceBindings.hash')}}:</span>
                         <span>
@@ -72,7 +71,7 @@
                 </h3>
                 <div class="service_respond_record_transaction_table_content">
                     <el-table class="table" :data="txList" :empty-text="$t('ExplorerLang.table.emptyDescription')">
-                        <el-table-column :min-width="ColumnMinWidth.txHash" :label="$t('ExplorerLang.table.respondHash')">
+                        <el-table-column class-name="hash_status" :min-width="ColumnMinWidth.respondHash" :label="$t('ExplorerLang.table.respondHash')">
                             <template slot-scope="scope">
                                 <img class="service_tx_status"
                                      v-if="scope.row.respondStatus === TX_STATUS.success"
@@ -88,10 +87,10 @@
 
                             </template>
                         </el-table-column>
-                        <el-table-column :min-width="ColumnMinWidth.txType" :label="$t('ExplorerLang.table.txType')"
+                        <el-table-column :width="ColumnMinWidth.txType" :label="$t('ExplorerLang.table.txType')"
                                          prop="type"></el-table-column>
 
-                        <el-table-column :min-width="ColumnMinWidth.requestId" :label="$t('ExplorerLang.table.requestId')">
+                        <el-table-column class-name="requestId" :min-width="ColumnMinWidth.requestId" :label="$t('ExplorerLang.table.requestId')">
                             <template slot-scope="scope">
                                 <el-tooltip placement="top" :content="scope.row.requestContextId"
                                             v-if="scope.row.requestContextId">
@@ -103,7 +102,7 @@
                             </template>
                         </el-table-column>
 
-                        <el-table-column :min-width="ColumnMinWidth.blockHeight" :label="$t('ExplorerLang.table.block')">
+                        <el-table-column :min-width="ColumnMinWidth.blockListHeight" :label="$t('ExplorerLang.table.block')">
                             <template slot-scope="scope">
                                 <router-link :to="`/block/${scope.row.height}`">
                                     {{scope.row.height}}
@@ -113,7 +112,7 @@
 
                         <el-table-column :min-width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.timestamp')" 
                                          prop="time"></el-table-column>
-                        <el-table-column :min-width="ColumnMinWidth.address" :label="$t('ExplorerLang.table.consumer')">
+                        <el-table-column class-name="address" :min-width="ColumnMinWidth.address" :label="$t('ExplorerLang.table.consumer')">
                             <template slot-scope="scope">
                                 <el-tooltip placement="top" :content="scope.row.consumer">
                                     <router-link :to="`/address/${scope.row.consumer}`">{{formatAddress(scope.row.consumer)}}
@@ -122,7 +121,7 @@
                             </template>
                         </el-table-column>
 
-                        <el-table-column :min-width="ColumnMinWidth.txHash"
+                        <el-table-column class-name="hash_status" :min-width="ColumnMinWidth.requestHash"
                                          :label="$t('ExplorerLang.table.requestHash')">
                                 <template slot-scope="scope">
                                     <img class="service_tx_status"
@@ -161,12 +160,16 @@
         getServiceBindingByServiceName,
     } from "../service/api";
     import { TX_STATUS,ColumnMinWidth } from '../constant';
+    import { converCoin } from '../helper/IritaHelper';
+    import productionConfig from '@/productionConfig.js';
     export default {
         name : "ServiceInformation",
         components : {MPagination},
         data(){
             return {
+                isShowFee: productionConfig.fee.isShowFee,
                 TX_STATUS,
+                productionConfig,
                 ColumnMinWidth,
                 txList : [],
                 txPageSize : 10,
@@ -189,30 +192,35 @@
         },
         mounted(){
             this.getServiceInfo();
-            this.getRespondTxList()
+            this.getRespondTxList(null, null, true);
+            this.getRespondTxList(this.txPageNum, this.txPageSize);
         },
         methods : {
             pageChange(pageNum){
                 this.txPageNum = pageNum;
-                this.getRespondTxList();
+                this.getRespondTxList(this.txPageNum, this.txPageSize);
             },
             async getServiceInfo(){
                 try {
                     const serviceInfo = await getServiceRespondInfo(this.$route.params.serviceName, this.$route.params.provider);
                     const bindings = await getServiceBindingByServiceName(this.$route.params.serviceName, this.$route.params.provider);
-                    console.log(serviceInfo)
-                    console.log(bindings)
                     if(serviceInfo){
                         this.hash = serviceInfo.hash;
                         this.owner = serviceInfo.owner;
                         this.bindTime = Tools.getDisplayDate(serviceInfo.time);
                     }
-                    if(bindings && bindings.result && bindings.result.value){
-                        const {available, pricing, qos, deposit, disabled_time} = bindings.result.value;
+                    if(bindings && bindings.result){
+                        let {available, pricing, qos, deposit, disabled_time} = bindings.result;
                         this.isAvailable = available ? 'True' : 'False';
                         this.price = pricing;
                         this.qos = qos;
-                        this.deposit = `${deposit[0].amount} ${deposit[0].denom}`;
+                        if(deposit && deposit[0] && this.isShowFee) {
+                            deposit = await converCoin(deposit[0])
+                            this.deposit = `${deposit.amount} ${deposit.denom.toUpperCase()}`;
+                        } else {
+                            this.deposit = '--'
+                        }
+                        
                         this.disabledTime = available ? '--' : Tools.getFormatDate(disabled_time);
                     }
 
@@ -222,15 +230,15 @@
                 }
             },
 
-            async getRespondTxList(){
+            async getRespondTxList(pageNum, pageSize, useCount = false){
                 try {
                     const res = await getRespondServiceRecord(
                         this.$route.params.serviceName,
                         this.$route.params.provider,
-                        this.txPageNum,
-                        this.txPageSize
+                        pageNum, 
+                        pageSize, 
+                        useCount                       
                     );
-                    console.log(res);
                     this.txList = res.data.map((item) =>{
                         return {
                             type : item.type,
@@ -243,7 +251,9 @@
                             respondStatus : item.respondStatus,
                         };
                     });
-                    this.txCount = res.count;
+                    if(useCount){
+                      this.txCount = res?.count;
+                    }
                     this.txPageNum = Number(res.pageNum);
                     this.txPageSize = Number(res.pageSize);
                 } catch (e) {
@@ -274,7 +284,6 @@
             .service_respond_record_title {
                 padding-left: 0.27rem;
                 .service_respond_record_provider {
-
                     margin-right: 0.15rem;
                 }
                 .service_respond_record_spread {
@@ -313,6 +322,7 @@
             margin: 0 auto;
             display: flex;
             flex-direction: column;
+
             .service_respond_record_title {
                 text-align: left;
                 margin: 0.3rem 0 0.15rem 0;
@@ -330,7 +340,7 @@
                 }
                 .service_respond_record_provider_content {
                     font-size: $s14;
-
+                    word-break: break-word;
                 }
 
             }
@@ -340,7 +350,7 @@
                 padding: 0.25rem 0.27rem 0.2rem 0.27rem;
                 margin-bottom: 0.48rem;
                 border-radius:5px;
-                border:1px solid rgba(215,215,215,1);
+                border:1px solid $bd_first_c;
                 .service_respond_record_definition_title {
                     font-size: $s18;
                     color: $t_first_c;
@@ -359,7 +369,7 @@
                             font-size: $s14;
                             line-height: 0.16rem;
                             color: $t_second_c;
-                            min-width: 1.5rem;
+                            min-width: 1.8rem;
                             text-align: left;
                             font-weight: 600;
                         }
@@ -383,7 +393,8 @@
                 box-sizing: border-box;
                 padding: 0.25rem 0.27rem 0.2rem 0.27rem;
                 border-radius:5px;
-                border:1px solid rgba(215,215,215,1);
+                border:1px solid $bd_first_c;
+                margin-bottom: 0.2rem;
                 .service_respond_record_transaction_title {
                     font-size: $s18;
                     color: $t_first_c;
@@ -403,7 +414,7 @@
                         font-weight: 600;
 
                     }
-                    /deep/ .el-select {
+                    ::v-deep .el-select {
                         width: 1.3rem;
                         margin-right: 0.22rem;
                         .el-input {
@@ -442,6 +453,7 @@
                         padding: 0.05rem 0.18rem;
                         font-size: $s14;
                         line-height: 0.2rem;
+                        white-space: nowrap;
                     }
                 }
                 .service_respond_record_transaction_table_content {
@@ -480,10 +492,26 @@
             .service_respond_record_content_wrap {
 
                 .service_respond_record_definition_content {
+                    padding: 0.12rem;
                     .service_respond_record_definition_title {
 
                     }
                     .service_respond_record_content {
+
+                        .service_respond_record_text_content {
+
+                            span:nth-of-type(1) {
+                                min-width: 1.8rem;
+                            }
+                            span:last-child {
+
+                            }
+                        }
+                        .service_respond_record_text_content:last-child {
+
+                        }
+                    }
+                    .cn {
 
                         .service_respond_record_text_content {
 
@@ -500,6 +528,7 @@
                     }
                 }
                 .service_respond_record_transaction_content {
+                    padding: 0.12rem;
                     .service_respond_record_transaction_title {
 
                     }

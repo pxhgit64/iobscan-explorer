@@ -1,573 +1,911 @@
 <template>
-  <div class="">
-    <div class="vaildtor_detail_container">
-      <div class="vaildtor_detail_content">
-        <div class="vaildtor_detail_title_container">
-          <span>{{ $t('ExplorerLang.validatorDetail.title') }}</span>
-        </div>
-        <validator-information :validationInformation="validationInformation" :validatorStatus="validatorStatus"></validator-information>
-        <validator-commission-information :validationCommissionInfo="validationInformation"></validator-commission-information>
-        <div class="delegations_wrap">
-          <div class="delegations_container">
-            <!-- Delegations -->
-            <div class="one_table_container">
-              <p class="validator_information_content_title">{{ $t('ExplorerLang.validatorDetail.delegationsTitle') }}</p>
-              <div class="delegations_table_container">
-                <el-table :data="delegations.items" style="width: 100%" :empty-text="$t('ExplorerLang.table.emptyDescription')">
-                  <el-table-column prop="address" :label="$t('ExplorerLang.table.address')" width="130">
-                    <template v-slot:default="{ row }">
-                      <el-tooltip :content="`${row.address}`">
-                        <router-link style="font-family: Consolas,Menlo;" :to="'/address/' + row.address" :style="{ color: '$theme_c !important' }">{{ formatAddress(row.address) }}</router-link>
-                      </el-tooltip>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="amount" :label="$t('ExplorerLang.table.amount')" align="right" min-width="175"> </el-table-column>
-                  <el-table-column prop="shares" :label="$t('ExplorerLang.table.shares')" align="left" min-width="213"> </el-table-column>
-                  <!-- 待处理 -->
-                  <!-- <el-table-column prop="block" :label="$t('ExplorerLang.table.block')" width="110">
-                    <template v-slot:default="{ row }">
-                      <router-link style="font-family: Consolas,Menlo;" :to="'/block/' + row.block" :style="{ color: '$theme_c !important' }">{{ row.block }}</router-link>
-                    </template>
-                  </el-table-column> -->
-                </el-table>
-              </div>
-              <m-pagination v-if="delegations.total > pageSize" :page-size="pageSize" :total="delegations.total" :page-change="pageChange('getDelegations')"></m-pagination>
-            </div>
-            <!-- Unbonding Delegations -->
-            <div class="second_table_container">
-              <p class="validator_information_content_title">{{ $t('ExplorerLang.validatorDetail.unbondingDelegationsTitle') }}</p>
-              <div class="delegations_table_container">
-                <el-table :data="unbondingDelegations.items" style="width: 100%" :empty-text="$t('ExplorerLang.table.emptyDescription')">
-                  <el-table-column prop="address" :label="$t('ExplorerLang.table.address')" width="130">
-                    <template v-slot:default="{ row }">
-                      <el-tooltip :content="`${row.address}`">
-                        <router-link style="font-family: Consolas,Menlo;" :to="'/address/' + row.address" :style="{ color: '$theme_c !important' }">{{ formatAddress(row.address) }}</router-link>
-                      </el-tooltip>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="amount" :label="$t('ExplorerLang.table.amount')" align="right" min-width="180"> </el-table-column>
-                  <el-table-column prop="block" :label="$t('ExplorerLang.table.block')" align="left" min-width="118">
-                    <template v-slot:default="{ row }">
-                      <router-link style="font-family: Consolas,Menlo;" :to="'/block/' + row.block" :style="{ color: '$theme_c !important' }">{{ row.block }}</router-link>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="end_time" :label="$t('ExplorerLang.table.endTime')" width="200"> </el-table-column>
-                </el-table>
-              </div>
-              <m-pagination v-if="unbondingDelegations.total > pageSize" :page-size="pageSize" :total="unbondingDelegations.total" :page-change="pageChange('getUnbondingDelegations')"></m-pagination>
-            </div>
-          </div>
-        </div>
-        <!-- Delegation Txs -->
-        <div class="delegations_txs_wrap">
-          <div class="delegations_txs_container">
-            <p class="validator_information_content_title">{{ $t('ExplorerLang.validatorDetail.delegationsTxsTitle') }}</p>
-            <div class="delegations_txs_table_container">
-              <el-table :data="delegationTxs.items" style="width: 100%" :empty-text="$t('ExplorerLang.table.emptyDescription')">
-                <el-table-column prop="Tx_Hash" :label="$t('ExplorerLang.table.txHash')" width="90">
-                  <template v-slot:default="{ row }">
-                    <el-tooltip :content="`${row.Tx_Hash}`" style="font-family: Consolas,Menlo">
-                      <router-link style="font-family: Consolas,Menlo;" :to="`/tx?txHash=${row.Tx_Hash}`" :style="{ color: '$theme_c !important' }">{{ formatTxHash(row.Tx_Hash) }}</router-link>
-                    </el-tooltip>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="Block" :label="$t('ExplorerLang.table.block')" width="76">
-                  <template v-slot:default="{ row }">
-                    <router-link style="font-family: Consolas,Menlo;" :to="'/block/' + row.Block" :style="{ color: '$theme_c !important' }">{{ row.Block }}</router-link>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="From" :label="$t('ExplorerLang.table.from')" width="159">
-                  <template v-slot:default="{ row }">
-                    <span v-if="/^[1-9]\d*$/.test(row.From)" class="skip_route">
-                      <router-link :to="`/tx?txHash=${row.Tx_Hash}`">{{ row.From }} Validators</router-link>
-                    </span>
-                    <div class="name_address" v-if="!/^[0-9]\d*$/.test(row.From) && row.From && row.From !== '--'">
-                      <span class="remove_default_style skip_route" :class="row.From === $route.params.param ? 'no_skip' : ''">
-                        <router-link :to="`/address/${row.From}`" class="link_style" :style="{ 'font-family': row.From ? 'Consolas,Menlo' : '' }">{{ formatMoniker(row.fromMoniker) || formatAddress(row.From) }}</router-link>
-                      </span>
-                    </div>
-                    <span class="no_skip" v-show="/^[0]\d*$/.test(row.From) || row.From === '--'">--</span>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="Amount" :label="$t('ExplorerLang.table.amount')" align="right" width="140"> </el-table-column>
-                <el-table-column prop="To" :label="$t('ExplorerLang.table.to')" align="left" width="159">
-                  <template v-slot:default="{ row }">
-                    <span v-if="/^[1-9]\d*$/.test(row.To)" class="skip_route">
-                      <router-link :to="`/tx?txHash=${row.Tx_Hash}`">{{ row.To }} Validators</router-link>
-                    </span>
-                    <div class="name_address" v-show="!/^[0-9]\d*$/.test(row.To) && row.To && row.To !== '--'">
-                      <span class="remove_default_style skip_route" :class="row.To === $route.params.param ? 'no_skip' : ''">
-                        <router-link v-if="!(row.To === $route.params.param)" class="link_style" :style="{ 'font-family': row.From ? 'Consolas,Menlo' : '' }" :to="`/address/${row.To}`">{{ formatMoniker(row.toMoniker) || formatAddress(row.To) }}</router-link>
-                        <span style="cursor:pointer;font-family: Consolas, Menlo;" v-else>{{ formatMoniker(row.toMoniker) }}</span>
-                      </span>
-                    </div>
-                    <span class="no_skip" v-show="/^[0]\d*$/.test(row.To) || row.To === '--'">--</span>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="Tx_Type" :label="$t('ExplorerLang.table.txType')" show-overflow-tooltip> </el-table-column>
-                <el-table-column prop="Tx_Fee" :label="$t('ExplorerLang.table.fee')" width="110"> </el-table-column>
-                <el-table-column prop="Tx_Signer" :label="$t('ExplorerLang.table.signer')" width="121">
-                  <template v-slot:default="{ row }">
-                    <router-link :to="`/address/${row.Tx_Signer}`" class="link_style justify">{{ formatAddress(row.Tx_Signer) }}</router-link>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="Tx_Status" :label="$t('ExplorerLang.table.status')" width="73"> </el-table-column>
-                <el-table-column prop="Timestamp" :label="$t('ExplorerLang.table.txTimestamp')" width="186"> </el-table-column>
-              </el-table>
-            </div>
-            <m-pagination v-if="delegationTxs.total > pageSize" :page-size="pageSize" :total="delegationTxs.total" :page-change="pageChange('getDelegationTxs')"></m-pagination>
-          </div>
-        </div>
-        <!-- Validation Txs -->
-        <div class="validation_txs_wrap">
-          <div class="validation_txs_container">
-            <p class="validator_information_content_title">{{ $t('ExplorerLang.validatorDetail.validationTxsTitle') }}</p>
-            <div class="validation_txs_table_container">
-              <el-table :data="validationTxs.items" style="width: 100%" :empty-text="$t('ExplorerLang.table.emptyDescription')">
-                <el-table-column prop="Tx_Hash" :label="$t('ExplorerLang.table.txHash')" width="90">
-                  <template v-slot:default="{ row }">
-                    <el-tooltip :content="`${row.Tx_Hash}`" style="font-family: Consolas,Menlo">
-                      <router-link style="font-family: Consolas,Menlo;" :to="`/tx?txHash=${row.Tx_Hash}`" :style="{ color: '$theme_c !important' }">{{ formatTxHash(row.Tx_Hash) }}</router-link>
-                    </el-tooltip>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="Block" :label="$t('ExplorerLang.table.block')" width="76">
-                  <template v-slot:default="{ row }">
-                    <router-link style="font-family: Consolas,Menlo;" :to="'/block/' + row.Block" :style="{ color: '$theme_c !important' }">{{ row.Block }}</router-link>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="Moniker" :label="$t('ExplorerLang.table.name')" width="159">
-                  <template v-slot:default="{ row }">
-                    <span style="cursor:pointer;" v-if="row.OperatorAddr === $route.params.param">{{ row.Moniker }}</span>
-                    <router-link v-else :to="`/address/${row.OperatorAddr}`" class="link_style justify">{{ formatMoniker(row.Moniker) }}</router-link>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="OperatorAddr" :label="$t('ExplorerLang.table.operator')" width="140">
-                  <template v-slot:default="{ row }">
-                    <span v-if="/^[1-9]\d*$/.test(row.OperatorAddr)" class="skip_route">
-                      <router-link :to="`/tx?txHash=${row.Tx_Hash}`">{{ row.OperatorAddr }} Validators</router-link>
-                    </span>
-                    <div class="name_address" v-show="!/^[0-9]\d*$/.test(row.OperatorAddr) && row.OperatorAddr && row.OperatorAddr !== '--'">
-                      <el-tooltip :content="`${row.OperatorAddr}`" style="font-family: Consolas,Menlo">
-                        <span style="cursor:pointer;" v-if="row.OperatorAddr === $route.params.param">{{ formatAddress(row.OperatorAddr) }}</span>
-                        <router-link v-else :to="`/address/${row.OperatorAddr}`" class="link_style justify">{{ formatAddress(row.OperatorAddr) }}</router-link>
-                      </el-tooltip>
-                    </div>
-                    <span class="no_skip" v-show="/^[0]\d*$/.test(row.OperatorAddr) || row.OperatorAddr === '--'">--</span>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="Self-Bonded" :label="$t('ExplorerLang.table.selfBonded')" width="159">
-                  <template v-slot:default="{ row }">
-                    <span>{{ row.Self_Bonded }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="Tx_Type" :label="$t('ExplorerLang.table.txType')" show-overflow-tooltip> </el-table-column>
-                <el-table-column prop="Tx_Fee" :label="$t('ExplorerLang.table.fee')" width="110"> </el-table-column>
-                <el-table-column prop="Tx_Signer" :label="$t('ExplorerLang.table.signer')" width="121">
-                  <template v-slot:default="{ row }">
-                    <router-link :to="`/address/${row.Tx_Signer}`" class="link_style justify">{{ formatAddress(row.Tx_Signer) }}</router-link>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="Tx_Status" :label="$t('ExplorerLang.table.status')" width="73"> </el-table-column>
-                <el-table-column prop="Timestamp" :label="$t('ExplorerLang.table.txTimestamp')" width="186"> </el-table-column>
-              </el-table>
-            </div>
-            <m-pagination v-if="validationTxs.total > pageSize" :page-size="pageSize" :total="validationTxs.total" :page-change="pageChange('getValidationTxs')"></m-pagination>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+	<div class="">
+		<div class="vaildtor_detail_container">
+			<div class="vaildtor_detail_content">
+				<div class="vaildtor_detail_title_container">
+					<span>{{ $t('ExplorerLang.validatorDetail.title') }}</span>
+				</div>
+				<validator-information :validationInformation="validationInformation"
+				                       :validatorStatus="validatorStatus"></validator-information>
+				<validator-commission-information
+						:validationCommissionInfo="validationInformation"></validator-commission-information>
+				<div class="delegations_wrap">
+					<div class="delegations_container">
+						<!-- Delegations -->
+						<div class="one_table_container clearfloat">
+							<p class="validator_information_content_title">{{
+								$t('ExplorerLang.validatorDetail.delegationsTitle') }}</p>
+							<div class="delegations_table_container" ref="delegationsList">
+								<el-table :data="delegations.items" style="width: 100%"
+								          :empty-text="$t('ExplorerLang.table.emptyDescription')" id="element_del">
+									<el-table-column class-name="address" prop="address" :label="$t('ExplorerLang.table.address')"
+									                 :width="ColumnMinWidth.iaaAddress">
+										<template v-slot:default="{ row }">
+											<el-tooltip :content="`${row.address}`">
+												<span
+												             @click="addressRoute(row.address)"
+															 class="address_link"
+												             :style="{ color: '$theme_c !important' }">{{
+													formatAddress(row.address) }}
+												</span>
+											</el-tooltip>
+										</template>
+									</el-table-column>
+									<el-table-column prop="amount" :label="$t('ExplorerLang.table.amount')"
+									                 align="right" :min-width="ColumnMinWidth.delegationsAmount">
+										<template slot="header" slot-scope="scope">
+											<span>{{ $t('ExplorerLang.table.amount')}}</span>
+											<el-tooltip :content="mainTokenSymbol"
+														placement="top">
+												<i class="iconfont iconyiwen yiwen_icon" />
+											</el-tooltip>
+										</template >
+									</el-table-column>
+									<el-table-column prop="shares" :label="$t('ExplorerLang.table.shares')" align="left"
+									                 :min-width="ColumnMinWidth.shares"></el-table-column>
+									<!-- 待处理 -->
+									<!-- <el-table-column prop="block" :label="$t('ExplorerLang.table.block')" width="110">
+									  <template v-slot:default="{ row }">
+										<router-link style="font-family: Arial;" :to="'/block/' + row.block" :style="{ color: '$theme_c !important' }">{{ row.block }}</router-link>
+									  </template>
+									</el-table-column> -->
+								</el-table>
+							</div>
+							<m-pagination v-if="delegations.total > pageSize" :page-size="pageSize"
+							              :total="delegations.total"
+							              :page-change="pageChange('getDelegations')"></m-pagination>
+						</div>
+						<!-- Unbonding Delegations -->
+						<div class="second_table_container clearfloat">
+							<p class="validator_information_content_title">{{
+								$t('ExplorerLang.validatorDetail.unbondingDelegationsTitle') }}</p>
+							<div class="delegations_table_container" ref="UnbondingDelList">
+								<el-table :data="unbondingDelegations.items" style="width: 100%"
+								          :empty-text="$t('ExplorerLang.table.emptyDescription')" id="element_undel">
+									<el-table-column class-name="address" prop="address" :label="$t('ExplorerLang.table.address')"
+									                 :width="ColumnMinWidth.iaaAddress">
+										<template v-slot:default="{ row }">
+											<el-tooltip :content="`${row.address}`">
+												<span
+												             @click="addressRoute(row.address)"
+															 class="address_link"
+												             :style="{ color: '$theme_c !important' }">{{
+													formatAddress(row.address) }}
+												</span>
+											</el-tooltip>
+										</template>
+									</el-table-column>
+									<el-table-column prop="amount" :label="$t('ExplorerLang.table.amount')"
+									                 align="right" :min-width="ColumnMinWidth.amount">
+										<template slot="header" slot-scope="scope">
+											<span>{{ $t('ExplorerLang.table.amount')}}</span>
+											<el-tooltip :content="mainTokenSymbol"
+														placement="top">
+												<i class="iconfont iconyiwen yiwen_icon" />
+											</el-tooltip>
+										</template >
+									</el-table-column>
+									<el-table-column prop="block" :label="$t('ExplorerLang.table.block')" align="left"
+									                 :min-width="ColumnMinWidth.blockListHeight">
+										<template v-slot:default="{ row }">
+											<router-link style="font-family: Arial;"
+											             :to="'/block/' + row.block"
+											             :style="{ color: '$theme_c !important' }">{{ row.block }}
+											</router-link>
+										</template>
+									</el-table-column>
+									<el-table-column prop="end_time" :label="$t('ExplorerLang.table.endTime')"
+									                 :width="ColumnMinWidth.time"></el-table-column>
+								</el-table>
+							</div>
+							<m-pagination v-if="unbondingDelegations.total > pageSize" :page-size="pageSize"
+							              :total="unbondingDelegations.total"
+							              :page-change="pageChange('getUnbondingDelegations')"></m-pagination>
+						</div>
+					</div>
+				</div>
+
+				<div class="delegations_wrap">
+					<div class="delegations_container clearfloat">
+						<!-- Deposited Proposals -->
+						<div class="one_table_container clearfloat" v-show="depositedProposals.items && depositedProposals.items.length > 0">
+							<p class="validator_information_content_title">{{
+								$t('ExplorerLang.validatorDetail.depositedProposalsTitle') }}</p>
+							<div class="delegations_table_container">
+								<el-table :data="depositedProposals.items" style="width: 100%"
+								          :empty-text="$t('ExplorerLang.table.emptyDescription')">
+									<el-table-column prop="id" :label="$t('ExplorerLang.table.proposalId')"
+									                 :min-width="ColumnMinWidth.proposalId">
+										 <template v-slot:default="{ row }">
+											<router-link v-if="row.link" :to="`/ProposalsDetail/${row.id}`">{{ row.id }}</router-link>
+											<span v-else>{{ row.id }}</span>
+										</template>
+									</el-table-column>
+									<el-table-column class-name="address" prop="proposer" :min-width="ColumnMinWidth.address" :label="$t('ExplorerLang.table.proposer')">
+										<template v-slot:default="{ row }">
+											<el-tooltip :content="row.proposer" placement="top" :disabled="Boolean(row.moniker)">
+												<router-link v-if="row.link" :to="`/address/${row.proposer}`">{{ formatMoniker(row.moniker, monikerNum.otherTable) || formatAddress(row.proposer) }}</router-link>
+												<span v-else>{{ formatMoniker(row.moniker, monikerNum.otherTable) || formatAddress(row.proposer) }}</span>
+											</el-tooltip>
+										</template>
+									</el-table-column>
+									<el-table-column prop="deposit" align="right" :label="$t('ExplorerLang.table.deposit')"
+									                :min-width="ColumnMinWidth.amount">
+										<template slot="header" slot-scope="scope">
+											<span>{{ $t('ExplorerLang.table.deposit')}}</span>
+											<el-tooltip :content="mainTokenSymbol"
+														placement="top">
+												<i class="iconfont iconyiwen yiwen_icon" />
+											</el-tooltip>
+										</template >
+									</el-table-column>
+									<el-table-column prop="submited" align="center" :label="$t('ExplorerLang.table.submited')"
+									                  :min-width="ColumnMinWidth.submited"></el-table-column>
+									<el-table-column class-name="hash_status" prop="hash" :width="ColumnMinWidth.txHashShort" :label="$t('ExplorerLang.table.txHash')">
+										<template v-slot:default="{ row }">
+											<el-tooltip :content="row.hash" placement="top" :disabled="!Boolean(row.hash)">
+												<router-link :to="`/tx?txHash=${row.hash}`">{{ formatTxHash(row.hash) }}</router-link>
+											</el-tooltip>
+										</template>
+									</el-table-column>
+								</el-table>
+							</div>
+							<m-pagination v-if="depositedProposals.total > pageSize" :page-size="pageSize"
+							              :total="depositedProposals.total"
+							              :page-change="pageChange('getDepositedProposals')"></m-pagination>
+						</div>
+						<!-- Voted Proposals -->
+						<div class="second_table_container clearfloat" v-show="votedProposals.items && votedProposals.items.length > 0" :style="!(depositedProposals.items && depositedProposals.items.length > 0) ? 'margin-left:0rem': ''">
+							<p class="validator_information_content_title">{{
+								$t('ExplorerLang.validatorDetail.votedProposalsTitle') }}</p>
+							<div class="delegations_table_container">
+								<el-table :data="votedProposals.items" style="width: 100%"
+								          :empty-text="$t('ExplorerLang.table.emptyDescription')">
+									<el-table-column prop="id" :label="$t('ExplorerLang.table.proposalId')"
+									                 :min-width="ColumnMinWidth.proposalId">
+										 <template v-slot:default="{ row }">
+											<router-link v-if="row.link" :to="`/ProposalsDetail/${row.id}`">{{ row.id }}</router-link>
+										 	<span v-else>{{ row.id }}</span>
+										 </template>
+									</el-table-column>
+									<el-table-column prop="title" :min-width="ColumnMinWidth.proposalTitle" :label="$t('ExplorerLang.table.title')"></el-table-column>
+									<el-table-column prop="status" :label="$t('ExplorerLang.table.proposalStatus')"
+									                :min-width="ColumnMinWidth.proposalStatus"></el-table-column>
+									<el-table-column prop="voted" :label="$t('ExplorerLang.table.voted')"
+									                  :min-width="ColumnMinWidth.voteOption"></el-table-column>
+									<el-table-column class-name="hash_status" prop="hash" :width="ColumnMinWidth.txHashShort" :label="$t('ExplorerLang.table.txHash')">
+										<template v-slot:default="{ row }">
+											<el-tooltip :content="row.hash" placement="top" :disabled="!row.hash">
+											<router-link :to="`/tx?txHash=${row.hash}`">{{ formatTxHash(row.hash) }}</router-link>
+											</el-tooltip>
+										</template>
+									</el-table-column>
+								</el-table>
+							</div>
+							<m-pagination v-if="votedProposals.total > pageSize" :page-size="pageSize"
+							              :total="votedProposals.total"
+							              :page-change="pageChange('getVotedProposals')"></m-pagination>
+						</div>
+					</div>
+				</div>
+
+				<!-- Delegation Txs -->
+				<div class="delegations_txs_wrap clearfloat" v-show="delegationTxs.items && delegationTxs.items.length > 0">
+					<div class="delegations_txs_container">
+						<p class="validator_information_content_title">{{
+							$t('ExplorerLang.validatorDetail.delegationsTxsTitle') }}</p>
+						<DelegationTxsList class="delegations_txs_table_container" :isShowFee="isShowFee" :dataList="delegationTxs.items" />
+						<m-pagination v-if="delegationTxs.total > pageSize" :page-size="pageSize"
+						              :total="delegationTxs.total"
+						              :page-change="pageChange('getDelegationTxs')"></m-pagination>
+					</div>
+				</div>
+				<!-- Validation Txs -->
+				<div class="validation_txs_wrap clearfloat" v-show="validationTxs.items && validationTxs.items.length > 0">
+					<div class="validation_txs_container">
+						<p class="validator_information_content_title">{{
+							$t('ExplorerLang.validatorDetail.validationTxsTitle') }}</p>
+						<ValidationTxsList class="validation_txs_table_container" :isShowFee="isShowFee" :dataList="validationTxs.items" />
+						<m-pagination v-if="validationTxs.total > pageSize" :page-size="pageSize"
+						              :total="validationTxs.total"
+						              :page-change="pageChange('getValidationTxs')"></m-pagination>
+					</div>
+				</div>
+				<!-- Gov Txs -->
+				<div class="gov_txs_wrap clearfloat" v-show="govTxs.items && govTxs.items.length > 0">
+					<div class="gov_txs_container">
+						<p class="gov_information_content_title">{{
+							$t('ExplorerLang.validatorDetail.govTxsTitle') }}</p>
+						<GovTxsList class="gov_txs_table_containers" :isShowFee="isShowFee" :dataList="govTxs.items" />
+						<m-pagination v-if="govTxs.total > pageSize" :page-size="pageSize"
+						              :total="govTxs.total"
+						              :page-change="pageChange('getGovTxs')"></m-pagination>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
-import ValidatorInformation from './ValidatorInformation'
-import ValidatorCommissionInformation from './ValidatorCommissionInformation'
-import MPagination from '../common/MPagination'
-import Tools from '../../util/Tools.js'
-import Constants from '../../constant/index.js'
-import { getValidatorsInfoApi,getValidatorsDelegationsApi,getUnbondingDelegationsApi,getDelegationTxsApi,getValidationTxsApi } from "@/service/api"
-import { TxHelper } from '../../helper/TxHelper.js'
-// 待删 
-import axios from 'axios'
-export default {
-  name: '',
-  components: { ValidatorInformation, ValidatorCommissionInformation, MPagination },
-  props: {},
-  data() {
-    return {
-      validationInformation: {},
-      validatorStatus: '',
-      pageSize: 5,
-      delegations: {
-        total: 0,
-        currentPage: 1,
-        items: [],
+	import ValidatorInformation from './ValidatorInformation';
+	import ValidatorCommissionInformation from './ValidatorCommissionInformation';
+	import MPagination from '../common/MPagination';
+	import Tools from '../../util/Tools.js';
+	import Constants,{ TxStatus,ColumnMinWidth,decimals,monikerNum,TX_TYPE_DISPLAY } from '../../constant/index.js';
+	import {
+		getValidatorsInfoApi,
+		getValidatorsDelegationsApi,
+		getUnbondingDelegationsApi,
+		getDelegationTxsApi,
+		getValidationTxsApi,
+		getDepositedProposalsApi,
+		getVotedProposalsApi,
+		getGovTxsApi
+	} from "@/service/api";
+	import {TxHelper} from '../../helper/TxHelper.js';
+	import { getMainToken, converCoin,addressRoute,formatMoniker } from '@/helper/IritaHelper';
+	import { getAmountByTx } from '@/helper/txListAmoutHelper';
+	import DelegationTxsList from '@/components/common/DelegationTxsList';
+	import ValidationTxsList from '@/components/common/ValidationTxsList';
+	import GovTxsList from '@/components/common/GovTxsList';
+	import prodConfig from '../../productionConfig';
+
+	export default {
+		name: '',
+		components: {ValidatorInformation, ValidatorCommissionInformation, MPagination,DelegationTxsList,ValidationTxsList,GovTxsList},
+		props: {},
+		data () {
+			return {
+				isShowFee: prodConfig.fee.isShowFee,
+				isShowDenom: prodConfig.fee.isShowDenom,
+				Tools,
+				monikerNum,
+				formatMoniker,
+				amountDecimals: decimals.amount,
+				feeDecimals: decimals.fee,
+				sharesDecimals: decimals.shares,
+				ColumnMinWidth,
+				addressRoute,
+				validationInformation: {},
+				validatorStatus: '',
+				pageSize: 5,
+				delegations: {
+					total: 0,
+					currentPage: 1,
+					useCount: true,
+					items: [],
+				},
+				unbondingDelegations: {
+					total: 0,
+					currentPage: 1,
+					useCount: true,
+					items: [],
+				},
+				delegationTxs: {
+					total: 0,
+					currentPage: 1,
+					items: [],
+				},
+				validationTxs: {
+					total: 0,
+					currentPage: 1,
+					items: [],
+				},
+				mainToken:{},
+				depositedProposals: {
+					total: 0,
+					currentPage: 1,
+					items: [],
+				},
+				votedProposals: {
+					total: 0,
+					currentPage: 1,
+					items: [],
+				},
+				govTxs: {
+					total: 0,
+					currentPage: 1,
+					items: [],
+				},
+				proposalTitleNum: 20,
+                mainTokenSymbol:'',
+			}
+		},
+		computed: {},
+		watch: {},
+		async created () {
+			this.mainToken = await getMainToken();
+			this.getValidatorsInfo()
+			this.getDelegations(1, this.pageSize, true)
+			this.getUnbondingDelegations(1, this.pageSize, true)
+			this.getDepositedProposals(1, this.pageSize, true)
+			this.getVotedProposals(1, this.pageSize, true)
+      this.getDelegationTxs(null, null, true)
+			this.getDelegationTxs(1, this.pageSize)
+      this.getValidationTxs(null, null, true)
+			this.getValidationTxs(1, this.pageSize)
+			this.getGovTxs(1, this.pageSize, true)
+		},
+		mounted () {
+		    this.setMainToken();
+        },
+		methods: {
+			pageChange (key) {
+				return page => {
+					this[key](page)
+				}
+			},
+      async setMainToken(){
+          let mainToken = await getMainToken();
+          if(mainToken && mainToken.symbol){
+              this.mainTokenSymbol = mainToken.symbol.toUpperCase();
+          }
       },
-      unbondingDelegations: {
-        total: 0,
-        currentPage: 1,
-        items: [],
-      },
-      delegationTxs: {
-        total: 0,
-        currentPage: 1,
-        items: [],
-      },
-      validationTxs: {
-        total: 0,
-        currentPage: 1,
-        items: [],
-      },
-    }
-  },
-  computed: {},
-  watch: {},
-  created() {
-    this.getValidatorsInfo()
-    this.getDelegations()
-    this.getUnbondingDelegations()
-    this.getDelegationTxs()
-    this.getValidationTxs()
-  },
-  mounted() {},
-  methods: {
-    pageChange(key) {
-      return page => {
-        this[key](page)
-      }
-    },
-    formatPerNumber(num) {
-      if (typeof num === 'number' && !Object.is(num, NaN)) {
-        let afterPoint = String(num).split('.')[1]
-        let afterPointLong = (afterPoint && afterPoint.length) || 0
-        if (afterPointLong > 2 && num !== 0) {
-          return num.toFixed(4)
-        } else {
-          return num.toFixed(2)
+			async getValidatorsInfo () {
+				let res = await getValidatorsInfoApi(this.$route.params.param)
+				res.delegator_num = this.delegations.total ?? '--';
+				this.validationInformation = res
+				this.validatorStatus = Tools.firstWordUpperCase(res.status)
+			},
+			async getDelegations(pageNum, pageSize = 5, useCount = false) {
+				const res = await getValidatorsDelegationsApi(this.$route.params.param, pageNum, pageSize, useCount)
+        if(useCount){
+          this.delegations.total = res?.count;
+          if (this.validationInformation) {
+            this.validationInformation.delegator_num = res?.count;
+          }
+        }	
+				this.delegations.items = []
+				for (const item of res.data) {
+					let amount = await converCoin(item.amount)
+					// item.amount = `${Tools.toDecimal(amount.amount,this.amountDecimals)} ${amount.denom.toUpperCase()}`
+					item.amount = `${Tools.toDecimal(amount.amount,this.amountDecimals)}`
+					let selfShares = Tools.toDecimal(item.self_shares, this.sharesDecimals)
+					let shares = `${selfShares} (${Tools.formatPerNumber( item.total_shares ? (Number(item.self_shares) / Number(item.total_shares)) * 100 : 100)}%)`
+					this.delegations.items.push({
+						address: item.address,
+						amount: item.amount,
+						shares,
+						// block: item.block,
+					})
+				}
+				this.changedHeight()
+			},
+			async getUnbondingDelegations (pageNum, pageSize = 5, useCount = false) {
+				const res = await getUnbondingDelegationsApi(this.$route.params.param, pageNum, pageSize, useCount)
+        if(useCount){
+          this.unbondingDelegations.total = res?.count;
+        }	
+				this.unbondingDelegations.items = []
+				for (const item of res.data) {
+					let amount = await converCoin({
+						amount: item.amount,
+						denom: this.mainToken.denom
+					})
+					// item.amount = `${Tools.toDecimal(amount.amount,this.amountDecimals)} ${amount.denom.toUpperCase()}`
+					item.amount = `${Tools.toDecimal(amount.amount,this.amountDecimals)}`
+					item.until = Tools.getFormatDate(new Date(item.until).getTime())
+					this.unbondingDelegations.items.push({
+						address: item.address,
+						amount: item.amount,
+						block: item.block,
+						end_time: item.until,
+					})
+				}
+				this.changedHeight()
+			},
+			changedHeight () {
+				this.$nextTick(()=>{
+					if(this.delegations.items.length >= this.unbondingDelegations.items.length) {
+						this.$refs.UnbondingDelList.style.height =  document.getElementById('element_del').offsetHeight + 'px';
+						this.$refs.delegationsList.style.height =  document.getElementById('element_del').offsetHeight + 'px';
+					} else {
+						this.$refs.delegationsList.style.height = document.getElementById('element_undel').offsetHeight + 'px';
+						this.$refs.UnbondingDelList.style.height = document.getElementById('element_undel').offsetHeight + 'px';
+					}
+				})
+			},
+			async getDelegationTxs (pageNum, pageSize = 5, useCount = false) {
+				const res = await getDelegationTxsApi(this.$route.params.param, pageNum, pageSize, useCount)
+        if(useCount){
+          this.delegationTxs.total = res?.count
+        }	
+				this.delegationTxs.currentPage = res.pageNum
+				this.delegationTxs.items = []
+				for (const item of res.data) {
+					let msgsNumber = item.msgs ? item.msgs.length : 0, formTO;
+					let amount = '--'
+					if (item.msgs && item.msgs.length === 1) {
+						formTO = TxHelper.getFromAndToAddressFromMsg(item.msgs[0])
+						// amount = item.msgs[0].msg && item.msgs[0].msg.amount ? await converCoin(item.msgs[0].msg.amount) :'--'
+						amount = item.msgs[0] ? await getAmountByTx(item.msgs[0],item.events) : '--'
+					} else {
+						formTO = '--'
+					}
+					let fromMonikers,toMonikers
+					if(item.monikers.length) {
+						item.monikers.map( it => {
+							toMonikers = toMonikers|| it[formTO.to] || ''
+							fromMonikers = fromMonikers || it[formTO.from] || ''
+						})
+					}
+					const time = Tools.getDisplayDate(item.time)
+					const fee =  this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) : ''
+					this.delegationTxs.items.push({
+						Tx_Hash: item.tx_hash,
+						Block: item.height,
+						From: formTO.from || "--",
+						fromMonikers,
+						Amount: amount,
+						To: formTO.to || '--',
+						toMonikers,
+						Tx_Type: (item.msgs || []).map(item=>TX_TYPE_DISPLAY[item.type] || item.type),
+						MsgsNum: msgsNumber,
+						// Tx_Fee: fee && fee.amount ? this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)} ${fee.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
+						Tx_Fee: fee && fee.amount ? `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
+						Tx_Signer: item.signers[0] ? item.signers[0] : '--',
+						Tx_Status: TxStatus[item.status],
+						Timestamp: time,
+					})
+				}
+			},
+			async getValidationTxs (pageNum, pageSize = 5, useCount = false) {
+				const res = await getValidationTxsApi(this.$route.params.param, pageNum, pageSize, useCount)
+        if(useCount){
+          this.validationTxs.total = res?.count
         }
-      }
-      return num
-    },
-    async getValidatorsInfo() {
-      let res = await getValidatorsInfoApi(this.$route.params.param)
-      this.validationInformation = res
-      this.validatorStatus = Tools.firstWordUpperCase(res.status) 
-    },
-    async getDelegations(page = 1) {
-      const res = await getValidatorsDelegationsApi(this.$route.params.param,page,this.pageSize,true)
-      // const { data: res } = await axios.get(`https://www.irisplorer.io/api/stake/validators/${this.$route.params.param}/delegations?page=${page}&size=${this.pageSize}`)
-      this.delegations.total = res.count
-      this.delegations.items = []
-      res.data.forEach(item => {
-        item.amount = Tools.formatUnit(item.amount) + ' IRIS'
-        let selfShares = Tools.formatPriceToFixed(item.self_shares, 4)
-        let shares = `${selfShares} (${this.formatPerNumber((Number(item.self_shares) / Number(item.total_shares)) * 100)}%)`
-        this.delegations.items.push({
-          address: item.address,
-          amount: item.amount,
-          shares,
-          // block: item.block,
-        })
-      })
-    },
-    async getUnbondingDelegations(page = 1) {
-      const res = await getUnbondingDelegationsApi(this.$route.params.param,page,this.pageSize,true)
-      this.unbondingDelegations.total = res.count
-      this.unbondingDelegations.items = []
-      res.data.forEach(item => {
-        item.amount= Number(item.amount).toFixed(2)
-        item.until = Tools.format2UTC(item.until)
-        this.unbondingDelegations.items.push({
-          address: item.address,
-          amount: item.amount,
-          block: item.block,
-          end_time: item.until,
-        })
-      })
-    },
-    // 需调整 
-    async getDelegationTxs(page = 1) {
-      // 这里是假地址
-      const res = await getDelegationTxsApi('iaa1j7dgxaflz32kvaucv66a0x92lp846sv2ur2ak6',page,this.pageSize)
-      // console.log(res)
-      this.delegationTxs.total = res.count
-      res.data.forEach( item => {
-        const formTO = TxHelper.getFromAndToAddressFromMsg(item.msgs)
-        //TODO:duanjie 待处理
-        const fee = (item.fee.amount[0]) ? (Number(item.fee.amount[0].amount) / 1000000) : '--'
-        const status = item.status === 1 ?  'Success' : 'Fail'
-        const time = Tools.getFormatTimestamp(item.time)
-        this.delegationTxs.items.push({
-          Tx_Hash: item.tx_hash,
-          Block: item.height,
-          From: formTO.from,
-          Amount: fee,
-          To: formTO.to,
-          Tx_Type: Tools.firstWordUpperCase(item.type),
-          Tx_Fee: '--' ,
-          Tx_Signer: item.signers[0] ? item.signers[0] : '--',
-          Tx_Status: status,
-          Timestamp: time,
-        })
-      })
-
-      // const { data: res } = await axios.get(`https://www.irisplorer.io/api/txs/stake/${page}/${this.pageSize}?address=${this.$route.params.param}`)
-      // this.delegationTxs.total = res.Count
-      // for (let it of res.Data) {
-      //   it.Tx_Hash = it.Hash
-      // }
-      // this.delegationTxs.items = Tools.formatTxList(res.Data, 'delegations')
-      // console.log(res)
-      // console.log(this.delegationTxs.items)
-    },
-    // 需调整
-    async getValidationTxs(page = 1) {
-      const res = await getValidationTxsApi('',page,this.pageSize)
-      console.log(res)
-      this.validationTxs.total = res.count
-      res.data.forEach( item => {
-        const fee = (item.fee.amount[0]) ? (Number(item.fee.amount[0].amount) / 1000000) : '--'
-        const status = item.status === 1 ?  'Success' : 'Fail'
-        const time = Tools.getFormatTimestamp(item.time)
-        this.validationTxs.items.push({
-          Tx_Hash: item.tx_hash,
-          Block:item.height,
-          Moniker: '--',
-          OperatorAddr: '--',
-          'Self-Bonded': '--',
-          'Tx_Type': '--',
-          'Tx_Fee':fee,
-          'Tx_Signer': item.signers[0] ? item.signers[0] : '--',
-          'Tx_Status': status,
-          Timestamp: time,
-        })
-      })
-
-      // const { data: res } = await axios.get(`https://www.irisplorer.io/api/txs/declaration/${page}/${this.pageSize}?address=${this.$route.params.param}`)
-      // this.validationTxs.total = res.Count
-      // for (let it of res.Data) {
-      //   it.Tx_Hash = it.Hash
-      //   if(it.self_bond.length > 0) {
-      //     it.self_bonded = (it.self_bond[0].amount/1000000000000000000).toFixed(2) + ' IRIS'
-      //   } else {
-      //     it.self_bonded = '--'
-      //   }
-      // }
-      // this.validationTxs.items = Tools.formatTxList(res.Data, 'validations')
-    },
-    formatAddress(address) {
-      return Tools.formatValidatorAddress(address)
-    },
-    formatTxHash(TxHash) {
-      if (TxHash) {
-        return Tools.formatTxHash(TxHash)
-      }
-    },
-    formatMoniker(moniker) {
-      if (!moniker) {
-        return ''
-      }
-      return Tools.formatString(moniker, 15, '...')
-    },
-  },
-}
+				this.validationTxs.currentPage = res.pageNum
+				this.validationTxs.items = []
+				for (const item of res.data) {
+					let msgsNumber = item.msgs ? item.msgs.length : 0
+					const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) : ''
+					const selfBonded = item.msgs && item.msgs.length === 1 ? item.msgs[0].msg && item.msgs[0].msg.value ? await converCoin(item.msgs[0].msg.value) : '--' : '--';
+					const time = Tools.getDisplayDate(item.time)
+					let OperatorAddr = item.msgs && item.msgs.length === 1 ? item.msgs[0] && TxHelper.getValidationTxsOperator(item.msgs[0]) : '--'
+					let OperatorMonikers
+					if(item.monikers.length) {
+						item.monikers.map( it => {
+							OperatorMonikers = OperatorMonikers || it[OperatorAddr] || ''
+						})
+					}
+					this.validationTxs.items.push({
+						Tx_Hash: item.tx_hash,
+						Block: item.height,
+						OperatorAddr,
+						OperatorMonikers: OperatorMonikers || '--',
+						SelfBonded: selfBonded.amount || '--',
+						'Tx_Type': (item.msgs || []).map(item=>TX_TYPE_DISPLAY[item.type] || item.type),
+						MsgsNum: msgsNumber,
+						// 'Tx_Fee': fee && fee.amount ? this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)} ${fee.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
+						'Tx_Fee': fee && fee.amount ?  `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
+						'Tx_Signer': item.signers[0] ? item.signers[0] : '--',
+						'Tx_Status': TxStatus[item.status],
+						Timestamp: time,
+					})
+				}
+			},
+			async getDepositedProposals (pageNum, pageSize = 5, useCount = false) {
+				try {
+					const res = await getDepositedProposalsApi(this.$route.params.param, pageNum, pageSize, useCount)
+					this.depositedProposals.items = []
+					if(res) {
+            if(useCount){
+              this.depositedProposals.total = res.count
+            }	
+						if(res.data && res.data.length > 0) {
+							for (const deposit of res.data) {
+								let deposits = null;
+								if(deposit.amount && deposit.amount.length>0) {
+									deposits = await converCoin(deposit.amount[0])
+								}
+								this.depositedProposals.items.push({
+									id: deposit.proposal_id,
+									proposer: deposit.proposer,
+									moniker: deposit.moniker,
+									submited: String(deposit.submited),
+									hash: deposit.tx_hash,
+									// deposit: deposits ? `${Tools.toDecimal(deposits.amount,this.amountDecimals)} ${deposits.denom.toLocaleUpperCase()}` : '--',
+									deposit: deposits ? `${Tools.toDecimal(deposits.amount,this.amountDecimals)}` : '--',
+									link: deposit.proposal_link,
+								})
+							}
+						}
+					}
+				} catch(e) {
+					console.error(e)
+				}
+			},
+			async getVotedProposals (pageNum, pageSize = 5, useCount = false) {
+				try {
+					const res = await getVotedProposalsApi(this.$route.params.param, pageNum, pageSize, useCount)
+					this.votedProposals.items = []
+					if(res) {
+            if(useCount){
+              this.votedProposals.total = res.count;
+            }	
+						if(res.data && res.data.length > 0) {
+							this.votedProposals.items = res.data.map(vote => {
+								return {
+									id: vote.proposal_id,
+									title: Tools.formatString(vote.title, this.proposalTitleNum, '...'),
+									status: vote.status,
+									voted: vote.voted,
+									hash: vote.tx_hash,
+									link: vote.proposal_link,
+								}
+							})
+						}
+					}
+				} catch(e) {
+					console.error(e)
+				}
+			},
+			async getGovTxs (pageNum, pageSize = 5, useCount = false) {
+				try {
+						let res = await getGovTxsApi(this.$route.params.param, pageNum, pageSize, useCount);
+						this.govTxs.items = [];
+						if(res.data && res.data.length > 0) {
+              if(useCount){
+                this.govTxs.total = res.count
+              }					
+							this.govTxs.currentPage = res.pageNum
+							for (const item of res.data) {
+								let msgsNumber = item.msgs ? item.msgs.length : 0
+								const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) : ''
+								const time = Tools.getDisplayDate(item.time)
+								let amount = null
+								let msg = item.msgs && item.msgs[0]
+								if(msg) {
+									if(msg.type == "deposit") {
+										let unit = msg.msg && msg.msg.amount && msg.msg.amount[0]
+										if(unit) {
+											amount = await converCoin(unit)
+										}
+									} else {
+										let unit = msg.msg && msg.msg.initial_deposit && msg.msg.initial_deposit[0]
+										if(unit) {
+											amount = await converCoin(unit)
+										}
+									}
+								}
+								this.govTxs.items.push({
+									Tx_Hash: item.tx_hash,
+									Block: item.height,
+									proposalType: item.ex && item.ex.type,
+									proposalId: item.ex && item.ex.id,
+									proposalTitle: item.ex && item.ex.title && Tools.formatString(item.ex.title, this.proposalTitleNum, '...'),
+									// amount: amount ? `${Tools.toDecimal(amount.amount,this.amountDecimals)} ${amount.denom.toLocaleUpperCase()}` : '--',
+									amount: amount ? `${Tools.toDecimal(amount.amount,this.amountDecimals)}` : '--',
+									'Tx_Type': (item.msgs || []).map(item=>TX_TYPE_DISPLAY[item.type] || item.type),
+									MsgsNum: msgsNumber,
+									// 'Tx_Fee': fee && fee.amount ? this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)} ${fee.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
+									'Tx_Fee': fee && fee.amount ? `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
+									'Tx_Signer': item.signers[0] ? item.signers[0] : '--',
+									'Tx_Status': TxStatus[item.status],
+									Timestamp: time,
+									proposalLink: item.ex && item.ex.proposal_link
+								})
+							}
+						}
+					} catch(e) {
+						console.error(e)
+					}
+			},
+			formatAddress (address) {
+				return Tools.formatValidatorAddress(address)
+			},
+			formatTxHash (TxHash) {
+				if (TxHash) {
+					return Tools.formatTxHash(TxHash)
+				}
+			},
+			getDisplayTxType(types=[]){
+				let type = types[0] || '';
+                if (type && types.length > 1) {
+                    type += this.$t('ExplorerLang.unit.ellipsis');
+                }
+                return type;
+            },
+		},
+	}
 </script>
 
 <style lang="scss" scoped>
-a {
-  color: $t_link_c !important;
-}
+	a {
+		color: $t_link_c !important;
+	}
 
-.vaildtor_detail_container {
-  .vaildtor_detail_content {
-    max-width: 12.8rem;
-    margin: 0 auto;
-    padding: 0 0.15rem;
-    text-align: left;
-    .vaildtor_detail_title_container {
-      margin: 0.3rem 0 0.1rem 0;
-      text-align: left;
-      display: flex;
-      line-height: 0.3rem;
-      color: $t_first_c;
-      font-size: $s18;
-      font-weight: bold;
-      span {
-        margin-right: 0.1rem;
-      }
-    }
-    .validation_information_container {
-      margin-top: 0.1rem;
-    }
-    .delegations_wrap {
-      margin: 0 auto;
-      .delegations_container {
-        display: flex;
-        .validator_information_content_title {
-          height: 0.2rem;
-          line-height: 0.2rem;
-          color: $t_first_c;
-          font-size: 0.18rem;
-          margin-top: 0.3rem;
-          padding-left: 0.2rem;
-          margin-bottom: 0.2rem !important;
-        }
-        .one_table_container {
-          width: calc(50% - 0.1rem);
-        }
-        .second_table_container {
-          margin-left: 0.2rem;
-          width: calc(50% - 0.1rem);
-        }
-        .delegations_table_container {
-          overflow-x: auto;
-          border: 0.01rem solid #e7e9eb;
-          background: #fff;
-          /deep/ .el-table__header thead tr {
-            border-left: 1px solid #dee2e6;
-            border-right: 1px solid #dee2e6;
-            height: 50px;
-          }
-          /deep/ .el-table__header .has-gutter .cell {
-            color: $t_second_c !important;
-            font-family: Arial, Helvetica, sans-serif;
-            font-weight: 400;
-          }
-          /deep/ .el-table__body-wrapper .el-table__row .cell {
-            font-family: Arial, Helvetica, sans-serif;
-            color: $t_first_c !important;
-          }
-          /deep/ .el-table th.is-leaf {
-            border-bottom: 0.01rem solid $theme_c !important;
-          }
-        }
-      }
-      .common_pagination_content {
-        margin-top: 0.2rem;
-        float: right;
-      }
-    }
-    .delegations_txs_wrap {
-      margin: 0 auto;
-      .delegations_txs_container {
-        .validator_information_content_title {
-          height: 0.2rem;
-          line-height: 0.2rem;
-          color: $t_first_c;
-          font-size: 0.18rem;
-          margin-top: 0.3rem;
-          padding-left: 0.2rem;
-          margin-bottom: 0.2rem !important;
-        }
-        .delegations_txs_table_container {
-          overflow-x: auto;
-          border: 0.01rem solid #e7e9eb;
-          background: #fff;
-          /deep/ .el-table__header thead tr {
-            border-left: 1px solid #dee2e6;
-            border-right: 1px solid #dee2e6;
-            height: 50px;
-          }
-          /deep/ .el-table__header .has-gutter .cell {
-            color: $t_second_c !important;
-            font-family: Arial, Helvetica, sans-serif;
-            font-weight: 400;
-          }
-          /deep/ .el-table__body-wrapper .el-table__row .cell {
-            font-family: Arial, Helvetica, sans-serif;
-            color: $t_first_c !important;
-          }
-          /deep/ .el-table th.is-leaf {
-            border-bottom: 0.01rem solid $theme_c !important;
-          }
-          /deep/ .el-table_3_column_12 {
-            text-align: right;
-          }
-          /deep/ .el-table_3_column_13 {
-            .cell {
-              font-family: 'Consolas', 'Menlo';
-            }
-            text-align: left;
-          }
-        }
-        .common_pagination_content {
-          margin-top: 0.2rem;
-          float: right;
-        }
-      }
-    }
-    .validation_txs_wrap {
-      margin: 0 auto;
-      margin-bottom: 0.5rem;
-      .validation_txs_container {
-        .validator_information_content_title {
-          height: 0.2rem;
-          line-height: 0.2rem;
-          color: $t_first_c;
-          font-size: 0.18rem;
-          margin-top: 0.3rem;
-          padding-left: 0.2rem;
-          margin-bottom: 0.2rem !important;
-        }
-        .validation_txs_table_container {
-          overflow-x: auto;
-          border: 0.01rem solid #e7e9eb;
-          background: #fff;
-          /deep/ .el-table__header thead tr {
-            border-left: 1px solid #dee2e6;
-            border-right: 1px solid #dee2e6;
-            height: 50px;
-          }
-          /deep/ .el-table__header .has-gutter .cell {
-            color: $t_second_c !important;
-            font-family: Arial, Helvetica, sans-serif;
-            font-weight: 400;
-          }
-          /deep/ .el-table__body-wrapper .el-table__row .cell {
-            font-family: Arial, Helvetica, sans-serif;
-            color: $t_first_c !important;
-          }
-          /deep/ .el-table th.is-leaf {
-            border-bottom: 0.01rem solid $theme_c !important;
-          }
-        }
-        .common_pagination_content {
-          margin-top: 0.2rem;
-          float: right;
-          margin-bottom: 0.5rem;
-        }
-      }
-    }
-  }
-}
-@media screen and (max-width: 910px) {
-  .vaildtor_detail_container {
-    .vaildtor_detail_content {
-      .vaildtor_detail_title_container {
-      }
-      .validation_information_container {
-      }
-      .delegations_wrap {
-        .delegations_container {
-          display: block;
-          margin-left: 0.2rem;
-          .validator_information_content_title {
-          }
-          .one_table_container {
-            width: 100%;
-          }
-          .second_table_container {
-            width: 100%;
-            margin-left: 0rem;
-          }
-          .delegations_table_container {
-          }
-          .common_pagination_content {
-          }
-        }
-      }
-    }
-  }
-}
+	.vaildtor_detail_container {
+		margin-bottom: 0.2rem;
+		.vaildtor_detail_content {
+			max-width: 12rem;
+			margin: 0 auto;
+			padding: 0 0.15rem;
+			text-align: left;
+
+			.vaildtor_detail_title_container {
+				margin: 0.3rem 0 0.1rem 0;
+				text-align: left;
+				display: flex;
+				line-height: 0.3rem;
+				color: $t_first_c;
+				font-size: $s18;
+				font-weight: bold;
+
+				span {
+					margin-right: 0.1rem;
+				}
+			}
+
+			.validation_information_container {
+				margin-top: 0.1rem;
+			}
+
+			.delegations_wrap {
+				margin: 0 auto;
+				margin-top: 0.1rem;
+				.delegations_container {
+					display: flex;
+
+					.validator_information_content_title {
+						height: 0.2rem;
+						line-height: 0.2rem;
+						color: $t_first_c;
+						font-size:  $s18;
+						margin-top: 0.2rem;
+						// padding-left: 0.2rem;
+						margin-bottom: 0.2rem !important;
+					}
+
+					.one_table_container {
+						width: calc(50% - 0.1rem);
+					}
+
+					.second_table_container {
+						margin-left: 0.2rem;
+						width: calc(50% - 0.1rem);
+						.validator_information_content_title {
+							white-space: nowrap;
+						}
+					}
+
+					.delegations_table_container {
+						overflow-x: auto;
+						// border: 0.01rem solid $bd_first_c;
+						background: $bg_white_c;
+					}
+				}
+
+				.common_pagination_content {
+					margin-top: 0.2rem;
+					float: right;
+				}
+			}
+
+			.delegations_txs_wrap {
+				margin: 0 auto;
+				margin-top: 0.1rem;
+				.delegations_txs_container {
+					.validator_information_content_title {
+						height: 0.2rem;
+						line-height: 0.2rem;
+						color: $t_first_c;
+						font-size:  $s18;
+						margin-top: 0.2rem;
+						// padding-left: 0.2rem;
+						margin-bottom: 0.2rem !important;
+					}
+
+					.delegations_txs_table_container {
+						overflow-x: auto;
+						// border: 0.01rem solid $bd_first_c;
+						background: $bg_white_c;
+
+						.status_icon{
+							width:0.13rem;
+							height:0.13rem;
+							margin-right:0.05rem;
+						}
+					}
+
+					.common_pagination_content {
+						margin-top: 0.2rem;
+						float: right;
+					}
+				}
+			}
+
+			.validation_txs_wrap {
+				margin: 0 auto;
+				margin-top: 0.1rem;
+
+				.validation_txs_container {
+					.validator_information_content_title {
+						height: 0.2rem;
+						line-height: 0.2rem;
+						color: $t_first_c;
+						font-size:  $s18;
+						margin-top: 0.2rem;
+						// padding-left: 0.2rem;
+						margin-bottom: 0.2rem !important;
+					}
+
+					.validation_txs_table_container {
+						overflow-x: auto;
+						// border: 0.01rem solid $bd_first_c;
+						background: $bg_white_c;
+					}
+
+					.common_pagination_content {
+						margin-top: 0.2rem;
+						float: right;
+						// margin-bottom: 0.5rem;
+					}
+				}
+			}
+
+			.gov_txs_wrap {
+				margin: 0 auto;
+				margin-top: 0.1rem;
+				margin-bottom: 0.2rem;
+
+				.gov_txs_container {
+					.gov_information_content_title {
+						height: 0.2rem;
+						line-height: 0.2rem;
+						color: $t_first_c;
+						font-size:  $s18;
+						margin-top: 0.2rem;
+						// padding-left: 0.2rem;
+						margin-bottom: 0.2rem !important;
+					}
+
+					.gov_txs_table_containers {
+						// width: 100%;
+						// overflow-x: auto;
+						// border: 0.01rem solid $bd_first_c;
+						// background: $bg_white_c;
+					}
+
+					.common_pagination_content {
+						margin-top: 0.2rem;
+						float: right;
+						margin-bottom: 0.5rem;
+					}
+				}
+			}
+		}
+	}
+
+	@media screen and (max-width: 1050px){
+		.vaildtor_detail_container {
+			.vaildtor_detail_content {
+				.vaildtor_detail_title_container {
+					margin-left: 0.2rem;
+				}
+				.delegations_wrap {
+					.delegations_container{
+						margin: 0 0.2rem;
+					}
+				}
+				.delegations_txs_wrap {
+					.delegations_txs_container{
+						margin: 0 0.2rem;
+					}
+				}
+				.validation_txs_wrap {
+					.validation_txs_container {
+						margin: 0 0.2rem;
+					}
+				}
+				.gov_txs_wrap {
+					.gov_txs_container {
+						margin: 0 0.2rem;
+					}
+				}
+			}
+		}
+	}
+
+	@media screen and (max-width: 910px) {
+		.vaildtor_detail_container {
+			.vaildtor_detail_content {
+				.vaildtor_detail_title_container {
+				}
+
+				.validation_information_container {
+				}
+
+				.delegations_wrap {
+					.delegations_container {
+						display: block;
+						margin-left: 0.2rem;
+
+						.validator_information_content_title {
+						}
+
+						.one_table_container {
+							width: 100%;
+						}
+
+						.second_table_container {
+							width: 100%;
+							margin-left: 0rem;
+						}
+
+						.delegations_table_container {
+						}
+
+						.common_pagination_content {
+						}
+					}
+				}
+			}
+		}
+	}
+
+	@media screen and (max-width: 750px){
+		.vaildtor_detail_container {
+			.vaildtor_detail_content {
+				.vaildtor_detail_title_container {
+					margin-left: 0.1rem;
+				}
+				.delegations_wrap {
+					.delegations_container{
+						margin: 0 0.1rem;
+					}
+				}
+				.delegations_txs_wrap {
+					.delegations_txs_container{
+						margin: 0 0.1rem;
+					}
+				}
+				.validation_txs_wrap {
+					.validation_txs_container {
+						margin: 0 0.1rem;
+					}
+				}
+				.gov_txs_wrap {
+					.gov_txs_container {
+						margin: 0 0.1rem;
+					}
+				}
+			}
+		}
+	}
+	@media screen and (max-width: 510px){
+		.vaildtor_detail_container {
+			.vaildtor_detail_content {
+				.delegations_wrap {
+					.delegations_container{
+						.validator_information_content_title {
+							// padding-left: 0.05rem;
+						}
+					}
+				}
+				.delegations_txs_wrap {
+					.delegations_txs_container{
+						.validator_information_content_title {
+							// padding-left: 0.05rem;
+						}
+					}
+				}
+				.validation_txs_wrap {
+					.validation_txs_container {
+						.validator_information_content_title {
+							// padding-left: 0.05rem;
+						}
+					}
+				}
+				.gov_txs_wrap {
+					.gov_txs_container {
+						.validator_information_content_title {
+							// padding-left: 0.05rem;
+						}
+					}
+				}
+			}
+		}
+	}
 </style>

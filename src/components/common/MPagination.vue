@@ -5,9 +5,9 @@
             @click="toFrist"
             :class="[currentPage === 1 || total === 0 ? 'no_disable' : '']"
         >«</button>
-        <button @click="prev" :class="[currentPage === 1 || total === 0 ? 'no_disable' : '']">‹</button>
+        <button v-debounce="[prev,`click`,300]" :class="[currentPage === 1 || total === 0 ? 'no_disable' : '']">‹</button>
         <span class="page_number_content">{{currentPage}}/{{Math.ceil(total/pageSize) === 0 ? 1 : Math.ceil(total/pageSize)}}</span>
-        <button @click="after" :class="[forMaxRange() || total === 0 ? 'no_disable' : '']">›</button>
+        <button v-debounce="[after,`click`,300]" :class="[forMaxRange() || total === 0 ? 'no_disable' : '']">›</button>
         <button
             v-if="showToFristEnd"
             @click="toEnd"
@@ -58,7 +58,7 @@ export default {
     },
     data() {
         return {
-            currentPage: 1,
+            currentPage: this.page || 1,
             currentRange: []
         };
     },
@@ -125,11 +125,11 @@ export default {
     },
     watch: {
         page(newVal) {
-            this.currentPage = newVal;
+          this.currentPage = newVal;
         },
         currentPage(newVal) {
-            this.pageChange(newVal);
-            this.forRange();
+          this.pageChange(newVal);
+          this.forRange();
         },
         range(newVal) {
             this.currentRange = newVal;
@@ -139,7 +139,7 @@ export default {
         }
     },
     mounted() {
-	    this.currentPage = this.page;
+        this.currentPage = this.page;
         this.forRange();
     }
 };

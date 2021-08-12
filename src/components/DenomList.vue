@@ -2,7 +2,7 @@
     <div class="denom_list_container">
         <div class="denom_list_content_wrap">
             <div class="denom_list_header_content">
-                <h3 class="denom_list_header_title">{{count}} {{$t('ExplorerLang.denom.title')}}</h3>
+                <h3 class="denom_list_header_title">{{count}} {{$t('ExplorerLang.denom.title')}}{{count>1 && isShowPlurality ? 's' : ''}}</h3>
                 <el-input v-model="input"
                           @change="handleSearchClick"
                           :placeholder="$t('ExplorerLang.denom.placeHolder')"></el-input>
@@ -16,7 +16,7 @@
                 </div>
             </div>
             <div class="nef_list_table_container">
-                <el-table class="table" :data="denomList" :empty-text="$t('ExplorerLang.table.emptyDescription')">
+                <el-table class="table table_overflow_x" :data="denomList" :empty-text="$t('ExplorerLang.table.emptyDescription')">
                     <el-table-column :min-width="ColumnMinWidth.denom" :label="$t('ExplorerLang.table.denom')">
                         <template slot-scope="scope">
                             {{scope.row.denomName}}
@@ -27,7 +27,7 @@
                             {{scope.row.denomId}}
                         </template>
                     </el-table-column>
-                    <el-table-column :min-width="ColumnMinWidth.txHash"
+                    <el-table-column class-name="hash_status" :min-width="ColumnMinWidth.txHash"
                                      :label="$t('ExplorerLang.table.createHash')" >
                         <template slot-scope="scope">
                             <el-tooltip v-if="scope.row.hash !== ''"
@@ -51,7 +51,7 @@
                             </a>
                         </template>
                     </el-table-column>
-                    <el-table-column :min-width="ColumnMinWidth.address"
+                    <el-table-column class-name="address" :min-width="ColumnMinWidth.address"
                                      :label="$t('ExplorerLang.table.creator')" >
                         <template slot-scope="scope">
                             <el-tooltip :content="scope.row.sender"
@@ -65,7 +65,7 @@
                         </template>
                     </el-table-column>
                     <el-table-column :min-width="ColumnMinWidth.time"
-                                     :label="$t('ExplorerLang.table.createTime')"
+                                     :label="$t('ExplorerLang.table.timestamp')"
                                      prop="time"></el-table-column>
                 </el-table>
             </div>
@@ -87,9 +87,13 @@
     import Tools from "../util/Tools";
     import MPagination from "./common/MPagination";
     import { ColumnMinWidth } from '../constant';
+    import productionConfig from '@/productionConfig.js';
+    import parseTimeMixin from '../mixins/parseTime'
+
     export default {
         name: "DenomList",
         components: {MPagination},
+        mixins: [parseTimeMixin],
         data () {
             return {
                 ColumnMinWidth,
@@ -103,13 +107,20 @@
             }
         },
         mounted(){
-            this.getDenoms()
+          this.getDenoms(null, null, true)
+          this.getDenoms(this.pageNum, this.pageSize)
         },
+        computed: {
+			isShowPlurality() {
+				return productionConfig.lang === 'EN'
+			}
+		},
         methods:{
             reset(){
                 this.input = '';
                 this.pageNum = 1;
-                this.getDenoms()
+                this.getDenoms(null, null, true)
+                this.getDenoms(this.pageNum, this.pageSize)
             },
             handleNftCountClick(denomId){
                 this.$router.push(`/nftAsset?denomId=${denomId}`);
@@ -117,16 +128,16 @@
             },
             pageChange(pageNum){
                 this.pageNum = pageNum;
-                this.getDenoms()
+                this.getDenoms(this.pageNum, this.pageSize)
             },
             handleSearchClick(){
                 this.pageNum = 1;
-                this.getDenoms();
+                this.getDenoms(null, null, true)
+                this.getDenoms(this.pageNum, this.pageSize)
             },
-            async getDenoms(){
+            async getDenoms(pageNum, pageSize, useCount = false, needAll = false){
                 try {
-                    const res = await getDenoms(this.pageNum, this.pageSize, this.input, false);
-                    console.log(res)
+                    const res = await getDenoms(pageNum, pageSize, useCount, needAll, this.input);
                     if(res && res.data && Array.isArray(res.data) && res.data.length > 0){
                         this.denomList = res.data.map((denom)=>{
                             return {
@@ -135,9 +146,14 @@
                                 hash: denom.hash,
                                 nftCount: denom.nftCount,
                                 sender: denom.sender,
-                                time: Tools.getDisplayDate(denom.time),
+                                time: Tools.formatAge(Tools.getTimestamp(),denom.time*1000, this.$t('ExplorerLang.table.suffix')),
+                                Time: denom.time
                             }
                         });
+                        /**
+                         * @description: from parseTimeMixin
+                         */
+                        this.parseTime('denomList', 'Time', 'time')
                         this.count = res.count;
                         this.pageSize = res.pageSize;
                         this.pageNum = res.pageNum;
@@ -173,7 +189,7 @@
                 .denom_list_header_content{
                     display: flex;
                     align-items: center;
-                    /deep/ .el-input{
+                    ::v-deep .el-input{
                         max-width: 3.5rem;
                         margin-left: 0.1rem;
                         .el-input__inner{
@@ -202,7 +218,7 @@
                     .denom_list_header_title{
                         margin-bottom:0.1rem;
                     }
-                    /deep/ .el-input{
+                    ::v-deep .el-input{
                         margin-bottom:0.1rem;
                         .el-input__inner{
                             padding-left: 0.07rem;
@@ -224,7 +240,7 @@
             padding:0 0.15rem;
             .denom_list_header_content{
                 width: 100%;
-                margin: 0.3rem 0 0.1rem 0;
+                margin: 0.3rem 0 0.16rem 0;
                 .denom_list_header_title{
                     font-size: $s18;
                     color: $t_first_c;
@@ -242,7 +258,7 @@
                     background: $bg_white_c;
                     text-indent: 0.2rem;
                 }
-                /deep/ .el-input{
+                ::v-deep .el-input{
                     .el-input__inner{
                         font-size: $s14 !important;
                         &::-webkit-input-placeholder{
@@ -277,11 +293,15 @@
                         padding: 0.05rem 0.18rem;
                         font-size: $s14;
                         line-height: 0.2rem;
+                        white-space: nowrap;
                     }
                 }
             }
             .nef_list_table_container{
                 //margin-top: 0.05rem;
+                ::v-deep .cell {
+					padding: 0rem 0rem 0rem 0.15rem;
+				}
                 a{
                     cursor:pointer;
                 }

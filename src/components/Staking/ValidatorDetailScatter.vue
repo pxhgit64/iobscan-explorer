@@ -20,11 +20,12 @@
 </template>
 
 <script>
-	import axios from "axios"
 	import Tools from "../../util/Tools.js"
-	import Constant from "../../constant/index.js"
+	import productionConfig from '@/productionConfig.js';
+	import Constant,{ validator_Status,product } from "../../constant/index.js"
 	import bigNumber from "bignumber.js"
-	import { getValidatorCommissionInfoApi } from "@/service/api" 
+	import { getValidatorCommissionInfoApi } from "@/service/api"
+	import { getMainToken,converCoin } from '@/helper/IritaHelper';
 	var echarts = require('echarts/lib/echarts');
 	require('echarts/lib/component/legend');
 	require('echarts/lib/component/tooltip');
@@ -53,18 +54,24 @@
 				mainnetJailedThemeStyle:['#3264FD',"#101149"],
 				testnetFuXiJailedThemeStyle:['#0C4282',"#101149"],
 				testnetNyancatJailedThemeStyle:['#0D9388',"#101149"],
+				stargateThemeStyle:["#6958CA","#FF5C01"],
+				stargateJailedThemeStyle:['#6958CA',"#101149"],
 				chartOptionColor:'',
 				currentMoniker:'',
-				tipColor:''
+				tipColor:'',
+				validator_Status
 			}
 		},
 		watch:{
-			validatorStatus(){
-				if(this.validatorStatus === 'Jailed' || this.validatorStatus === 'Candidate'){
-					this.tipColor = "#101149"
-				}else {
-					this.tipColor = "#FF5C01"
-				}
+			validatorStatus: {
+				handler() {
+					if(this.validatorStatus === this.validator_Status.jailed || this.validatorStatus === this.validator_Status.candidate){
+						this.tipColor = "#101149"
+					}else {
+						this.tipColor = "#FF5C01"
+					}
+				},
+				immediate:true
 			}
 		},
 		mounted () {
@@ -84,9 +91,10 @@
 			},300)
 		},
 		methods:{
-			initCharts(){
+			async initCharts(){
+				let mainToken = await getMainToken();
 				let itemStyle = {
-					opacity: 0.5,
+					opacity: 0.4,
 					shadowOffsetX: 0,
 					shadowOffsetY: 0,
 				};
@@ -112,10 +120,10 @@
 						borderWidth: 1,
 						formatter:  (obj) => {
 							let value = obj.value;
-							return `<div>
+							return `<div class='tooltip'>
 										<p>${value[2]}</p>
 										<p>${this.$t('ExplorerLang.validatorDetail.commissionInfo.scatter.tooltip.commissionRate')}:${value[0]}%</p>
-										<p>${this.$t('ExplorerLang.validatorDetail.commissionInfo.scatter.tooltip.bondedTokens')}:<br/>${new bigNumber(value[1]).toFormat()} IRIS</p>
+										<p>${this.$t('ExplorerLang.validatorDetail.commissionInfo.scatter.tooltip.bondedTokens')}:<br/>${new bigNumber(value[1]).toFormat()} ${mainToken.symbol.toUpperCase()}</p>
 										</div>`
 						}
 					},
@@ -139,7 +147,7 @@
 					},
 					yAxis: {
 						type: 'value',
-						name:this.$t('ExplorerLang.validatorDetail.commissionInfo.scatter.yAxis'),
+						name:`${this.$t('ExplorerLang.validatorDetail.commissionInfo.scatter.yAxis')} (${mainToken.symbol.toUpperCase()})`,
 						nameLocation: 'end',
 						nameGap: 20,
 						nameTextStyle: {
@@ -168,55 +176,50 @@
 						}
 					]
 				};
-				// if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.IRISHUB){
-				// 	if(this.validatorStatus === 'Jailed' || this.validatorStatus === 'Candidate'){
-				// 		this.chartOptionColor = this.mainnetJailedThemeStyle;
-				// 	}else {
-				// 		this.chartOptionColor = this.mainnetThemeStyle;
-				// 	}
-				// }else if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.FUXI){
-				// 	if(this.validatorStatus === 'Jailed' || this.validatorStatus === 'Candidate'){
-				// 		this.chartOptionColor = this.testnetFuXiJailedThemeStyle;
-				// 	}else {
-				// 		this.chartOptionColor = this.testnetFuXiThemeStyle;
-				// 	}
-				// }else if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.NYANCAT){
-				// 	if(this.validatorStatus === 'Jailed' || this.validatorStatus === 'Candidate'){
-				// 		this.chartOptionColor = this.testnetNyancatJailedThemeStyle;
-				// 	}else {
-				// 		this.chartOptionColor = this.testnetNyancatThemeStyle;
-				// 	}
-					
-				// }else {
-				// 	if(this.validatorStatus === 'Jailed' || this.validatorStatus === 'Candidate'){
-				// 		this.chartOptionColor = this.defaultJailedThemeStyle;
-				// 	}else {
-				// 		this.chartOptionColor = this.defaultThemeStyle;
-				// 	}
-					
-				// }
-				// echartsOption.color = this.chartOptionColor
-				echartsOption.color = this.mainnetThemeStyle
+				if(this.validatorStatus === this.validator_Status.active){
+					switch (productionConfig.product) {
+						case product.stargate:
+							echartsOption.color = this.stargateThemeStyle
+							break;
+						default:
+							echartsOption.color = this.mainnetThemeStyle
+							break;
+					}
+				}else {
+					switch (productionConfig.product) {
+						case product.stargate:
+							echartsOption.color = this.stargateJailedThemeStyle
+							break;
+						default:
+							echartsOption.color = this.mainnetJailedThemeStyle
+							break;
+					}
+				}
 				echartsData.setOption(echartsOption)
 			},
 			async getValidatorCommissionInfo(){
 				try {
 					const res = await getValidatorCommissionInfoApi()
+					let mainToken = await getMainToken()
 					if(res && res.data && res.data.length > 0){
 						let copyData = JSON.parse(JSON.stringify(this.jailedData));
 						res.data.push(copyData);
 						let allValidatorBondedTokenArr = res.data;
 						this.currentValidatorBondedTokenArr = [];
 						this.otherValidatorBondedTokenArr = [];
-						allValidatorBondedTokenArr.forEach( item => {
+						allValidatorBondedTokenArr.forEach( async item => {
 							item.formatCommissionRote = (Number(item.commission_rate) * 100).toFixed(0);
-							item.formatBondedToken = Tools.subStrings(item.bonded_tokens,6)
+							let bonded_tokens = await converCoin({
+								amount: item.bonded_tokens,
+								denom: mainToken.denom
+							})
+							item.formatBondedToken = Tools.subStrings(bonded_tokens.amount,6)
 							if(item.operator_address === this.$route.params.param){
 								this.currentMoniker = item.moniker;
 								this.currentValidatorBondedTokenArr.push([item.formatCommissionRote,item.formatBondedToken,item.moniker]);
 							}else {
 								this.otherValidatorBondedTokenArr.push([item.formatCommissionRote,item.formatBondedToken,item.moniker]);
-								
+
 							}
 						});
 						this.initCharts();

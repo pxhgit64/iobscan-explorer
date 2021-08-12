@@ -9,12 +9,12 @@ module.exports = {
       '/api': {
         target:'http://localhost:3000',
         secure: false,
-        pathRewrite: { '^/api': '/' },
+        pathRewrite: { '^/api': '' },
       },
       '/lcd': {
-        target: 'http://192.168.150.31:11317',
+        target: 'http://192.168.150.40:1317',
         secure: false,
-        pathRewrite: { '^/lcd': '/' },
+        pathRewrite: { '^/lcd': '' },
       }
     },
   },

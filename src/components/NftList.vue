@@ -2,8 +2,8 @@
 	<div class="nft_list_container">
 		<div class="nft_list_content_wrap">
 			<div class="nft_list_header_content">
-				<h3 class="nft_list_header_title">{{allCount}} {{$t('ExplorerLang.nftAsset.assets')}}</h3>
-				<el-select v-model="denom" >
+				<h3 class="nft_list_header_title">{{allCount}} {{$t('ExplorerLang.nftAsset.assets')}}{{allCount>1 && isShowPlurality ? 's' : ''}}</h3>
+				<el-select popper-class="tooltip" v-model="denom" >
 					<el-option v-for="(item, index) in nftList"
 							   :key="index"
 							   :label="item.label"
@@ -18,32 +18,67 @@
 				</div>
 			</div>
 			<div class="nef_list_table_container">
-				<el-table class="table" :data="denomArray" :empty-text="$t('ExplorerLang.table.emptyDescription')">
-					<el-table-column :min-width="ColumnMinWidth.denom" :label="$t('ExplorerLang.table.denom')">
+				<el-table class="table table_overflow_x" :data="denomArray" :empty-text="$t('ExplorerLang.table.emptyDescription')" :default-sort="{ prop: 'Time', order: 'descending' }">
+					<el-table-column :min-width="ColumnMinWidth.tokenId" :label="$t('ExplorerLang.table.tokenId')" >
+						<template slot-scope="scope">
+							<el-tooltip 
+										:content="scope.row.nft_id"
+										placement="top"
+										effect="dark"
+										:disabled="Tools.disabled(scope.row.nft_id)">
+								<router-link v-if="formatAddress(scope.row.nft_id) !== '--'" :to="`/nft/token?denom=${scope.row.denom_id}&&tokenId=${scope.row.nft_id}`">{{formatAddress(scope.row.nft_id)}}</router-link>
+								<span v-else>{{formatAddress(scope.row.nft_id)}}</span>
+							</el-tooltip>
+						</template>
+					</el-table-column>
+					<el-table-column :min-width="ColumnMinWidth.tokenId" :label="$t('ExplorerLang.table.tokenName')" >
+						<template slot-scope="scope">
+							<el-tooltip 
+										:content="scope.row.nft_name"
+										placement="top"
+										effect="dark"
+										:disabled="Tools.disabled(scope.row.nft_name)">
+								<router-link v-if="formatAddress(scope.row.nft_name) !== '--'" :to="`/nft/token?denom=${scope.row.denom_id}&&tokenId=${scope.row.nft_id}`">{{formatAddress(scope.row.nft_name)}}</router-link>
+								<span v-else>{{formatAddress(scope.row.nft_name)}}</span>
+							</el-tooltip>
+						</template>
+					</el-table-column>
+					<el-table-column :min-width="ColumnMinWidth.nftListDenom" :label="$t('ExplorerLang.table.denom')">
 						<template slot-scope="scope">
 							{{scope.row.denom_name || scope.row.denom_id}}
 						</template>
 					</el-table-column>
-					<el-table-column :min-width="ColumnMinWidth.address" :label="$t('ExplorerLang.table.owner')" >
+					<el-table-column class-name="address" :min-width="ColumnMinWidth.address" :label="$t('ExplorerLang.table.owner')" >
 						<template slot-scope="scope">
-							<el-tooltip :content="scope.row.owner"
-										class="item"
+							<el-tooltip 
+										:content="scope.row.owner"
 										placement="top"
-										effect="dark">
-								<router-link :to="`/address/${scope.row.owner}`">{{formatAddress(scope.row.owner)}}</router-link>
+										effect="dark"
+										:disabled="Tools.disabled(scope.row.owner)">
+								<span v-if="!scope.row.owner">{{formatAddress(scope.row.owner)}}</span>
+								<router-link v-else :to="`/address/${scope.row.owner}`">{{formatAddress(scope.row.owner)}}</router-link>
 							</el-tooltip>
 						</template>
 					</el-table-column>
-					<el-table-column :min-width="ColumnMinWidth.tokenId" :label="$t('ExplorerLang.table.id')" >
+					<!-- <el-table-column :min-width="ColumnMinWidth.nftListDate" :label="$t('ExplorerLang.table.data')" prop="tokenData">
 						<template slot-scope="scope">
-							<router-link :to="`/nft/token?denom=${scope.row.denom_id}&&tokenId=${scope.row.nft_id}`">{{scope.row.nft_name || formatAddress(scope.row.nft_id)}}</router-link>
+							<LargeString :key="scope.row.tokenData" v-if="scope.row.tokenData" :text="scope.row.tokenData"  mode="cell" textWidth="300px" :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight" />
+							<span v-else>--</span>
 						</template>
-					</el-table-column>
-					<el-table-column :min-width="ColumnMinWidth.schema" :label="$t('ExplorerLang.table.data')" prop="tokenData"></el-table-column>
+					</el-table-column> -->
 					<el-table-column :min-width="ColumnMinWidth.URI" :label="$t('ExplorerLang.table.uri')" prop="tokenUri">
 						<template slot-scope="scope">
-							<a v-if="scope.row.tokenUri" :href="scope.row.tokenUri" target="_blank">{{scope.row.tokenUri}}</a>
+							<div v-if="scope.row.tokenUri">
+								<a v-if="Tools.testUrl(scope.row.tokenUri)" :href="scope.row.tokenUri" target="_blank">{{scope.row.tokenUri}}</a>
+								<a v-else-if="startStr(scope.row.tokenUri)" :href="'http://' + scope.row.tokenUri" target="_blank">{{scope.row.tokenUri}}</a>
+								<span v-else>{{scope.row.tokenUri}}</span>
+							</div>
 							<span v-else>--</span>
+						</template>
+					</el-table-column>
+					<el-table-column :width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.timestamp')" prop="last_block_time">
+						<template slot-scope="scope">
+							<span>{{scope.row.last_block_time}}</span>
 						</template>
 					</el-table-column>
 				</el-table>
@@ -66,9 +101,14 @@
 	import Tools from "../util/Tools";
 	import MPagination from "./common/MPagination";
 	import { ColumnMinWidth } from '../constant';
+	import LargeString from './common/LargeString';
+	import productionConfig from '@/productionConfig.js';
+    import parseTimeMixin from '../mixins/parseTime'
+
 	export default {
 		name: "NftList",
-		components: {MPagination},
+		components: {MPagination, LargeString},
+		mixins: [parseTimeMixin],
 		data () {
             let denom = '';
 		    if(this.$store.state.tempDenomId){
@@ -76,6 +116,7 @@
             }
 			return {
 				ColumnMinWidth,
+				Tools,
 				nftList: [
 					{
 						value:'',
@@ -89,37 +130,54 @@
 				tokenId: '',
 				owner: '',
 				input:'',
-				allCount:0
+				allCount:0,
+				LargeStringMinHeight: 69,
+				LargeStringLineHeight: 23,
+				Tools
 			}
 		},
 		mounted(){
-			this.getNftList();
-			this.getNftsByFilter();
-            if(this.$store.state.tempDenomId){
-                this.$store.commit('SET_TEMP_DENOM_ID','');
-            }
+			this.getNftList(null, null, true, true);
+      this.getNftsByFilter(null, null, true);
+      this.getNftsByFilter(this.currentPageNum, this.pageSize);
+      if(this.$store.state.tempDenomId){
+        this.$store.commit('SET_TEMP_DENOM_ID','');
+      }
+		},
+		computed: {
+			isShowPlurality() {
+				return productionConfig.lang === 'EN'
+			}
 		},
 		methods:{
+			startStr(url){
+				return url.startsWith('www.')
+			},
+			tableRowKey(row){
+				return `${row.denom_id}-${row.nft_id}`
+			},
 			resetFilterCondition(){
 				this.input = '';
 				this.denom = '';
 				this.currentPageNum = 1;
 				this.tokenId = '';
 				this.owner = '';
-				this.getNftsByFilter()
+        this.getNftsByFilter(null, null, true);
+        this.getNftsByFilter(this.currentPageNum, this.pageSize);
 			},
 			pageChange(pageNum){
 				this.currentPageNum = pageNum;
 				// if(sessionStorage.getItem('selectDenom')){
 				// 	this.denom = sessionStorage.getItem('selectDenom')
 				// }
-				this.getNftsByFilter()
+        this.getNftsByFilter(this.currentPageNum, this.pageSize);
 			},
-            handleSearchClick(){
-                this.currentPageNum = 1;
-			    this.getNftsByFilter();
-            },
-			async getNftsByFilter(){
+      handleSearchClick(){
+          this.currentPageNum = 1;
+          this.getNftsByFilter(null, null, true);
+			    this.getNftsByFilter(this.currentPageNum, this.pageSize);
+      },
+			async getNftsByFilter(pageNum, pageSize, useCount = false){
 				if (Tools.isBech32(this.input)) {
 					this.owner = this.input;
 				}
@@ -127,26 +185,39 @@
 					this.tokenId =  this.input;
 				}
 				try {
-					let nftData = await getNfts(this.denom, this.tokenId, this.owner, this.currentPageNum, this.pageSize, true);
+					let nftData = await getNfts(pageNum, pageSize, useCount, this.denom, this.tokenId, this.owner);
+          if(useCount){
+            this.allCount = nftData?.count;
+          }
 					if(nftData && nftData.data){
-						this.allCount = nftData.count;
+						nftData.data.forEach(item => {
+							item.Time = (item.last_block_time ? item.last_block_time : '')
+							item.last_block_time = (item.last_block_time ? Tools.formatAge(Tools.getTimestamp(),item.last_block_time*1000, this.$t('ExplorerLang.table.suffix')) : '--')
+						});
 						this.denomArray = nftData.data
+						/**
+						 * @description: from parseTimeMixin
+						 */
+						this.parseTime('denomArray', 'Time', 'last_block_time')
 					}else {
 						this.allCount = 0
 						this.denomArray = []
 					}
-					}catch (e) {
-						this.allCount = 0
-						this.denomArray = []
-						console.error(e)
-					}
+				}catch (e) {
+					this.allCount = 0
+					this.denomArray = []
+					console.error(e)
+				}
 			},
 			formatAddress(address){
+				if (!address) {
+					return '--';
+				}
 				return Tools.formatValidatorAddress(address)
 			},
-			async getNftList(){
+			async getNftList(pageNum, pageSize, useCount = false, needAll = false){
 				try {
-					let denomData = await getDenoms(null, null, null, true);
+					let denomData = await getDenoms(pageNum, pageSize, useCount, needAll);
 					if(denomData){
 						let nftList = denomData.data.map(item => {
 							return {
@@ -159,7 +230,7 @@
 					}catch (e) {
 						console.error(e)
 					}
-			},
+			}
 		}
 	}
 </script>
@@ -176,7 +247,7 @@
                     display: flex;
                     align-items: center;
                     .el-select{
-                        /deep/ .el-input{
+                        ::v-deep .el-input{
                             width: 1.8rem;
                             .el-input__inner{
                                 padding-left: 0.07rem;
@@ -196,7 +267,7 @@
                         }
                     }
 
-                    /deep/ .el-input{
+                    ::v-deep .el-input{
                         max-width: 3.5rem;
                         margin-left: 0.1rem;
                         .el-input__inner{
@@ -230,7 +301,7 @@
                     }
                     .el-select{
                         margin-bottom:0.1rem;
-                        /deep/ .el-input{
+                        ::v-deep .el-input{
                             //width: 1.8rem;
                             .el-input__inner{
                                 padding-left: 0.07rem;
@@ -250,7 +321,7 @@
                         }
                     }
 
-                    /deep/ .el-input{
+                    ::v-deep .el-input{
                         margin-bottom:0.1rem;
                         .el-input__inner{
                             padding-left: 0.07rem;
@@ -275,9 +346,9 @@
 			padding:0 0.15rem;
 			.nft_list_header_content{
 				width: 100%;
-				margin: 0.3rem 0 0.1rem 0;
+				margin: 0.3rem 0 0.16rem 0;
 				.el-select{
-					/deep/ .el-input{
+					::v-deep .el-input{
 						.el-input__inner{
 							font-size: $s14 !important;
 							&::-webkit-input-placeholder{
@@ -290,7 +361,7 @@
 					}
 				}
 
-				/deep/ .el-input{
+				::v-deep .el-input{
 					.el-input__inner{
 						font-size: $s14 !important;
 						&::-webkit-input-placeholder{
@@ -320,7 +391,7 @@
 					display: flex;
 
 
-					/deep/.el-select{
+					::v-deep.el-select{
 						width: 1.3rem;
 						margin-right: 0.1rem;
 						.el-input{
@@ -351,7 +422,7 @@
 						}
 
 					}
-					/deep/.el-date-editor{
+					::v-deep.el-date-editor{
 						width: 1.3rem;
 						.el-icon-circle-close{
 							display: none !important;
@@ -401,11 +472,16 @@
 						padding: 0.05rem 0.18rem;
 						font-size: $s14;
 						line-height: 0.2rem;
+						white-space: nowrap;
 					}
 				}
 			}
 			.nef_list_table_container{
 				//margin-top: 0.05rem;
+				::v-deep .cell {
+					// padding: 0rem 0.05rem;
+					padding: 0rem 0rem 0rem 0.15rem;
+				}
 			}
 			.pagination_content{
 				display: flex;
@@ -443,10 +519,10 @@
 					box-sizing: border-box;
 					padding: 0.2rem;
 					margin-top: 0.4rem;
-					/deep/ .el-table th {
+					::v-deep .el-table th {
 						background: $bg_cancel_c !important;
 					}
-					/deep/ .el-table tr {
+					::v-deep .el-table tr {
 						background: $bg_cancel_c !important;
 					}
 				}

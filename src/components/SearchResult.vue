@@ -101,4 +101,14 @@
            }
        }
    }
+   @media (max-width: 1248px) {
+        .search_result_title_content{
+            margin: 0.3rem 0.24rem 0.1rem 0.24rem !important;
+        }
+   }
+   @media (max-width: 768px) {
+        .search_result_title_content{
+            margin: 0.3rem 0.12rem 0.1rem 0.12rem !important;
+        }
+   }
 </style>

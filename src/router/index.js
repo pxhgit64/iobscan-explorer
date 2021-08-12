@@ -56,7 +56,6 @@ const router = new Router({
 			path:'/service/respond/:serviceName/:provider',
 			component: () => import('@/components/ServiceRespondRecord.vue')
 		},
-
 		{
 			path:'/nft/token',
 			component: () => import('@/components/NftToken.vue')
@@ -87,6 +86,35 @@ const router = new Router({
 			path: '/staking/:param',
 			component: () => import('@/components/Staking/ValidatorDetail.vue'),
 		},
+		{
+			path: '/assets/ntvassets',
+			component: () => import('@/components/Asset/NativeAssetsList.vue'),
+		},
+		{
+			path: '/assets/ntvassetstxs',
+			component: () => import('@/components/Asset/NativeAssetsTxs.vue'),
+		},
+		{
+			path: '/assets/:param',
+			component: () => import('@/components/Asset/AssetInformation.vue'),
+		},
+		{
+			path: '/gov/proposals',
+			component: () => import('@/components/Gov/ProposalsPage.vue')
+		},
+		{
+			path: '/ProposalsDetail/:proposal_id',
+			component: () => import('@/components/Gov/ProposalsDetail.vue')
+		},
+		{
+			path: '/stats/rich',
+			component: () => import('@/components/stats/RichList.vue')
+		},
+		{
+			path: '/stats/stats',
+			component: () => import('@/components/stats/Stats.vue')
+		}
+
 	]
 })
 export default router
