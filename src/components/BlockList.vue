@@ -75,21 +75,16 @@
 		},
 		methods: {
       async queryBlockList(){
-        await this.latestBlock();
-        this.getBlocks(true);
-        this.getBlocks();	
-      },
+				await this.latestBlock();
+				this.getBlocks();
+				let data = await getRangeBlockList(null, null, true);
+				this.dataCount = (data && data.count) || 0;
+			},
 			async getBlocks(useCount = false) {
-        let start = null, end = null;
-        if(!useCount){
-          start = this.dbHeight - (this.pageNumber - 1) * this.pageSize;
-  	  	  end = validatePositiveInteger(start - this.pageSize);
-        }	
+        let start = this.dbHeight - (this.pageNumber - 1) * this.pageSize;
+				let end = start - this.pageSize;
 				try {    
-					let blockList = await getRangeBlockList(start, end, useCount);
-          if(useCount){
-            this.dataCount = blockList?.count
-          }
+					let blockList = await getRangeBlockList(start, validatePositiveInteger(end), useCount);
 					if(blockList?.data && blockList?.data.length > 0){
             if(blockList.data.length > this.pageSize){
               blockList.data = blockList.data.slice(0, this.pageSize)
