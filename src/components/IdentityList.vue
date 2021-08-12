@@ -106,6 +106,7 @@
             },
             handleSearchClick(){
                 this.pageNum = 1;
+                this.identities(null, null, true)
                 this.identities(this.pageNum, this.pageSize)
             },
             async identities(pageNum, pageSize, useCount = false){
@@ -128,9 +129,6 @@
                                 time: Tools.getDisplayDate(item.update_block_time) || '--'
                             }
                         })
-                    }else{
-                        this.count = 0;
-                        this.identityList = [];
                     }
                 }catch (e) {
                     this.count = 0;
