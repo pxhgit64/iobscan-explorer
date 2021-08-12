@@ -76,17 +76,21 @@
 		methods: {
       async queryBlockList(){
         await this.latestBlock();
-        this.getBlocks(true);	
+        this.getBlocks(true);
+        this.getBlocks();	
       },
 			async getBlocks(useCount = false) {
-  		  let start = this.dbHeight - (this.pageNumber - 1) * this.pageSize;
-  	  	let end = start - this.pageSize;
+        let start = null, end = null;
+        if(!useCount){
+          start = this.dbHeight - (this.pageNumber - 1) * this.pageSize;
+  	  	  end = validatePositiveInteger(start - this.pageSize);
+        }	
 				try {    
-					let blockList = await getRangeBlockList(start, validatePositiveInteger(end), useCount);
+					let blockList = await getRangeBlockList(start, end, useCount);
           if(useCount){
             this.dataCount = blockList?.count
           }
-					if(blockList?.data){
+					if(blockList?.data && blockList?.data.length > 0){
             if(blockList.data.length > this.pageSize){
               blockList.data = blockList.data.slice(0, this.pageSize)
             }
