@@ -381,7 +381,7 @@ export default {
       try {
         let { count } = await this.getNativeAssets(null, null, true, TX_TYPE.edit_token,this.symbol)
         this.editTokenTotalPageNum = count ? count : 0
-        let res = await this.getNativeAssets(this.issueTokenCurrentPageNum, this.pageSize, false, TX_TYPE.edit_token,this.symbol)
+        let res = await this.getNativeAssets(this.editTokenCurrentPageNum, this.pageSize, false, TX_TYPE.edit_token,this.symbol)
         let result = res && res.data ? res.data : null
         if (result) {
           let isShowFee = this.isShowFee
@@ -415,7 +415,7 @@ export default {
       try {
         let { count } = await this.getNativeAssets(null, null, true, TX_TYPE.mint_token,this.symbol)
         this.mintTokenTotalPageNum = count ? count : 0
-        let res = await this.getNativeAssets(this.issueTokenCurrentPageNum, this.pageSize, false, TX_TYPE.mint_token,this.symbol)
+        let res = await this.getNativeAssets(this.mintTokenCurrentPageNum, this.pageSize, false, TX_TYPE.mint_token,this.symbol)
         let result = res && res.data ? res.data : null
         if (result) {
           let isShowFee = this.isShowFee
@@ -486,7 +486,7 @@ export default {
       try {
         let { count } = await this.getNativeAssets(null, null, true, TX_TYPE.transfer_token_owner,this.symbol)
         this.transferTokenTotalPageNum = count ? count : 0
-        let res = await this.getNativeAssets(this.issueTokenCurrentPageNum, this.pageSize, false, TX_TYPE.transfer_token_owner,this.symbol)
+        let res = await this.getNativeAssets(this.transferTokenCurrentPageNum, this.pageSize, false, TX_TYPE.transfer_token_owner,this.symbol)
         let result = res && res.data ? res.data : null
         if (result) {
           let isShowFee = this.isShowFee

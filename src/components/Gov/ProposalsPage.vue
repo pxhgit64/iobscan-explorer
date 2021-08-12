@@ -176,8 +176,11 @@ export default {
     async getProposalsList(status, currentPage, pageSize, useCount = false) {
       try {
         let res = await getProposalsListApi(status, currentPage, pageSize, useCount);
+        if(useCount){
+          this.count = res?.count;
+        }
         if (res && res.data && res.data.length > 0) {
-          this.count = res.count;
+          
           this.tableData = res.data.map(proposal => {
             let id = proposal.id;
             let title = proposal.content && Tools.formatString(proposal.content.title, this.proposalTitleNum, "...");
