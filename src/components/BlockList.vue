@@ -52,7 +52,7 @@
 	import { getRangeBlockList, getLatestBlock } from "../service/api";
 	import { ColumnMinWidth } from '../constant';
 	import productionConfig from '@/productionConfig.js';
-  import { validatePositiveInteger } from '../helper/IritaHelper'
+  	import { validatePositiveInteger } from '../helper/IritaHelper'
 
 	export default {
 		name: "BlockList",
@@ -65,7 +65,7 @@
 				pageSize: 20,
 				dataCount: 0,
 				latestBlockHeight:0,
-        dbHeight: 0,
+        		dbHeight: 0,
 				blockList: [],
 				blockListTimer: null
 			}
