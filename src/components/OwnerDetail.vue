@@ -258,6 +258,13 @@
 						</template>
 					</el-table-column>
 				</el-table>
+        <div class="pagination_content" v-show="providerTxCount > providerTxPageSize">
+					<m-pagination :page-size="providerTxPageSize"
+					              :total="providerTxCount"
+					              :page="providerTxPageNum"
+					              :page-change="providerTxPageChange">
+					</m-pagination>
+				</div>
 				<div class="content_title" style="margin-top:0.4rem">
 					{{$t('ExplorerLang.addressDetail.respondRecord')}}
 				</div>
@@ -674,6 +681,9 @@
 				txList: [],
 				totalTxNumber: 0,
 				providerTxList: [],
+        providerTxPageNum: 1,
+        providerTxPageSize: 5,
+        providerTxCount: 0,
 				consumerTxPageNum: 1,
 				consumerTxPageSize: 5,
 				consumerTxCount: 0,
@@ -795,7 +805,7 @@
         this.getRspondRecordList(null, null, true);
         this.getRspondRecordList(this.respondRecordPageNum, this.respondRecordPageSize);
 				this.getProviderTxList(null, null, true);
-        this.getProviderTxList(1, 1000);
+        this.getProviderTxList(this.providerTxPageNum, this.providerTxPageSize);
 			},
 			totalDelegatorReward (totalDelegatorReward) {
 				this.getAssetList()
@@ -855,7 +865,7 @@
 					this.getRspondRecordList(null, null, true);
           this.getRspondRecordList(this.respondRecordPageNum, this.respondRecordPageSize);
           this.getProviderTxList(null, null, true);
-					this.getProviderTxList(1, 1000);   
+					this.getProviderTxList(this.providerTxPageNum, this.providerTxPageSize);   
           this.getConsumerTxList(null, null, true)
           this.getConsumerTxList(this.consumerTxPageNum, this.consumerTxPageSize)
 
@@ -939,10 +949,10 @@
 			async getIdentityList (pageNum, pageSize, useCount = false) {
 				try {
 					const res = await getIdentityListByAddress(this.$route.params.param, pageNum, pageSize, useCount);
-					if (res) {
-            if(useCount){
-              this.identityCount = res.count;
-            } 
+					if(useCount){
+            this.identityCount = res.count;
+          } 
+          if (res?.data?.length > 0) {      
 						this.identityList = res.data.map((item) => {
 							return {
 								id: item.identities_id,
@@ -960,10 +970,10 @@
 			async getTxByAddress(pageNum, pageSize, useCount = false) {
 				try {
 					const res = await getAddressTxList(this.$route.params.param, this.type, this.status, pageNum, pageSize, useCount);
-					if (res) {
-            if(useCount){
-              this.totalTxNumber = res.count;
-            }
+					if(useCount){
+            this.totalTxNumber = res.count;
+          }
+          if(res?.data?.length > 0) { 
 						this.txList = res.data;
 					}
 				} catch (e) {
@@ -982,10 +992,10 @@
 			async getConsumerTxList (pageNum, pageSize, useCount = false) {
 				try {
 					const res = await getCallServiceWithAddress(pageNum, pageSize, useCount, this.$route.params.param);
-					if (res) {
-             if(useCount){
-              this.consumerTxCount = res.count;
-            }			
+					if(useCount){
+            this.consumerTxCount = res.count;
+          }	
+          if (res?.data?.length > 0) {
 						this.consumerTxList = [];
 						for (let item of res.data) {
 							let result = {
@@ -1042,14 +1052,18 @@
 				this.consumerTxPageNum = pageNum;
 				this.getConsumerTxList(this.consumerTxPageNum, this.consumerTxPageSize)
 			},
+      providerTxPageChange(pageNum){
+        this.providerTxPageNum = pageNum;
+				this.getProviderTxList(this.providerTxPageNum, this.providerTxPageSize)
+      },
 			//响应记录
 			async getRspondRecordList (pageNum, pageSize, useCount = false) {
 				try {
 					const res = await getRespondServiceRecord('', this.$route.params.param, pageNum, pageSize, useCount);
-					if (res) {
-            if(useCount){
-              this.respondRecordCount = res.count;
-            }
+					if(useCount){
+            this.respondRecordCount = res.count;
+          }
+          if (res?.data?.length > 0) {
 						this.respondRecordList = (res.data || []).map(tx => {
 							tx.type = TX_TYPE_DISPLAY[tx.type]
 							return tx
@@ -1069,7 +1083,7 @@
 			async getProviderTxList (pageNum, pageSize, useCount = false) {
 				try {
 					const res = await getRespondServiceWithAddress(this.$route.params.param, pageNum, pageSize, useCount);
-					if (res) {
+					if (res?.data?.length > 0) {
 						this.providerTxList = [];
 						for (let item of res.data) {
 							let result = {
@@ -1661,6 +1675,11 @@
 						margin-right: 0.1rem;
 					}
 				}
+        .pagination_content{
+          margin-top: 0.2rem;
+          display: flex;
+          justify-content: flex-end;
+        }
 			}
 
 			.address_transaction_content {
