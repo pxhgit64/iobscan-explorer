@@ -86,10 +86,10 @@ export function getDenoms(pageNum, pageSize, useCount, needAll, denomNameOrId){
 	if(needAll){
 	    url += `needAll=${needAll}`;
   } else if(pageNum && pageSize){
-    url += `pageNum=${pageNum}&pageSize=${pageSize}`;
-    if(denomNameOrId){
-      url += `&denomNameOrId=${denomNameOrId}`;
-    }
+    url += `pageNum=${pageNum}&pageSize=${pageSize}`;  
+  }
+  if(denomNameOrId){
+    url += `&denomNameOrId=${denomNameOrId}`;
   }
   if(useCount){
     url += `&useCount=${useCount}`;
