@@ -162,21 +162,21 @@
 				this.currentPageNum = 1;
 				this.tokenId = '';
 				this.owner = '';
-        this.getNftsByFilter(null, null, true);
-        this.getNftsByFilter(this.currentPageNum, this.pageSize);
+				this.getNftsByFilter(null, null, true);
+				this.getNftsByFilter(this.currentPageNum, this.pageSize);
 			},
 			pageChange(pageNum){
 				this.currentPageNum = pageNum;
 				// if(sessionStorage.getItem('selectDenom')){
 				// 	this.denom = sessionStorage.getItem('selectDenom')
 				// }
-        this.getNftsByFilter(this.currentPageNum, this.pageSize);
+        		this.getNftsByFilter(this.currentPageNum, this.pageSize);
 			},
-      handleSearchClick(){
-          this.currentPageNum = 1;
-          this.getNftsByFilter(null, null, true);
-			    this.getNftsByFilter(this.currentPageNum, this.pageSize);
-      },
+			handleSearchClick(){
+				this.currentPageNum = 1;
+				this.getNftsByFilter(null, null, true);
+				this.getNftsByFilter(this.currentPageNum, this.pageSize);
+			},
 			async getNftsByFilter(pageNum, pageSize, useCount = false){
 				if (Tools.isBech32(this.input)) {
 					this.owner = this.input;
@@ -186,10 +186,10 @@
 				}
 				try {
 					let nftData = await getNfts(pageNum, pageSize, useCount, this.denom, this.tokenId, this.owner);
-          if(useCount){
-            this.allCount = nftData?.count;
-          }
-					if(nftData && nftData.data){
+					if(useCount){
+						this.allCount = nftData?.count;
+					}
+					if(nftData && nftData.data && nftData.data.length > 0){
 						nftData.data.forEach(item => {
 							item.Time = (item.last_block_time ? item.last_block_time : '')
 							item.last_block_time = (item.last_block_time ? Tools.formatAge(Tools.getTimestamp(),item.last_block_time*1000, this.$t('ExplorerLang.table.suffix')) : '--')
@@ -199,7 +199,7 @@
 						 * @description: from parseTimeMixin
 						 */
 						this.parseTime('denomArray', 'Time', 'last_block_time')
-					}    
+					}
 				}catch (e) {
 					this.allCount = 0
 					this.denomArray = []
