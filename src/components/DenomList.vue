@@ -138,6 +138,9 @@
             async getDenoms(pageNum, pageSize, useCount = false, needAll = false){
                 try {
                     const res = await getDenoms(pageNum, pageSize, useCount, needAll, this.input);
+                    if(useCount) {
+                        this.count = res?.count;
+                    }
                     if(res && res.data && Array.isArray(res.data) && res.data.length > 0){
                         this.denomList = res.data.map((denom)=>{
                             return {
@@ -154,12 +157,8 @@
                          * @description: from parseTimeMixin
                          */
                         this.parseTime('denomList', 'Time', 'time')
-                        this.count = res.count;
                         this.pageSize = res.pageSize;
                         this.pageNum = res.pageNum;
-                    }else{
-                        this.count = 0;
-                        this.denomList = [];
                     }
                 }catch (e) {
                     this.count = 0;
