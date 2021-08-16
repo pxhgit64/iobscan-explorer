@@ -425,6 +425,9 @@
                         pageSize, 
                         useCount
                     );
+                    if(useCount){
+                      this.txCount = res?.count;
+                    }
                     if(this.txPageNum === Number(res.pageNum)){
                       let fees = [];
                       let fee = [];
@@ -437,9 +440,6 @@
                       }
                       if(fees && fees.length > 0 && this.isShowFee) {
                           fee = await Promise.all(fees);
-                      }
-                      if(useCount){
-                        this.txCount = res?.count;
                       }
                       this.transactionArray = res.data.map((item,index) =>{
                         let addrObj = TxHelper.getFromAndToAddressFromMsg(item.msgs[0]);
