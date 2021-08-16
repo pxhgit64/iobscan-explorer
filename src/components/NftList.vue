@@ -3,12 +3,6 @@
 		<div class="nft_list_content_wrap">
 			<div class="nft_list_header_content">
 				<h3 class="nft_list_header_title">{{allCount}} {{$t('ExplorerLang.nftAsset.assets')}}{{allCount>1 && isShowPlurality ? 's' : ''}}</h3>
-				<el-select popper-class="tooltip" v-model="denom" >
-					<el-option v-for="(item, index) in nftList"
-							   :key="index"
-							   :label="item.label"
-							   :value="item.value"></el-option>
-				</el-select>
 				<el-input v-model="input"
                           @change="handleSearchClick"
                           :placeholder="$t('ExplorerLang.nftAsset.placeHolder')"></el-input>
@@ -97,7 +91,7 @@
 </template>
 
 <script>
-	import { getDenoms, getNfts } from "../service/api"
+	import { getNfts } from "../service/api"
 	import Tools from "../util/Tools";
 	import MPagination from "./common/MPagination";
 	import { ColumnMinWidth } from '../constant';
@@ -110,19 +104,13 @@
 		components: {MPagination, LargeString},
 		mixins: [parseTimeMixin],
 		data () {
-            let denom = '';
-		    if(this.$store.state.tempDenomId){
-                denom = this.$store.state.tempDenomId;
-            }
+      let denom = '';
+      if(this.$store.state.tempDenomId){    
+          denom = this.$store.state.tempDenomId;
+      }
 			return {
 				ColumnMinWidth,
 				Tools,
-				nftList: [
-					{
-						value:'',
-						label:this.$t('ExplorerLang.common.all'),
-					}
-				],
 				denomArray:[],
 				denom,
 				currentPageNum: 1,
@@ -137,7 +125,6 @@
 			}
 		},
 		mounted(){
-			this.getNftList(null, null, true, true);
       this.getNftsByFilter(null, null, true);
       this.getNftsByFilter(this.currentPageNum, this.pageSize);
       if(this.$store.state.tempDenomId){
@@ -211,22 +198,6 @@
 					return '--';
 				}
 				return Tools.formatValidatorAddress(address)
-			},
-			async getNftList(pageNum, pageSize, useCount = false, needAll = false){
-				try {
-					let denomData = await getDenoms(pageNum, pageSize, useCount, needAll);
-					if(denomData){
-						let nftList = denomData.data.map(item => {
-							return {
-								label: item.denomName || item.denomId,
-								value: item.denomId
-							}
-						});
-						this.nftList = this.nftList.concat(nftList)
-					}
-					}catch (e) {
-						console.error(e)
-					}
 			}
 		}
 	}
