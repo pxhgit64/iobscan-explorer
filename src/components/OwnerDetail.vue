@@ -9,237 +9,100 @@
       </div>
       <div class="address_tab_container">
         <div class="address_tab_content">
-          <div
-            class="address_tab_item"
-            :key="index"
-            v-for="(item, index) in tabList"
-            :class="item.isActive ? 'active_content' : ''"
-            @click="selectOptions(index)"
-          >
+          <div class="address_tab_item" :key="index" v-for="(item, index) in tabList" :class="item.isActive ? 'active_content' : ''" @click="selectOptions(index)">
             <span>{{ item.label }}</span>
           </div>
         </div>
       </div>
-      <div
-        class="address_content"
-        v-if="moduleSupport('103', prodConfig.navFuncList)"
-        v-show="isNftInfo"
-      >
+      <div class="address_content" v-if="moduleSupport('103', prodConfig.navFuncList)" v-show="isNftInfo">
         <div class="content_title">
           {{ $t("ExplorerLang.addressDetail.assets") }}
         </div>
-        <el-table
-          class="table"
-          :data="assetArray"
-          row-key="nft_id"
-          :empty-text="$t('ExplorerLang.table.emptyDescription')"
-        >
-          <el-table-column
-            :min-width="ColumnMinWidth.denom"
-            :label="$t('ExplorerLang.table.denom')"
-            prop="denomName"
-          ></el-table-column>
-          <el-table-column
-            :min-width="ColumnMinWidth.tokenId"
-            :label="$t('ExplorerLang.table.tokenName')"
-          >
+        <el-table class="table" :data="assetArray" row-key="nft_id" :empty-text="$t('ExplorerLang.table.emptyDescription')">
+          <el-table-column :min-width="ColumnMinWidth.denom" :label="$t('ExplorerLang.table.denom')" prop="denomName"></el-table-column>
+          <el-table-column :min-width="ColumnMinWidth.tokenId" :label="$t('ExplorerLang.table.tokenName')">
             <template slot-scope="scope">
-              <el-tooltip
-                :content="scope.row.nftName"
-                placement="top"
-                effect="dark"
-                :disabled="Tools.disabled(scope.row.nftName)"
-              >
-                <router-link
-                  v-if="formatAddress(scope.row.nftName) != '--'"
-                  :to="`/nft/token?denom=${scope.row.denomId}&&tokenId=${scope.row.id}`"
-                  >{{ formatAddress(scope.row.nftName) }}</router-link
-                >
+              <el-tooltip :content="scope.row.nftName" placement="top" effect="dark" :disabled="Tools.disabled(scope.row.nftName)">
+                <router-link v-if="formatAddress(scope.row.nftName) != '--'" :to="`/nft/token?denom=${scope.row.denomId}&&tokenId=${scope.row.id}`">{{ formatAddress(scope.row.nftName) }}</router-link>
                 <span v-else>{{ "--" }}</span>
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column
-            :min-width="ColumnMinWidth.tokenId"
-            :label="$t('ExplorerLang.table.tokenId')"
-          >
+          <el-table-column :min-width="ColumnMinWidth.tokenId" :label="$t('ExplorerLang.table.tokenId')">
             <template slot-scope="scope">
-              <el-tooltip
-                :content="scope.row.id"
-                placement="top"
-                effect="dark"
-                :disabled="Tools.disabled(scope.row.id)"
-              >
-                <router-link
-                  :to="`/nft/token?denom=${scope.row.denomId}&&tokenId=${scope.row.id}`"
-                  >{{ formatAddress(scope.row.id) }}</router-link
-                >
+              <el-tooltip :content="scope.row.id" placement="top" effect="dark" :disabled="Tools.disabled(scope.row.id)">
+                <router-link :to="`/nft/token?denom=${scope.row.denomId}&&tokenId=${scope.row.id}`">{{ formatAddress(scope.row.id) }}</router-link>
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column
-            :width="ColumnMinWidth.schema"
-            :label="$t('ExplorerLang.table.data')"
-            prop="tokenData"
-          >
+          <el-table-column :width="ColumnMinWidth.schema" :label="$t('ExplorerLang.table.data')" prop="tokenData">
             <template slot-scope="scope">
-              <LargeString
-                :isShowPre="Tools.isJSON(scope.row.tokenData)"
-                :key="scope.row.nftName + scope.row.id + nftKey"
-                v-if="scope.row.tokenData"
-                :text="scope.row.tokenData"
-                mode="cell"
-                :minHeight="LargeStringMinHeight"
-                :lineHeight="LargeStringLineHeight"
-              />
+              <LargeString :isShowPre="Tools.isJSON(scope.row.tokenData)" :key="scope.row.nftName + scope.row.id + nftKey" v-if="scope.row.tokenData" :text="scope.row.tokenData" mode="cell" :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight" />
             </template>
           </el-table-column>
-          <el-table-column
-            :min-width="ColumnMinWidth.URI"
-            :label="$t('ExplorerLang.table.uri')"
-            prop="tokenUri"
-          >
+          <el-table-column :min-width="ColumnMinWidth.URI" :label="$t('ExplorerLang.table.uri')" prop="tokenUri">
             <template slot-scope="scope">
-              <a
-                v-if="scope.row.tokenUri"
-                :download="scope.row.tokenUri"
-                :href="scope.row.tokenUri"
-                target="_blank"
-                >{{ scope.row.tokenUri }}</a
-              >
+              <a v-if="scope.row.tokenUri" :download="scope.row.tokenUri" :href="scope.row.tokenUri" target="_blank">{{ scope.row.tokenUri }}</a>
               <span v-else>--</span>
             </template>
           </el-table-column>
         </el-table>
         <div class="pagination_content" v-show="assetCount > assetPageSize">
-          <m-pagination
-            :page-size="assetPageSize"
-            :total="assetCount"
-            :page="assetPageNum"
-            :page-change="assetPageChange"
-          >
+          <m-pagination :page-size="assetPageSize" :total="assetCount" :page="assetPageNum" :page-change="assetPageChange">
           </m-pagination>
         </div>
       </div>
-      <div
-        class="address_content"
-        v-if="moduleSupport('106', prodConfig.navFuncList)"
-        v-show="isIdentity"
-      >
+      <div class="address_content" v-if="moduleSupport('106', prodConfig.navFuncList)" v-show="isIdentity">
         <div class="content_title">
           {{ $t("ExplorerLang.addressDetail.identities") }}
         </div>
-        <el-table
-          class="table"
-          :data="identityList"
-          :empty-text="$t('ExplorerLang.table.emptyDescription')"
-        >
-          <el-table-column
-            :min-width="ColumnMinWidth.identity"
-            :label="$t('ExplorerLang.table.identity')"
-          >
+        <el-table class="table" :data="identityList" :empty-text="$t('ExplorerLang.table.emptyDescription')">
+          <el-table-column :min-width="ColumnMinWidth.identity" :label="$t('ExplorerLang.table.identity')">
             <template slot-scope="scope">
               <router-link :to="`/identity/${scope.row.id}`">{{
                 scope.row.id
               }}</router-link>
             </template>
           </el-table-column>
-          <el-table-column
-            :min-width="ColumnMinWidth.txHash"
-            :label="$t('ExplorerLang.table.txHash')"
-          >
+          <el-table-column :min-width="ColumnMinWidth.txHash" :label="$t('ExplorerLang.table.txHash')">
             <template slot-scope="scope">
-              <el-tooltip
-                :content="scope.row.txHash"
-                placement="top"
-                :disabled="!Tools.isValid(scope.row.txHash)"
-              >
-                <router-link :to="`/tx?txHash=${scope.row.txHash}`"
-                  >{{ formatTxHash(scope.row.txHash) }}
+              <el-tooltip :content="scope.row.txHash" placement="top" :disabled="!Tools.isValid(scope.row.txHash)">
+                <router-link :to="`/tx?txHash=${scope.row.txHash}`">{{ formatTxHash(scope.row.txHash) }}
                 </router-link>
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column
-            :min-width="ColumnMinWidth.time"
-            :label="$t('ExplorerLang.table.timestamp')"
-            prop="time"
-          >
+          <el-table-column :min-width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.timestamp')" prop="time">
             <template slot-scope="scope">
               <span>{{ scope.row.time }}</span>
             </template>
           </el-table-column>
         </el-table>
-        <div
-          class="pagination_content"
-          v-show="identityCount > identityPageSize"
-        >
-          <m-pagination
-            :page-size="identityPageSize"
-            :total="identityCount"
-            :page="identityPageNum"
-            :page-change="identityPageChange"
-          >
+        <div class="pagination_content" v-show="identityCount > identityPageSize">
+          <m-pagination :page-size="identityPageSize" :total="identityCount" :page="identityPageNum" :page-change="identityPageChange">
           </m-pagination>
         </div>
       </div>
-      <div
-        class="consumer_transaction_content"
-        v-if="moduleSupport('105', prodConfig.navFuncList)"
-        v-show="isIservice"
-      >
+      <div class="consumer_transaction_content" v-if="moduleSupport('105', prodConfig.navFuncList)" v-show="isIservice">
         <div class="content_title">
           {{ $t("ExplorerLang.addressDetail.consumerTitle") }}
         </div>
-        <el-table
-          class="table"
-          :data="consumerTxList"
-          row-key="txHash"
-          :empty-text="$t('ExplorerLang.table.emptyDescription')"
-          :span-method="arraySpanMethod"
-        >
-          <el-table-column
-            :min-width="ColumnMinWidth.serviceName"
-            :label="$t('ExplorerLang.table.serviceName')"
-          >
+        <el-table class="table" :data="consumerTxList" row-key="txHash" :empty-text="$t('ExplorerLang.table.emptyDescription')" :span-method="arraySpanMethod">
+          <el-table-column :min-width="ColumnMinWidth.serviceName" :label="$t('ExplorerLang.table.serviceName')">
             <template slot-scope="scope">
-              <el-tooltip
-                v-if="!scope.row.isChildren"
-                :content="scope.row.serviceName"
-                placement="top"
-              >
-                <router-link
-                  :to="`/service?serviceName=${scope.row.serviceName}`"
-                >
+              <el-tooltip v-if="!scope.row.isChildren" :content="scope.row.serviceName" placement="top">
+                <router-link :to="`/service?serviceName=${scope.row.serviceName}`">
                   {{ scope.row.serviceName }}
                 </router-link>
               </el-tooltip>
-              <span
-                class="serviceNameText"
-                v-if="scope.row.isChildren && scope.row.index == 0"
-                >{{ getRespondCount(scope.row.count) }}</span
-              >
+              <span class="serviceNameText" v-if="scope.row.isChildren && scope.row.index == 0">{{ getRespondCount(scope.row.count) }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            class-name="tx_type"
-            :width="ColumnMinWidth.minTxType"
-            :label="$t('ExplorerLang.table.txType')"
-            prop="txType"
-          ></el-table-column>
-          <el-table-column
-            :min-width="ColumnMinWidth.state"
-            :label="$t('ExplorerLang.table.requestStatus')"
-          >
+          <el-table-column class-name="tx_type" :width="ColumnMinWidth.minTxType" :label="$t('ExplorerLang.table.txType')" prop="txType"></el-table-column>
+          <el-table-column :min-width="ColumnMinWidth.state" :label="$t('ExplorerLang.table.requestStatus')">
             <template slot-scope="scope">
-              <div
-                v-if="scope.row.state"
-                class="consumer_transaction_content_available"
-              >
-                <span
-                  class="consumer_transaction_content_available_icon"
-                  :style="`background:${getBgColorWithState(scope.row.state)}`"
-                ></span>
+              <div v-if="scope.row.state" class="consumer_transaction_content_available">
+                <span class="consumer_transaction_content_available_icon" :style="`background:${getBgColorWithState(scope.row.state)}`"></span>
                 <span>{{
                   $t(
                     "ExplorerLang.table." + getContentWithState(scope.row.state)
@@ -249,34 +112,24 @@
               <div v-else>--</div>
             </template>
           </el-table-column>
-          <el-table-column
-            :min-width="ColumnMinWidth.blockListHeight"
-            :label="$t('ExplorerLang.table.block')"
-          >
+          <el-table-column :min-width="ColumnMinWidth.blockListHeight" :label="$t('ExplorerLang.table.block')">
             <template slot-scope="scope">
               <router-link :to="`/block/${scope.row.blockHeight}`">{{
                 scope.row.blockHeight
               }}</router-link>
             </template>
           </el-table-column>
-          <el-table-column
-            class-name="hash_status"
-            :min-width="ColumnMinWidth.addressTxHash"
-            :label="$t('ExplorerLang.table.txHash')"
-          >
+          <el-table-column class-name="hash_status" :min-width="ColumnMinWidth.addressTxHash" :label="$t('ExplorerLang.table.txHash')">
             <template slot-scope="scope">
               <div class="address_transaction_content_hash">
                 <div class="status">
-                  <img
-                    class="status_icon"
-                    :src="
+                  <img class="status_icon" :src="
                       require(`../assets/${
                         scope.row.status == TX_STATUS.success
                           ? 'success.png'
                           : 'failed.png'
                       }`)
-                    "
-                  />
+                    " />
                 </div>
                 <el-tooltip :content="scope.row.txHash" placement="top">
                   <div>
@@ -288,43 +141,22 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column
-            class-name="requestId"
-            :min-width="ColumnMinWidth.requestId"
-            :label="$t('ExplorerLang.table.requestId')"
-          >
+          <el-table-column class-name="requestId" :min-width="ColumnMinWidth.requestId" :label="$t('ExplorerLang.table.requestId')">
             <template slot-scope="scope">
-              <el-tooltip
-                :content="scope.row.requestContextId"
-                placement="top"
-                effect="dark"
-                :disabled="Tools.disabled(scope.row.requestContextId)"
-              >
+              <el-tooltip :content="scope.row.requestContextId" placement="top" effect="dark" :disabled="Tools.disabled(scope.row.requestContextId)">
                 <span>{{ formatAddress(scope.row.requestContextId) }}</span>
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column
-            class-name="address"
-            :min-width="ColumnMinWidth.address"
-            :label="$t('ExplorerLang.table.provider')"
-          >
+          <el-table-column class-name="address" :min-width="ColumnMinWidth.address" :label="$t('ExplorerLang.table.provider')">
             <template slot-scope="scope">
-              <el-tooltip
-                v-if="scope.row.txType == TX_TYPE_DISPLAY.respond_service"
-                :content="scope.row.provider"
-                placement="top"
-              >
+              <el-tooltip v-if="scope.row.txType == TX_TYPE_DISPLAY.respond_service" :content="scope.row.provider" placement="top">
                 <router-link :to="`/address/${scope.row.provider}`">
                   {{ formatAddress(scope.row.provider) }}
                 </router-link>
               </el-tooltip>
               <div v-if="scope.row.txType == TX_TYPE_DISPLAY.call_service">
-                <el-tooltip
-                  v-if="(scope.row.provider || []).length === 1"
-                  :content="scope.row.provider[0]"
-                  placement="top"
-                >
+                <el-tooltip v-if="(scope.row.provider || []).length === 1" :content="scope.row.provider[0]" placement="top">
                   <router-link :to="`/address/${scope.row.provider[0]}`">
                     {{ formatAddress(scope.row.provider[0]) }}
                   </router-link>
@@ -341,81 +173,46 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column
-            :min-width="ColumnMinWidth.time"
-            :label="$t('ExplorerLang.table.timestamp')"
-          >
+          <el-table-column :min-width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.timestamp')">
             <template slot-scope="scope">
               <span>{{ `${scope.row.time}` }}</span>
             </template>
           </el-table-column>
         </el-table>
-        <div
-          class="pagination_content"
-          v-show="consumerTxCount > consumerTxPageSize"
-        >
-          <m-pagination
-            :page-size="consumerTxPageSize"
-            :total="consumerTxCount"
-            :page="consumerTxPageNum"
-            :page-change="consumerTxPageChange"
-          >
+        <div class="pagination_content" v-show="consumerTxCount > consumerTxPageSize">
+          <m-pagination :page-size="consumerTxPageSize" :total="consumerTxCount" :page="consumerTxPageNum" :page-change="consumerTxPageChange">
           </m-pagination>
         </div>
       </div>
-      <div
-        class="provider_transaction_content"
-        v-if="moduleSupport('105', prodConfig.navFuncList)"
-        v-show="isIservice"
-      >
+      <div class="provider_transaction_content" v-if="moduleSupport('105', prodConfig.navFuncList)" v-show="isIservice">
         <div class="content_title">
           {{ $t("ExplorerLang.addressDetail.providerTitle") }}
         </div>
-        <el-table
-          class="table"
-          :data="providerTxList"
-          :empty-text="$t('ExplorerLang.table.emptyDescription')"
-        >
-          <el-table-column
-            :min-width="ColumnMinWidth.serviceName"
-            :label="$t('ExplorerLang.table.serviceName')"
-          >
+        <el-table class="table" :data="providerTxList" :empty-text="$t('ExplorerLang.table.emptyDescription')">
+          <el-table-column :min-width="ColumnMinWidth.serviceName" :label="$t('ExplorerLang.table.serviceName')">
             <template slot-scope="scope">
               <el-tooltip :content="scope.row.serviceName" placement="top">
-                <router-link
-                  :to="`/service?serviceName=${scope.row.serviceName}`"
-                >
+                <router-link :to="`/service?serviceName=${scope.row.serviceName}`">
                   {{ scope.row.serviceName }}
                 </router-link>
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column
-            :min-width="ColumnMinWidth.respondTimes"
-            :label="$t('ExplorerLang.table.respondTimes')"
-          >
+          <el-table-column :min-width="ColumnMinWidth.respondTimes" :label="$t('ExplorerLang.table.respondTimes')">
             <template slot-scope="scope">
-              <router-link
-                :to="`/service/respond/${scope.row.serviceName}/${address}`"
-              >
+              <router-link :to="`/service/respond/${scope.row.serviceName}/${address}`">
                 {{
                   `${scope.row.respond_times} ${$t("ExplorerLang.unit.time")}`
                 }}
               </router-link>
             </template>
           </el-table-column>
-          <el-table-column
-            :min-width="ColumnMinWidth.available"
-            :label="$t('ExplorerLang.table.isAvailable')"
-          >
+          <el-table-column :min-width="ColumnMinWidth.available" :label="$t('ExplorerLang.table.isAvailable')">
             <template slot-scope="scope">
               <div class="provider_transaction_content_available">
-                <span
-                  class="provider_transaction_content_available_icon"
-                  :style="`background:${
+                <span class="provider_transaction_content_available_icon" :style="`background:${
                     scope.row.isAvailable ? '#B1E96E' : '#C4C4C4'
-                  }`"
-                ></span>
+                  }`"></span>
                 <span class="provider_transaction_content_available_status">{{
                   scope.row.isAvailable ? "True" : "False"
                 }}</span>
@@ -432,28 +229,19 @@
 							<span>{{scope.row.deposit}}</span>
 						</template>
 					</el-table-column> -->
-          <el-table-column
-            :min-width="ColumnMinWidth.qos"
-            :label="$t('ExplorerLang.table.minBlock')"
-          >
+          <el-table-column :min-width="ColumnMinWidth.qos" :label="$t('ExplorerLang.table.minBlock')">
             <template slot-scope="scope">
               <span>{{
                 `${scope.row.qos} ${$t("ExplorerLang.unit.blocks")}`
               }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            :min-width="ColumnMinWidth.time"
-            :label="$t('ExplorerLang.table.bindTime')"
-          >
+          <el-table-column :min-width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.bindTime')">
             <template slot-scope="scope">
               <span>{{ `${scope.row.time}` }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            :width="ColumnMinWidth.time"
-            :label="$t('ExplorerLang.table.disabledTime')"
-          >
+          <el-table-column :width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.disabledTime')">
             <template slot-scope="scope">
               <span>{{
                 scope.row.isAvailable ? "--" : scope.row.unbindTime
@@ -461,69 +249,36 @@
             </template>
           </el-table-column>
         </el-table>
-        <div
-          class="pagination_content"
-          v-show="providerTxCount > providerTxPageSize"
-        >
-          <m-pagination
-            :page-size="providerTxPageSize"
-            :total="providerTxCount"
-            :page="providerTxPageNum"
-            :page-change="providerTxPageChange"
-          >
+        <div class="pagination_content" v-show="providerTxCount > providerTxPageSize">
+          <m-pagination :page-size="providerTxPageSize" :total="providerTxCount" :page="providerTxPageNum" :page-change="providerTxPageChange">
           </m-pagination>
         </div>
         <div class="content_title" style="margin-top: 0.4rem">
           {{ $t("ExplorerLang.addressDetail.respondRecord") }}
         </div>
-        <el-table
-          class="table"
-          :data="respondRecordList"
-          :empty-text="$t('ExplorerLang.table.emptyDescription')"
-        >
-          <el-table-column
-            :min-width="ColumnMinWidth.serviceName"
-            :label="$t('ExplorerLang.table.serviceName')"
-          >
+        <el-table class="table" :data="respondRecordList" :empty-text="$t('ExplorerLang.table.emptyDescription')">
+          <el-table-column :min-width="ColumnMinWidth.serviceName" :label="$t('ExplorerLang.table.serviceName')">
             <template slot-scope="scope">
-              <el-tooltip
-                v-if="scope.row.serviceName"
-                :content="scope.row.serviceName"
-                placement="top"
-              >
-                <router-link
-                  :to="`/service?serviceName=${scope.row.serviceName}`"
-                >
+              <el-tooltip v-if="scope.row.serviceName" :content="scope.row.serviceName" placement="top">
+                <router-link :to="`/service?serviceName=${scope.row.serviceName}`">
                   {{ scope.row.serviceName }}
                 </router-link>
               </el-tooltip>
               <span v-if="!scope.row.serviceName">--</span>
             </template>
           </el-table-column>
-          <el-table-column
-            class-name="tx_type"
-            :width="ColumnMinWidth.txType"
-            :label="$t('ExplorerLang.table.txType')"
-            prop="type"
-          ></el-table-column>
-          <el-table-column
-            class-name="hash_status"
-            :min-width="ColumnMinWidth.respondHash"
-            :label="$t('ExplorerLang.table.respondHash')"
-          >
+          <el-table-column class-name="tx_type" :width="ColumnMinWidth.txType" :label="$t('ExplorerLang.table.txType')" prop="type"></el-table-column>
+          <el-table-column class-name="hash_status" :min-width="ColumnMinWidth.respondHash" :label="$t('ExplorerLang.table.respondHash')">
             <template slot-scope="scope">
               <div class="respond_transaction_content_hash">
                 <div class="status">
-                  <img
-                    class="status_icon"
-                    :src="
+                  <img class="status_icon" :src="
                       require(`../assets/${
                         scope.row.respondStatus == TX_STATUS.success
                           ? 'success.png'
                           : 'failed.png'
                       }`)
-                    "
-                  />
+                    " />
                 </div>
                 <el-tooltip :content="scope.row.respondHash" placement="top">
                   <div>
@@ -535,79 +290,44 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column
-            class-name="requestId"
-            :min-width="ColumnMinWidth.requestId"
-            :label="$t('ExplorerLang.table.requestId')"
-          >
+          <el-table-column class-name="requestId" :min-width="ColumnMinWidth.requestId" :label="$t('ExplorerLang.table.requestId')">
             <template slot-scope="scope">
-              <el-tooltip
-                :content="scope.row.requestContextId"
-                placement="top"
-                effect="dark"
-                :disabled="Tools.disabled(scope.row.requestContextId)"
-              >
+              <el-tooltip :content="scope.row.requestContextId" placement="top" effect="dark" :disabled="Tools.disabled(scope.row.requestContextId)">
                 <span>{{ formatAddress(scope.row.requestContextId) }}</span>
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column
-            :min-width="ColumnMinWidth.blockListHeight"
-            :label="$t('ExplorerLang.table.block')"
-          >
+          <el-table-column :min-width="ColumnMinWidth.blockListHeight" :label="$t('ExplorerLang.table.block')">
             <template slot-scope="scope">
               <router-link :to="`/block/${scope.row.height}`">{{
                 scope.row.height
               }}</router-link>
             </template>
           </el-table-column>
-          <el-table-column
-            :min-width="ColumnMinWidth.time"
-            :label="$t('ExplorerLang.table.timestamp')"
-            prop="time"
-          >
+          <el-table-column :min-width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.timestamp')" prop="time">
             <template slot-scope="scope">
               <span>{{ Tools.getDisplayDate(scope.row.time) }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            class-name="address"
-            :min-width="ColumnMinWidth.address"
-            :label="$t('ExplorerLang.table.consumer')"
-          >
+          <el-table-column class-name="address" :min-width="ColumnMinWidth.address" :label="$t('ExplorerLang.table.consumer')">
             <template slot-scope="scope">
               <el-tooltip :content="scope.row.consumer" placement="top">
-                <router-link
-                  v-if="scope.row.consumer && scope.row.consumer.length"
-                  :to="`/address/${scope.row.consumer}`"
-                >
+                <router-link v-if="scope.row.consumer && scope.row.consumer.length" :to="`/address/${scope.row.consumer}`">
                   {{ formatAddress(scope.row.consumer) }}
                 </router-link>
               </el-tooltip>
               <span v-if="!scope.row.consumer">--</span>
             </template>
           </el-table-column>
-          <el-table-column
-            class-name="hash_status"
-            :min-width="ColumnMinWidth.requestHash"
-            :label="$t('ExplorerLang.table.requestHash')"
-          >
+          <el-table-column class-name="hash_status" :min-width="ColumnMinWidth.requestHash" :label="$t('ExplorerLang.table.requestHash')">
             <template slot-scope="scope">
               <div class="address_transaction_content_hash">
                 <div class="status">
-                  <img
-                    v-if="
+                  <img v-if="
                       scope.row.requestHash && scope.row.requestHash != '--'
-                    "
-                    class="status_icon"
-                    src="../assets/success.png"
-                  />
+                    " class="status_icon" src="../assets/success.png" />
                 </div>
-                <el-tooltip
-                  v-if="scope.row.requestHash && scope.row.requestHash != '--'"
-                  :content="scope.row.requestHash"
-                  placement="top"
-                >
+                <el-tooltip v-if="scope.row.requestHash && scope.row.requestHash != '--'" :content="scope.row.requestHash" placement="top">
                   <div>
                     <router-link :to="`/tx?txHash=${scope.row.requestHash}`">
                       {{ formatTxHash(scope.row.requestHash) }}
@@ -619,78 +339,39 @@
             </template>
           </el-table-column>
         </el-table>
-        <div
-          class="pagination_content"
-          v-show="respondRecordCount > respondRecordPageSize"
-        >
-          <m-pagination
-            :page-size="respondRecordPageSize"
-            :total="respondRecordCount"
-            :page="respondRecordPageNum"
-            :page-change="respondRecordPageChange"
-          >
+        <div class="pagination_content" v-show="respondRecordCount > respondRecordPageSize">
+          <m-pagination :page-size="respondRecordPageSize" :total="respondRecordCount" :page="respondRecordPageNum" :page-change="respondRecordPageChange">
           </m-pagination>
         </div>
       </div>
       <div v-if="moduleSupport('107', prodConfig.navFuncList)" v-show="isAsset">
         <!-- 地址详情 -->
-        <address-information-component
-          :address="address"
-          :data="assetsItems"
-          :isProfiler="isProfiler"
-        />
+        <address-information-component :address="address" :data="assetsItems" :isProfiler="isProfiler" />
         <div class="delegations_wrap">
           <div class="delegations_container">
             <!-- Delegations -->
             <div class="one_table_container">
               <p class="validator_information_content_title">
                 {{ $t("ExplorerLang.validatorDetail.delegationsTitle") }}
-                <span
-                  class="address_information_delegation_value"
-                  v-show="totalDelegatorValue"
-                  >{{ totalDelegatorValue }}</span
-                >
+                <span class="address_information_delegation_value" v-show="totalDelegatorValue">{{ totalDelegatorValue }}</span>
               </p>
               <div class="delegations_table_container">
-                <el-table
-                  :empty-text="$t('ExplorerLang.table.emptyDescription')"
-                  :data="delegationsItems"
-                  style="width: 100%"
-                >
-                  <el-table-column
-                    class-name="address"
-                    prop="address"
-                    :label="$t('ExplorerLang.table.address')"
-                    :min-width="ColumnMinWidth.address"
-                  >
+                <el-table :empty-text="$t('ExplorerLang.table.emptyDescription')" :data="delegationsItems" style="width: 100%">
+                  <el-table-column class-name="address" prop="address" :label="$t('ExplorerLang.table.address')" :min-width="ColumnMinWidth.address">
                     <template v-slot:default="{ row }">
                       <el-tooltip :content="`${row.address}`">
-                        <span
-                          v-if="row.moniker"
-                          class="address_link"
-                          @click="addressRoute(row.address)"
-                        >
+                        <span v-if="row.moniker" class="address_link" @click="addressRoute(row.address)">
                           {{
                             formatMoniker(row.moniker, monikerNum.otherTable)
                           }}
                         </span>
-                        <span
-                          v-if="!row.moniker"
-                          style="font-family: Arial"
-                          class="address_link"
-                          @click="addressRoute(row.address)"
-                        >
+                        <span v-if="!row.moniker" style="font-family: Arial" class="address_link" @click="addressRoute(row.address)">
                           {{ formatAddress(row.address) }}
                         </span>
                       </el-tooltip>
                     </template>
                   </el-table-column>
-                  <el-table-column
-                    prop="amount"
-                    :label="$t('ExplorerLang.table.amount')"
-                    align="right"
-                    :min-width="ColumnMinWidth.ownerDetailDelegationsAmount"
-                  >
+                  <el-table-column prop="amount" :label="$t('ExplorerLang.table.amount')" align="right" :min-width="ColumnMinWidth.ownerDetailDelegationsAmount">
                     <template slot="header" slot-scope="scope">
                       <span>{{ $t("ExplorerLang.table.amount") }}</span>
                       <el-tooltip :content="mainTokenSymbol" placement="top">
@@ -698,12 +379,7 @@
                       </el-tooltip>
                     </template>
                   </el-table-column>
-                  <el-table-column
-                    prop="shares"
-                    :label="$t('ExplorerLang.table.shares')"
-                    align="left"
-                    :min-width="ColumnMinWidth.shares"
-                  ></el-table-column>
+                  <el-table-column prop="shares" :label="$t('ExplorerLang.table.shares')" align="left" :min-width="ColumnMinWidth.shares"></el-table-column>
                   <!-- <el-table-column prop="block" :label="$t('ExplorerLang.table.block')" min-width="100">
 										<template v-slot:default="{ row }">
 										<router-link style="font-family: Arial;" :to="'/block/' + row.block" :style="{ color: '$theme_c !important' }">{{ row.block }}</router-link>
@@ -711,13 +387,7 @@
 									</el-table-column> -->
                 </el-table>
               </div>
-              <m-pagination
-                v-if="flDelegationNextPage"
-                :page="delegationCurrentPage"
-                :page-size="tablePageSize"
-                :total="delegationCountNum"
-                :page-change="delegationPageChange"
-              ></m-pagination>
+              <m-pagination v-if="flDelegationNextPage" :page="delegationCurrentPage" :page-size="tablePageSize" :total="delegationCountNum" :page-change="delegationPageChange"></m-pagination>
             </div>
             <!-- Unbonding Delegations -->
             <div class="second_table_container">
@@ -725,51 +395,25 @@
                 {{
                   $t("ExplorerLang.validatorDetail.unbondingDelegationsTitle")
                 }}
-                <span
-                  class="address_information_unbonding_delegation_value"
-                  v-show="totalUnBondingDelegatorValue"
-                  >{{ totalUnBondingDelegatorValue }}</span
-                >
+                <span class="address_information_unbonding_delegation_value" v-show="totalUnBondingDelegatorValue">{{ totalUnBondingDelegatorValue }}</span>
               </p>
               <div class="delegations_table_container">
-                <el-table
-                  :empty-text="$t('ExplorerLang.table.emptyDescription')"
-                  :data="unBondingDelegationsItems"
-                  style="width: 100%"
-                >
-                  <el-table-column
-                    class-name="address"
-                    prop="address"
-                    :label="$t('ExplorerLang.table.address')"
-                    :min-width="ColumnMinWidth.address"
-                  >
+                <el-table :empty-text="$t('ExplorerLang.table.emptyDescription')" :data="unBondingDelegationsItems" style="width: 100%">
+                  <el-table-column class-name="address" prop="address" :label="$t('ExplorerLang.table.address')" :min-width="ColumnMinWidth.address">
                     <template v-slot:default="{ row }">
                       <el-tooltip :content="`${row.address}`">
-                        <span
-                          v-if="row.moniker"
-                          class="address_link"
-                          @click="addressRoute(row.address)"
-                        >
+                        <span v-if="row.moniker" class="address_link" @click="addressRoute(row.address)">
                           {{
                             formatMoniker(row.moniker, monikerNum.otherTable)
                           }}
                         </span>
-                        <span
-                          v-if="!row.moniker"
-                          style="font-family: Arial"
-                          class="address_link"
-                          @click="addressRoute(row.address)"
-                        >
+                        <span v-if="!row.moniker" style="font-family: Arial" class="address_link" @click="addressRoute(row.address)">
                           {{ formatAddress(row.address) }}
                         </span>
                       </el-tooltip>
                     </template>
                   </el-table-column>
-                  <el-table-column
-                    prop="amount"
-                    :label="$t('ExplorerLang.table.amount')"
-                    :min-width="ColumnMinWidth.amount"
-                  >
+                  <el-table-column prop="amount" :label="$t('ExplorerLang.table.amount')" :min-width="ColumnMinWidth.amount">
                     <template slot="header" slot-scope="scope">
                       <span>{{ $t("ExplorerLang.table.amount") }}</span>
                       <el-tooltip :content="mainTokenSymbol" placement="top">
@@ -777,106 +421,58 @@
                       </el-tooltip>
                     </template>
                   </el-table-column>
-                  <el-table-column
-                    prop="block"
-                    :label="$t('ExplorerLang.table.block')"
-                    :min-width="ColumnMinWidth.blockListHeight"
-                  >
+                  <el-table-column prop="block" :label="$t('ExplorerLang.table.block')" :min-width="ColumnMinWidth.blockListHeight">
                     <template v-slot:default="{ row }">
-                      <router-link
-                        style="font-family: Arial"
-                        :to="'/block/' + row.block"
-                        :style="{ color: '$theme_c !important' }"
-                        >{{ row.block }}
+                      <router-link style="font-family: Arial" :to="'/block/' + row.block" :style="{ color: '$theme_c !important' }">{{ row.block }}
                       </router-link>
                     </template>
                   </el-table-column>
-                  <el-table-column
-                    prop="endTime"
-                    :label="$t('ExplorerLang.table.endTime')"
-                    :min-width="ColumnMinWidth.time"
-                  ></el-table-column>
+                  <el-table-column prop="endTime" :label="$t('ExplorerLang.table.endTime')" :min-width="ColumnMinWidth.time"></el-table-column>
                 </el-table>
               </div>
-              <m-pagination
-                v-if="flUnBondingDelegationNextPage"
-                :page-size="tablePageSize"
-                :total="unBondingDelegationCountNum"
-                :page="unBondingDelegationCurrentPage"
-                :page-change="unBondingDelegationPageChange"
-              ></m-pagination>
+              <m-pagination v-if="flUnBondingDelegationNextPage" :page-size="tablePageSize" :total="unBondingDelegationCountNum" :page="unBondingDelegationCurrentPage" :page-change="unBondingDelegationPageChange"></m-pagination>
             </div>
           </div>
         </div>
         <!-- Delegator Rewards 标题 -->
         <div class="address_information_redelegation_header_title">
           {{ $t("ExplorerLang.addressInformation.delegatorRewards.title") }}
-          <span
-            class="address_information_redelegation_rewards_value"
-            v-show="totalDelegatorRewardValue"
-            >{{ totalDelegatorRewardValue }}</span
-          >
+          <span class="address_information_redelegation_rewards_value" v-show="totalDelegatorRewardValue">{{ totalDelegatorRewardValue }}</span>
         </div>
         <div class="address_information_redelegation_tx_container">
           <div class="address_information_delegator_rewards_content">
             <!-- Withdraw To: -->
             <div class="address_information_detail_option">
-              <span class="address_information_detail_option_name"
-                >{{
+              <span class="address_information_detail_option_name">{{
                   $t(
                     "ExplorerLang.addressInformation.delegatorRewards.withdrawTo"
                   )
-                }}:</span
-              >
+                }}:</span>
               <span class="address_information_detail_option_value">
                 <router-link :to="`/address/${withdrewToAddress}`">{{
                   withdrewToAddress
-                }}</router-link></span
-              >
+                }}</router-link>
+              </span>
             </div>
             <!-- Delegator Rewards 的表格 -->
             <div class="address_information_list_content">
               <div>
-                <el-table
-                  :empty-text="$t('ExplorerLang.table.emptyDescription')"
-                  :data="rewardsItems"
-                  style="width: 100%"
-                >
-                  <el-table-column
-                    class-name="address"
-                    prop="address"
-                    :label="$t('ExplorerLang.table.address')"
-                    align="left"
-                    :min-width="ColumnMinWidth.address"
-                  >
+                <el-table :empty-text="$t('ExplorerLang.table.emptyDescription')" :data="rewardsItems" style="width: 100%">
+                  <el-table-column class-name="address" prop="address" :label="$t('ExplorerLang.table.address')" align="left" :min-width="ColumnMinWidth.address">
                     <template v-slot:default="{ row }">
                       <el-tooltip :content="`${row.address}`">
-                        <router-link
-                          v-if="row.moniker"
-                          class="address_link"
-                          :to="`/staking/${row.address}`"
-                        >
+                        <router-link v-if="row.moniker" class="address_link" :to="`/staking/${row.address}`">
                           {{
                             formatMoniker(row.moniker, monikerNum.otherTable)
                           }}
                         </router-link>
-                        <router-link
-                          v-if="!row.moniker"
-                          style="font-family: Arial"
-                          class="address_link"
-                          :to="`/staking/${row.address}`"
-                        >
+                        <router-link v-if="!row.moniker" style="font-family: Arial" class="address_link" :to="`/staking/${row.address}`">
                           {{ formatAddress(row.address) }}
                         </router-link>
                       </el-tooltip>
                     </template>
                   </el-table-column>
-                  <el-table-column
-                    prop="amount"
-                    :label="$t('ExplorerLang.table.amount')"
-                    align="right"
-                    :min-width="ColumnMinWidth.amount"
-                  >
+                  <el-table-column prop="amount" :label="$t('ExplorerLang.table.amount')" align="right" :min-width="ColumnMinWidth.amount">
                     <template slot="header" slot-scope="scope">
                       <span>{{ $t("ExplorerLang.table.amount") }}</span>
                       <el-tooltip :content="mainTokenSymbol" placement="top">
@@ -890,95 +486,52 @@
             <!-- 换页 -->
             <div class="pagination_content" v-if="flRewardsDelegationNextPage">
               <keep-alive>
-                <m-pagination
-                  :page-size="pageSize"
-                  :total="rewardsDelegationCountNum"
-                  :page="rewardsDelegationCurrentPage"
-                  :page-change="rewardsDelegationPageChange"
-                ></m-pagination>
+                <m-pagination :page-size="pageSize" :total="rewardsDelegationCountNum" :page="rewardsDelegationCurrentPage" :page-change="rewardsDelegationPageChange"></m-pagination>
               </keep-alive>
             </div>
           </div>
           <!-- Validator Rewards -->
-          <div
-            class="address_information_detail_container"
-            :class="OperatorAddress !== '--' ? '' : 'hide_style'"
-            :style="{
+          <div class="address_information_detail_container" :class="OperatorAddress !== '--' ? '' : 'hide_style'" :style="{
               visibility:
                 OperatorAddress && OperatorAddress !== '--'
                   ? 'visible'
                   : 'hidden',
-            }"
-          >
+            }">
             <!-- 标题 -->
             <div class="address_information_redelegation_title">
               {{ $t("ExplorerLang.addressInformation.validatorRewards.title") }}
-              <span
-                class="address_information_validator_rewards_value"
-                v-show="totalValidatorRewards"
-                >{{ totalValidatorRewards }}</span
-              >
+              <span class="address_information_validator_rewards_value" v-show="totalValidatorRewards">{{ totalValidatorRewards }}</span>
             </div>
             <!-- 需展示的数据 -->
             <ul class="address_information_detail_content">
               <li class="address_information_detail_option">
-                <span class="address_information_detail_option_name"
-                  >{{
+                <span class="address_information_detail_option_name">{{
                     $t(
                       "ExplorerLang.addressInformation.validatorRewards.validatorMoniker"
                     )
-                  }}:</span
-                >
+                  }}:</span>
                 <div class="validator_status_content">
                   <span class="address_information_detail_option_value">
-                    <router-link
-                      v-show="
+                    <router-link v-show="
                         OperatorAddress !== '--' && validatorMoniker !== '--'
-                      "
-                      :to="`/staking/${OperatorAddress}`"
-                      >{{ validatorMoniker }}</router-link
-                    >
-                    <span
-                      v-show="
+                      " :to="`/staking/${OperatorAddress}`">{{ validatorMoniker }}</router-link>
+                    <span v-show="
                         OperatorAddress === '--' || validatorMoniker === '--'
-                      "
-                      >{{ validatorMoniker }}</span
-                    >
+                      ">{{ validatorMoniker }}</span>
                   </span>
-                  <span
-                    class="address_information_address_status_active"
-                    v-if="validatorStatus === 'active'"
-                    >{{ $t("ExplorerLang.staking.status.active") }}</span
-                  >
-                  <span
-                    class="address_information_address_status_candidate"
-                    v-if="validatorStatus === 'candidate'"
-                    >{{ $t("ExplorerLang.staking.status.candidate") }}</span
-                  >
-                  <span
-                    class="address_information_address_status_jailed"
-                    v-if="validatorStatus === 'jailed'"
-                    >{{ $t("ExplorerLang.staking.status.jailed") }}</span
-                  >
+                  <span class="address_information_address_status_active" v-if="validatorStatus === 'active'">{{ $t("ExplorerLang.staking.status.active") }}</span>
+                  <span class="address_information_address_status_candidate" v-if="validatorStatus === 'candidate'">{{ $t("ExplorerLang.staking.status.candidate") }}</span>
+                  <span class="address_information_address_status_jailed" v-if="validatorStatus === 'jailed'">{{ $t("ExplorerLang.staking.status.jailed") }}</span>
                 </div>
               </li>
-              <li
-                class="address_information_detail_option"
-                style="margin-top: 0.05rem"
-              >
-                <span class="address_information_detail_option_name"
-                  >{{
+              <li class="address_information_detail_option" style="margin-top: 0.05rem">
+                <span class="address_information_detail_option_name">{{
                     $t(
                       "ExplorerLang.addressInformation.validatorRewards.operatorAddress"
                     )
-                  }}:</span
-                >
+                  }}:</span>
                 <span class="address_information_detail_option_value">
-                  <router-link
-                    v-show="OperatorAddress !== '--'"
-                    :to="`/staking/${OperatorAddress}`"
-                    >{{ OperatorAddress }}</router-link
-                  >
+                  <router-link v-show="OperatorAddress !== '--'" :to="`/staking/${OperatorAddress}`">{{ OperatorAddress }}</router-link>
                   <span v-show="OperatorAddress === '--'">{{
                     OperatorAddress
                   }}</span>
@@ -1002,23 +555,9 @@
 						           :label="item.label"
 						           :value="item.value"></el-option>
 					</el-select> -->
-          <el-cascader
-            popper-class="tooltip"
-            :placeholder="$t('ExplorerLang.common.allTxType')"
-            v-model="txTypeArray"
-            :options="txTypeOption"
-            :props="{ expandTrigger: 'hover' }"
-            :show-all-levels="false"
-            :filterable="true"
-            @change="handleChange"
-          ></el-cascader>
+          <el-cascader popper-class="tooltip" :placeholder="$t('ExplorerLang.common.allTxType')" v-model="txTypeArray" :options="txTypeOption" :props="{ expandTrigger: 'hover' }" :show-all-levels="false" :filterable="true" @change="handleChange"></el-cascader>
           <el-select popper-class="tooltip" v-model="status_temp">
-            <el-option
-              v-for="(item, index) in statusOpt"
-              :key="index"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
+            <el-option v-for="(item, index) in statusOpt" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
           <div class="address_transaction_condition_action">
             <div class="search_btn" @click="handleSearchClick">
@@ -1029,11 +568,7 @@
             </div>
           </div>
         </div>
-        <TxListComponent
-          v-if="address"
-          :txData="txList"
-          :address="address"
-        ></TxListComponent>
+        <TxListComponent v-if="address" :txData="txList" :address="address"></TxListComponent>
         <div class="pagination_content" v-show="totalTxNumber > pageSize">
           <div class="tooltip_box">
             <span class="tooltip_title">Cross-chain TokenType:</span>
@@ -1042,12 +577,7 @@
               <span class="tooltip_title_HTLT">{{ HashLock }}</span>
             </span>
           </div>
-          <m-pagination
-            :page-size="pageSize"
-            :total="totalTxNumber"
-            :page="pageNum"
-            :page-change="pageChange"
-          >
+          <m-pagination :page-size="pageSize" :total="totalTxNumber" :page="pageNum" :page-change="pageChange">
           </m-pagination>
         </div>
       </div>
@@ -1056,23 +586,23 @@
 </template>
 
 <script>
-import Tools from "../util/Tools";
-import MPagination from "./common/MPagination";
-import { TxHelper } from "../helper/TxHelper";
-import { moduleSupport } from "../helper/ModulesHelper";
-import TxListComponent from "./common/TxListComponent";
-import prodConfig from "../productionConfig";
+import Tools from '../util/Tools'
+import MPagination from './common/MPagination'
+import { TxHelper } from '../helper/TxHelper'
+import { moduleSupport } from '../helper/ModulesHelper'
+import TxListComponent from './common/TxListComponent'
+import prodConfig from '../productionConfig'
 import Constant, {
   TX_TYPE,
   TX_TYPE_DISPLAY,
   TX_STATUS,
   ColumnMinWidth,
   monikerNum,
-  ibcDenomPrefix
-} from "../constant";
-import AddressInformationComponent from "./AddressInformationComponent";
-import LargeString from "./common/LargeString";
-import { addressRoute, formatMoniker } from "@/helper/IritaHelper";
+  ibcDenomPrefix,
+} from '../constant'
+import AddressInformationComponent from './AddressInformationComponent'
+import LargeString from './common/LargeString'
+import { addressRoute, formatMoniker } from '@/helper/IritaHelper'
 import {
   getNfts,
   getAddressTxList,
@@ -1088,23 +618,23 @@ import {
   getUnBondingDelegationListApi,
   getRewardsItemsApi,
   getValidatorRewardsApi,
-  getIbcTransferByHash
-} from "@/service/api";
-import BigNumber from "bignumber.js";
-import moveDecimal from "move-decimal-point";
-import { converCoin, getMainToken } from "../helper/IritaHelper";
+  getIbcTransferByHash,
+} from '@/service/api'
+import BigNumber from 'bignumber.js'
+import moveDecimal from 'move-decimal-point'
+import { converCoin, getMainToken } from '../helper/IritaHelper'
 export default {
-  name: "OwnerDetail",
+  name: 'OwnerDetail',
   components: {
     MPagination,
     TxListComponent,
     AddressInformationComponent,
-    LargeString
+    LargeString,
   },
   data() {
     return {
-      IBC: "IBC",
-      HashLock: "Hash Lock",
+      IBC: 'IBC',
+      HashLock: 'Hash Lock',
       addressRoute,
       formatMoniker,
       monikerNum,
@@ -1120,7 +650,7 @@ export default {
       assetPageSize: 5,
       assetCount: 0,
       denomArray: [],
-      address: "",
+      address: '',
       pageNum: 1,
       pageSize: 5,
       txList: [],
@@ -1141,38 +671,38 @@ export default {
       identityPageNum: 1,
       identityPageSize: 5,
       identityCount: 0,
-      type: "",
-      status: "",
-      type_temp: "",
-      status_temp: "",
-      txTypeArray: [""],
+      type: '',
+      status: '',
+      type_temp: '',
+      status_temp: '',
+      txTypeArray: [''],
       statusOpt: [
         {
-          value: "",
-          label: this.$t("ExplorerLang.common.allTxStatus")
+          value: '',
+          label: this.$t('ExplorerLang.common.allTxStatus'),
         },
         {
           value: 1,
-          label: this.$t("ExplorerLang.common.success")
+          label: this.$t('ExplorerLang.common.success'),
         },
         {
           value: 2,
-          label: this.$t("ExplorerLang.common.failed")
-        }
+          label: this.$t('ExplorerLang.common.failed'),
+        },
       ],
       txTypeOption: [
         {
-          value: "",
-          label: this.$t("ExplorerLang.common.allTxType")
-        }
+          value: '',
+          label: this.$t('ExplorerLang.common.allTxType'),
+        },
       ],
       isProfiler: false,
       assetsItems: [],
       assetList: [],
-      withdrewToAddress: "",
-      validatorMoniker: "",
-      validatorStatus: "",
-      OperatorAddress: "",
+      withdrewToAddress: '',
+      validatorMoniker: '',
+      validatorStatus: '',
+      OperatorAddress: '',
       fixedNumber: 2, // 展示2位小数
       computerNumber: 5, // 计算保留5位小数
       totalDelegatorReward: 0,
@@ -1212,164 +742,157 @@ export default {
       isIservice: false,
       isTx: false,
       assetInfo: {
-        label: this.$t("ExplorerLang.addressInformation.tab.assetInfo"),
+        label: this.$t('ExplorerLang.addressInformation.tab.assetInfo'),
         isActive: false,
-        moduleNumber: "107"
+        moduleNumber: '107',
       },
       nftCount: {
-        label: this.$t("ExplorerLang.addressInformation.tab.nftCount"),
+        label: this.$t('ExplorerLang.addressInformation.tab.nftCount'),
         isActive: false,
-        moduleNumber: "103"
+        moduleNumber: '103',
       },
       identity: {
-        label: this.$t("ExplorerLang.addressInformation.tab.identity"),
+        label: this.$t('ExplorerLang.addressInformation.tab.identity'),
         isActive: false,
-        moduleNumber: "106"
+        moduleNumber: '106',
       },
       iService: {
-        label: this.$t("ExplorerLang.addressInformation.tab.iService"),
+        label: this.$t('ExplorerLang.addressInformation.tab.iService'),
         isActive: false,
-        moduleNumber: "105"
+        moduleNumber: '105',
       },
       tx: {
-        label: this.$t("ExplorerLang.addressInformation.tab.tx"),
-        isActive: false
+        label: this.$t('ExplorerLang.addressInformation.tab.tx'),
+        isActive: false,
       },
       LargeStringMinHeight: 69,
       LargeStringLineHeight: 23,
-      mainTokenSymbol: ""
-    };
+      mainTokenSymbol: '',
+    }
   },
   watch: {
     $route() {
-      this.address = this.$route.params.param;
-      this.getAssetList();
-      this.getTxByAddress();
-      this.getConsumerTxListCount();
-      this.getConsumerTxList();
-      this.getRspondRecordListCount();
-      this.getRspondRecordList();
-      this.getProviderTxListCount();
-      this.getProviderTxList();
+      this.address = this.$route.params.param
+      this.getAssetList()
+      this.getTxByAddress()
+      this.getConsumerTxListCount()
+      this.getConsumerTxList()
+      this.getRspondRecordListCount()
+      this.getRspondRecordList()
+      this.getProviderTxListCount()
+      this.getProviderTxList()
     },
     totalDelegatorReward(totalDelegatorReward) {
-      this.getAssetList();
+      this.getAssetList()
     },
     totalUnBondingDelegator(totalDelegatorReward) {
-      this.getAssetList();
+      this.getAssetList()
     },
     totalDelegator() {
-      this.getAssetList();
+      this.getAssetList()
     },
     OperatorAddress() {
-      this.getValidatorRewards();
-    }
+      this.getValidatorRewards()
+    },
   },
   async created() {
-    this.mainToken = await getMainToken();
+    this.mainToken = await getMainToken()
   },
   mounted() {
-    document.documentElement.scrollTop = 0;
-    this.address = this.$route.params.param;
-    this.getTabList();
-    this.setMainToken();
+    document.documentElement.scrollTop = 0
+    this.address = this.$route.params.param
+    this.getTabList()
+    this.setMainToken()
   },
   methods: {
     async setMainToken() {
-      let mainToken = await getMainToken();
+      let mainToken = await getMainToken()
       if (mainToken && mainToken.symbol) {
-        this.mainTokenSymbol = mainToken.symbol.toUpperCase();
+        this.mainTokenSymbol = mainToken.symbol.toUpperCase()
       }
     },
     getTabList() {
-      this.tabList = [];
-      if (moduleSupport("107", prodConfig.navFuncList)) {
-        this.tabList.push(this.assetInfo);
-        this.getAddressInformation();
-        this.getRewardsItems();
-        this.getAssetList();
-        this.getDelegationListCount();
-        this.getDelegationList(1, 1000);
-        this.getUnBondingDelegationListCount();
-        this.getUnBondingDelegationList(1, 1000);
+      this.tabList = []
+      if (moduleSupport('107', prodConfig.navFuncList)) {
+        this.tabList.push(this.assetInfo)
+        this.getAddressInformation()
+        this.getRewardsItems()
+        this.getAssetList()
+        this.getDelegationListCount()
+        this.getDelegationList(1, 1000)
+        this.getUnBondingDelegationListCount()
+        this.getUnBondingDelegationList(1, 1000)
       }
-      if (moduleSupport("103", prodConfig.navFuncList)) {
-        this.tabList.push(this.nftCount);
-        this.getNftListCount();
-        this.getNftList();
+      if (moduleSupport('103', prodConfig.navFuncList)) {
+        this.tabList.push(this.nftCount)
+        this.getNftListCount()
+        this.getNftList()
       }
-      if (moduleSupport("106", prodConfig.navFuncList)) {
-        this.tabList.push(this.identity);
-        this.getIdentityListCount();
-        this.getIdentityList();
+      if (moduleSupport('106', prodConfig.navFuncList)) {
+        this.tabList.push(this.identity)
+        this.getIdentityListCount()
+        this.getIdentityList()
       }
-      if (moduleSupport("105", prodConfig.navFuncList)) {
-        this.tabList.push(this.iService);
-        this.getRspondRecordListCount();
-        this.getRspondRecordList();
-        this.getProviderTxListCount();
-        this.getProviderTxList();
-        this.getConsumerTxListCount();
-        this.getConsumerTxList();
+      if (moduleSupport('105', prodConfig.navFuncList)) {
+        this.tabList.push(this.iService)
+        this.getRspondRecordListCount()
+        this.getRspondRecordList()
+        this.getProviderTxListCount()
+        this.getProviderTxList()
+        this.getConsumerTxListCount()
+        this.getConsumerTxList()
       }
-      this.tabList.push(this.tx);
-      this.tabList[0].isActive = true;
-      this.showAndHideByModule();
+      this.tabList.push(this.tx)
+      this.tabList[0].isActive = true
+      this.showAndHideByModule()
     },
     showAndHideByModule() {
-      this.isNftInfo = false;
-      this.isIservice = false;
-      this.isIdentity = false;
-      this.isAsset = false;
-      this.isTx = false;
-      this.tabList.forEach(item => {
+      this.isNftInfo = false
+      this.isIservice = false
+      this.isIdentity = false
+      this.isAsset = false
+      this.isTx = false
+      this.tabList.forEach((item) => {
         if (item.isActive) {
           switch (item.moduleNumber) {
-            case "103":
-              this.nftKey++;
-              this.isNftInfo = true;
-              break;
-            case "105":
-              this.isIservice = true;
-              break;
-            case "106":
-              this.isIdentity = true;
-              break;
-            case "107":
-              this.isAsset = true;
-              break;
+            case '103':
+              this.nftKey++
+              this.isNftInfo = true
+              break
+            case '105':
+              this.isIservice = true
+              break
+            case '106':
+              this.isIdentity = true
+              break
+            case '107':
+              this.isAsset = true
+              break
             default:
-              this.isTx = true;
-              this.getTxByAddressCount();
-              this.getTxByAddress();
-              this.getAllTxType();
+              this.isTx = true
+              this.getTxByAddressCount()
+              this.getTxByAddress()
+              this.getAllTxType()
           }
         }
-      });
+      })
     },
     selectOptions(index) {
-      this.tabList.forEach(item => {
-        item.isActive = false;
-      });
-      this.tabList[index].isActive = true;
-      this.showAndHideByModule();
+      this.tabList.forEach((item) => {
+        item.isActive = false
+      })
+      this.tabList[index].isActive = true
+      this.showAndHideByModule()
     },
     assetPageChange(pageNum) {
-      this.assetPageNum = pageNum;
-      this.getNftList();
+      this.assetPageNum = pageNum
+      this.getNftList()
     },
     async getNftList() {
       try {
-        let nftData = await getNfts(
-          this.assetPageNum,
-          this.assetPageSize,
-          false,
-          "",
-          "",
-          this.$route.params.param
-        );
+        let nftData = await getNfts(this.assetPageNum,this.assetPageSize,false,'','', this.$route.params.param)
         if (nftData && nftData.data) {
-          this.assetArray = nftData.data.map(item => {
+          this.assetArray = nftData.data.map((item) => {
             return {
               id: item.nft_id,
               denomName: item.denom_name || item.denom_id,
@@ -1377,35 +900,28 @@ export default {
               nftName: item.nft_name,
               owner: item.owner,
               tokenData: item.tokenData,
-              tokenUri: item.tokenUri
-            };
-          });
+              tokenUri: item.tokenUri,
+            }
+          })
         }
       } catch (e) {
-        console.error(e);
+        console.error(e)
       }
     },
     async getNftListCount() {
       try {
-        let nftData = await getNfts(
-          null,
-          null,
-          true,
-          "",
-          "",
-          this.$route.params.param
-        );
+        let nftData = await getNfts(null, null, true, '', '', this.$route.params.param)
         if (nftData?.count) {
-          this.assetCount = nftData.count;
+          this.assetCount = nftData.count
         }
       } catch (e) {
-        console.error(e);
+        console.error(e)
       }
     },
     //身份id列表
     identityPageChange(pageNum) {
-      this.identityPageNum = pageNum;
-      this.getIdentityList();
+      this.identityPageNum = pageNum
+      this.getIdentityList()
     },
     async getIdentityList() {
       try {
@@ -1414,19 +930,19 @@ export default {
           this.identityPageNum,
           this.identityPageSize,
           false
-        );
+        )
         if (res?.data?.length > 0) {
-          this.identityList = res.data.map(item => {
+          this.identityList = res.data.map((item) => {
             return {
               id: item.identities_id,
-              txHash: item.update_tx_hash || "--",
-              time: Tools.getDisplayDate(item.update_block_time) || "--"
-            };
-          });
+              txHash: item.update_tx_hash || '--',
+              time: Tools.getDisplayDate(item.update_block_time) || '--',
+            }
+          })
         }
       } catch (e) {
-        console.error(e);
-        this.$message.error(this.$t("ExplorerLang.message.requestFailed"));
+        console.error(e)
+        this.$message.error(this.$t('ExplorerLang.message.requestFailed'))
       }
     },
     async getIdentityListCount() {
@@ -1436,13 +952,13 @@ export default {
           null,
           null,
           true
-        );
+        )
         if (res?.count) {
-          this.identityCount = res.count;
+          this.identityCount = res.count
         }
       } catch (e) {
-        console.error(e);
-        this.$message.error(this.$t("ExplorerLang.message.requestFailed"));
+        console.error(e)
+        this.$message.error(this.$t('ExplorerLang.message.requestFailed'))
       }
     },
     //地址相关交易记录
@@ -1455,13 +971,13 @@ export default {
           this.pageNum,
           this.pageSize,
           false
-        );
+        )
         if (res?.data?.length > 0) {
-          this.txList = res.data;
+          this.txList = res.data
         }
       } catch (e) {
-        console.error(e);
-        this.$message.error(this.$t("ExplorerLang.message.requestFailed"));
+        console.error(e)
+        this.$message.error(this.$t('ExplorerLang.message.requestFailed'))
       }
     },
     async getTxByAddressCount() {
@@ -1473,25 +989,21 @@ export default {
           null,
           null,
           true
-        );
+        )
         if (res?.count) {
-          this.totalTxNumber = res.count;
+          this.totalTxNumber = res.count
         }
       } catch (e) {
-        console.error(e);
+        console.error(e)
       }
     },
     pageChange(pageNum) {
-      this.pageNum = pageNum;
-      this.getTxByAddress();
-      this.type
-        ? (this.txTypeArray = TxHelper.getTxTypeArray(
-            this.txTypeOption,
-            this.type
-          ))
-        : (this.txTypeArray = [""]);
-      this.status_temp = this.status;
-      this.type_temp = this.type;
+      this.pageNum = pageNum
+      this.getTxByAddress()
+      this.type ? (this.txTypeArray = TxHelper.getTxTypeArray(this.txTypeOption, this.type ))
+        : (this.txTypeArray = [''])
+      this.status_temp = this.status
+      this.type_temp = this.type
     },
     //服务调用-消费者
     async getConsumerTxList() {
@@ -1501,127 +1013,122 @@ export default {
           this.consumerTxPageSize,
           false,
           this.$route.params.param
-        );
+        )
         if (res?.data?.length > 0) {
-          this.consumerTxList = [];
+          this.consumerTxList = []
           for (let item of res.data) {
             let result = {
-              serviceName: item.msgs[0].msg.service_name || "--",
+              serviceName: item.msgs[0].msg.service_name || '--',
               txHash: item.tx_hash,
               blockHeight: item.height,
               txType: TX_TYPE_DISPLAY[item.type],
               provider: item.msgs[0].msg.providers,
               time: Tools.getDisplayDate(item.time),
-              state: "Running",
+              state: 'Running',
               status: item.status,
-              respond: []
-            };
-            item.events.forEach(item => {
-              (item.attributes || []).forEach(attr => {
-                if (attr.key == "request_context_id") {
-                  result.requestContextId = attr.value;
-                }
-              });
-            });
-            let context = await getServiceContextsByServiceName(
-              result.requestContextId || ""
-            );
-            console.log(context);
-            if (context && context.result) {
-              result.state = context.result.state;
+              respond: [],
             }
-            this.consumerTxList.push(result);
+            item.events.forEach((item) => {
+              ;(item.attributes || []).forEach((attr) => {
+                if (attr.key == 'request_context_id') {
+                  result.requestContextId = attr.value
+                }
+              })
+            })
+            let context = await getServiceContextsByServiceName(
+              result.requestContextId || ''
+            )
+            console.log(context)
+            if (context && context.result) {
+              result.state = context.result.state
+            }
+            this.consumerTxList.push(result)
             if (item.respond && item.respond.length) {
               item.respond.forEach((r, index) => {
                 let respondResult = {
                   index,
                   isChildren: true,
                   count: item.respond.length,
-                  serviceName: (r.msgs[0].msg.ex || {}).service_name || "",
+                  serviceName: (r.msgs[0].msg.ex || {}).service_name || '',
                   txHash: r.tx_hash,
                   blockHeight: r.height,
                   txType: TX_TYPE_DISPLAY[r.type],
                   provider: r.msgs[0].msg.provider,
                   time: Tools.getDisplayDate(r.time),
                   requestContextId: (r.msgs[0].msg.ex || {}).request_context_id,
-                  requestStatus: "--",
-                  status: r.status
-                };
-                this.consumerTxList.push(respondResult);
-              });
+                  requestStatus: '--',
+                  status: r.status,
+                }
+                this.consumerTxList.push(respondResult)
+              })
             }
           }
         }
       } catch (e) {
-        console.error(e);
-        this.$message.error(this.$t("ExplorerLang.message.requestFailed"));
+        console.error(e)
+        this.$message.error(this.$t('ExplorerLang.message.requestFailed'))
       }
     },
     async getConsumerTxListCount() {
       try {
-        const res = await getCallServiceWithAddress(
-          null,
-          null,
-          true,
-          this.$route.params.param
-        );
+        const res = await getCallServiceWithAddress(null, null, true, this.$route.params.param)
         if (res?.count) {
-          this.consumerTxCount = res.count;
+          this.consumerTxCount = res.count
         }
       } catch (e) {
-        console.error(e);
-        this.$message.error(this.$t("ExplorerLang.message.requestFailed"));
+        console.error(e)
+        this.$message.error(this.$t('ExplorerLang.message.requestFailed'))
       }
     },
     consumerTxPageChange(pageNum) {
-      this.consumerTxPageNum = pageNum;
-      this.getConsumerTxList();
+      this.consumerTxPageNum = pageNum
+      this.getConsumerTxList()
     },
     providerTxPageChange(pageNum) {
-      this.providerTxPageNum = pageNum;
-      this.getProviderTxList();
+      this.providerTxPageNum = pageNum
+      this.getProviderTxList()
     },
     //响应记录
     async getRspondRecordList() {
       try {
         const res = await getRespondServiceRecord(
-          "",
+          '',
           this.$route.params.param,
           this.respondRecordPageNum,
           this.respondRecordPageSize,
           false
-        );
+        )
         if (res?.data?.length > 0) {
-          this.respondRecordList = (res.data || []).map(tx => {
-            tx.type = TX_TYPE_DISPLAY[tx.type];
-            return tx;
-          });
+          this.respondRecordList = (res.data || []).map((tx) => {
+            tx.type = TX_TYPE_DISPLAY[tx.type]
+            return tx
+          })
         }
       } catch (e) {
-        console.error(e);
-        this.$message.error(this.$t("ExplorerLang.message.requestFailed"));
+        console.error(e)
+        this.$message.error(this.$t('ExplorerLang.message.requestFailed'))
       }
     },
     async getRspondRecordListCount() {
       try {
         const res = await getRespondServiceRecord(
-          "",
+          '',
           this.$route.params.param,
           null,
           null,
           true
-        );
+        )
         if (res?.count) {
-          this.respondRecordCount = res.count;
+          this.respondRecordCount = res.count
         }
       } catch (e) {
-        console.error(e);
-        this.$message.error(this.$t("ExplorerLang.message.requestFailed"));
+        console.error(e)
+        this.$message.error(this.$t('ExplorerLang.message.requestFailed'))
       }
     },
     respondRecordPageChange(pageNum) {
-      this.respondRecordPageNum = pageNum;
-      this.getRspondRecordList();
+      this.respondRecordPageNum = pageNum
+      this.getRspondRecordList()
     },
     //服务调用-提供者
     async getProviderTxList() {
@@ -1631,56 +1138,56 @@ export default {
           this.providerTxPageNum,
           this.providerTxPageSize,
           false
-        );
+        )
         if (res?.data?.length > 0) {
-          this.providerTxList = [];
+          this.providerTxList = []
           for (let item of res.data) {
             let result = {
               serviceName: (item.msgs[0].msg.ex || {}).service_name,
               provider: item.msgs[0].msg.provider,
               owner: item.msgs[0].msg.owner,
               respond_times: item.respond_times,
-              pricing: JSON.parse(item.msgs[0].msg.pricing || "{}").price,
+              pricing: JSON.parse(item.msgs[0].msg.pricing || '{}').price,
               qos: item.msgs[0].msg.qos,
               time: Tools.getDisplayDate(item.time),
               unbindTime: item.unbinding_time
                 ? Tools.getDisplayDate(item.unbinding_time)
-                : "--",
+                : '--',
               txHash: item.tx_hash,
               blockHeight: item.height,
               txType: item.type,
-              status: item.status
-            };
+              status: item.status,
+            }
             if (item.msgs[0].msg.deposit && item.msgs[0].msg.deposit.length) {
-              result.deposit = `${item.msgs[0].msg.deposit[0].amount} ${item.msgs[0].msg.deposit[0].denom}`;
+              result.deposit = `${item.msgs[0].msg.deposit[0].amount} ${item.msgs[0].msg.deposit[0].denom}`
             }
             let bindings = await getServiceBindingByServiceName(
               result.serviceName
-            );
-            (bindings.result || []).forEach(bind => {
+            )
+            ;(bindings.result || []).forEach((bind) => {
               if (
                 result.provider === bind.provider &&
                 result.owner == bind.owner
               ) {
-                result.isAvailable = bind.available;
-                result.pricing = JSON.parse(bind.pricing || "{}").price;
-                result.qos = bind.qos;
+                result.isAvailable = bind.available
+                result.pricing = JSON.parse(bind.pricing || '{}').price
+                result.qos = bind.qos
                 if (bind.disabled_time) {
-                  let time = new Date(bind.disabled_time).getTime();
+                  let time = new Date(bind.disabled_time).getTime()
                   result.unbindTime =
-                    time > 0 ? Tools.getDisplayDate(time / 1000) : "--";
+                    time > 0 ? Tools.getDisplayDate(time / 1000) : '--'
                 }
               }
-            });
+            })
             if (result.pricing && result.pricing.length) {
-              result.pricing = result.pricing.replace("point", " point");
+              result.pricing = result.pricing.replace('point', ' point')
             }
-            this.providerTxList.push(result);
+            this.providerTxList.push(result)
           }
         }
       } catch (e) {
-        console.error(e);
-        this.$message.error(this.$t("ExplorerLang.message.requestFailed"));
+        console.error(e)
+        this.$message.error(this.$t('ExplorerLang.message.requestFailed'))
       }
     },
     async getProviderTxListCount() {
@@ -1690,57 +1197,57 @@ export default {
           null,
           null,
           true
-        );
+        )
         if (res?.count) {
-          this.providerTxCount = res.count;
+          this.providerTxCount = res.count
         }
       } catch (e) {
-        console.error(e);
-        this.$message.error(this.$t("ExplorerLang.message.requestFailed"));
+        console.error(e)
+        this.$message.error(this.$t('ExplorerLang.message.requestFailed'))
       }
     },
     formatTxHash(TxHash) {
       if (TxHash) {
-        return Tools.formatTxHash(TxHash);
+        return Tools.formatTxHash(TxHash)
       } else {
-        return "--";
+        return '--'
       }
     },
     getCallProviders(providers) {
       if (providers && providers.length > 2) {
-        return providers.slice(0, 2);
+        return providers.slice(0, 2)
       }
-      return providers;
+      return providers
     },
     getContentWithState(state) {
-      let content = "";
+      let content = ''
       switch (state) {
         case 0:
-          content = "running";
-          break;
+          content = 'running'
+          break
         case 1:
-          content = "paused";
-          break;
+          content = 'paused'
+          break
         case 2:
-          content = "completed";
-          break;
+          content = 'completed'
+          break
       }
-      return content;
+      return content
     },
     getBgColorWithState(state) {
-      let bgColor = "";
+      let bgColor = ''
       switch (state) {
         case 0:
-          bgColor = "#B1E96E";
-          break;
+          bgColor = '#B1E96E'
+          break
         case 1:
-          bgColor = "#E96E6E";
-          break;
+          bgColor = '#E96E6E'
+          break
         case 2:
-          bgColor = "#FFC456";
-          break;
+          bgColor = '#FFC456'
+          break
       }
-      return bgColor;
+      return bgColor
     },
     arraySpanMethod(table) {
       if (table.columnIndex === 0) {
@@ -1748,104 +1255,104 @@ export default {
           if (table.row.index == 0) {
             return {
               rowspan: table.row.count,
-              colspan: 1
-            };
+              colspan: 1,
+            }
           } else {
             return {
               rowspan: 0,
-              colspan: 0
-            };
+              colspan: 0,
+            }
           }
         } else {
           return {
             rowspan: 1,
-            colspan: 1
-          };
+            colspan: 1,
+          }
         }
       }
     },
     getRespondCount(count) {
-      return this.$t("ExplorerLang.unit.totalRespond").replace(
+      return this.$t('ExplorerLang.unit.totalRespond').replace(
         /\$\{\%value\%\}/,
         count
-      );
+      )
     },
     handleSearchClick() {
-      this.type = this.type_temp;
-      this.status = this.status_temp;
-      this.pageNum = 1;
-      this.getTxByAddressCount();
-      this.getTxByAddress();
+      this.type = this.type_temp
+      this.status = this.status_temp
+      this.pageNum = 1
+      this.getTxByAddressCount()
+      this.getTxByAddress()
     },
     resetFilterCondition() {
-      this.type_temp = "";
-      this.status_temp = "";
-      this.type = "";
-      this.status = "";
-      this.pageNum = 1;
-      this.getTxByAddressCount();
-      this.getTxByAddress();
-      this.txTypeArray = [""];
+      this.type_temp = ''
+      this.status_temp = ''
+      this.type = ''
+      this.status = ''
+      this.pageNum = 1
+      this.getTxByAddressCount()
+      this.getTxByAddress()
+      this.txTypeArray = ['']
     },
     async getAllTxType() {
       try {
-        const res = await getAllTxTypes();
-        const typeList = TxHelper.formatTxType(res.data);
+        const res = await getAllTxTypes()
+        const typeList = TxHelper.formatTxType(res.data)
         typeList.unshift({
-          value: "",
-          label: this.$t("ExplorerLang.common.allTxType"),
-          slot: "allTxType"
-        });
-        this.txTypeOption = typeList;
+          value: '',
+          label: this.$t('ExplorerLang.common.allTxType'),
+          slot: 'allTxType',
+        })
+        this.txTypeOption = typeList
       } catch (e) {
-        console.error(e);
+        console.error(e)
       }
     },
     async getAddressInformation() {
       try {
-        let res = await getAddressInformationApi(this.$route.params.param);
+        let res = await getAddressInformationApi(this.$route.params.param)
         if (res) {
-          let arrayIndexOneData;
+          let arrayIndexOneData
           if (res.amount) {
-            res.amount.forEach(item => {
+            res.amount.forEach((item) => {
               if (item.denom === this.mainToken.denom) {
-                arrayIndexOneData = item;
+                arrayIndexOneData = item
               }
-            });
+            })
             if (arrayIndexOneData) {
-              res.amount.unshift(arrayIndexOneData);
+              res.amount.unshift(arrayIndexOneData)
             }
-            res.amount = Array.from(new Set(res.amount));
-            this.assetList = res.amount;
+            res.amount = Array.from(new Set(res.amount))
+            this.assetList = res.amount
           }
-          this.validatorMoniker = res.moniker ? res.moniker : "--";
+          this.validatorMoniker = res.moniker ? res.moniker : '--'
           this.OperatorAddress = res.operator_address
             ? res.operator_address
-            : "--";
-          this.validatorStatus = res.status;
+            : '--'
+          this.validatorStatus = res.status
           this.withdrewToAddress = res.withdrawAddress
             ? res.withdrawAddress
-            : "--";
-          this.isProfiler = res.isProfiler;
-          this.getAssetList();
+            : '--'
+          this.isProfiler = res.isProfiler
+          this.getAssetList()
         }
       } catch (e) {
-        console.error(e);
+        console.error(e)
       }
     },
     async getAssetList() {
-      let assetList = [];
-      let balanceAmountsArr = [];
+      let assetList = []
+      let balanceAmountsArr = []
       // console.time('amount')
       for (let key in this.assetList) {
-        let item = this.assetList[key];
-        balanceAmountsArr.push(item && item.amount ? converCoin(item) : {});
+        let item = this.assetList[key]
+        balanceAmountsArr.push(item && item.amount ? converCoin(item) : {})
       }
-      let balanceAmounts = await Promise.all(balanceAmountsArr);
+      let balanceAmounts = await Promise.all(balanceAmountsArr)
       for (let key in this.assetList) {
-        let item = this.assetList[key];
+        let item = this.assetList[key]
         // let balanceAmount = item && item.amount ? await converCoin(item) : {};
-        let balanceAmount = balanceAmounts[key];
+        let balanceAmount = balanceAmounts[key]
         if (item && item.denom && item.denom === this.mainToken.denom) {
           assetList.unshift({
             token: this.mainToken.symbol.toUpperCase(),
@@ -1914,18 +1421,18 @@ export default {
                 ).toString()
               ).toFormat(),
               this.fixedNumber
-            )} ${this.mainToken.symbol.toUpperCase()}`
-          });
+            )} ${this.mainToken.symbol.toUpperCase()}`,
+          })
         } else {
           if (balanceAmount && balanceAmount.denom) {
-            let denom = balanceAmount.denom;
+            let denom = balanceAmount.denom
             if (denom.startsWith(ibcDenomPrefix)) {
-              let hash = denom.replace(ibcDenomPrefix, "");
-              let res = await getIbcTransferByHash(hash);
+              let hash = denom.replace(ibcDenomPrefix, '')
+              let res = await getIbcTransferByHash(hash)
               if (res && res.denom_trace && res.denom_trace.base_denom) {
                 denom = (
                   ibcDenomPrefix + res.denom_trace.base_denom
-                ).toUpperCase();
+                ).toUpperCase()
               }
             }
             assetList.push({
@@ -1942,25 +1449,25 @@ export default {
                 ? `${new BigNumber(
                     balanceAmount.amount
                   ).toFormat()} ${balanceAmount.denom.toUpperCase()}`
-                : 0
-            });
+                : 0,
+            })
           }
         }
       }
-      this.assetsItems = assetList;
+      this.assetsItems = assetList
       //  console.timeEnd('amount')
     },
     pageNation(dataArray) {
-      let index = 0;
-      let newArray = [];
+      let index = 0
+      let newArray = []
       if (dataArray.length > this.pageSize) {
         while (index < dataArray.length) {
-          newArray.push(dataArray.slice(index, (index += this.pageSize)));
+          newArray.push(dataArray.slice(index, (index += this.pageSize)))
         }
       } else {
-        newArray = dataArray;
+        newArray = dataArray
       }
-      return newArray;
+      return newArray
     },
     async getDelegationList(pageNum, pageSize) {
       try {
@@ -1969,16 +1476,16 @@ export default {
           pageNum,
           pageSize,
           false
-        );
+        )
         if (res && res.length > 0) {
-          let copyResult = JSON.parse(JSON.stringify(res));
-          this.delegationPageNationArrayData = this.pageNation(copyResult);
+          let copyResult = JSON.parse(JSON.stringify(res))
+          this.delegationPageNationArrayData = this.pageNation(copyResult)
           if (res.length > this.pageSize) {
-            this.flDelegationNextPage = true;
+            this.flDelegationNextPage = true
           } else {
-            this.flDelegationNextPage = false;
+            this.flDelegationNextPage = false
           }
-          this.delegationPageChange(this.delegationCurrentPage);
+          this.delegationPageChange(this.delegationCurrentPage)
           if (res.length > 0) {
             // res.forEach(async (item) => {
             // 	if (item.amount && item.amount.amount) {
@@ -1994,23 +1501,23 @@ export default {
             // });
 
             let totalAmount = res.reduce((total, item) => {
-              return Number(item.amount.amount) + Number(total);
-            }, 0);
+              return Number(item.amount.amount) + Number(total)
+            }, 0)
             totalAmount = await converCoin({
               amount: totalAmount,
-              denom: res[0].amount.denom
-            });
-            this.totalDelegator = totalAmount.amount;
+              denom: res[0].amount.denom,
+            })
+            this.totalDelegator = totalAmount.amount
           }
           this.totalDelegatorValue = `${Tools.formatStringToFixedNumber(
             new BigNumber(this.totalDelegator.toString()).toFormat(),
             this.fixedNumber
-          )} ${this.mainToken.symbol.toUpperCase()}`;
+          )} ${this.mainToken.symbol.toUpperCase()}`
         } else {
-          this.delegationsItems = [];
+          this.delegationsItems = []
         }
       } catch (e) {
-        console.error(e);
+        console.error(e)
       }
     },
     async getDelegationListCount() {
@@ -2020,12 +1527,12 @@ export default {
           null,
           null,
           true
-        );
+        )
         if (res?.count) {
-          this.delegationCountNum = res.count;
+          this.delegationCountNum = res.count
         }
       } catch (e) {
-        console.error(e);
+        console.error(e)
       }
     },
     async getUnBondingDelegationList(pageNum, pageSize) {
@@ -2035,20 +1542,19 @@ export default {
           pageNum,
           pageSize,
           false
-        );
+        )
         if (res && res.length > 0) {
-          let copyResult = JSON.parse(JSON.stringify(res));
-          this.unBondingDelegationPageNationArrayData = this.pageNation(
-            copyResult
-          );
+          let copyResult = JSON.parse(JSON.stringify(res))
+          this.unBondingDelegationPageNationArrayData =
+            this.pageNation(copyResult)
           if (res.length > this.pageSize) {
-            this.flUnBondingDelegationNextPage = true;
+            this.flUnBondingDelegationNextPage = true
           } else {
-            this.flUnBondingDelegationNextPage = false;
+            this.flUnBondingDelegationNextPage = false
           }
           this.unBondingDelegationPageChange(
             this.unBondingDelegationCurrentPage
-          );
+          )
           if (res.length > 0) {
             // res.forEach(async (item) => {
             // 	if (item.amount && item.amount.amount) {
@@ -2057,21 +1563,21 @@ export default {
             // 	}
             // });
             let totalUnBondingDelegator = res.reduce((total, item) => {
-              return Number(item.amount.amount) + Number(total);
-            }, 0);
+              return Number(item.amount.amount) + Number(total)
+            }, 0)
             totalUnBondingDelegator = await converCoin({
               amount: totalUnBondingDelegator,
-              denom: res[0].amount.denom
-            });
-            this.totalUnBondingDelegator = totalUnBondingDelegator.amount;
+              denom: res[0].amount.denom,
+            })
+            this.totalUnBondingDelegator = totalUnBondingDelegator.amount
           }
           this.totalUnBondingDelegatorValue = `${Tools.formatStringToFixedNumber(
             new BigNumber(this.totalUnBondingDelegator.toString()).toFormat(),
             this.fixedNumber
-          )} ${this.mainToken.symbol.toUpperCase()}`;
+          )} ${this.mainToken.symbol.toUpperCase()}`
         }
       } catch (e) {
-        console.error(e);
+        console.error(e)
       }
     },
     async getUnBondingDelegationListCount() {
@@ -2081,101 +1587,101 @@ export default {
           null,
           null,
           true
-        );
+        )
         if (res?.count) {
-          this.unBondingDelegationCountNum = res.count;
+          this.unBondingDelegationCountNum = res.count
         }
       } catch (e) {
-        console.error(e);
+        console.error(e)
       }
     },
     async getRewardsItems() {
-      let res = await getRewardsItemsApi(this.$route.params.param);
+      let res = await getRewardsItemsApi(this.$route.params.param)
       try {
         if (res && res.rewards && res.rewards.length > 0) {
-          res.rewards.map(item => {
+          res.rewards.map((item) => {
             if (item.reward && item.reward.length === 0) {
               item.reward.push({
                 amount: 0,
-                denom: this.mainToken.denom
-              });
+                denom: this.mainToken.denom,
+              })
             }
-          });
-          let copyResult = JSON.parse(JSON.stringify(res));
-          let amount = await converCoin((res.total || [])[0]);
-          this.delegatorRewardsValue = res.total ? amount.amount : 0;
-          this.totalDelegatorReward = amount.amount;
+          })
+          let copyResult = JSON.parse(JSON.stringify(res))
+          let amount = await converCoin((res.total || [])[0])
+          this.delegatorRewardsValue = res.total ? amount.amount : 0
+          this.totalDelegatorReward = amount.amount
           this.rewardsDelegationPageNationArrayData = this.pageNation(
             copyResult.rewards
-          );
+          )
           if (res.rewards.length > this.pageSize) {
-            this.flRewardsDelegationNextPage = true;
+            this.flRewardsDelegationNextPage = true
           } else {
-            this.flRewardsDelegationNextPage = false;
+            this.flRewardsDelegationNextPage = false
           }
-          this.rewardsDelegationCountNum = res.rewards.length;
-          this.rewardsDelegationPageChange(this.rewardsDelegationCurrentPage);
+          this.rewardsDelegationCountNum = res.rewards.length
+          this.rewardsDelegationPageChange(this.rewardsDelegationCurrentPage)
           this.totalDelegatorRewardValue = `${Tools.formatStringToFixedNumber(
             new BigNumber(
               moveDecimal(this.totalDelegatorReward.toString(), 0)
             ).toFormat(),
             this.fixedNumber
-          )} ${this.mainToken.symbol.toUpperCase()}`;
+          )} ${this.mainToken.symbol.toUpperCase()}`
           this.allRewardsAmountValue =
             Number(this.delegatorRewardsValue) +
-            Number(this.validatorRewardsValue);
+            Number(this.validatorRewardsValue)
           this.allRewardsValue = `${Tools.formatStringToFixedNumber(
             new BigNumber(this.allRewardsAmountValue.toString()).toFormat(),
             this.fixedNumber
-          )} ${this.mainToken.symbol.toUpperCase()}`;
-          this.getAssetList();
+          )} ${this.mainToken.symbol.toUpperCase()}`
+          this.getAssetList()
         }
       } catch (e) {
-        console.error(e);
+        console.error(e)
       }
     },
     async getValidatorRewards() {
       try {
-        if (this.OperatorAddress && this.OperatorAddress !== "--") {
-          let data = await getValidatorRewardsApi(this.OperatorAddress);
+        if (this.OperatorAddress && this.OperatorAddress !== '--') {
+          let data = await getValidatorRewardsApi(this.OperatorAddress)
           if (data) {
             let commission =
               data.val_commission &&
               data.val_commission.commission &&
-              data.val_commission.commission[0];
+              data.val_commission.commission[0]
             if (commission) {
-              let amount = await converCoin(commission);
-              this.validatorRewardsValue = amount.amount;
+              let amount = await converCoin(commission)
+              this.validatorRewardsValue = amount.amount
               // this.totalValidatorRewards = `${ Number(amount.amount).toFixed(2)} ${this.mainToken.symbol.toUpperCase()}` || '--'
               this.totalValidatorRewards =
                 `${Tools.formatStringToFixedNumber(
                   new BigNumber(amount.amount.toString()).toFormat(),
                   this.fixedNumber
-                )} ${this.mainToken.symbol.toUpperCase()}` || "--";
+                )} ${this.mainToken.symbol.toUpperCase()}` || '--'
               this.allRewardsAmountValue =
-                Number(this.delegatorRewardsValue) + Number(amount.amount);
+                Number(this.delegatorRewardsValue) + Number(amount.amount)
             } else {
-              this.totalValidatorRewards = "--";
+              this.totalValidatorRewards = '--'
             }
             this.allRewardsValue = `${Tools.formatStringToFixedNumber(
               this.allRewardsAmountValue.toString(),
               this.fixedNumber
-            )} ${this.mainToken.symbol.toUpperCase()}`;
-            this.getAssetList();
+            )} ${this.mainToken.symbol.toUpperCase()}`
+            this.getAssetList()
           }
         }
       } catch (e) {
-        console.error(e);
+        console.error(e)
       }
     },
     async delegationPageChange(pageNums) {
-      let pageNum = pageNums - 1;
-      this.delegationsItems = [];
+      let pageNum = pageNums - 1
+      this.delegationsItems = []
       let data = this.flDelegationNextPage
         ? this.delegationPageNationArrayData[pageNum]
-        : this.delegationPageNationArrayData;
+        : this.delegationPageNationArrayData
       for (let item of data) {
-        let amount = await converCoin(item.amount);
+        let amount = await converCoin(item.amount)
         this.delegationsItems.push({
           address: item.address,
           // amount: `${Tools.formatStringToFixedNumber(amount.amount.toString(), this.fixedNumber)} ${amount.denom.toUpperCase()}`,
@@ -2185,18 +1691,18 @@ export default {
           )}`,
           shares: new BigNumber(Number(item.shares).toFixed(2)).toFormat(),
           block: item.height,
-          moniker: item.moniker
-        });
+          moniker: item.moniker,
+        })
       }
     },
     async unBondingDelegationPageChange(pageNums) {
-      let pageNum = pageNums - 1;
-      this.unBondingDelegationsItems = [];
+      let pageNum = pageNums - 1
+      this.unBondingDelegationsItems = []
       let data = this.flUnBondingDelegationNextPage
         ? this.unBondingDelegationPageNationArrayData[pageNum]
-        : this.unBondingDelegationPageNationArrayData;
+        : this.unBondingDelegationPageNationArrayData
       for (let item of data) {
-        let amount = await converCoin(item.amount);
+        let amount = await converCoin(item.amount)
         this.unBondingDelegationsItems.push({
           address: item.address,
           // amount: `${Tools.formatStringToFixedNumber(amount.amount.toString(), this.fixedNumber)} ${amount.denom.toUpperCase()}`,
@@ -2207,20 +1713,20 @@ export default {
           block: item.height,
           // endTime: Tools.format2UTC(item.end_time),
           endTime: Tools.getFormatDate(new Date(item.end_time).getTime()),
-          moniker: item.moniker
-        });
+          moniker: item.moniker,
+        })
       }
     },
     async rewardsDelegationPageChange(pageNums) {
-      let pageNum = pageNums - 1;
-      this.rewardsItems = [];
+      let pageNum = pageNums - 1
+      this.rewardsItems = []
       let data = this.flRewardsDelegationNextPage
         ? this.rewardsDelegationPageNationArrayData[pageNum]
-        : this.rewardsDelegationPageNationArrayData;
+        : this.rewardsDelegationPageNationArrayData
       for (let item of data) {
         if (item.reward && item.reward.length > 0) {
-          let amount = await converCoin(item.reward[0]);
-          item.reward[0].amount = amount.amount;
+          let amount = await converCoin(item.reward[0])
+          item.reward[0].amount = amount.amount
         }
         this.rewardsItems.push({
           address: item.validator_address,
@@ -2229,18 +1735,18 @@ export default {
             new BigNumber(item.reward[0].amount).toFormat(),
             this.fixedNumber
           )}`,
-          moniker: item.moniker
-        });
+          moniker: item.moniker,
+        })
       }
     },
     formatAddress(address) {
-      return Tools.formatValidatorAddress(address) || "--";
+      return Tools.formatValidatorAddress(address) || '--'
     },
     handleChange(value) {
-      value ? (this.type_temp = value[1] ? value[1] : "") : "";
-    }
-  }
-};
+      value ? (this.type_temp = value[1] ? value[1] : '') : ''
+    },
+  },
+}
 </script>
 
 <style scoped lang="scss">
@@ -2773,7 +2279,7 @@ a {
           position: relative;
           &::before {
             left: -0.12rem;
-            content: " ";
+            content: ' ';
             position: absolute;
             height: 0.08rem;
             width: 0.08rem;
@@ -2787,7 +2293,7 @@ a {
           position: relative;
           &::before {
             left: -0.12rem;
-            content: " ";
+            content: ' ';
             position: absolute;
             height: 0.08rem;
             width: 0.08rem;

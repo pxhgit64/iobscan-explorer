@@ -6,11 +6,7 @@
           {{ count }} {{ $t("ExplorerLang.denom.title")
           }}{{ count > 1 && isShowPlurality ? "s" : "" }}
         </h3>
-        <el-input
-          v-model="input"
-          @change="handleSearchClick"
-          :placeholder="$t('ExplorerLang.denom.placeHolder')"
-        ></el-input>
+        <el-input v-model="input" @change="handleSearchClick" :placeholder="$t('ExplorerLang.denom.placeHolder')"></el-input>
         <div class="tx_type_mobile_content">
           <div class="search_btn" @click="handleSearchClick">
             {{ $t("ExplorerLang.denom.search") }}
@@ -21,40 +17,20 @@
         </div>
       </div>
       <div class="nef_list_table_container">
-        <el-table
-          class="table table_overflow_x"
-          :data="denomList"
-          :empty-text="$t('ExplorerLang.table.emptyDescription')"
-        >
-          <el-table-column
-            :min-width="ColumnMinWidth.denom"
-            :label="$t('ExplorerLang.table.denom')"
-          >
+        <el-table class="table table_overflow_x" :data="denomList" :empty-text="$t('ExplorerLang.table.emptyDescription')">
+          <el-table-column :min-width="ColumnMinWidth.denom" :label="$t('ExplorerLang.table.denom')">
             <template slot-scope="scope">
               {{ scope.row.denomName }}
             </template>
           </el-table-column>
-          <el-table-column
-            :min-width="ColumnMinWidth.denomId"
-            :label="$t('ExplorerLang.table.denomId')"
-          >
+          <el-table-column :min-width="ColumnMinWidth.denomId" :label="$t('ExplorerLang.table.denomId')">
             <template slot-scope="scope">
               {{ scope.row.denomId }}
             </template>
           </el-table-column>
-          <el-table-column
-            class-name="hash_status"
-            :min-width="ColumnMinWidth.txHash"
-            :label="$t('ExplorerLang.table.createHash')"
-          >
+          <el-table-column class-name="hash_status" :min-width="ColumnMinWidth.txHash" :label="$t('ExplorerLang.table.createHash')">
             <template slot-scope="scope">
-              <el-tooltip
-                v-if="scope.row.hash !== ''"
-                :content="scope.row.hash"
-                class="item"
-                placement="top"
-                effect="dark"
-              >
+              <el-tooltip v-if="scope.row.hash !== ''" :content="scope.row.hash" class="item" placement="top" effect="dark">
                 <router-link :to="`/tx?txHash=${scope.row.hash}`">
                   {{ formatTxHash(scope.row.hash) }}
                 </router-link>
@@ -62,49 +38,28 @@
               <span v-if="scope.row.hash === ''">...</span>
             </template>
           </el-table-column>
-          <el-table-column
-            :min-width="ColumnMinWidth.nftCount"
-            :label="$t('ExplorerLang.table.nftCount')"
-          >
+          <el-table-column :min-width="ColumnMinWidth.nftCount" :label="$t('ExplorerLang.table.nftCount')">
             <template slot-scope="scope">
               <a @click="handleNftCountClick(scope.row.denomId)">
                 {{ scope.row.nftCount }}
               </a>
             </template>
           </el-table-column>
-          <el-table-column
-            class-name="address"
-            :min-width="ColumnMinWidth.address"
-            :label="$t('ExplorerLang.table.creator')"
-          >
+          <el-table-column class-name="address" :min-width="ColumnMinWidth.address" :label="$t('ExplorerLang.table.creator')">
             <template slot-scope="scope">
-              <el-tooltip
-                :content="scope.row.sender"
-                class="item"
-                placement="top"
-                effect="dark"
-              >
+              <el-tooltip :content="scope.row.sender" class="item" placement="top" effect="dark">
                 <router-link :to="`/address/${scope.row.sender}`">
                   {{ formatAddress(scope.row.sender) }}
                 </router-link>
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column
-            :min-width="ColumnMinWidth.time"
-            :label="$t('ExplorerLang.table.timestamp')"
-            prop="time"
-          ></el-table-column>
+          <el-table-column :min-width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.timestamp')" prop="time"></el-table-column>
         </el-table>
       </div>
       <div class="pagination_content">
         <keep-alive>
-          <m-pagination
-            :page-size="pageSize"
-            :total="count"
-            :page="pageNum"
-            :page-change="pageChange"
-          >
+          <m-pagination :page-size="pageSize" :total="count" :page="pageNum" :page-change="pageChange">
           </m-pagination>
         </keep-alive>
       </div>
