@@ -90,31 +90,28 @@
             }
         },
         mounted(){
-            this.identities(null, null, true)
-            this.identities(this.pageNum, this.pageSize)
+            this.identitiesCount()
+            this.identities()
         },
         methods:{
             reset(){
                 this.input = '';
                 this.pageNum = 1;
-                this.identities(null, null, true)
-                this.identities(this.pageNum, this.pageSize)
+                this.identitiesCount()
+                this.identities()
             },
             pageChange(pageNum){
                 this.pageNum = pageNum;
-                this.identities(this.pageNum, this.pageSize)
+                this.identities()
             },
             handleSearchClick(){
                 this.pageNum = 1;
-                this.identities(null, null, true)
-                this.identities(this.pageNum, this.pageSize)
+                this.identitiesCount()
+                this.identities()
             },
-            async identities(pageNum, pageSize, useCount = false){
+            async identities(){
                 try {
-                    const res = await getIdentities(this.input, pageNum, pageSize, useCount);
-                    if(useCount){
-                        this.count = res?.count;
-                    }
+                    const res = await getIdentities(this.input, this.pageNum, this.pageSize, false);
                     if(res && res.data && Array.isArray(res.data) && res.data.length > 0){
                         this.identityList = res.data.map((item)=>{
                             let pubkey = (item.pubkeys || [])[0] || {};
@@ -133,6 +130,16 @@
                 }catch (e) {
                     this.count = 0;
                     this.identityList = [];
+                    console.error(e)
+                }
+            },
+            async identitiesCount(){
+                try {
+                    const res = await getIdentities(this.input,null, null, useCount = true);
+                    if(res?.count){
+                        this.count = res.count;
+                    }
+                }catch (e) {
                     console.error(e)
                 }
             },

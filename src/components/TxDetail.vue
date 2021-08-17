@@ -257,8 +257,8 @@ export default {
             case TX_TYPE.recv_packet:
               break
           }
-          this.relevanceTxList(null, null, true)
-          this.relevanceTxList(this.pageNum, this.pageSize)
+          this.relevanceTxListCount()
+          this.relevanceTxList()
         }
       } catch (e) {
           console.error(e)
@@ -273,9 +273,9 @@ export default {
     pageChange(pageNum) {
       if (this.pageNum === pageNum) return
       this.pageNum = pageNum
-      this.relevanceTxList(this.pageNum, this.pageSize)
+      this.relevanceTxList()
     },
-    async relevanceTxList(pageNum, pageSize, useCount = false) {
+    async relevanceTxList() {
       let type = ''
       switch (this.txType) {
         case TX_TYPE.call_service:
@@ -287,11 +287,8 @@ export default {
       }
       if (type && type.length && this.requestContextId && this.requestContextId.length) {
         try {
-          const res = await get(type, this.requestContextId, pageNum, pageSize, useCount)
+          const res = await get(type, this.requestContextId, this.pageNum, this.pageSize, false)
           if (res) {
-            if(useCount){
-              this.txCount = res.count
-            }
             this.relevanceTxs = res.data.map(tx => {
               let result = {
                 status: tx.status,
@@ -318,6 +315,27 @@ export default {
               }
               return result
             })
+          }
+        } catch (e) {
+          console.error(e)
+        }
+      }
+    },
+    async relevanceTxListCount() {
+      let type = ''
+      switch (this.txType) {
+        case TX_TYPE.call_service:
+          type = TX_TYPE.respond_service
+          break
+        case TX_TYPE.respond_service:
+          type = TX_TYPE.call_service
+          break
+      }
+      if (type && type.length && this.requestContextId && this.requestContextId.length) {
+        try {
+          const res = await get(type, this.requestContextId, null, null, true)
+          if (res?.count) {
+            this.txCount = res.count
           }
         } catch (e) {
           console.error(e)

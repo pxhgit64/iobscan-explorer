@@ -125,8 +125,8 @@
 			}
 		},
 		mounted(){
-      this.getNftsByFilter(null, null, true);
-      this.getNftsByFilter(this.currentPageNum, this.pageSize);
+      this.getNftsByFilterCount();
+      this.getNftsByFilter();
       if(this.$store.state.tempDenomId){
         this.$store.commit('SET_TEMP_DENOM_ID','');
       }
@@ -149,22 +149,22 @@
 				this.currentPageNum = 1;
 				this.tokenId = '';
 				this.owner = '';
-				this.getNftsByFilter(null, null, true);
-				this.getNftsByFilter(this.currentPageNum, this.pageSize);
+				this.getNftsByFilterCount();
+				this.getNftsByFilter();
 			},
 			pageChange(pageNum){
 				this.currentPageNum = pageNum;
 				// if(sessionStorage.getItem('selectDenom')){
 				// 	this.denom = sessionStorage.getItem('selectDenom')
 				// }
-        		this.getNftsByFilter(this.currentPageNum, this.pageSize);
+        this.getNftsByFilter();
 			},
 			handleSearchClick(){
 				this.currentPageNum = 1;
-				this.getNftsByFilter(null, null, true);
-				this.getNftsByFilter(this.currentPageNum, this.pageSize);
+				this.getNftsByFilterCount();
+				this.getNftsByFilter();
 			},
-			async getNftsByFilter(pageNum, pageSize, useCount = false){
+			async getNftsByFilter(){
 				if (Tools.isBech32(this.input)) {
 					this.owner = this.input;
 				}
@@ -172,11 +172,8 @@
 					this.tokenId =  this.input;
 				}
 				try {
-					let nftData = await getNfts(pageNum, pageSize, useCount, this.denom, this.tokenId, this.owner);
-					if(useCount){
-						this.allCount = nftData?.count;
-					}
-					if(nftData && nftData.data && nftData.data.length > 0){
+					let nftData = await getNfts(this.currentPageNum, this.pageSize, false, this.denom, this.tokenId, this.owner);
+					if(nftData?.data.length > 0){
 						nftData.data.forEach(item => {
 							item.Time = (item.last_block_time ? item.last_block_time : '')
 							item.last_block_time = (item.last_block_time ? Tools.formatAge(Tools.getTimestamp(),item.last_block_time*1000, this.$t('ExplorerLang.table.suffix')) : '--')
@@ -188,8 +185,22 @@
 						this.parseTime('denomArray', 'Time', 'last_block_time')
 					}
 				}catch (e) {
-					this.allCount = 0
-					this.denomArray = []
+					console.error(e)
+				}
+			},
+      async getNftsByFilterCount(){
+				if (Tools.isBech32(this.input)) {
+					this.owner = this.input;
+				}
+				if(!this.owner){
+					this.tokenId =  this.input;
+				}
+				try {
+					let res = await getNfts(null, null, true, this.denom, this.tokenId, this.owner);
+					if(res?.count){
+						this.allCount = res.count;
+					}
+				}catch (e) {
 					console.error(e)
 				}
 			},

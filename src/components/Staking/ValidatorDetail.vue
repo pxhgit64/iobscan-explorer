@@ -321,9 +321,9 @@
 			this.getUnbondingDelegations(1, this.pageSize, true)
 			this.getDepositedProposals(1, this.pageSize, true)
 			this.getVotedProposals(1, this.pageSize, true)
-      this.getDelegationTxs(null, null, true)
+      this.getDelegationTxsCount()
 			this.getDelegationTxs(1, this.pageSize)
-      this.getValidationTxs(null, null, true)
+      this.getValidationTxsCount()
 			this.getValidationTxs(1, this.pageSize)
 			this.getGovTxs(1, this.pageSize, true)
 		},
@@ -406,11 +406,8 @@
 					}
 				})
 			},
-			async getDelegationTxs (pageNum, pageSize = 5, useCount = false) {
-				const res = await getDelegationTxsApi(this.$route.params.param, pageNum, pageSize, useCount)
-        if(useCount){
-          this.delegationTxs.total = res?.count
-        }	
+			async getDelegationTxs (pageNum, pageSize = 5) {
+				const res = await getDelegationTxsApi(this.$route.params.param, pageNum, pageSize, false)
 				this.delegationTxs.currentPage = res.pageNum
 				this.delegationTxs.items = []
 				for (const item of res.data) {
@@ -450,11 +447,14 @@
 					})
 				}
 			},
-			async getValidationTxs (pageNum, pageSize = 5, useCount = false) {
-				const res = await getValidationTxsApi(this.$route.params.param, pageNum, pageSize, useCount)
-        if(useCount){
-          this.validationTxs.total = res?.count
-        }
+      async getDelegationTxsCount () {
+				const res = await getDelegationTxsApi(this.$route.params.param, null, null, true)
+        if(res?.count){
+          this.delegationTxs.total = res.count
+        }	
+			},
+			async getValidationTxs (pageNum, pageSize = 5) {
+				const res = await getValidationTxsApi(this.$route.params.param, pageNum, pageSize, false)
 				this.validationTxs.currentPage = res.pageNum
 				this.validationTxs.items = []
 				for (const item of res.data) {
@@ -484,6 +484,12 @@
 						Timestamp: time,
 					})
 				}
+			},
+      async getValidationTxsCount () {
+				const res = await getValidationTxsApi(this.$route.params.param, null, null, true)
+        if(res?.count){
+          this.validationTxs.total = res.count
+        }
 			},
 			async getDepositedProposals (pageNum, pageSize = 5, useCount = false) {
 				try {

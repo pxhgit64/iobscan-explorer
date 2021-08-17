@@ -387,10 +387,10 @@ export default {
   watch: {},
   created() {
     this.getProposalsDetail()
-    this.getVoter(null, null, true)
-    this.getVoter(this.currentVoterPageNum, this.pageSize)
-    this.getDepositor(null, null, true)
-    this.getDepositor(this.currentDepositorPageNum, this.pageSize)
+    this.getVoterCount()
+    this.getVoter()
+    this.getDepositorCount()
+    this.getDepositor()
     this.setMainToken()
   },
   mounted() {},
@@ -535,19 +535,19 @@ export default {
     },
     pageChangeVoter(pageNum) {
       this.currentVoterPageNum = pageNum
-      this.getVoter(this.currentVoterPageNum, this.pageSize)
+      this.getVoter()
     },
     pageChangeDepositor(pageNum) {
       this.currentDepositorPageNum = pageNum
-      this.getDepositor(this.currentDepositorPageNum, this.pageSize)
+      this.getDepositor()
     },
     async filterVoteTx(item, index) {
       this.currentVoterPageNum = 1
       this.filterTab = item
       this.resetActiveStyle()
       this.filterTabArr[index].isActive = true
-      await this.getVoter(null, null, true)
-      await this.getVoter(this.currentVoterPageNum, this.pageSize)
+      await this.getVoterCount()
+      await this.getVoter()
     },
     resetActiveStyle() {
       this.filterTabArr.map(item => {
@@ -565,69 +565,79 @@ export default {
     formatAddress(address) {
       return Tools.formatValidatorAddress(address)
     },
-    async getVoter(pageNum, pageSize, useCount = false) {
+    async getVoter() {
       try {
-        let res = await getProposalDetailVotersApi(this.$route.params.proposal_id, pageNum, pageSize, useCount, this.filterTab)
-        if (res) {
-          if(useCount){
-            this.voterCount = res.count
-            let statistical = res.statistical
-            if (statistical) {
-              this.filterTabArr.forEach(item => {
-                item.value = statistical[item.key]
-              })
-              this.voteDetailsYes = statistical.yes
-              this.voteDetailsNo = statistical.no
-              this.voteDetailsNoWithVeto = statistical.no_with_veto
-              this.voteDetailsAbstain = statistical.abstain
+        let res = await getProposalDetailVotersApi(this.$route.params.proposal_id, this.currentVoterPageNum, this.pageSize, false, this.filterTab)
+        this.voterData = []
+        if (res?.data.length > 0) {
+          this.voterData = res.data.map(voter => {
+            return {
+              voter: voter.voter,
+              address: voter.address,
+              isValidator: voter.isValidator,
+              moniker: voter.moniker,
+              option: formatVoteOptions[voter.option],
+              block: voter.height,
+              hash: voter.hash,
+              time: voter.timestamp ? Tools.getDisplayDate(voter.timestamp) : '--',
             }
-          } 
-          this.voterData = []
-          if (res.data && res.data.length > 0) {
-            this.voterData = res.data.map(voter => {
-              return {
-                voter: voter.voter,
-                address: voter.address,
-                isValidator: voter.isValidator,
-                moniker: voter.moniker,
-                option: formatVoteOptions[voter.option],
-                block: voter.height,
-                hash: voter.hash,
-                time: voter.timestamp ? Tools.getDisplayDate(voter.timestamp) : '--',
-              }
+          })
+        }          
+      } catch (e) {
+        console.error(e)
+      }
+    },
+    async getVoterCount() {
+      try {
+        let res = await getProposalDetailVotersApi(this.$route.params.proposal_id, null, null, true, this.filterTab)
+        if (res?.count) {
+          this.voterCount = res.count     
+          let statistical = res?.statistical
+          if (statistical) {
+            this.filterTabArr.forEach(item => {
+              item.value = statistical[item.key]
             })
-          }          
+            this.voteDetailsYes = statistical.yes
+            this.voteDetailsNo = statistical.no
+            this.voteDetailsNoWithVeto = statistical.no_with_veto
+            this.voteDetailsAbstain = statistical.abstain
+          }   
         }
       } catch (e) {
         console.error(e)
       }
     },
-    async getDepositor(currentPageNum, pageSize, useCount = false) {
+    async getDepositor() {
       try {
-        let res = await getProposalDetailDepositorApi(this.$route.params.proposal_id, currentPageNum, pageSize, useCount)
-        if (res) {
-          if(useCount){
-            this.depositorCount = res.count
-          }  
-          this.depositorData = []
-          if (res.data && res.data.length > 0) {
-            for (const depositor of res.data) {
-              let amount = '--'
-              if (depositor.amount && depositor.amount.length > 0) {
-                let n = await converCoin(depositor.amount[0])
-                // amount = `${Tools.toDecimal(n.amount,decimals.amount)} ${n.denom.toLocaleUpperCase()}`
-                amount = `${Tools.toDecimal(n.amount,decimals.amount)}`
-              }
-              this.depositorData.push({
-                depositor: depositor.address,
-                moniker: depositor.moniker,
-                amount,
-                type: depositor.type,
-                hash: depositor.hash,
-                time: depositor.timestamp ? Tools.getDisplayDate(depositor.timestamp) : '--',
-              })
+        let res = await getProposalDetailDepositorApi(this.$route.params.proposal_id, this.currentDepositorPageNum, this.pageSize, false)
+        this.depositorData = []
+        if (res?.data.length > 0) {
+          for (const depositor of res.data) {
+            let amount = '--'
+            if (depositor.amount && depositor.amount.length > 0) {
+              let n = await converCoin(depositor.amount[0])
+              // amount = `${Tools.toDecimal(n.amount,decimals.amount)} ${n.denom.toLocaleUpperCase()}`
+              amount = `${Tools.toDecimal(n.amount,decimals.amount)}`
             }
+            this.depositorData.push({
+              depositor: depositor.address,
+              moniker: depositor.moniker,
+              amount,
+              type: depositor.type,
+              hash: depositor.hash,
+              time: depositor.timestamp ? Tools.getDisplayDate(depositor.timestamp) : '--',
+            })
           }
+        }
+      } catch (e) {
+        console.error(e)
+      }
+    },
+    async getDepositorCount() {
+      try {
+        let res = await getProposalDetailDepositorApi(this.$route.params.proposal_id, null, null, true)
+        if (res?.count) {
+          this.depositorCount = res.count
         }
       } catch (e) {
         console.error(e)

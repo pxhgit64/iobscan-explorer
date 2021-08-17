@@ -119,33 +119,41 @@
 						this.owner = nftDetail.owner;
 						this.tokenData = nftDetail.tokenData || '--';
 						this.tokenUri = nftDetail.tokenUri || '--';
-						this.getTokenTx(null, null, true);
-            this.getTokenTx(this.pageNum ,this.pageSize);
+						this.getTokenTxCount();
+            this.getTokenTx();
 					}
 				}catch (e) {
 					console.error(e)
 				}
 			},
-            pageChange(pageNum){
-			    this.pageNum = pageNum;
-			    this.getTokenTx(this.pageNum ,this.pageSize);
-            },
-			async getTokenTx(currentPage, pageSize, useCount = false){
+      pageChange(pageNum){
+        this.pageNum = pageNum;
+        this.getTokenTx();
+      },
+			async getTokenTx(){
         try {
-            const res = await getTokenTxList(this.tokenID,this.$route.query.denom, currentPage, pageSize, useCount);
-            
-            this.txListByToken = res?.data;
-            if(useCount){
-              this.count = res?.count;
+            const res = await getTokenTxList(this.tokenID,this.$route.query.denom, this.currentPage, this.pageSize, false);
+            if(res?.data.length > 0){
+              this.txListByToken = res.data;
             }
         }catch (e) {
             console.error(e);
             this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
         }
 			},
+      async getTokenTxCount(){
+        try {
+            const res = await getTokenTxList(this.tokenID,this.$route.query.denom, null, null, true);
+            if(res?.count){
+              this.count = res.count;
+            }
+        }catch (e) {
+            console.error(e);
+        }
+			},
 			formatTxHash(TxHash){
 				if(TxHash){
-                    return Tools.formatTxHash(TxHash)
+          return Tools.formatTxHash(TxHash)
 				}
 			},
 			formatAddress(address){

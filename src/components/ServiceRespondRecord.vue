@@ -192,13 +192,13 @@
         },
         mounted(){
             this.getServiceInfo();
-            this.getRespondTxList(null, null, true);
-            this.getRespondTxList(this.txPageNum, this.txPageSize);
+            this.getRespondTxListCount();
+            this.getRespondTxList();
         },
         methods : {
             pageChange(pageNum){
-                this.txPageNum = pageNum;
-                this.getRespondTxList(this.txPageNum, this.txPageSize);
+              this.txPageNum = pageNum;
+              this.getRespondTxList();
             },
             async getServiceInfo(){
                 try {
@@ -230,14 +230,14 @@
                 }
             },
 
-            async getRespondTxList(pageNum, pageSize, useCount = false){
+            async getRespondTxList(){
                 try {
                     const res = await getRespondServiceRecord(
                         this.$route.params.serviceName,
                         this.$route.params.provider,
-                        pageNum, 
-                        pageSize, 
-                        useCount                       
+                        this.txPageNum, 
+                        this.txPageSize, 
+                        false                      
                     );
                     this.txList = res.data.map((item) =>{
                         return {
@@ -251,11 +251,27 @@
                             respondStatus : item.respondStatus,
                         };
                     });
-                    if(useCount){
-                      this.txCount = res?.count;
-                    }
                     this.txPageNum = Number(res.pageNum);
                     this.txPageSize = Number(res.pageSize);
+                } catch (e) {
+                    console.error(e);
+                    this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
+                }
+
+            },
+            async getRespondTxListCount(){
+                try {
+                    const res = await getRespondServiceRecord(
+                        this.$route.params.serviceName,
+                        this.$route.params.provider,
+                        null, 
+                        null, 
+                        true                      
+                    );
+                    if(res?.count){
+                      this.txCount = res.count;
+                    }
+
                 } catch (e) {
                     console.error(e);
                     this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
