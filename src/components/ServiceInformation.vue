@@ -333,17 +333,17 @@
         },
         mounted(){
             this.getServiceInformation();
-            this.getServiceBindingList(null, null, true);
-            this.getServiceBindingList(this.providerPageNum, this.providerPageSize);
-            this.getServiceTransaction(null, null, true);
-            this.getServiceTransaction(this.txPageNum,this.txPageSize);
+            this.getServiceBindingListCout();
+            this.getServiceBindingList();
+            this.getServiceTransactionCount();
+            this.getServiceTransaction();
             this.getAllTxType();
             this.setMainToken();
         },
         methods : {
             pageChange(pageNum){
                 this.txPageNum = pageNum;
-                this.getServiceTransaction(this.txPageNum,this.txPageSize);
+                this.getServiceTransaction();
             },
             async setMainToken(){
                 let mainToken = await getMainToken();
@@ -375,12 +375,9 @@
                     // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
                 }
             },
-            async getServiceBindingList(pageNum, pageSize, useCount = false){
+            async getServiceBindingList(){
                 try {
-                    const serviceList = await getServiceBindingTxList(this.$route.query.serviceName, pageNum, pageSize, useCount);
-                    if(useCount){
-                      this.providerCount = Number(serviceList?.count);
-                    }
+                    const serviceList = await getServiceBindingTxList(this.$route.query.serviceName, this.providerPageNum, this.providerPageSize,false);
                     if(serviceList && serviceList.data){
                         let bindings = await getServiceBindingByServiceName(this.$route.query.serviceName);
                         if(bindings.result){
@@ -410,24 +407,32 @@
 
 
             },
+             async getServiceBindingListCount(){
+                try {
+                  const serviceList = await getServiceBindingTxList(this.$route.query.serviceName, null,null,true);
+                  if(serviceList?.count){
+                    this.providerCount = Number(serviceList.count);
+                  }
+                } catch (e) {
+                    console.error(e)
+                    // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
+                }
+            },
             async providerPageChange(pageNum){
                 this.providerPageNum = pageNum;
-                this.getServiceBindingList(this.providerPageNum, this.providerPageSize);
+                this.getServiceBindingList();
             },
 
-            async getServiceTransaction(pageNum, pageSize, useCount = false){
+            async getServiceTransaction(){
                 try {
                     const res = await getServiceTxList(
                         this.txType,
                         this.txStatus,
                         this.$route.query.serviceName,
-                        pageNum, 
-                        pageSize, 
-                        useCount
+                        this.txPageNum, 
+                        this.txPageSize, 
+                        false
                     );
-                    if(useCount){
-                      this.txCount = res?.count;
-                    }
                     if(this.txPageNum === Number(res.pageNum)){
                       let fees = [];
                       let fee = [];
@@ -469,6 +474,25 @@
                     // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
                 }
             },
+            async getServiceTransactionCount(){
+                try {
+                  const res = await getServiceTxList(
+                      this.txType,
+                      this.txStatus,
+                      this.$route.query.serviceName,
+                      null, 
+                      null, 
+                      true
+                  );
+                  if(res?.count){
+                    this.txCount = res.count;
+                  } else {
+                    this.txCount = 0
+                  }
+                } catch (e) {
+                    console.error(e)
+                }
+            },
             async getAllTxType(){
                 try {
                     const res = await getAllServiceTxTypes();
@@ -488,15 +512,15 @@
                 this.txStatus = this.status;
                 this.txType = this.type;
                 this.txPageNum = 1;
-                this.getServiceTransaction(null,null,true);
-                this.getServiceTransaction(this.txPageNum,this.txPageSize);
+                this.getServiceTransactionCount();
+                this.getServiceTransaction();
             },
             resetFilterCondition(){
                 this.txStatus = this.status = '';
                 this.txType = this.type = '';
                 this.txPageNum = 1;  
-                this.getServiceTransaction(null,null,true);
-                this.getServiceTransaction(this.txPageNum,this.txPageSize);          
+                this.getServiceTransactionCount();
+                this.getServiceTransaction();          
             },
             formatTxHash(TxHash){
                 if(TxHash){

@@ -51,7 +51,7 @@
                 <span v-if="recipient" class="information_value information_show_trim">
                   <router-link class="jump_route" :to="`/address/${recipient}`">{{ recipient }}</router-link>
                 </span>
-               <span v-else class="information_value information_show_trim ">--</span>
+                <span v-else class="information_value information_show_trim ">--</span>
               </template>
             </div>
             <div class="information_props_wrap">
@@ -113,8 +113,7 @@
             </div>
             <div class="information_props_wrap">
               <span class="information_props">{{ $t('ExplorerLang.gov.proposalDetail.depositEndTime') }} :</span>
-              <span class="information_value"
-                >{{ depositEndAge }}
+              <span class="information_value">{{ depositEndAge }}
                 <span v-show="flShowDepositHourLeft">{{ depositHourLeft }} left </span>
                 <span v-show="depositEndAge || flShowDepositHourLeft">(</span>{{ depositEndTime }}<span v-show="depositEndAge || flShowDepositHourLeft">)</span>
               </span>
@@ -132,8 +131,7 @@
             </div>
             <div class="information_props_wrap">
               <span class="information_props">{{ $t('ExplorerLang.gov.proposalDetail.votingEndTime') }} :</span>
-              <span class="information_value"
-                >{{ votingEndAge }}
+              <span class="information_value">{{ votingEndAge }}
                 <span v-show="flShowVotingHourLeft">{{ votingHourLeft }} left </span>
                 <span v-show="votingEndAge || flShowVotingHourLeft">(</span>{{ votingEndTime }}<span v-show="votingEndAge || flShowVotingHourLeft">)</span>
               </span>
@@ -193,14 +191,11 @@
           </ul>
           <div class="voting_options">
             <span class="first">
-              <i class="yes_option_style"></i>{{ $t('ExplorerLang.gov.proposalDetail.yes') }}: <span>{{ voteDetailsYes }}</span> </span
-            >|
+              <i class="yes_option_style"></i>{{ $t('ExplorerLang.gov.proposalDetail.yes') }}: <span>{{ voteDetailsYes }}</span> </span>|
             <span>
-              <i class="no_option_style"></i>{{ $t('ExplorerLang.gov.proposalDetail.no') }}: <span>{{ voteDetailsNo }}</span> </span
-            >|
+              <i class="no_option_style"></i>{{ $t('ExplorerLang.gov.proposalDetail.no') }}: <span>{{ voteDetailsNo }}</span> </span>|
             <span>
-              <i class="no_with_veto_option_style"></i>{{ $t('ExplorerLang.gov.proposalDetail.noWithVeto') }}: <span>{{ voteDetailsNoWithVeto }} </span> </span
-            >|
+              <i class="no_with_veto_option_style"></i>{{ $t('ExplorerLang.gov.proposalDetail.noWithVeto') }}: <span>{{ voteDetailsNoWithVeto }} </span> </span>|
             <span>
               <i class="abstain_option_style"></i>{{ $t('ExplorerLang.gov.proposalDetail.abstain') }}:<span>{{ voteDetailsAbstain }}</span>
             </span>
@@ -255,12 +250,11 @@
             </el-table-column>
             <el-table-column prop="amount" :min-width="ColumnMinWidth.amount" :label="$t('ExplorerLang.table.amount')">
               <template slot="header" slot-scope="scope">
-                  <span>{{ $t('ExplorerLang.table.amount')}}</span>
-                  <el-tooltip :content="mainTokenSymbol"
-                              placement="top">
-                      <i class="iconfont iconyiwen yiwen_icon" />
-                  </el-tooltip>
-              </template >
+                <span>{{ $t('ExplorerLang.table.amount')}}</span>
+                <el-tooltip :content="mainTokenSymbol" placement="top">
+                  <i class="iconfont iconyiwen yiwen_icon" />
+                </el-tooltip>
+              </template>
             </el-table-column>
             <el-table-column prop="type" :min-width="ColumnMinWidth.proposalType" :label="$t('ExplorerLang.table.type')"></el-table-column>
             <el-table-column prop="hash" :width="ColumnMinWidth.txHash" :label="$t('ExplorerLang.table.txHash')">
@@ -379,18 +373,18 @@ export default {
       depositorCount: 0,
       currentDepositorPageNum: 1,
       depositorData: [],
-      upgradedClientState:'',
-        mainTokenSymbol:'',
+      upgradedClientState: '',
+      mainTokenSymbol: '',
     }
   },
   computed: {},
   watch: {},
   created() {
     this.getProposalsDetail()
-    this.getVoter(null, null, true)
-    this.getVoter(this.currentVoterPageNum, this.pageSize)
-    this.getDepositor(null, null, true)
-    this.getDepositor(this.currentDepositorPageNum, this.pageSize)
+    this.getVoterCount()
+    this.getVoter()
+    this.getDepositorCount()
+    this.getDepositor()
     this.setMainToken()
   },
   mounted() {},
@@ -535,19 +529,19 @@ export default {
     },
     pageChangeVoter(pageNum) {
       this.currentVoterPageNum = pageNum
-      this.getVoter(this.currentVoterPageNum, this.pageSize)
+      this.getVoter()
     },
     pageChangeDepositor(pageNum) {
       this.currentDepositorPageNum = pageNum
-      this.getDepositor(this.currentDepositorPageNum, this.pageSize)
+      this.getDepositor()
     },
     async filterVoteTx(item, index) {
       this.currentVoterPageNum = 1
       this.filterTab = item
       this.resetActiveStyle()
       this.filterTabArr[index].isActive = true
-      await this.getVoter(null, null, true)
-      await this.getVoter(this.currentVoterPageNum, this.pageSize)
+      await this.getVoterCount()
+      await this.getVoter()
     },
     resetActiveStyle() {
       this.filterTabArr.map(item => {
@@ -565,69 +559,86 @@ export default {
     formatAddress(address) {
       return Tools.formatValidatorAddress(address)
     },
-    async getVoter(pageNum, pageSize, useCount = false) {
+    async getVoter() {
       try {
-        let res = await getProposalDetailVotersApi(this.$route.params.proposal_id, pageNum, pageSize, useCount, this.filterTab)
-        if (res) {
-          if(useCount){
-            this.voterCount = res.count
-            let statistical = res.statistical
-            if (statistical) {
-              this.filterTabArr.forEach(item => {
-                item.value = statistical[item.key]
-              })
-              this.voteDetailsYes = statistical.yes
-              this.voteDetailsNo = statistical.no
-              this.voteDetailsNoWithVeto = statistical.no_with_veto
-              this.voteDetailsAbstain = statistical.abstain
+        let res = await getProposalDetailVotersApi(this.$route.params.proposal_id, this.currentVoterPageNum, this.pageSize, false, this.filterTab)
+        this.voterData = []
+        if (res?.data.length > 0) {
+          this.voterData = res.data.map(voter => {
+            return {
+              voter: voter.voter,
+              address: voter.address,
+              isValidator: voter.isValidator,
+              moniker: voter.moniker,
+              option: formatVoteOptions[voter.option],
+              block: voter.height,
+              hash: voter.hash,
+              time: voter.timestamp ? Tools.getDisplayDate(voter.timestamp) : '--',
             }
-          } 
+          })
+        } else {
           this.voterData = []
-          if (res.data && res.data.length > 0) {
-            this.voterData = res.data.map(voter => {
-              return {
-                voter: voter.voter,
-                address: voter.address,
-                isValidator: voter.isValidator,
-                moniker: voter.moniker,
-                option: formatVoteOptions[voter.option],
-                block: voter.height,
-                hash: voter.hash,
-                time: voter.timestamp ? Tools.getDisplayDate(voter.timestamp) : '--',
-              }
+        }          
+      } catch (e) {
+        console.error(e)
+      }
+    },
+    async getVoterCount() {
+      try {
+        let res = await getProposalDetailVotersApi(this.$route.params.proposal_id, null, null, true, this.filterTab)
+        if (res?.count) {
+          this.voterCount = res.count     
+          let statistical = res?.statistical
+          if (statistical) {
+            this.filterTabArr.forEach(item => {
+              item.value = statistical[item.key]
             })
-          }          
+            this.voteDetailsYes = statistical.yes
+            this.voteDetailsNo = statistical.no
+            this.voteDetailsNoWithVeto = statistical.no_with_veto
+            this.voteDetailsAbstain = statistical.abstain
+          }   
+        } else {
+          this.voterCount = 0
         }
       } catch (e) {
         console.error(e)
       }
     },
-    async getDepositor(currentPageNum, pageSize, useCount = false) {
+    async getDepositor() {
       try {
-        let res = await getProposalDetailDepositorApi(this.$route.params.proposal_id, currentPageNum, pageSize, useCount)
-        if (res) {
-          if(useCount){
-            this.depositorCount = res.count
-          }  
-          this.depositorData = []
-          if (res.data && res.data.length > 0) {
-            for (const depositor of res.data) {
-              let amount = '--'
-              if (depositor.amount && depositor.amount.length > 0) {
-                let n = await converCoin(depositor.amount[0])
-                // amount = `${Tools.toDecimal(n.amount,decimals.amount)} ${n.denom.toLocaleUpperCase()}`
-                amount = `${Tools.toDecimal(n.amount,decimals.amount)}`
-              }
-              this.depositorData.push({
-                depositor: depositor.address,
-                moniker: depositor.moniker,
-                amount,
-                type: depositor.type,
-                hash: depositor.hash,
-                time: depositor.timestamp ? Tools.getDisplayDate(depositor.timestamp) : '--',
-              })
+        let res = await getProposalDetailDepositorApi(this.$route.params.proposal_id, this.currentDepositorPageNum, this.pageSize, false)    
+        if (res?.data.length > 0) {
+          for (const depositor of res.data) {
+            let amount = '--'
+            if (depositor.amount && depositor.amount.length > 0) {
+              let n = await converCoin(depositor.amount[0])
+              // amount = `${Tools.toDecimal(n.amount,decimals.amount)} ${n.denom.toLocaleUpperCase()}`
+              amount = `${Tools.toDecimal(n.amount,decimals.amount)}`
             }
+            this.depositorData.push({
+              depositor: depositor.address,
+              moniker: depositor.moniker,
+              amount,
+              type: depositor.type,
+              hash: depositor.hash,
+              time: depositor.timestamp ? Tools.getDisplayDate(depositor.timestamp) : '--',
+            })
           }
+        } else {
+          this.depositorData = []
+        }
+      } catch (e) {
+        console.error(e)
+      }
+    },
+    async getDepositorCount() {
+      try {
+        let res = await getProposalDetailDepositorApi(this.$route.params.proposal_id, null, null, true)
+        if (res?.count) {
+          this.depositorCount = res.count
+        } else {
+          this.depositorCount = 0
         }
       } catch (e) {
         console.error(e)
@@ -703,7 +714,7 @@ a {
           color: $t_second_c;
         }
         .jump_route {
-            word-break: break-all
+          word-break: break-all;
         }
       }
     }
@@ -741,7 +752,7 @@ a {
   }
   .proposal_table {
     margin: 0.2rem 0;
-    .proposal_table_title{
+    .proposal_table_title {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -831,70 +842,70 @@ a {
 }
 @media screen and (max-width: 910px) {
   .proposals_detail_wrap {
-      .proposal_detail_content {
-        display: block;
-        .proposals_detail_information_wrap {
-          margin-right: 0 !important;
-          margin-bottom: 0.1rem;
-        }
+    .proposal_detail_content {
+      display: block;
+      .proposals_detail_information_wrap {
+        margin-right: 0 !important;
+        margin-bottom: 0.1rem;
       }
-      .card_container {
-        display: block;
-        .voting_mobile_content {
-          margin-left: 0;
-        }
+    }
+    .card_container {
+      display: block;
+      .voting_mobile_content {
+        margin-left: 0;
       }
+    }
   }
 }
 @media screen and (max-width: 845px) {
   .proposals_detail_wrap {
-      .proposal_table {
-        .proposal_table_title{
-          display: block;
-          .proposals_table_title_div {
-            margin: 0.3rem 0.1rem 0.1rem 0rem;
-          }
-          .filter_content {
-            // margin-left: 0.1rem;
-          }
-          .voting_options {
-            span {
-              padding: 0 0.08rem;
-            }
-            .first {
-              padding: 0 0.08rem 0 0;
-            }
-          }
-        }
+    .proposal_table {
+      .proposal_table_title {
+        display: block;
         .proposals_table_title_div {
           margin: 0.3rem 0.1rem 0.1rem 0rem;
         }
+        .filter_content {
+          // margin-left: 0.1rem;
+        }
+        .voting_options {
+          span {
+            padding: 0 0.08rem;
+          }
+          .first {
+            padding: 0 0.08rem 0 0;
+          }
+        }
       }
+      .proposals_table_title_div {
+        margin: 0.3rem 0.1rem 0.1rem 0rem;
+      }
+    }
   }
 }
 @media screen and (max-width: 555px) {
   .proposals_detail_wrap {
-      .proposal_detail_content {
-        display: block;
-        .proposals_detail_information_wrap {
-          .information_props_wrap {
-            display: flex;
-            flex-direction: column;
-          }
+    .proposal_detail_content {
+      display: block;
+      .proposals_detail_information_wrap {
+        .information_props_wrap {
+          display: flex;
+          flex-direction: column;
         }
       }
-      .card_container {
-        .voting_mobile_content {
+    }
+    .card_container {
+      .voting_mobile_content {
+      }
+    }
+    .proposals_detail_information {
+      .proposals_detail_information_wrap {
+        .information_props_wrap {
+          display: flex;
+          flex-direction: column;
         }
       }
-      .proposals_detail_information {
-        .proposals_detail_information_wrap {
-          .information_props_wrap {
-            display: flex;
-            flex-direction: column;
-          }
-        }
-      }
+    }
   }
 }
 @media screen and (max-width: 469px) {
@@ -913,5 +924,4 @@ a {
     min-width: 1.5rem !important;
   }
 }
-
 </style>

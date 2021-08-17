@@ -111,42 +111,49 @@
 			}
 		},
 		mounted () {
-      this.getServiceList(null, null, true);
-			this.getServiceList(this.pageNum,this.pageSize);
+      this.getServiceListCount();
+			this.getServiceList();
 		},
 		methods:{
-			async getServiceList(pageNum, pageSize, useCount = false){
-                try {
-                    let serviceList = await getAllServiceTxList(pageNum, pageSize, useCount, this.iptVal);
-                    if(useCount){
-                      this.txCount = serviceList?.count;
-                    }
-                    if(serviceList && serviceList.data){          
-                        for(let service of serviceList.data){
-                            try {
-                                let bindings = await getServiceBindingByServiceName(service.serviceName);                           
-                                if(bindings.result){
-                                    service.bindList.forEach((s)=>{
-                                        s.bindTime = Tools.getDisplayDate(s.bindTime);
-                                        bindings.result.forEach((b)=>{
-                                            if(s.provider === b.provider){
-                                                s.available = b.available;
-                                                s.price = JSON.parse(b.pricing).price;
-                                                s.qos = `${b.qos??'--'} ${this.$t('ExplorerLang.unit.blocks')}`;
-                                            }
-                                        })
-                                    })
-                                }
-                            } catch(e) {
-                                console.error(e);
-                            };                           
-                        }
-                        this.serviceList = serviceList.data;
-                    }
-                } catch (e) {
-                    console.error(e);
-                    // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
-                }
+			async getServiceList(){
+        try {
+          let serviceList = await getAllServiceTxList(this.pageNum, this.pageSize, false, this.iptVal);
+          if(serviceList && serviceList.data){          
+              for(let service of serviceList.data){
+                  try {
+                      let bindings = await getServiceBindingByServiceName(service.serviceName);                           
+                      if(bindings.result){
+                          service.bindList.forEach((s)=>{
+                              s.bindTime = Tools.getDisplayDate(s.bindTime);
+                              bindings.result.forEach((b)=>{
+                                  if(s.provider === b.provider){
+                                      s.available = b.available;
+                                      s.price = JSON.parse(b.pricing).price;
+                                      s.qos = `${b.qos??'--'} ${this.$t('ExplorerLang.unit.blocks')}`;
+                                  }
+                              })
+                          })
+                      }
+                  } catch(e) {
+                      console.error(e);
+                  };                           
+              }
+              this.serviceList = serviceList.data;
+          }
+        } catch (e) {
+            console.error(e);
+            // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
+        }
+			},
+      async getServiceListCount(){
+        try {
+          let serviceList = await getAllServiceTxList(null,null,true, this.iptVal);
+          if(serviceList?.count){
+            this.txCount = serviceList.count;
+          }
+        } catch (e) {
+          console.error(e);
+        }
 			},
 			formatTxHash(TxHash){
 				if(TxHash){
@@ -158,17 +165,17 @@
 			},
 			pageChange(pageNum) {
 				this.pageNum = pageNum;
-        this.getServiceList(this.pageNum,this.pageSize);
+        this.getServiceList();
 			},
-            handleSearchClick(){
-                this.pageNum = 1;
-                this.getServiceList(null, null, true)
-                this.getServiceList(this.pageNum,this.pageSize);
-            },
-            reset(){
-                this.iptVal = '';
-                this.handleSearchClick();
-            }
+      handleSearchClick(){
+          this.pageNum = 1;
+          this.getServiceListCount()
+          this.getServiceList();
+      },
+      reset(){
+          this.iptVal = '';
+          this.handleSearchClick();
+      }
 		}
 	}
 </script>

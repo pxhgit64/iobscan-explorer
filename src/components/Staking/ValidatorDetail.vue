@@ -321,9 +321,9 @@
 			this.getUnbondingDelegations(1, this.pageSize, true)
 			this.getDepositedProposals(1, this.pageSize, true)
 			this.getVotedProposals(1, this.pageSize, true)
-      this.getDelegationTxs(null, null, true)
+            this.getDelegationTxsCount()
 			this.getDelegationTxs(1, this.pageSize)
-      this.getValidationTxs(null, null, true)
+            this.getValidationTxsCount()
 			this.getValidationTxs(1, this.pageSize)
 			this.getGovTxs(1, this.pageSize, true)
 		},
@@ -336,12 +336,12 @@
 					this[key](page)
 				}
 			},
-      async setMainToken(){
-          let mainToken = await getMainToken();
-          if(mainToken && mainToken.symbol){
-              this.mainTokenSymbol = mainToken.symbol.toUpperCase();
-          }
-      },
+            async setMainToken(){
+                let mainToken = await getMainToken();
+                if(mainToken && mainToken.symbol){
+                    this.mainTokenSymbol = mainToken.symbol.toUpperCase();
+                }
+            },
 			async getValidatorsInfo () {
 				let res = await getValidatorsInfoApi(this.$route.params.param)
 				res.delegator_num = this.delegations.total ?? '--';
@@ -350,12 +350,14 @@
 			},
 			async getDelegations(pageNum, pageSize = 5, useCount = false) {
 				const res = await getValidatorsDelegationsApi(this.$route.params.param, pageNum, pageSize, useCount)
-        if(useCount){
-          this.delegations.total = res?.count;
-          if (this.validationInformation) {
-            this.validationInformation.delegator_num = res?.count;
-          }
-        }	
+                if(useCount){
+                    this.delegations.total = res?.count;
+                    if (this.validationInformation) {
+                        this.validationInformation.delegator_num = res?.count;
+                    } else {
+                        this.validationInformation.delegator_num = 0
+                    }
+                }	
 				this.delegations.items = []
 				for (const item of res.data) {
 					let amount = await converCoin(item.amount)
@@ -374,9 +376,11 @@
 			},
 			async getUnbondingDelegations (pageNum, pageSize = 5, useCount = false) {
 				const res = await getUnbondingDelegationsApi(this.$route.params.param, pageNum, pageSize, useCount)
-        if(useCount){
-          this.unbondingDelegations.total = res?.count;
-        }	
+                if(useCount){
+                this.unbondingDelegations.total = res?.count;
+                } else {
+                this.unbondingDelegations.total = 0
+                }	
 				this.unbondingDelegations.items = []
 				for (const item of res.data) {
 					let amount = await converCoin({
@@ -406,11 +410,8 @@
 					}
 				})
 			},
-			async getDelegationTxs (pageNum, pageSize = 5, useCount = false) {
-				const res = await getDelegationTxsApi(this.$route.params.param, pageNum, pageSize, useCount)
-        if(useCount){
-          this.delegationTxs.total = res?.count
-        }	
+			async getDelegationTxs (pageNum, pageSize = 5) {
+				const res = await getDelegationTxsApi(this.$route.params.param, pageNum, pageSize, false)
 				this.delegationTxs.currentPage = res.pageNum
 				this.delegationTxs.items = []
 				for (const item of res.data) {
@@ -450,11 +451,16 @@
 					})
 				}
 			},
-			async getValidationTxs (pageNum, pageSize = 5, useCount = false) {
-				const res = await getValidationTxsApi(this.$route.params.param, pageNum, pageSize, useCount)
-        if(useCount){
-          this.validationTxs.total = res?.count
-        }
+            async getDelegationTxsCount () {
+				const res = await getDelegationTxsApi(this.$route.params.param, null, null, true)
+                if(res?.count){
+                this.delegationTxs.total = res.count
+                }	else {
+                this.delegationTxs.total = 0
+                }	
+			},
+			async getValidationTxs (pageNum, pageSize = 5) {
+				const res = await getValidationTxsApi(this.$route.params.param, pageNum, pageSize, false)
 				this.validationTxs.currentPage = res.pageNum
 				this.validationTxs.items = []
 				for (const item of res.data) {
@@ -485,32 +491,40 @@
 					})
 				}
 			},
+            async getValidationTxsCount () {
+				const res = await getValidationTxsApi(this.$route.params.param, null, null, true)
+                if(res?.count){
+                this.validationTxs.total = res.count
+                }	else {
+                this.validationTxs.total = 0
+                }	
+			},
 			async getDepositedProposals (pageNum, pageSize = 5, useCount = false) {
 				try {
 					const res = await getDepositedProposalsApi(this.$route.params.param, pageNum, pageSize, useCount)
 					this.depositedProposals.items = []
 					if(res) {
-            if(useCount){
-              this.depositedProposals.total = res.count
-            }	
-						if(res.data && res.data.length > 0) {
-							for (const deposit of res.data) {
-								let deposits = null;
-								if(deposit.amount && deposit.amount.length>0) {
-									deposits = await converCoin(deposit.amount[0])
-								}
-								this.depositedProposals.items.push({
-									id: deposit.proposal_id,
-									proposer: deposit.proposer,
-									moniker: deposit.moniker,
-									submited: String(deposit.submited),
-									hash: deposit.tx_hash,
-									// deposit: deposits ? `${Tools.toDecimal(deposits.amount,this.amountDecimals)} ${deposits.denom.toLocaleUpperCase()}` : '--',
-									deposit: deposits ? `${Tools.toDecimal(deposits.amount,this.amountDecimals)}` : '--',
-									link: deposit.proposal_link,
-								})
-							}
-						}
+                    if(useCount){
+                    this.depositedProposals.total = res.count
+                    }	
+                    if(res.data && res.data.length > 0) {
+                        for (const deposit of res.data) {
+                            let deposits = null;
+                            if(deposit.amount && deposit.amount.length>0) {
+                                deposits = await converCoin(deposit.amount[0])
+                            }
+                            this.depositedProposals.items.push({
+                                id: deposit.proposal_id,
+                                proposer: deposit.proposer,
+                                moniker: deposit.moniker,
+                                submited: String(deposit.submited),
+                                hash: deposit.tx_hash,
+                                // deposit: deposits ? `${Tools.toDecimal(deposits.amount,this.amountDecimals)} ${deposits.denom.toLocaleUpperCase()}` : '--',
+                                deposit: deposits ? `${Tools.toDecimal(deposits.amount,this.amountDecimals)}` : '--',
+                                link: deposit.proposal_link,
+                            })
+                        }
+                    }
 					}
 				} catch(e) {
 					console.error(e)
@@ -521,21 +535,21 @@
 					const res = await getVotedProposalsApi(this.$route.params.param, pageNum, pageSize, useCount)
 					this.votedProposals.items = []
 					if(res) {
-            if(useCount){
-              this.votedProposals.total = res.count;
-            }	
-						if(res.data && res.data.length > 0) {
-							this.votedProposals.items = res.data.map(vote => {
-								return {
-									id: vote.proposal_id,
-									title: Tools.formatString(vote.title, this.proposalTitleNum, '...'),
-									status: vote.status,
-									voted: vote.voted,
-									hash: vote.tx_hash,
-									link: vote.proposal_link,
-								}
-							})
-						}
+                    if(useCount){
+                    this.votedProposals.total = res.count;
+                    }	
+                    if(res.data && res.data.length > 0) {
+                        this.votedProposals.items = res.data.map(vote => {
+                            return {
+                                id: vote.proposal_id,
+                                title: Tools.formatString(vote.title, this.proposalTitleNum, '...'),
+                                status: vote.status,
+                                voted: vote.voted,
+                                hash: vote.tx_hash,
+                                link: vote.proposal_link,
+                            }
+                        })
+                    }
 					}
 				} catch(e) {
 					console.error(e)
@@ -543,54 +557,54 @@
 			},
 			async getGovTxs (pageNum, pageSize = 5, useCount = false) {
 				try {
-						let res = await getGovTxsApi(this.$route.params.param, pageNum, pageSize, useCount);
-						this.govTxs.items = [];
-						if(res.data && res.data.length > 0) {
-              if(useCount){
-                this.govTxs.total = res.count
-              }					
-							this.govTxs.currentPage = res.pageNum
-							for (const item of res.data) {
-								let msgsNumber = item.msgs ? item.msgs.length : 0
-								const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) : ''
-								const time = Tools.getDisplayDate(item.time)
-								let amount = null
-								let msg = item.msgs && item.msgs[0]
-								if(msg) {
-									if(msg.type == "deposit") {
-										let unit = msg.msg && msg.msg.amount && msg.msg.amount[0]
-										if(unit) {
-											amount = await converCoin(unit)
-										}
-									} else {
-										let unit = msg.msg && msg.msg.initial_deposit && msg.msg.initial_deposit[0]
-										if(unit) {
-											amount = await converCoin(unit)
-										}
-									}
-								}
-								this.govTxs.items.push({
-									Tx_Hash: item.tx_hash,
-									Block: item.height,
-									proposalType: item.ex && item.ex.type,
-									proposalId: item.ex && item.ex.id,
-									proposalTitle: item.ex && item.ex.title && Tools.formatString(item.ex.title, this.proposalTitleNum, '...'),
-									// amount: amount ? `${Tools.toDecimal(amount.amount,this.amountDecimals)} ${amount.denom.toLocaleUpperCase()}` : '--',
-									amount: amount ? `${Tools.toDecimal(amount.amount,this.amountDecimals)}` : '--',
-									'Tx_Type': (item.msgs || []).map(item=>TX_TYPE_DISPLAY[item.type] || item.type),
-									MsgsNum: msgsNumber,
-									// 'Tx_Fee': fee && fee.amount ? this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)} ${fee.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
-									'Tx_Fee': fee && fee.amount ? `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
-									'Tx_Signer': item.signers[0] ? item.signers[0] : '--',
-									'Tx_Status': TxStatus[item.status],
-									Timestamp: time,
-									proposalLink: item.ex && item.ex.proposal_link
-								})
-							}
-						}
-					} catch(e) {
-						console.error(e)
-					}
+                    let res = await getGovTxsApi(this.$route.params.param, pageNum, pageSize, useCount);
+                    this.govTxs.items = [];
+                    if(res.data && res.data.length > 0) {
+                    if(useCount){
+                        this.govTxs.total = res.count
+                    }					
+                    this.govTxs.currentPage = res.pageNum
+                    for (const item of res.data) {
+                        let msgsNumber = item.msgs ? item.msgs.length : 0
+                        const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) : ''
+                        const time = Tools.getDisplayDate(item.time)
+                        let amount = null
+                        let msg = item.msgs && item.msgs[0]
+                        if(msg) {
+                            if(msg.type == "deposit") {
+                                let unit = msg.msg && msg.msg.amount && msg.msg.amount[0]
+                                if(unit) {
+                                    amount = await converCoin(unit)
+                                }
+                            } else {
+                                let unit = msg.msg && msg.msg.initial_deposit && msg.msg.initial_deposit[0]
+                                if(unit) {
+                                    amount = await converCoin(unit)
+                                }
+                            }
+                        }
+                        this.govTxs.items.push({
+                            Tx_Hash: item.tx_hash,
+                            Block: item.height,
+                            proposalType: item.ex && item.ex.type,
+                            proposalId: item.ex && item.ex.id,
+                            proposalTitle: item.ex && item.ex.title && Tools.formatString(item.ex.title, this.proposalTitleNum, '...'),
+                            // amount: amount ? `${Tools.toDecimal(amount.amount,this.amountDecimals)} ${amount.denom.toLocaleUpperCase()}` : '--',
+                            amount: amount ? `${Tools.toDecimal(amount.amount,this.amountDecimals)}` : '--',
+                            'Tx_Type': (item.msgs || []).map(item=>TX_TYPE_DISPLAY[item.type] || item.type),
+                            MsgsNum: msgsNumber,
+                            // 'Tx_Fee': fee && fee.amount ? this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)} ${fee.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
+                            'Tx_Fee': fee && fee.amount ? `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
+                            'Tx_Signer': item.signers[0] ? item.signers[0] : '--',
+                            'Tx_Status': TxStatus[item.status],
+                            Timestamp: time,
+                            proposalLink: item.ex && item.ex.proposal_link
+                        })
+                    }
+                    }
+                } catch(e) {
+                    console.error(e)
+                }
 			},
 			formatAddress (address) {
 				return Tools.formatValidatorAddress(address)

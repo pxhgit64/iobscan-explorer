@@ -81,7 +81,7 @@ export function getRangeBlockList(start, end, useCount=false){
 	return get(url);
 }
 
-export function getDenoms(pageNum, pageSize, useCount, needAll, denomNameOrId){
+export function getDenoms(pageNum, pageSize, useCount = false, needAll, denomNameOrId){
 	let url = `denoms?`;
 	if(needAll){
 	    url += `needAll=${needAll}`;
@@ -97,7 +97,7 @@ export function getDenoms(pageNum, pageSize, useCount, needAll, denomNameOrId){
 	return get(url);
 }
 
-export function getNfts(pageNum, pageSize, useCount, denom, nftId, owner){
+export function getNfts(pageNum, pageSize, useCount = false, denom, nftId, owner){
 	let url = `nfts?denomId=${denom||''}&nftId=${nftId||''}&owner=${owner||''}`;
   if(pageNum && pageSize){
     url += `&pageNum=${pageNum}&pageSize=${pageSize}`
@@ -322,7 +322,7 @@ export function getRespondServiceRecord(serviceName, provider, pageNum, pageSize
 export function getNodeInfo(){
     return getFromLcd('node_info');
 }
-export function getIdentities(identity, pageNum, pageSize, useCount){
+export function getIdentities(identity, pageNum, pageSize, useCount = false){
     let url = `identities?search=${identity}`;
     if(pageNum && pageSize){
       url += `&pageNum=${pageNum}&pageSize=${pageSize}`
