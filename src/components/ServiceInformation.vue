@@ -333,7 +333,7 @@
         },
         mounted(){
             this.getServiceInformation();
-            this.getServiceBindingListCout();
+            this.getServiceBindingListCount();
             this.getServiceBindingList();
             this.getServiceTransactionCount();
             this.getServiceTransaction();
