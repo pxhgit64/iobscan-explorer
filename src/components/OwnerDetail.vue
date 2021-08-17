@@ -2504,7 +2504,7 @@ a {
         .address_content_wrap {
             .pagination_content {
                 display: flex;
-                justify-content: space-between;
+                justify-content: flex-end;
             }
         }
     }
