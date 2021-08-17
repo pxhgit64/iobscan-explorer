@@ -157,7 +157,7 @@
 				// if(sessionStorage.getItem('selectDenom')){
 				// 	this.denom = sessionStorage.getItem('selectDenom')
 				// }
-        this.getNftsByFilter();
+                this.getNftsByFilter();
 			},
 			handleSearchClick(){
 				this.currentPageNum = 1;
@@ -183,12 +183,14 @@
 						 * @description: from parseTimeMixin
 						 */
 						this.parseTime('denomArray', 'Time', 'last_block_time')
-					}
+					} else {
+                        this.denomArray = []
+                    }
 				}catch (e) {
 					console.error(e)
 				}
 			},
-      async getNftsByFilterCount(){
+            async getNftsByFilterCount(){
 				if (Tools.isBech32(this.input)) {
 					this.owner = this.input;
 				}
@@ -199,7 +201,9 @@
 					let res = await getNfts(null, null, true, this.denom, this.tokenId, this.owner);
 					if(res?.count){
 						this.allCount = res.count;
-					}
+					} else {
+                        this.allCount = 0
+                    }
 				}catch (e) {
 					console.error(e)
 				}

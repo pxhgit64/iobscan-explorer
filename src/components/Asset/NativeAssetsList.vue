@@ -94,6 +94,8 @@ export default {
         let res = await getNativeAssetsListApi(null, null, true);
         if (res?.count) {
           this.dataCount = res.count;
+        } else {
+          this.dataCount = 0
         }
       } catch (err) {
         console.error(err);

@@ -354,6 +354,8 @@
           this.delegations.total = res?.count;
           if (this.validationInformation) {
             this.validationInformation.delegator_num = res?.count;
+          } else {
+            this.validationInformation.delegator_num = 0
           }
         }	
 				this.delegations.items = []
@@ -376,6 +378,8 @@
 				const res = await getUnbondingDelegationsApi(this.$route.params.param, pageNum, pageSize, useCount)
         if(useCount){
           this.unbondingDelegations.total = res?.count;
+        } else {
+          this.unbondingDelegations.total = 0
         }	
 				this.unbondingDelegations.items = []
 				for (const item of res.data) {
@@ -451,6 +455,8 @@
 				const res = await getDelegationTxsApi(this.$route.params.param, null, null, true)
         if(res?.count){
           this.delegationTxs.total = res.count
+        }	else {
+          this.delegationTxs.total = 0
         }	
 			},
 			async getValidationTxs (pageNum, pageSize = 5) {
@@ -489,7 +495,9 @@
 				const res = await getValidationTxsApi(this.$route.params.param, null, null, true)
         if(res?.count){
           this.validationTxs.total = res.count
-        }
+        }	else {
+          this.validationTxs.total = 0
+        }	
 			},
 			async getDepositedProposals (pageNum, pageSize = 5, useCount = false) {
 				try {

@@ -576,6 +576,8 @@ export default {
               time: voter.timestamp ? Tools.getDisplayDate(voter.timestamp) : '--',
             }
           })
+        } else {
+          this.voterData = []
         }          
       } catch (e) {
         console.error(e)
@@ -596,6 +598,8 @@ export default {
             this.voteDetailsNoWithVeto = statistical.no_with_veto
             this.voteDetailsAbstain = statistical.abstain
           }   
+        } else {
+          this.voterCount = 0
         }
       } catch (e) {
         console.error(e)
@@ -603,8 +607,7 @@ export default {
     },
     async getDepositor() {
       try {
-        let res = await getProposalDetailDepositorApi(this.$route.params.proposal_id, this.currentDepositorPageNum, this.pageSize, false)
-        this.depositorData = []
+        let res = await getProposalDetailDepositorApi(this.$route.params.proposal_id, this.currentDepositorPageNum, this.pageSize, false)    
         if (res?.data.length > 0) {
           for (const depositor of res.data) {
             let amount = '--'
@@ -622,6 +625,8 @@ export default {
               time: depositor.timestamp ? Tools.getDisplayDate(depositor.timestamp) : '--',
             })
           }
+        } else {
+          this.depositorData = []
         }
       } catch (e) {
         console.error(e)
@@ -632,6 +637,8 @@ export default {
         let res = await getProposalDetailDepositorApi(this.$route.params.proposal_id, null, null, true)
         if (res?.count) {
           this.depositorCount = res.count
+        } else {
+          this.depositorCount = 0
         }
       } catch (e) {
         console.error(e)

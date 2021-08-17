@@ -955,6 +955,8 @@ export default {
         )
         if (res?.count) {
           this.identityCount = res.count
+        } else {
+          this.identityCount = 0
         }
       } catch (e) {
         console.error(e)
@@ -992,6 +994,8 @@ export default {
         )
         if (res?.count) {
           this.totalTxNumber = res.count
+        } else {
+          this.totalTxNumber = 0
         }
       } catch (e) {
         console.error(e)
@@ -1074,6 +1078,8 @@ export default {
         const res = await getCallServiceWithAddress(null, null, true, this.$route.params.param)
         if (res?.count) {
           this.consumerTxCount = res.count
+        } else {
+          this.consumerTxCount = 0
         }
       } catch (e) {
         console.error(e)
@@ -1118,8 +1124,10 @@ export default {
           null,
           true
         )
-        if (res?.count) {
+        if(res?.count) {
           this.respondRecordCount = res.count
+        } else {
+          this.respondRecordCount = 0
         }
       } catch (e) {
         console.error(e)
@@ -1200,6 +1208,8 @@ export default {
         )
         if (res?.count) {
           this.providerTxCount = res.count
+        } else {
+          this.providerTxCount = 0
         }
       } catch (e) {
         console.error(e)
@@ -1530,6 +1540,8 @@ export default {
         )
         if (res?.count) {
           this.delegationCountNum = res.count
+        } else {
+          this.delegationCountNum = 0
         }
       } catch (e) {
         console.error(e)
@@ -1590,6 +1602,8 @@ export default {
         )
         if (res?.count) {
           this.unBondingDelegationCountNum = res.count
+        } else {
+          this.unBondingDelegationCountNum = 0
         }
       } catch (e) {
         console.error(e)

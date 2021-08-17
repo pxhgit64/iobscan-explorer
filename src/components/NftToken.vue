@@ -135,6 +135,8 @@
             const res = await getTokenTxList(this.tokenID,this.$route.query.denom, this.currentPage, this.pageSize, false);
             if(res?.data.length > 0){
               this.txListByToken = res.data;
+            } else {
+              this.txListByToken = []
             }
         }catch (e) {
             console.error(e);
@@ -146,6 +148,8 @@
             const res = await getTokenTxList(this.tokenID,this.$route.query.denom, null, null, true);
             if(res?.count){
               this.count = res.count;
+            } else {
+              this.count = 0
             }
         }catch (e) {
             console.error(e);

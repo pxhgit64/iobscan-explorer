@@ -486,6 +486,8 @@
                   );
                   if(res?.count){
                     this.txCount = res.count;
+                  } else {
+                    this.txCount = 0
                   }
                 } catch (e) {
                     console.error(e)

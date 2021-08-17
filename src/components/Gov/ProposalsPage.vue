@@ -179,6 +179,8 @@ export default {
         let res = await getProposalsListApi(status, currentPage, pageSize, useCount);
         if(useCount){
           this.count = res?.count;
+        } else {
+          this.count = 0
         }
         if (res && res.data && res.data.length > 0) {
           

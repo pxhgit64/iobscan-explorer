@@ -207,6 +207,8 @@
                             };
                             return result;
                         });
+                    } else {
+                      this.pubkeyList = []
                     }
                 } catch (e) {
                     console.error(e);
@@ -217,7 +219,9 @@
                   const res = await getPubkeyListByIdentity(this.id, null, null, true);
                   if(res?.count){
                     this.pubkeyListCount = res.count;
-                  } 
+                  } else {
+                    this.pubkeyListCount = 0
+                  }
               } catch (e) {
                   console.error(e);
               }
@@ -234,6 +238,8 @@
                             };
                             return result;
                         });
+                    } else {
+                      this.certificateList = []
                     }
                 } catch (e) {
                     console.error(e);
@@ -244,6 +250,8 @@
                   const res = await getCertificateListByIdentity(this.id, null, null,true);
                   if(res?.count){
                     this.certificateListCount = res.count;
+                  } else {
+                    this.certificateListCount = 0
                   }
               } catch (e) {
                   console.error(e);

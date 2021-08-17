@@ -137,7 +137,9 @@
                 try {
                     const res = await getIdentities(this.input,null, null, useCount = true);
                     if(res?.count){
-                        this.count = res.count;
+                      this.count = res.count;
+                    } else {
+                      this.count = 0
                     }
                 }catch (e) {
                     console.error(e)
