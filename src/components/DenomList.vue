@@ -151,10 +151,10 @@ export default {
           this.parseTime("denomList", "Time", "time");
           this.pageSize = res.pageSize;
           this.pageNum = res.pageNum;
+        } else {
+            this.denomList = [];
         }
       } catch (e) {
-        this.count = 0;
-        this.denomList = [];
         console.error(e);
       }
     },
@@ -163,6 +163,8 @@ export default {
         const res = await getDenoms(null, null, true, false, this.input);
         if (res?.count) {
           this.count = res.count;
+        } else {
+          this.count = 0  
         }
       } catch (error) {
         console.error(error);

@@ -453,7 +453,6 @@ a {
                     }
                     span:nth-of-type(2) {
                         text-align: left;
-                        flex: 1;
                         color: $t_first_c;
                         font-size: $s14;
                         line-height: 0.16rem;

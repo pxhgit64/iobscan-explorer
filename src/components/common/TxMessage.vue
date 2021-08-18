@@ -3406,7 +3406,6 @@
 			}
 
 			span:nth-of-type(2) {
-				flex: 1;
 				text-align: left;
 				font-size: $s14;
 				color: $t_first_c;
