@@ -1490,7 +1490,7 @@ export default {
     },
     async getDelegationList() {
       try {
-        const { data: res, count } = await getDelegationListApi(this.$route.params.param,1,100)
+        const { data: res, count } = await getDelegationListApi(this.$route.params.param,1,1000)
         if (res && res.length > 0) {
           this.delegationCountNum = count
           let copyResult = JSON.parse(JSON.stringify(res))
