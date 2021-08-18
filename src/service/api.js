@@ -455,25 +455,13 @@ export function getAddressInformationApi(address){
     return get(url);
 }
 
-export function getDelegationListApi(address,pageNum,pageSize,useCount){
-    let url = `/staking/delegators/${address}/delegations?`;
-    if(pageNum && pageSize){
-      url += `pageNum=${pageNum}&pageSize=${pageSize}`
-    }
-    if(useCount){
-      url += `useCount=${useCount}`;
-    }
+export function getDelegationListApi(address,pageNum,pageSize){
+    let url = `/staking/delegators/${address}/delegations?useCount=true&pageNum=${pageNum}&pageSize=${pageSize}`;
     return get(url);
 }
 
-export function getUnBondingDelegationListApi(address,pageNum,pageSize,useCount){
-    let url = `/staking/delegators/${address}/unbonding_delegations?`;
-    if(pageNum && pageSize){
-      url += `pageNum=${pageNum}&pageSize=${pageSize}`
-    }
-    if(useCount){
-      url += `useCount=${useCount}`;
-    }
+export function getUnBondingDelegationListApi(address,pageNum,pageSize){
+    let url = `/staking/delegators/${address}/unbonding_delegations?useCount=true&pageNum=${pageNum}&pageSize=${pageSize}`;
     return get(url);
 }
 
@@ -542,7 +530,7 @@ export function getNativeAssetDetailApi (symbol) {
 	return get(url)
 }
 
-export function getProposalsListApi (status, pageNum,pageSize, useCount) {
+export function getProposalsListApi (status, pageNum, pageSize, useCount) {
     let url = `/gov/proposals?`
     if(pageNum && pageSize){
       url += `&pageNum=${pageNum}&pageSize=${pageSize}`

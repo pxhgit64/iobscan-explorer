@@ -398,7 +398,7 @@ a {
 }
 ::v-deep .amount .cell {
     padding-right: 10px;
-    padding-left: 0px;
+    padding-left: 0px
 }
 ::v-deep .from .cell {
     padding-left: 40px;

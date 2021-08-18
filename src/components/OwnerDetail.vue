@@ -818,10 +818,8 @@ export default {
         this.getAddressInformation()
         this.getRewardsItems()
         this.getAssetList()
-        this.getDelegationListCount()
-        this.getDelegationList(1, 1000)
-        this.getUnBondingDelegationListCount()
-        this.getUnBondingDelegationList(1, 1000)
+        this.getDelegationList()
+        this.getUnBondingDelegationList()
       }
       if (moduleSupport('103', prodConfig.navFuncList)) {
         this.tabList.push(this.nftCount)
@@ -1033,13 +1031,13 @@ export default {
               respond: [],
             }
             item.events.forEach((item) => {
-              ;(item.attributes || []).forEach((attr) => {
+              (item.attributes || []).forEach((attr) => {
                 if (attr.key == 'request_context_id') {
                   result.requestContextId = attr.value
                 }
               })
             })
-            let context = await this.getContext(result.requestContextId || '')
+            let context = await this.getContext(result.requestContextId || '');
             if (context && context.result) {
               result.state = context.result.state
             }
@@ -1064,6 +1062,8 @@ export default {
               })
             }
           }
+        } else {
+          this.consumerTxList = [] 
         }
       } catch (e) {
         console.error(e)
@@ -1118,6 +1118,8 @@ export default {
             tx.type = TX_TYPE_DISPLAY[tx.type]
             return tx
           })
+        } else {
+          this.respondRecordList = []
         }
       } catch (e) {
         console.error(e)
@@ -1178,7 +1180,7 @@ export default {
             if (item.msgs[0].msg.deposit && item.msgs[0].msg.deposit.length) {
               result.deposit = `${item.msgs[0].msg.deposit[0].amount} ${item.msgs[0].msg.deposit[0].denom}`
             }
-            let bindings = await getServiceBindingByServiceName(result.serviceName)
+            let bindings = await getServiceBindingByServiceName(result.serviceName);
             (bindings.result || []).forEach((bind) => {
               if (
                 result.provider === bind.provider &&
@@ -1486,15 +1488,11 @@ export default {
       }
       return newArray
     },
-    async getDelegationList(pageNum, pageSize) {
+    async getDelegationList() {
       try {
-        const { data: res } = await getDelegationListApi(
-          this.$route.params.param,
-          pageNum,
-          pageSize,
-          false
-        )
+        const { data: res, count } = await getDelegationListApi(this.$route.params.param,1,1000)
         if (res && res.length > 0) {
+          this.delegationCountNum = count
           let copyResult = JSON.parse(JSON.stringify(res))
           this.delegationPageNationArrayData = this.pageNation(copyResult)
           if (res.length > this.pageSize) {
@@ -1532,37 +1530,17 @@ export default {
           )} ${this.mainToken.symbol.toUpperCase()}`
         } else {
           this.delegationsItems = []
-        }
-      } catch (e) {
-        console.error(e)
-      }
-    },
-    async getDelegationListCount() {
-      try {
-        const { data: res } = await getDelegationListApi(
-          this.$route.params.param,
-          null,
-          null,
-          true
-        )
-        if (res?.count) {
-          this.delegationCountNum = res.count
-        } else {
           this.delegationCountNum = 0
         }
       } catch (e) {
         console.error(e)
       }
     },
-    async getUnBondingDelegationList(pageNum, pageSize) {
+    async getUnBondingDelegationList() {
       try {
-        const { data: res } = await getUnBondingDelegationListApi(
-          this.$route.params.param,
-          pageNum,
-          pageSize,
-          false
-        )
+        const { data: res, count } = await getUnBondingDelegationListApi(this.$route.params.param,1, 1000)
         if (res && res.length > 0) {
+          this.unBondingDelegationCountNum = count
           let copyResult = JSON.parse(JSON.stringify(res))
           this.unBondingDelegationPageNationArrayData =
             this.pageNation(copyResult)
@@ -1594,23 +1572,8 @@ export default {
             new BigNumber(this.totalUnBondingDelegator.toString()).toFormat(),
             this.fixedNumber
           )} ${this.mainToken.symbol.toUpperCase()}`
-        }
-      } catch (e) {
-        console.error(e)
-      }
-    },
-    async getUnBondingDelegationListCount() {
-      try {
-        const { data: res } = await getUnBondingDelegationListApi(
-          this.$route.params.param,
-          null,
-          null,
-          true
-        )
-        if (res?.count) {
-          this.unBondingDelegationCountNum = res.count
         } else {
-          this.unBondingDelegationCountNum = 0
+            this.unBondingDelegationCountNum = 0
         }
       } catch (e) {
         console.error(e)

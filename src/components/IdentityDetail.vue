@@ -196,7 +196,7 @@
             },
             async getPubkeyList(){
                 try {
-                    const res = await getPubkeyListByIdentity(this.id, this.pageNum, this.pageSize, useCount = true);
+                    const res = await getPubkeyListByIdentity(this.id, this.pageNum, this.pageSize, false);
                     if(res?.data.length > 0){
                         this.pubkeyList = res.data.map((item) =>{
                             let result = {
