@@ -138,7 +138,7 @@ export default {
         const res = await getTokenTxList(
           this.tokenID,
           this.$route.query.denom,
-          this.currentPage,
+          this.pageNum,
           this.pageSize,
           false
         )
