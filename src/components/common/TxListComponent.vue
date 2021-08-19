@@ -90,7 +90,6 @@
                 <template slot-scope="scope">
                     <el-tooltip  v-if="isValid(scope.row.to) && Number(scope.row.msgCount) <= 1" :content="String(scope.row.to)"
                                 placement="top"
-                                :key="Math.random()"
                                 :disabled="!isValid(scope.row.to) || Array.isArray(scope.row.to)">
                         <span v-if="typeof scope.row.to=='string' && isValid(scope.row.to) && address !== scope.row.to"
                               class="address_link"
