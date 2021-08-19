@@ -135,7 +135,7 @@
             },
             async identitiesCount(){
                 try {
-                    const res = await getIdentities(this.input,null, null, useCount = true);
+                    const res = await getIdentities(this.input,null, null, true);
                     if(res?.count){
                       this.count = res.count;
                     } else {

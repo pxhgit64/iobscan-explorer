@@ -217,8 +217,7 @@
                         <el-table-column class-name="to" :min-width="ColumnMinWidth.address" :label="$t('ExplorerLang.table.to')">
                             <template slot-scope="scope">
                                 <el-tooltip placement="top" :content="String(scope.row.to)"
-                                            :key="Math.random()"
-                                            :disabled="!isValid(scope.row.to) || Array.isArray(scope.row.to)">
+                                        :disabled="!isValid(scope.row.to) || Array.isArray(scope.row.to)">
                                     <router-link v-if="typeof scope.row.to=='string' && isValid(scope.row.to)" :to="`/address/${scope.row.to}`">
                                         {{formatAddress(scope.row.to)}}
                                     </router-link>
