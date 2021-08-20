@@ -90,9 +90,6 @@ export default {
                 this.mainTokenSymbol = mainToken.symbol.toUpperCase();
             }
         },
-        handle(a){
-            console.log(a)
-        },
         async handleData(data){
             if(data){
                 if(data.data && data.data.length > 0){

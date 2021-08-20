@@ -2556,7 +2556,6 @@
 								this.owner = msg.owner || '--';
 								break;
 							case TX_TYPE.recv_packet:
-							    console.log(msg)
 								if(prodConfig.txDetail && prodConfig.txDetail.ibc) {
 									this.packet = JSON.stringify(msg.packet || {}) || '--';
 									this.proof = msg.proof || '--';

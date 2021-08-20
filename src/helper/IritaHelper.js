@@ -168,7 +168,6 @@ export async function addressRoute (address) {
     if (addressPrefix.iva) {
         let length = addressPrefix.iva.length
         if(address) {
-            console.log(cfg)
             let isIris = addressPrefix.iaa === IRIS_ADDRESS_PREFIX,
                 isCosmos = addressPrefix.iaa === COSMOS_ADDRESS_PREFIX;
             if (address.substring(0, length) === addressPrefix.iva) {
