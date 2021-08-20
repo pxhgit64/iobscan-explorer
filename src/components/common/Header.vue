@@ -252,18 +252,20 @@ export default {
       }
     },
     async searchDelegator() {
-      try {
-        const res = await getAddressTxList(this.searchInputValue, '', '', 1, 10)
-        if (res) {
-          addressRoute.call(this,this.searchInputValue)
-          this.clearSearchContent()
-        } else {
-          this.toSearchResultPage()
-        }
-      } catch (e) {
-        console.error(e)
-        this.toSearchResultPage()
-      }
+      addressRoute.call(this,this.searchInputValue);
+      this.clearSearchContent();
+      // try {
+      //   const res = await getAddressTxList(this.searchInputValue, '', '', 1, 1)
+      //   if (res) {
+      //     addressRoute.call(this,this.searchInputValue);
+      //     this.clearSearchContent()
+      //   } else {
+      //     this.toSearchResultPage()
+      //   }
+      // } catch (e) {
+      //   console.error(e)
+      //   this.toSearchResultPage()
+      // }
     },
     async searchTx() {
       try {
