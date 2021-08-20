@@ -145,7 +145,6 @@
                         if(Tools.formatPercentageNumbers(currentTally.yes,currentTally.total_voting_power,'') > Number(votingBarObj.threshold)*100) {
                             this.flShowPassThreshold = true
                         }
-                        // console.log('yes',Tools.formatPercentageNumbers(currentTally.yes,currentTally.total_voting_power,''))
                         this.$set(this.yesVotingPowerStyleObj,'width',`${this.yesVotingPowerWidth}`);
                         this.noVotingPowerWidth = currentTally.no ? Tools.formatPercentageNumbers(currentTally.no,currentTally.total_voting_power) : '0.00%';
                         this.$set(this.noVotingPowerStyleObj,'width',`${this.noVotingPowerWidth}`);
@@ -153,7 +152,6 @@
                         if(Tools.formatPercentageNumbers(currentTally.no_with_veto,currentTally.total_voting_power,'') > Number(votingBarObj.veto_threshold)*100) {
                             this.flShowVoteThreshold = true
                         }
-                        // console.log('不同意',Tools.formatPercentageNumbers(currentTally.no_with_veto,currentTally.total_voting_power,''))
                         this.$set(this.vetoVotingPowerStyleObj,'width',`${this.vetoVotingPowerWidth}`);
                         this.abstainVotingPowerWidth = currentTally.abstain ? Tools.formatPercentageNumbers(currentTally.abstain,currentTally.total_voting_power) :'0.00%';
                         this.$set(this.abstainVotingPowerStyleObj,'width',`${this.abstainVotingPowerWidth}`);
