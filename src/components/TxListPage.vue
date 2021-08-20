@@ -18,7 +18,6 @@
 										:value="item.value">
 								</el-option>
 							</el-select>
-
 							<el-select popper-class="tooltip" v-model="statusValue" :change="filterTxByStatus(statusValue)">
 								<el-option v-for="(item, index) in status"
 										:key="index"
@@ -124,9 +123,6 @@
 				listTitleName: "",
 				count: sessionStorage.getItem("txTotal") ? Number(sessionStorage.getItem("txTotal")) : 0,
 				pageSize: 10,
-				delegationPageSize:10,
-				showNoData: false,
-				flShowLoading: false,
 				value: this.getParamsByUrlHash().txType ? this.getParamsByUrlHash().txType : 'allTxType',
 				txStatus: '',
 				statusValue: this.getParamsByUrlHash().txStatus ? this.getParamsByUrlHash().txStatus : 'allStatus',
@@ -159,8 +155,8 @@
 				this.status.push(item)
 			})
 			this.getType();
-      this.getTxListByFilterCondition(null, null, true)
-      this.getTxListByFilterCondition(this.currentPageNum, this.pageSize)
+            this.getTxListByFilterCondition(null, null, true)
+            this.getTxListByFilterCondition(this.currentPageNum, this.pageSize)
 
 		},
 		methods: {
@@ -215,8 +211,8 @@
 				this.currentPageNum = 1;
 				sessionStorage.setItem('txpagenum', 1);
 				history.pushState(null, null, `/#${this.$route.path}?txType=${this.TxType}&status=${this.txStatus}&startTime=${this.urlParamsShowStartTime}&endTime=${this.urlParamsShowEndTime}&page=1`);
-        this.getTxListByFilterCondition(null, null, true)
-        this.getTxListByFilterCondition(this.currentPageNum, this.pageSize)
+                this.getTxListByFilterCondition(null, null, true)
+                this.getTxListByFilterCondition(this.currentPageNum, this.pageSize)
 			},
 			resetUrl () {
 				this.value = 'allTxType';
@@ -262,8 +258,8 @@
 			resetFilterCondition () {
 				this.getType();
 				this.resetUrl()
-        this.getTxListByFilterCondition(null, null, true)
-        this.getTxListByFilterCondition(this.currentPageNum, this.pageSize)
+                this.getTxListByFilterCondition(null, null, true)
+                this.getTxListByFilterCondition(this.currentPageNum, this.pageSize)
 			},
 			getType () {
 				switch (this.$route.params.txType) {
@@ -341,182 +337,176 @@
 				}
 				param.beginTime = urlParams.filterStartTime ? urlParams.filterStartTime : '';
 				param.endTime = urlParams.filterEndTime ? urlParams.filterEndTime : '';
-        if(currentPageNum && pageSize){
-          param = { ...param, pageNumber: currentPageNum, pageSize }
-        }
+                if(currentPageNum && pageSize){
+                    param = { ...param, pageNumber: currentPageNum, pageSize }
+                }
 				if (this.type === 'stake') {
 					let res = await getDelegationTxsApi('', param.pageNumber, param.pageSize, useCount, param.txType, param.status, param.beginTime, param.endTime)
 					try {
-            if(useCount){
-              this.count = res.count
-            }
-						if (res && res.data) {
-							this.totalPageNum = Math.ceil((res.data / this.pageSize) === 0 ? 1 : (res.data / this.pageSize));
-							if (res.data) {
-								this.txList = []
-								for (const item of res.data) {
-									if(item) {
-										let msgsNumber = item.msgs ? item.msgs.length : 0, formTO;
-										let amount = '--'
-										if (item.msgs && item.msgs.length === 1) {
-											formTO = TxHelper.getFromAndToAddressFromMsg(item.msgs[0])
-											amount = item.msgs[0] ? await getAmountByTx(item.msgs[0],item.events) : '--'
-										} else {
-											formTO = '--'
-										}
-										let fromMonikers,toMonikers
-										if(item.monikers.length) {
-											item.monikers.map( it => {
-												toMonikers = toMonikers|| it[formTO.to] || ''
-												fromMonikers = fromMonikers || it[formTO.from] || ''
-											})
-										}
-										let isShowMore = false;
-										// const type = item.msgs && item.msgs[0] && item.msgs[0].type;
-										// if(type && type === TX_TYPE.withdraw_delegator_reward) {
-										// 	isShowMore = true
-										// }
-										// const time = Tools.getDisplayDate(item.time)
-										const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) :'--'
-										this.txList.push({
-											Tx_Hash: item.tx_hash,
-											Block: item.height,
-											From: formTO.from || "--",
-											fromMonikers,
-											Amount: amount,
-											To: formTO.to || '--',
-											toMonikers,
-											Tx_Type: (item.msgs || []).map(item=>TX_TYPE_DISPLAY[item.type] || item.type),
-											MsgsNum: msgsNumber,
-											// Tx_Fee: fee && fee.amount ?  this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)} ${fee.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
-											Tx_Fee: fee && fee.amount ?  `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
-											Tx_Signer: item.signers[0] ? item.signers[0] : '--',
-											Tx_Status: TxStatus[item.status],
-											Timestamp: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
-											isShowMore,
-											Time: item.time
-										})
-									}
-								}
-							} else {
-								this.txList = [];
-								this.showNoData = true;
-							}
-							this.flShowLoading = false;
-						} else {
-							this.txList = [];
-							this.showNoData = true;
-							this.flShowLoading = false;
-						}
+                        if(useCount){
+                            if(res?.count){
+                                this.count = res.count;
+                            } else {
+                                this.count = 0;
+                            }  
+                        } else {
+                            this.txList = [];
+                            if (res?.data) {
+                                this.totalPageNum = Math.ceil((res.data / this.pageSize) === 0 ? 1 : (res.data / this.pageSize));
+                                for (const item of res.data) {
+                                    if(item) {
+                                        let msgsNumber = item.msgs ? item.msgs.length : 0, formTO;
+                                        let amount = '--'
+                                        if (item.msgs && item.msgs.length === 1) {
+                                            formTO = TxHelper.getFromAndToAddressFromMsg(item.msgs[0])
+                                            amount = item.msgs[0] ? await getAmountByTx(item.msgs[0],item.events) : '--'
+                                        } else {
+                                            formTO = '--'
+                                        }
+                                        let fromMonikers,toMonikers
+                                        if(item.monikers.length) {
+                                            item.monikers.map( it => {
+                                                toMonikers = toMonikers|| it[formTO.to] || ''
+                                                fromMonikers = fromMonikers || it[formTO.from] || ''
+                                            })
+                                        }
+                                        let isShowMore = false;
+                                        // const type = item.msgs && item.msgs[0] && item.msgs[0].type;
+                                        // if(type && type === TX_TYPE.withdraw_delegator_reward) {
+                                        // 	isShowMore = true
+                                        // }
+                                        // const time = Tools.getDisplayDate(item.time)
+                                        const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) :'--'
+                                        this.txList.push({
+                                            Tx_Hash: item.tx_hash,
+                                            Block: item.height,
+                                            From: formTO.from || "--",
+                                            fromMonikers,
+                                            Amount: amount,
+                                            To: formTO.to || '--',
+                                            toMonikers,
+                                            Tx_Type: (item.msgs || []).map(item=>TX_TYPE_DISPLAY[item.type] || item.type),
+                                            MsgsNum: msgsNumber,
+                                            // Tx_Fee: fee && fee.amount ?  this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)} ${fee.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
+                                            Tx_Fee: fee && fee.amount ?  `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
+                                            Tx_Signer: item.signers[0] ? item.signers[0] : '--',
+                                            Tx_Status: TxStatus[item.status],
+                                            Timestamp: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
+                                            isShowMore,
+                                            Time: item.time
+                                        })
+                                    }
+                                }
+                            }            
+                        }	
 					} catch (e) {
-						this.showNoData = true;
 						console.error(e)
 					}
 				} else if (this.type === 'declaration') {
 					let res = await getValidationTxsApi('', param.pageNumber, param.pageSize, useCount, param.txType, param.status, param.beginTime, param.endTime)
 					try {		
-            if(useCount){
-              this.count = res.count;
-            }
-						if (res && res.data) {
-							this.totalPageNum = Math.ceil((res.data / this.pageSize) === 0 ? 1 : (res.data / this.pageSize));
-							if (res.data) {
-								this.txList = []
-								for (const item of res.data) {
-									if(item) {
-										let msgsNumber = item.msgs ? item.msgs.length : 0
-										const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) :'--';
-										const selfBonded = item.msgs && item.msgs.length === 1 ? item.msgs[0].msg && item.msgs[0].msg.value ? await converCoin(item.msgs[0].msg.value) : '--' : '--';
-										// const time = Tools.getDisplayDate(item.time)
-										const time = Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix'))
+                        if(useCount){
+                            if(res?.count){
+                                this.count = res.count;
+                            } else {
+                                this.count = 0
+                            }
+                        } else {
+                            this.txList = []
+                            if(res?.data){
+                                this.totalPageNum = Math.ceil((res.data / this.pageSize) === 0 ? 1 : (res.data / this.pageSize));
+                                for (const item of res.data) {
+                                    if(item) {
+                                        let msgsNumber = item.msgs ? item.msgs.length : 0
+                                        const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) :'--';
+                                        const selfBonded = item.msgs && item.msgs.length === 1 ? item.msgs[0].msg && item.msgs[0].msg.value ? await converCoin(item.msgs[0].msg.value) : '--' : '--';
+                                        // const time = Tools.getDisplayDate(item.time)
+                                        const time = Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix'))
 
-										let OperatorAddr = item.msgs && item.msgs.length === 1 ? item.msgs[0] && TxHelper.getValidationTxsOperator(item.msgs[0]) : '--'
-										let OperatorMonikers
-										if(item.monikers.length) {
-											item.monikers.map( it => {
-												OperatorMonikers = OperatorMonikers || it[OperatorAddr] || ''
-											})
-										}
-										this.txList.push({
-												Tx_Hash: item.tx_hash,
-												Block: item.height,
-												OperatorAddr,
-												OperatorMonikers: OperatorMonikers || '--',
-												SelfBonded: selfBonded.amount || '--',
-												'Tx_Type': (item.msgs || []).map(item=>TX_TYPE_DISPLAY[item.type] || item.type),
-												MsgsNum: msgsNumber,
-												// 'Tx_Fee': fee && fee.amount ? this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)} ${fee.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
-												'Tx_Fee': fee && fee.amount ? this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
-												'Tx_Signer': item.signers[0] ? item.signers[0] : '--',
-												'Tx_Status': TxStatus[item.status],
-												Timestamp: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
-												Time: item.time
-										})
-									}
-								}
-							} else {
-								this.txList = [];
-								this.showNoData = true;
-							}
-							this.flShowLoading = false;
-						} else {
-							this.txList = [];
-							this.showNoData = true;
-							this.flShowLoading = false;
-						}
+                                        let OperatorAddr = item.msgs && item.msgs.length === 1 ? item.msgs[0] && TxHelper.getValidationTxsOperator(item.msgs[0]) : '--'
+                                        let OperatorMonikers
+                                        if(item.monikers.length) {
+                                            item.monikers.map( it => {
+                                                OperatorMonikers = OperatorMonikers || it[OperatorAddr] || ''
+                                            })
+                                        }
+                                        this.txList.push({
+                                                Tx_Hash: item.tx_hash,
+                                                Block: item.height,
+                                                OperatorAddr,
+                                                OperatorMonikers: OperatorMonikers || '--',
+                                                SelfBonded: selfBonded.amount || '--',
+                                                'Tx_Type': (item.msgs || []).map(item=>TX_TYPE_DISPLAY[item.type] || item.type),
+                                                MsgsNum: msgsNumber,
+                                                // 'Tx_Fee': fee && fee.amount ? this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)} ${fee.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
+                                                'Tx_Fee': fee && fee.amount ? this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
+                                                'Tx_Signer': item.signers[0] ? item.signers[0] : '--',
+                                                'Tx_Status': TxStatus[item.status],
+                                                Timestamp: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
+                                                Time: item.time
+                                        })
+                                    }
+                                }
+                            }
+                        }
 					} catch (e) {
-						this.showNoData = true;
 						console.error(e)
 					}
 				} else if (this.type === 'gov') {
 					try {
-						let res = await getGovTxsApi('', param.pageNumber, param.pageSize, useCount, param.txType, param.status, param.beginTime, param.endTime)
-						this.txList = [];
-            if(useCount){
-              this.count = res.count;
-            }
-						if(res.data && res.data.length > 0) {
-							for (const item of res.data) {
-								let msgsNumber = item.msgs ? item.msgs.length : 0
-								const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) :'--'
-								// const time = Tools.getDisplayDate(item.time)
-								// const time = Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix'))
+						let res = await getGovTxsApi('', param.pageNumber, param.pageSize, useCount, param.txType, param.status, param.beginTime, param.endTime)		
+                        if(useCount){
+                            if(res?.count){
+                                this.count = res.count;
+                            } else {
+                                this.count = 0
+                            }
+                        } else {
+                            this.txList = [];
+                            if(res?.data) {
+                                for (const item of res.data) {
+                                    let msgsNumber = item.msgs ? item.msgs.length : 0
+                                    const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) :'--'
+                                    // const time = Tools.getDisplayDate(item.time)
+                                    // const time = Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix'))
 
-								let amount = null
-								let msg = item.msgs && item.msgs[0]
-								if(msg) {
-									if(msg.type == "deposit") {
-										let unit = msg.msg && msg.msg.amount && msg.msg.amount[0]
-										if(unit) {
-											amount = await converCoin(unit)
-										}
-									} else {
-										let unit = msg.msg && msg.msg.initial_deposit && msg.msg.initial_deposit[0]
-										if(unit) {
-											amount = await converCoin(unit)
-										}
-									}
-								}
-								this.txList.push({
-									Tx_Hash: item.tx_hash,
-									Block: item.height,
-									proposalType: item.ex && item.ex.type,
-									proposalId: item.ex && item.ex.id,
-									proposalTitle: item.ex && item.ex.title && Tools.formatString(item.ex.title, this.proposalTitleNum, '...'),
-									// amount: amount ? `${Tools.toDecimal(amount.amount,this.feeDecimals)} ${amount.denom.toLocaleUpperCase()}` : '--',
-									amount: amount ? `${Tools.toDecimal(amount.amount,this.feeDecimals)}` : '--',
-									'Tx_Type': (item.msgs || []).map(item=>TX_TYPE_DISPLAY[item.type] || item.type),
-									MsgsNum: msgsNumber,
-									// 'Tx_Fee': fee && fee.amount ?  this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)} ${fee.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
-									'Tx_Fee': fee && fee.amount ?  this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
-									'Tx_Signer': item.signers[0] ? item.signers[0] : '--',
-									'Tx_Status': TxStatus[item.status],
-									Timestamp: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
-									proposalLink: item.ex && item.ex.proposal_link,
-									Time: item.time
-								})
-							}
-						}
+                                    let amount = null
+                                    let msg = item.msgs && item.msgs[0]
+                                    if(msg) {
+                                        if(msg.type == "deposit") {
+                                            let unit = msg.msg && msg.msg.amount && msg.msg.amount[0]
+                                            if(unit) {
+                                                amount = await converCoin(unit)
+                                            }
+                                        } else {
+                                            let unit = msg.msg && msg.msg.initial_deposit && msg.msg.initial_deposit[0]
+                                            if(unit) {
+                                                amount = await converCoin(unit)
+                                            }
+                                        }
+                                    }
+                                    this.txList.push({
+                                        Tx_Hash: item.tx_hash,
+                                        Block: item.height,
+                                        proposalType: item.ex && item.ex.type,
+                                        proposalId: item.ex && item.ex.id,
+                                        proposalTitle: item.ex && item.ex.title && Tools.formatString(item.ex.title, this.proposalTitleNum, '...'),
+                                        // amount: amount ? `${Tools.toDecimal(amount.amount,this.feeDecimals)} ${amount.denom.toLocaleUpperCase()}` : '--',
+                                        amount: amount ? `${Tools.toDecimal(amount.amount,this.feeDecimals)}` : '--',
+                                        'Tx_Type': (item.msgs || []).map(item=>TX_TYPE_DISPLAY[item.type] || item.type),
+                                        MsgsNum: msgsNumber,
+                                        // 'Tx_Fee': fee && fee.amount ?  this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)} ${fee.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
+                                        'Tx_Fee': fee && fee.amount ?  this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
+                                        'Tx_Signer': item.signers[0] ? item.signers[0] : '--',
+                                        'Tx_Status': TxStatus[item.status],
+                                        Timestamp: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
+                                        proposalLink: item.ex && item.ex.proposal_link,
+                                        Time: item.time
+                                    })
+                                }
+                            }
+                        }
+						
 					} catch(e) {
 						console.error(e)
 					}
