@@ -104,10 +104,10 @@
                 IBC: 'IBC',
                 HashLock: 'Hash Lock',
                 PickerOptions: {
-					      disabledDate: (time) => {
-						      return time.getTime() < new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
-					      }
-				},
+					        disabledDate: (time) => {
+						        return time.getTime() < new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
+					        }
+				        },
                 TX_TYPE,
                 TX_STATUS,
                 transactionArray : [],
@@ -138,7 +138,7 @@
                 txStatus : '',
                 pageNum: pageNum ? pageNum : 1,
                 pageSize: pageSize ? pageSize : 30,
-                txTypeArray:['']
+                txTypeArray:[''],
             }
         },
         mounted(){
@@ -149,7 +149,7 @@
             getFilterTxs(param){
                 this.statusValue = Number(this.statusValue || 0);
                 this.pageNum = 1;
-                let url = `/#/txs?pageNum=${this.pageNum}&pageSize=${this.pageSize}&useCount=true`;
+                let url = `/#/txs?pageNum=${this.pageNum}&pageSize=${this.pageSize}`;
                 // if(this.txType){
                 //     url += `&txType=${this.txType}`;
                 // }
@@ -166,7 +166,8 @@
                     url += `&endTime=${this.endTime}`;
                 }
                 param == 'init' ? history.replaceState(null, null, url) : history.pushState(null, null, url);
-                this.getTxList();
+                this.getTxListData(null, null, true)
+                this.getTxListData(this.pageNum, this.pageSize)
             },
             /*filterTxByTxType(e){
                 if(e === 'allTxType' || e === undefined){
@@ -185,19 +186,23 @@
                 this.endTime = '';
                 history.pushState(null, null, `/#/txs?pageNum=${this.pageNum}&pageSize=${this.pageSize}&useCount=true`);
             },
-            async getTxList(){
-                const {txType, status, beginTime, endTime, pageNum, pageSize} = Tools.urlParser();
-                const params = {
-                    txType,status, beginTime, endTime, pageNum, pageSize,
-                    useCount:true
-                };
-
+            async getTxListData(pageNum, pageSize, useCount = false){
+                const {txType, status, beginTime, endTime} = Tools.urlParser();
+                let params = {txType, status, beginTime, endTime};
+                if(pageNum && pageSize){
+                  params = { ...params, pageNum, pageSize }
+                }
+                if(useCount){
+                  params = { ...params, useCount }
+                }
                 try{
                     const res = await getTxList(params);
                     if(this.pageNum === Number(res.pageNum)){
                       this.transactionArray = res.data;
-                      this.txCount = res.count;
                     }
+                    if(useCount){
+			                this.txCount = res.count
+		                }
                 }catch (e) {
                     console.error(e);
                     // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
@@ -251,7 +256,8 @@
                 this.pageNum = 1;
                 this.pageSize = 30;
                 this.resetUrl();
-                this.getTxList()
+                this.getTxListData(null, null, true)
+                this.getTxListData(this.pageNum, this.pageSize)
                 this.txTypeArray=['']
             },
             /*getParamsByUrlHash(){
@@ -292,7 +298,7 @@
                 this.endTime = urlParams.urlParamShowEndTime ? urlParams.urlParamShowEndTime : '';*/
 
                 const {txType, status, beginTime, endTime, pageSize} = Tools.urlParser();
-                let url = `/#/txs?pageNum=${pageNum}&pageSize=${pageSize}&useCount=true`;
+                let url = `/#/txs?pageNum=${pageNum}&pageSize=${pageSize}&useCount=false`;
                 if(txType){
                     url += `&txType=${txType}`;
                     this.txTypeArray = TxHelper.getTxTypeArray(this.txTypeOption,txType)
@@ -320,7 +326,7 @@
                     this.endTime = ''
                 }
                 history.pushState(null, null, url);
-                this.getTxList();
+                this.getTxListData(this.pageNum, this.pageSize);
             },
             formatTxHash(TxHash){
                 if(TxHash){
@@ -338,274 +344,293 @@
 </script>
 
 <style scoped lang="scss">
-    a {
-        color: $t_link_c !important;
-    }
+a {
+    color: $t_link_c !important;
+}
 
-    .tx_content_container {
-        width:100%;
-        @media screen and (min-width: 910px){
-            .tx_content_wrap{
-                max-width: 12.3rem;
-                .tx_content_header_wrap{
-                    display: flex;
-                    justify-content: flex-start;
-                }
-            }
-
-        }
-        @media screen and (max-width: 910px){
-            .tx_content_wrap{
-                width:100%;
-                .tx_content_header_wrap{
-                    display: flex;
-                    flex-direction:column;
-                    align-items: flex-start;
-
-                    .tx_type_mobile_content{
-                        margin-bottom:0.1rem;
-                        &:last-child{
-                            width:100%;
-                            justify-content: flex-end;
-                            .search_btn{
-                                margin-left:0;
-                            }
-                        }
-                        .tx_type_transactions {
-                            margin-right: 0.26rem !important;
-                        }
-                    }
-                }
-            }
-
-        }
+.tx_content_container {
+    width: 100%;
+    @media screen and (min-width: 910px) {
         .tx_content_wrap {
-            margin: 0 auto;
-            box-sizing: border-box;
-            padding:0 0.15rem;
-            .service_tx_to_container{
-                .service_tx_muti_to_container {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: flex-start;
-                    .service_tx_muti_to_ellipsis {
-                        color: $t_link_c;
+            max-width: 12.3rem;
+            .tx_content_header_wrap {
+                display: flex;
+                justify-content: flex-start;
+            }
+        }
+    }
+    @media screen and (max-width: 910px) {
+        .tx_content_wrap {
+            width: 100%;
+            .tx_content_header_wrap {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+
+                .tx_type_mobile_content {
+                    margin-bottom: 0.1rem;
+                    &:last-child {
+                        width: 100%;
+                        justify-content: flex-end;
+                        .search_btn {
+                            margin-left: 0;
+                        }
+                    }
+                    .tx_type_transactions {
+                        margin-right: 0.26rem !important;
                     }
                 }
             }
-            .service_tx_status {
-                position: relative;
-                top: 0.02rem;
-                left: -0.04rem;
-                width:0.13rem;
-                height:0.13rem;
+        }
+    }
+    @media screen and (max-width: 768px) {
+        .tx_content_wrap {
+            .pagination_content {
+                .tooltip_box {
+                    text-align: end;
+                }
+                .common_pagination_content {
+                    border: 0;
+                    text-align: end;
+                }
             }
-            .tx_content_header_wrap {
-                padding: 0.3rem 0 0.13rem 0;
-                .tx_transaction_content_hash{
-                    display: flex;
-                    align-items: center;
+        }
+    }
+    @media screen and (min-width: 768px) {
+        .tx_content_wrap {
+            .pagination_content {
+                display: flex;
+                justify-content: space-between;
+            }
+        }
+    }
+    .tx_content_wrap {
+        margin: 0 auto;
+        box-sizing: border-box;
+        padding: 0 0.15rem;
+        .service_tx_to_container {
+            .service_tx_muti_to_container {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                .service_tx_muti_to_ellipsis {
+                    color: $t_link_c;
                 }
-                .total_tx_content {
-                    // height: 0.64rem;
-                    line-height: 0.4rem;
-                    color: $t_first_c;
-                    font-size: $s18;
-                    font-weight: bold;
-                    margin:0rem 0.2rem 0rem 0rem;
-                   //text-indent: 0.2rem;
-                }
-                /*.filer_content {
+            }
+        }
+        .service_tx_status {
+            position: relative;
+            top: 0.02rem;
+            left: -0.04rem;
+            width: 0.13rem;
+            height: 0.13rem;
+        }
+        .tx_content_header_wrap {
+            padding: 0.3rem 0 0.13rem 0;
+            .tx_transaction_content_hash {
+                display: flex;
+                align-items: center;
+            }
+            .total_tx_content {
+                // height: 0.64rem;
+                line-height: 0.4rem;
+                color: $t_first_c;
+                font-size: $s18;
+                font-weight: bold;
+                margin: 0rem 0.2rem 0rem 0rem;
+                //text-indent: 0.2rem;
+            }
+            /*.filer_content {
                     display: flex;
                     align-items: center;*/
-                    .tx_type_mobile_content {
-                        display: flex;
-                        align-items: center;
-                        .tooltip_content {
-							padding: 0 0 0 0.1rem;
+            .tx_type_mobile_content {
+                display: flex;
+                align-items: center;
+                .tooltip_content {
+                    padding: 0 0 0 0.1rem;
+                }
+                ::v-deep.el-cascader {
+                    width: 1.3rem;
+                    margin-right: 0.1rem;
+                    .el-input {
+                        input::-webkit-input-placeholder {
+                            /* 使用webkit内核的浏览器 */
+                            color: $t_first_c;
                         }
-                        /deep/.el-cascader{
-                            width: 1.3rem;
-                            margin-right: 0.1rem;
-                            .el-input{
-                                input::-webkit-input-placeholder{   /* 使用webkit内核的浏览器 */
-                                    color: $t_first_c;
-                                }
-                                input:-moz-placeholder{    /* Firefox版本4-18 */
-                                    color: $t_first_c;
-                                }
-                                input::-moz-placeholder{    /* Firefox版本19+ */
-                                    color: $t_first_c;
-                                }
-                                input:-ms-input-placeholder{   /* IE浏览器 */
-                                    color: $t_first_c;
-                                }
-                                .el-input__inner{
-                                    padding-left: 0.07rem;
-                                    height: 0.32rem;
-                                    font-size: $s14 !important;
-                                    line-height: 0.32rem;
-                                    &::-webkit-input-placeholder{
-                                        font-size: $s14 !important;
-                                    }
-                                }
-                                .el-input__inner:focus{
-                                    border-color: $theme_c !important;
-                                }
-                                .el-input__suffix{
-                                    .el-input__suffix-inner{
-                                        .el-input__icon{
-                                            line-height: 0.32rem;
-                                        }
-                                    }
-                                }
-                            }
-                            .is-focus{
-                                .el-input__inner{
-                                    border-color: $theme_c !important;
-                                }
+                        input:-moz-placeholder {
+                            /* Firefox版本4-18 */
+                            color: $t_first_c;
+                        }
+                        input::-moz-placeholder {
+                            /* Firefox版本19+ */
+                            color: $t_first_c;
+                        }
+                        input:-ms-input-placeholder {
+                            /* IE浏览器 */
+                            color: $t_first_c;
+                        }
+                        .el-input__inner {
+                            padding-left: 0.07rem;
+                            height: 0.32rem;
+                            font-size: $s14 !important;
+                            line-height: 0.32rem;
+                            &::-webkit-input-placeholder {
+                                font-size: $s14 !important;
                             }
                         }
-                        /deep/ .el-select {
-                            width: 1.3rem;
-                            margin-right: 0.1rem;
-                            .el-input {
-                                .el-input__inner {
-                                    padding-left: 0.07rem;
-                                    height: 0.32rem;
-                                    font-size: $s14 !important;
-                                    line-height: 0.32rem;
-                                    &::-webkit-input-placeholder {
-                                        font-size: $s14 !important;
-                                    }
-                                }
-                                .el-input__inner:focus {
-                                    border-color: $theme_c !important;
-                                }
-                                .el-input__suffix {
-                                    .el-input__suffix-inner {
-                                        .el-input__icon {
-                                            line-height: 0.32rem;
-                                        }
-                                    }
-                                }
-                            }
-                            .is-focus {
-                                .el-input__inner {
-                                    border-color: $theme_c !important;
-                                }
-                            }
-
-
+                        .el-input__inner:focus {
+                            border-color: $theme_c !important;
                         }
-                        /deep/ .el-date-editor {
-                            width: 1.3rem;
-                            .el-icon-circle-close {
-                                display: none !important;
-                            }
-                            .el-input__inner {
-                                height: 0.32rem;
-                                padding-left: 0.07rem;
-                                padding-right: 0;
-                                line-height: 0.32rem;
-                                &::-webkit-input-placeholder {
-                                    font-size: $s14 !important;
-                                }
-                                &:focus {
-                                    border-color: $theme_c;
-                                }
-                            }
-                            .el-input__prefix {
-                                right: 5px;
-                                left: 1rem;
+                        .el-input__suffix {
+                            .el-input__suffix-inner {
                                 .el-input__icon {
                                     line-height: 0.32rem;
                                 }
                             }
                         }
-                        .joint_mark {
-                            margin: 0 0.08rem;
+                    }
+                    .is-focus {
+                        .el-input__inner {
+                            border-color: $theme_c !important;
                         }
-                        .reset_btn {
-                            background: $bg_button_c;
-                            color: $t_button_c;
-                            border-radius: 0.04rem;
-                            margin-left: 0.1rem;
-                            cursor: pointer;
-                            i {
-                                padding: 0.08rem;
-                                font-size: $s14;
-                                line-height: 1;
-                                display: inline-block;
+                    }
+                }
+                ::v-deep .el-select {
+                    width: 1.3rem;
+                    margin-right: 0.1rem;
+                    .el-input {
+                        .el-input__inner {
+                            padding-left: 0.07rem;
+                            height: 0.32rem;
+                            font-size: $s14 !important;
+                            line-height: 0.32rem;
+                            &::-webkit-input-placeholder {
+                                font-size: $s14 !important;
                             }
                         }
-                        .search_btn {
-                            cursor: pointer;
-                            background: $bg_button_c;
-                            margin-left: 0.1rem;
-                            color: $t_button_c;
-                            border-radius: 0.04rem;
-                            padding: 0.05rem 0.18rem;
-                            font-size: $s14;
-                            line-height: 0.2rem;
-                            white-space: nowrap;
+                        .el-input__inner:focus {
+                            border-color: $theme_c !important;
+                        }
+                        .el-input__suffix {
+                            .el-input__suffix-inner {
+                                .el-input__icon {
+                                    line-height: 0.32rem;
+                                }
+                            }
                         }
                     }
-                //}
-            }
-            .status_icon{
-                width:0.13rem;
-                height:0.13rem;
-                margin-right:0.05rem;
-            }
-            .pagination_content {
-                display: flex;
-                justify-content: space-between;
-                margin: 0.1rem 0 0.2rem 0;
-                .tooltip_box{
-                  display: flex;
-                  align-items: center;
-                  background-color: white;
-                  padding: 0.05rem 0.2rem;
-                  font-size: $s12;
-                  color: #8d8b8b;
-                  .tooltip_title{
-                    margin-right: 0.24rem;
-                  }
-                  .tooltip_title_box{
-                    display: flex;
-                  }
-                   .tooltip_title_IBC {
-                      margin-right: 0.24rem;
-                      display: flex;
-                      align-items: center;
-                      position: relative;
-                      &::before{
-                        left: -0.12rem;
-                        content: ' ';
-                        position: absolute;
-                        height: 0.08rem;
-                        width: 0.08rem;
-                        border-radius: 0.04rem;
-                        background-color: #D47D78;
-                      }
+                    .is-focus {
+                        .el-input__inner {
+                            border-color: $theme_c !important;
+                        }
                     }
-                    .tooltip_title_HTLT{
-                      display: flex;
-                      align-items: center;
-                      position: relative;
-                      &::before{
+                }
+                ::v-deep .el-date-editor {
+                    width: 1.3rem;
+                    .el-icon-circle-close {
+                        display: none !important;
+                    }
+                    .el-input__inner {
+                        height: 0.32rem;
+                        padding-left: 0.07rem;
+                        padding-right: 0;
+                        line-height: 0.32rem;
+                        &::-webkit-input-placeholder {
+                            font-size: $s14 !important;
+                        }
+                        &:focus {
+                            border-color: $theme_c;
+                        }
+                    }
+                    .el-input__prefix {
+                        right: 5px;
+                        left: 1rem;
+                        .el-input__icon {
+                            line-height: 0.32rem;
+                        }
+                    }
+                }
+                .joint_mark {
+                    margin: 0 0.08rem;
+                }
+                .reset_btn {
+                    background: $bg_button_c;
+                    color: $t_button_c;
+                    border-radius: 0.04rem;
+                    margin-left: 0.1rem;
+                    cursor: pointer;
+                    i {
+                        padding: 0.08rem;
+                        font-size: $s14;
+                        line-height: 1;
+                        display: inline-block;
+                    }
+                }
+                .search_btn {
+                    cursor: pointer;
+                    background: $bg_button_c;
+                    margin-left: 0.1rem;
+                    color: $t_button_c;
+                    border-radius: 0.04rem;
+                    padding: 0.05rem 0.18rem;
+                    font-size: $s14;
+                    line-height: 0.2rem;
+                    white-space: nowrap;
+                }
+            }
+            //}
+        }
+        .status_icon {
+            width: 0.13rem;
+            height: 0.13rem;
+            margin-right: 0.05rem;
+        }
+        .pagination_content {
+            margin: 0.1rem 0 0.2rem 0;
+            .tooltip_box {
+                display: flex;
+                align-items: center;
+                background-color: white;
+                padding: 0.05rem 0.2rem;
+                font-size: $s12;
+                color: #8d8b8b;
+                .tooltip_title {
+                    margin-right: 0.24rem;
+                }
+                .tooltip_title_box {
+                    display: flex;
+                }
+                .tooltip_title_IBC {
+                    margin-right: 0.24rem;
+                    display: flex;
+                    align-items: center;
+                    position: relative;
+                    &::before {
                         left: -0.12rem;
                         content: ' ';
                         position: absolute;
                         height: 0.08rem;
                         width: 0.08rem;
                         border-radius: 0.04rem;
-                        background-color: #51A3A3;
-                      }
+                        background-color: #d47d78;
+                    }
+                }
+                .tooltip_title_HTLT {
+                    display: flex;
+                    align-items: center;
+                    position: relative;
+                    &::before {
+                        left: -0.12rem;
+                        content: ' ';
+                        position: absolute;
+                        height: 0.08rem;
+                        width: 0.08rem;
+                        border-radius: 0.04rem;
+                        background-color: #51a3a3;
                     }
                 }
             }
         }
     }
+}
 </style>

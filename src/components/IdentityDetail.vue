@@ -157,7 +157,9 @@
         },
         mounted(){
             this.getIdentityDetail();
+            this.getPubkeyListCount();
             this.getPubkeyList();
+            this.getCertificateListCount();
             this.getCertificateList();
             this.getTxList();
         },
@@ -194,9 +196,8 @@
             },
             async getPubkeyList(){
                 try {
-                    const res = await getPubkeyListByIdentity(this.id, this.pubkeyListPageNum, this.pubkeyListPageSize, true);
-                    if(res){
-                        this.pubkeyListCount = res.count;
+                    const res = await getPubkeyListByIdentity(this.id, this.pageNum, this.pageSize, false);
+                    if(res?.data.length > 0){
                         this.pubkeyList = res.data.map((item) =>{
                             let result = {
                                 pubkey: (item.pubkey || {}).pubkey || '',
@@ -206,16 +207,29 @@
                             };
                             return result;
                         });
+                    } else {
+                      this.pubkeyList = []
                     }
                 } catch (e) {
                     console.error(e);
                 }
-            },
+            },    
+            async getPubkeyListCount(){
+              try {
+                  const res = await getPubkeyListByIdentity(this.id, null, null, true);
+                  if(res?.count){
+                    this.pubkeyListCount = res.count;
+                  } else {
+                    this.pubkeyListCount = 0
+                  }
+              } catch (e) {
+                  console.error(e);
+              }
+            },         
             async getCertificateList(){
                 try {
-                    const res = await getCertificateListByIdentity(this.id, this.certificateListPageNum, this.certificateListPageSize, true);
-                    if(res){
-                        this.certificateListCount = res.count;
+                    const res = await getCertificateListByIdentity(this.id, this.pageNum, this.pageSize, false);
+                    if(res?.data.length > 0){           
                         this.certificateList = res.data.map((item) =>{
                             let result = {
                                 certificate: item.certificate || '--',
@@ -224,10 +238,24 @@
                             };
                             return result;
                         });
+                    } else {
+                      this.certificateList = []
                     }
                 } catch (e) {
                     console.error(e);
                 }
+            },
+            async getCertificateListCount(){
+              try {
+                  const res = await getCertificateListByIdentity(this.id, null, null,true);
+                  if(res?.count){
+                    this.certificateListCount = res.count;
+                  } else {
+                    this.certificateListCount = 0
+                  }
+              } catch (e) {
+                  console.error(e);
+              }
             },
             async getTxList(){
                 try {
@@ -263,7 +291,7 @@
     a {
         color: $t_link_c !important;
     }
-    /deep/ .cell {
+    ::v-deep .cell {
         padding: 0 0.08rem;
     }
     .identity_detail_container {
@@ -332,7 +360,7 @@
                     margin-bottom: 0;
                 }
             }
-            /deep/ .identity_detail_bg{
+            ::v-deep .identity_detail_bg{
                 margin-top:0.48rem;
                 background: $bg_white_c;
                 padding:0.25rem;
