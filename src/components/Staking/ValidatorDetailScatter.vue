@@ -86,9 +86,6 @@
 			}).catch(e => {
 				console.error(e)
 			});
-			setTimeout(() => {
-				this.getValidatorCommissionInfo()
-			},300)
 		},
 		methods:{
 			async initCharts(){
@@ -233,62 +230,62 @@
 </script>
 
 <style scoped lang="scss">
-	.validator_detail_scatter_container{
-		min-height: 2.2rem;
-		width: 100%;
-		.validator_detail_scatter_content_wrap{
-			width: 100%;
-			#validator_detail_scatter_content{
-				height: 2.2rem;
-				margin-right: 0.7rem;
-				margin-top: 0.2rem;
-				min-width: 5rem;
-			}
-		}
-		.validator_chart_tip{
-			display: flex;
-			padding-left: 0.2rem;
-			margin-top: 0.2rem;
-			.current_chart_tip{
-				display: flex;
-				align-items: center;
-				.current_chart_color_block{
-					display: inline-block;
-					width: 0.14rem;
-					height: 0.14rem;
-					border-radius: 0.07rem;
-					opacity: 0.5;
-				}
-				.current_moniker{
-					margin-left: 0.05rem;
-				}
-			}
-			.other_chart_tip{
-				margin-left: 0.4rem;
-				display: flex;
-				align-items: center;
-				.other_chart_color_block{
-					margin-right: 0.05rem;
-					display: inline-block;
-					width: 0.14rem;
-					height: 0.14rem;
-					border-radius: 0.07rem;
-					opacity: 0.5;
-					background: $theme_c;
-				}
-			}
-		}
-	}
-	@media screen and (max-width: 750px){
-		.validator_detail_scatter_container{
-			width: 100%;
-			.validator_detail_scatter_content_wrap{
-				width: 100%;
-				overflow-x: auto;
-				#validator_detail_scatter_content{
-					margin-right: 0;
-				}
-			}
-		}
-	}
+.validator_detail_scatter_container {
+    min-height: 2.2rem;
+    width: 100%;
+    .validator_detail_scatter_content_wrap {
+        width: 100%;
+        #validator_detail_scatter_content {
+            height: 2.2rem;
+            margin-right: 0.7rem;
+            margin-top: 0.2rem;
+            min-width: 5rem;
+        }
+    }
+    .validator_chart_tip {
+        display: flex;
+        padding-left: 0.2rem;
+        margin-top: 0.2rem;
+        .current_chart_tip {
+            display: flex;
+            align-items: center;
+            .current_chart_color_block {
+                display: inline-block;
+                width: 0.14rem;
+                height: 0.14rem;
+                border-radius: 0.07rem;
+                opacity: 0.5;
+            }
+            .current_moniker {
+                margin-left: 0.05rem;
+            }
+        }
+        .other_chart_tip {
+            margin-left: 0.4rem;
+            display: flex;
+            align-items: center;
+            .other_chart_color_block {
+                margin-right: 0.05rem;
+                display: inline-block;
+                width: 0.14rem;
+                height: 0.14rem;
+                border-radius: 0.07rem;
+                opacity: 0.5;
+                background: $theme_c;
+            }
+        }
+    }
+}
+@media screen and (max-width: 750px) {
+    .validator_detail_scatter_container {
+        width: 100%;
+        .validator_detail_scatter_content_wrap {
+            width: 100%;
+            overflow-x: auto;
+            #validator_detail_scatter_content {
+                margin-right: 0;
+            }
+        }
+    }
+}
 </style>

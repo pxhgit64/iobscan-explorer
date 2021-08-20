@@ -90,7 +90,6 @@
                 <template slot-scope="scope">
                     <el-tooltip  v-if="isValid(scope.row.to) && Number(scope.row.msgCount) <= 1" :content="String(scope.row.to)"
                                 placement="top"
-                                :key="Math.random()"
                                 :disabled="!isValid(scope.row.to) || Array.isArray(scope.row.to)">
                         <span v-if="typeof scope.row.to=='string' && isValid(scope.row.to) && address !== scope.row.to"
                               class="address_link"
@@ -342,70 +341,71 @@
 </script>
 
 <style scoped lang="scss">
-    /deep/.columns-fit {
-        // .el-table__header-wrapper, .el-table__body-wrapper {
-        //     visibility: hidden;
-        // }
+::v-deep.columns-fit {
+    // .el-table__header-wrapper, .el-table__body-wrapper {
+    //     visibility: hidden;
+    // }
 
-        // &.visible {
-        //     .el-table__header-wrapper, .el-table__body-wrapper {
-        //         visibility: visible;
-        //     }
-        // }
+    // &.visible {
+    //     .el-table__header-wrapper, .el-table__body-wrapper {
+    //         visibility: visible;
+    //     }
+    // }
 
-        .el-table__body-wrapper {
-            overflow: auto;
-        }
+    .el-table__body-wrapper {
+        overflow: auto;
+    }
 
-        td>.cell {
-            display: inline-block;
-            white-space: nowrap;
-            width: auto;
-            overflow: auto;
-        }
+    td > .cell {
+        display: inline-block;
+        white-space: nowrap;
+        width: auto;
+        overflow: auto;
     }
-    a {
-        color: $t_link_c !important;
+}
+a {
+    color: $t_link_c !important;
+}
+::v-deep .hash_status {
+    .cell {
+        // margin-left: 0.05rem;
     }
-    /deep/ .hash_status {
-        .cell {
-            // margin-left: 0.05rem;
-        }
-    }
-    .tx_list_content{
-        .tx_transaction_content_hash {
-            display: flex;
-            .status {
-                .status_icon{
-                    width:0.13rem;
-                    height:0.13rem;
-                    margin-right:0.05rem;
-                }
+}
+.tx_list_content {
+    .tx_transaction_content_hash {
+        display: flex;
+        .status {
+            .status_icon {
+                width: 0.13rem;
+                height: 0.13rem;
+                margin-right: 0.05rem;
             }
         }
-        .pagination_content {
-            display: flex;
-            justify-content: flex-end;
-            margin: 0.1rem 0 0.2rem 0;
-        }
-        /deep/ .cell {
-            // padding: 0 0.04rem;
-        }
     }
-    /deep/ .hash_status .cell {
-        padding-left:20px;
-        padding-right: 0px;
+    .pagination_content {
+        display: flex;
+        justify-content: flex-end;
+        margin: 0.1rem 0 0.2rem 0;
     }
-    /deep/ .amount  .cell {
-        padding-right:10px;
+    ::v-deep .cell {
+        // padding: 0 0.04rem;
     }
-    /deep/ .from .cell {
-        padding-left:40px;
-    }
-    /deep/ .fee  .cell {
-        padding-right: 28px;
-    }
-    /deep/ .block  .cell {
-        padding-left: 0px;
-    }
+}
+::v-deep .hash_status .cell {
+    padding-left: 20px;
+    padding-right: 0px;
+}
+::v-deep .amount .cell {
+    padding-right: 10px;
+    padding-left: 0px
+}
+::v-deep .from .cell {
+    padding-left: 40px;
+}
+::v-deep .fee .cell {
+    padding-right: 28px;
+}
+::v-deep .block .cell {
+    padding-left: 0px;
+}
 </style>

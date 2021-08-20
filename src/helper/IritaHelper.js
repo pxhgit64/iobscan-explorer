@@ -6,6 +6,14 @@ import { COSMOS_ADDRESS_PREFIX , IRIS_ADDRESS_PREFIX} from "@/constant";
 import {cfg} from "@/config";
 import md5 from "js-md5";
 
+export function validatePositiveInteger(value){
+	if(+value === 0 || value && +value < 1){
+    return 1
+	} else {
+    return value
+  }
+}
+
 async function md5Fun(hash){
   return md5(hash.slice(5, -10).slice(3, -8))
 }
@@ -160,7 +168,6 @@ export async function addressRoute (address) {
     if (addressPrefix.iva) {
         let length = addressPrefix.iva.length
         if(address) {
-            console.log(cfg)
             let isIris = addressPrefix.iaa === IRIS_ADDRESS_PREFIX,
                 isCosmos = addressPrefix.iaa === COSMOS_ADDRESS_PREFIX;
             if (address.substring(0, length) === addressPrefix.iva) {

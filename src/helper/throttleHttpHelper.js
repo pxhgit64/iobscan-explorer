@@ -14,7 +14,8 @@ export class throttleHttpHelper {
     if(this.arr.length < this.stackLength){
       return true
     } else {
-      return false
+      this.cacheMap.clear()
+      return true
     }
   }
 
