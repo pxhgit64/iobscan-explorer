@@ -217,8 +217,7 @@
                         <el-table-column class-name="to" :min-width="ColumnMinWidth.address" :label="$t('ExplorerLang.table.to')">
                             <template slot-scope="scope">
                                 <el-tooltip placement="top" :content="String(scope.row.to)"
-                                            :key="Math.random()"
-                                            :disabled="!isValid(scope.row.to) || Array.isArray(scope.row.to)">
+                                        :disabled="!isValid(scope.row.to) || Array.isArray(scope.row.to)">
                                     <router-link v-if="typeof scope.row.to=='string' && isValid(scope.row.to)" :to="`/address/${scope.row.to}`">
                                         {{formatAddress(scope.row.to)}}
                                     </router-link>
@@ -329,12 +328,13 @@
                 LargeStringMinHeight: 80,
                 LargeStringLineHeight:16,
                 mainTokenSymbol:'',
-
             }
         },
         mounted(){
             this.getServiceInformation();
+            this.getServiceBindingListCount();
             this.getServiceBindingList();
+            this.getServiceTransactionCount();
             this.getServiceTransaction();
             this.getAllTxType();
             this.setMainToken();
@@ -376,7 +376,7 @@
             },
             async getServiceBindingList(){
                 try {
-                    const serviceList = await getServiceBindingTxList(this.$route.query.serviceName, this.providerPageNum, this.providerPageSize);
+                    const serviceList = await getServiceBindingTxList(this.$route.query.serviceName, this.providerPageNum, this.providerPageSize,false);
                     if(serviceList && serviceList.data){
                         let bindings = await getServiceBindingByServiceName(this.$route.query.serviceName);
                         if(bindings.result){
@@ -396,7 +396,6 @@
                             })
                         }
                         this.serviceList = serviceList.data;
-                        this.providerCount = Number(serviceList.count);
                         this.providerPageSize = Number(serviceList.pageSize);
                         this.providerPageNum = Number(serviceList.pageNum);
                     }
@@ -406,6 +405,17 @@
                 }
 
 
+            },
+             async getServiceBindingListCount(){
+                try {
+                  const serviceList = await getServiceBindingTxList(this.$route.query.serviceName, null,null,true);
+                  if(serviceList?.count){
+                    this.providerCount = Number(serviceList.count);
+                  }
+                } catch (e) {
+                    console.error(e)
+                    // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
+                }
             },
             async providerPageChange(pageNum){
                 this.providerPageNum = pageNum;
@@ -418,8 +428,9 @@
                         this.txType,
                         this.txStatus,
                         this.$route.query.serviceName,
-                        this.txPageNum,
-                        this.txPageSize
+                        this.txPageNum, 
+                        this.txPageSize, 
+                        false
                     );
                     if(this.txPageNum === Number(res.pageNum)){
                       let fees = [];
@@ -434,7 +445,6 @@
                       if(fees && fees.length > 0 && this.isShowFee) {
                           fee = await Promise.all(fees);
                       }
-                      this.txCount = res.count;
                       this.transactionArray = res.data.map((item,index) =>{
                         let addrObj = TxHelper.getFromAndToAddressFromMsg(item.msgs[0]);
                         let requestContextId = TxHelper.getContextId(item.msgs[0], item.events) || '--';
@@ -463,6 +473,25 @@
                     // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
                 }
             },
+            async getServiceTransactionCount(){
+                try {
+                  const res = await getServiceTxList(
+                      this.txType,
+                      this.txStatus,
+                      this.$route.query.serviceName,
+                      null, 
+                      null, 
+                      true
+                  );
+                  if(res?.count){
+                    this.txCount = res.count;
+                  } else {
+                    this.txCount = 0
+                  }
+                } catch (e) {
+                    console.error(e)
+                }
+            },
             async getAllTxType(){
                 try {
                     const res = await getAllServiceTxTypes();
@@ -482,13 +511,15 @@
                 this.txStatus = this.status;
                 this.txType = this.type;
                 this.txPageNum = 1;
+                this.getServiceTransactionCount();
                 this.getServiceTransaction();
             },
             resetFilterCondition(){
                 this.txStatus = this.status = '';
                 this.txType = this.type = '';
-                this.txPageNum = 1;
-                this.getServiceTransaction();
+                this.txPageNum = 1;  
+                this.getServiceTransactionCount();
+                this.getServiceTransaction();          
             },
             formatTxHash(TxHash){
                 if(TxHash){
@@ -526,7 +557,7 @@
                 .service_information_transaction_condition_count {
 
                 }
-                /deep/ .el-select {
+                ::v-deep .el-select {
 
                 }
                 .search_btn {
@@ -648,7 +679,7 @@
                         font-weight: 600;
 
                     }
-                    /deep/ .el-select {
+                    ::v-deep .el-select {
                         width: 1.3rem;
                         margin-right: 0.22rem;
                         .el-input {
@@ -800,7 +831,7 @@
                         .service_information_transaction_condition_count {
                             margin-bottom: 0.1rem;
                         }
-                        /deep/ .el-select {
+                        ::v-deep .el-select {
                             width: 100%;
                             margin-bottom: 0.1rem;
 

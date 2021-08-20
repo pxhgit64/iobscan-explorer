@@ -192,12 +192,13 @@
         },
         mounted(){
             this.getServiceInfo();
-            this.getRespondTxList()
+            this.getRespondTxListCount();
+            this.getRespondTxList();
         },
         methods : {
             pageChange(pageNum){
-                this.txPageNum = pageNum;
-                this.getRespondTxList();
+              this.txPageNum = pageNum;
+              this.getRespondTxList();
             },
             async getServiceInfo(){
                 try {
@@ -234,8 +235,9 @@
                     const res = await getRespondServiceRecord(
                         this.$route.params.serviceName,
                         this.$route.params.provider,
-                        this.txPageNum,
-                        this.txPageSize
+                        this.txPageNum, 
+                        this.txPageSize, 
+                        false                      
                     );
                     this.txList = res.data.map((item) =>{
                         return {
@@ -249,9 +251,29 @@
                             respondStatus : item.respondStatus,
                         };
                     });
-                    this.txCount = res.count;
                     this.txPageNum = Number(res.pageNum);
                     this.txPageSize = Number(res.pageSize);
+                } catch (e) {
+                    console.error(e);
+                    this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
+                }
+
+            },
+            async getRespondTxListCount(){
+                try {
+                    const res = await getRespondServiceRecord(
+                        this.$route.params.serviceName,
+                        this.$route.params.provider,
+                        null, 
+                        null, 
+                        true                      
+                    );
+                    if(res?.count){
+                      this.txCount = res.count;
+                    } else {
+                      this.txCount = 0
+                    }
+
                 } catch (e) {
                     console.error(e);
                     this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
@@ -410,7 +432,7 @@
                         font-weight: 600;
 
                     }
-                    /deep/ .el-select {
+                    ::v-deep .el-select {
                         width: 1.3rem;
                         margin-right: 0.22rem;
                         .el-input {

@@ -161,7 +161,7 @@ export default {
     a {
       color: $t_link_c !important;
     }
-    /deep/ .hash_status {
+    ::v-deep .hash_status {
         .cell {
             // margin-left: 0.1rem;
         }
@@ -176,7 +176,7 @@ export default {
             }
         }
     }
-    /deep/ .cell {
+    ::v-deep .cell {
       // padding: 0;
     }
   }

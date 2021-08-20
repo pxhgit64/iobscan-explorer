@@ -111,36 +111,49 @@
 			}
 		},
 		mounted () {
+      this.getServiceListCount();
 			this.getServiceList();
 		},
 		methods:{
 			async getServiceList(){
-                try {
-                    let serviceList = await getAllServiceTxList(this.pageNum,this.pageSize, this.iptVal);
-                    if(serviceList && serviceList.data){
-                        this.serviceList = serviceList.data;
-                        this.txCount = serviceList.count;
-                        for(let service of this.serviceList){
-                            getServiceBindingByServiceName(service.serviceName).then((bindings)=>{
-                                if(bindings.result){
-                                    service.bindList.forEach((s)=>{
-                                        s.bindTime = Tools.getDisplayDate(s.bindTime);
-                                        bindings.result.forEach((b)=>{
-                                            if(s.provider === b.provider){
-                                                s.available = b.available;
-                                                s.price = JSON.parse(b.pricing).price;
-                                                s.qos = `${b.qos??'--'} ${this.$t('ExplorerLang.unit.blocks')}`;
-                                            }
-                                        })
-                                    })
-                                }
-                            });                           
-                        }
-                    }
-                }catch (e) {
-                    console.error(e);
-                    // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
-                }
+        try {
+          let serviceList = await getAllServiceTxList(this.pageNum, this.pageSize, false, this.iptVal);
+          if(serviceList && serviceList.data){          
+              for(let service of serviceList.data){
+                  try {
+                      let bindings = await getServiceBindingByServiceName(service.serviceName);                           
+                      if(bindings.result){
+                          service.bindList.forEach((s)=>{
+                              s.bindTime = Tools.getDisplayDate(s.bindTime);
+                              bindings.result.forEach((b)=>{
+                                  if(s.provider === b.provider){
+                                      s.available = b.available;
+                                      s.price = JSON.parse(b.pricing).price;
+                                      s.qos = `${b.qos??'--'} ${this.$t('ExplorerLang.unit.blocks')}`;
+                                  }
+                              })
+                          })
+                      }
+                  } catch(e) {
+                      console.error(e);
+                  };                           
+              }
+              this.serviceList = serviceList.data;
+          }
+        } catch (e) {
+            console.error(e);
+            // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
+        }
+			},
+      async getServiceListCount(){
+        try {
+          let serviceList = await getAllServiceTxList(null,null,true, this.iptVal);
+          if(serviceList?.count){
+            this.txCount = serviceList.count;
+          }
+        } catch (e) {
+          console.error(e);
+        }
 			},
 			formatTxHash(TxHash){
 				if(TxHash){
@@ -152,16 +165,17 @@
 			},
 			pageChange(pageNum) {
 				this.pageNum = pageNum;
-				this.getServiceList();
+        this.getServiceList();
 			},
-            handleSearchClick(){
-                this.pageNum = 1;
-                this.getServiceList();
-            },
-            reset(){
-                this.iptVal = '';
-                this.handleSearchClick();
-            }
+      handleSearchClick(){
+          this.pageNum = 1;
+          this.getServiceListCount()
+          this.getServiceList();
+      },
+      reset(){
+          this.iptVal = '';
+          this.handleSearchClick();
+      }
 		}
 	}
 </script>
@@ -183,7 +197,7 @@
                 display: flex;
                 align-items: center;
                 .el-select{
-                    /deep/ .el-input{
+                    ::v-deep .el-input{
                         width: 1.8rem;
                         .el-input__inner{
                             padding-left: 0.07rem;
@@ -204,7 +218,7 @@
                     }
                 }
 
-                /deep/ .el-input{
+                ::v-deep .el-input{
                     min-width: 3.5rem;
                     .el-input__inner{
                         padding-left: 0.07rem;
@@ -233,7 +247,7 @@
                 display: flex;
                 .el-select{
                     // margin-bottom:0.1rem;
-                    /deep/ .el-input{
+                    ::v-deep .el-input{
                         //width: 1.8rem;
                         .el-input__inner{
                             padding-left: 0.07rem;
@@ -253,7 +267,7 @@
                     }
                 }
 
-                /deep/ .el-input{
+                ::v-deep .el-input{
                     // margin-bottom:0.1rem;
                     .el-input__inner{
                         padding-left: 0.07rem;
@@ -285,7 +299,7 @@
 		.service_list_content_wrap{
 			margin: 0 auto;
             padding:0 0.15rem;
-            /deep/.el-table{
+            ::v-deep.el-table{
                 .cell{
                     padding-left:0 !important;
                 }
@@ -321,7 +335,7 @@
 			}
             .nft_list_header_content{
                 .el-select{
-                    /deep/ .el-input{
+                    ::v-deep .el-input{
                         .el-input__inner{
                             font-size: $s14 !important;
                             &::-webkit-input-placeholder{
@@ -334,7 +348,7 @@
                     }
                 }
 
-                /deep/ .el-input{
+                ::v-deep .el-input{
                     .el-input__inner{
                         font-size: $s14 !important;
                         border: 0.01rem solid $bd_first_c;
@@ -368,7 +382,7 @@
                     display: flex;
 
 
-                    /deep/.el-select{
+                    ::v-deep.el-select{
                         width: 1.3rem;
                         .el-input{
                             .el-input__inner{
@@ -398,7 +412,7 @@
                         }
 
                     }
-                    /deep/.el-date-editor{
+                    ::v-deep.el-date-editor{
                         width: 1.3rem;
                         .el-icon-circle-close{
                             display: none !important;

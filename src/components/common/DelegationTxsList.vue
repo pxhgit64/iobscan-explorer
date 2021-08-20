@@ -48,34 +48,44 @@
         </el-table-column>
         <el-table-column class-name="from" prop="From" :label="$t('ExplorerLang.table.from')" :min-width="ColumnMinWidth.delegationTxsFrom">
           <template v-slot:default="{ row }">
-            <span v-if="/^[1-9]\d*$/.test(row.From)" class="skip_route">
-              <router-link :to="`/tx?txHash=${row.Tx_Hash}`">{{ row.From }} Validators</router-link>
-            </span>
-            <div class="name_address" v-if="!/^[0-9]\d*$/.test(row.From) && row.From && row.From !== '--'">
-              <span class="remove_default_style skip_route" :class="row.From === $route.params.param ? 'no_skip' : ''">
-                <el-tooltip :content="`${row.From}`">
-                    <span v-if="row.From === $route.params.param">{{ formatMoniker(row.fromMonikers,monikerNum.otherTable) || formatAddress(row.From) }}</span>
-                    <span v-else @click="addressRoute(row.From)" class="address_link link_style">{{ formatMoniker(row.fromMonikers,monikerNum.otherTable) || formatAddress(row.From) }}</span>
-                </el-tooltip>
+            <template v-if="row.MsgsNum > 1">
+              <router-link :to="`/tx?txHash=${row.Tx_Hash}`">{{$t('ExplorerLang.table.more')}} <i class="iconfont icontiaozhuan more_icontiaozhuan"></i></router-link>
+            </template>
+            <template v-else>
+              <span v-if="/^[1-9]\d*$/.test(row.From)" class="skip_route">
+                <router-link :to="`/tx?txHash=${row.Tx_Hash}`">{{ row.From }} Validators</router-link>
               </span>
-            </div>
-            <span class="no_skip" v-show="/^[0]\d*$/.test(row.From) || row.From === '--'">--</span>
+              <div class="name_address" v-if="!/^[0-9]\d*$/.test(row.From) && row.From && row.From !== '--'">
+                <span class="remove_default_style skip_route" :class="row.From === $route.params.param ? 'no_skip' : ''">
+                  <el-tooltip :content="`${row.From}`">
+                      <span v-if="row.From === $route.params.param">{{ formatMoniker(row.fromMonikers,monikerNum.otherTable) || formatAddress(row.From) }}</span>
+                      <span v-else @click="addressRoute(row.From)" class="address_link link_style">{{ formatMoniker(row.fromMonikers,monikerNum.otherTable) || formatAddress(row.From) }}</span>
+                  </el-tooltip>
+                </span>
+              </div>
+              <span class="no_skip" v-show="/^[0]\d*$/.test(row.From) || row.From === '--'">--</span>
+            </template>   
           </template>
         </el-table-column>
         <el-table-column prop="To" class-name="to" row-class-name="left" align="left" :label="$t('ExplorerLang.table.to')" :min-width="ColumnMinWidth.address">
           <template v-slot:default="{ row }">
-            <span v-if="/^[1-9]\d*$/.test(row.To)" class="skip_route">
-              <router-link :to="`/tx?txHash=${row.Tx_Hash}`">{{ row.To }} Validators</router-link>
-            </span>
-            <div class="name_address" v-show="!/^[0-9]\d*$/.test(row.To) && row.To && row.To !== '--'">
-              <span class="remove_default_style skip_route" :class="row.To === $route.params.param ? 'no_skip' : ''">
-                <el-tooltip :content="`${row.To}`">
-                    <span v-if="!(row.To === $route.params.param)" class="address_link link_style" @click="addressRoute(row.To)">{{ formatMoniker(row.toMonikers,monikerNum.otherTable) || formatAddress(row.To) }}</span>
-                    <span v-else>{{ formatMoniker(row.toMonikers,monikerNum.otherTable) }}</span>
-                </el-tooltip>
+            <template v-if="row.MsgsNum > 1">
+              <router-link :to="`/tx?txHash=${row.Tx_Hash}`">{{$t('ExplorerLang.table.more')}} <i class="iconfont icontiaozhuan more_icontiaozhuan"></i></router-link>
+            </template>
+            <template v-else>
+              <span v-if="/^[1-9]\d*$/.test(row.To)" class="skip_route">
+                <router-link :to="`/tx?txHash=${row.Tx_Hash}`">{{ row.To }} Validators</router-link>
               </span>
-            </div>
-            <span class="no_skip" v-show="/^[0]\d*$/.test(row.To) || row.To === '--'">--</span>
+              <div class="name_address" v-show="!/^[0-9]\d*$/.test(row.To) && row.To && row.To !== '--'">
+                <span class="remove_default_style skip_route" :class="row.To === $route.params.param ? 'no_skip' : ''">
+                  <el-tooltip :content="`${row.To}`">
+                      <span v-if="!(row.To === $route.params.param)" class="address_link link_style" @click="addressRoute(row.To)">{{ formatMoniker(row.toMonikers,monikerNum.otherTable) || formatAddress(row.To) }}</span>
+                      <span v-else>{{ formatMoniker(row.toMonikers,monikerNum.otherTable) }}</span>
+                  </el-tooltip>
+                </span>
+              </div>
+              <span class="no_skip" v-show="/^[0]\d*$/.test(row.To) || row.To === '--'">--</span>
+            </template>
           </template>
         </el-table-column>
         <el-table-column prop="Block" :label="$t('ExplorerLang.table.block')" :min-width="ColumnMinWidth.blockListHeight">
@@ -171,7 +181,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    /deep/ .hash_status {
+    ::v-deep .hash_status {
         .cell {
             // margin-left: 0.1rem;
         }
@@ -192,10 +202,10 @@ export default {
                     }
                 }
             }
-            /deep/ .cell {
+            ::v-deep .cell {
               // padding: 0;
             }
-            /deep/ .amount {
+            ::v-deep .amount {
               padding-right: 0.2rem;
             }
         }

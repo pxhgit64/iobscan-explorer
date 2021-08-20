@@ -3375,7 +3375,7 @@
 					background: $bg_cancel_c;
 					border-radius: 0.05rem;
 
-					/deep/ .el-table {
+					::v-deep .el-table {
 						background: $bg_cancel_c;
 
 						tr {
@@ -3406,7 +3406,6 @@
 			}
 
 			span:nth-of-type(2) {
-				flex: 1;
 				text-align: left;
 				font-size: $s14;
 				color: $t_first_c;
@@ -3455,7 +3454,7 @@
 
 					.record_list_content {
 
-						/deep/ .el-table {
+						::v-deep .el-table {
 
 							tr {
 
