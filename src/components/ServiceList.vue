@@ -15,7 +15,7 @@
                     </div>
                 </div>
             </div>
-			<div class="service_list_content" v-for="(service,index) in serviceList" :key="index">
+            <div class="service_list_content" v-for="(service,index) in serviceList" :key="index">
                 <div class="service_list_top">
                     <span class="service_list_service_name bold_name">
                         <router-link :to="`/service?serviceName=${service.serviceName}`">
@@ -78,9 +78,8 @@
 				              :total="txCount"
 				              :page="pageNum"
 				              :page-change="pageChange">
-					
-				</m-pagination>
-			</div>
+                </m-pagination>
+            </div>
             <div class="service_list_empty_container" v-if="serviceList.length === 0">
                 <img src="../assets/empty.png" alt="" class="service_list_empty">
                 <span class="service_list_empty_description">
@@ -121,6 +120,8 @@
                     if(serviceList?.data && serviceList.data.length > 0){          
                         for(let service of serviceList.data){
                             try {
+                                let bindings = await getServiceBindingByServiceName(service.serviceName);                           
+              let bindings = await getServiceBindingByServiceName(service.serviceName);
                                 let bindings = await getServiceBindingByServiceName(service.serviceName);                           
                                 if(bindings.result){
                                     service.bindList.forEach((s)=>{
@@ -509,11 +510,11 @@
                     padding: 0.28rem 0.12rem 0.18rem 0.12rem;
                 }
             }
-		}
-		.pagination_content{
-			display: flex;
-			justify-content: flex-end;
-			margin: 0.1rem 0 0.2rem 0;
-		}
-	}
+        }
+        .pagination_content{
+            display: flex;
+            justify-content: flex-end;
+            margin: 0.1rem 0 0.2rem 0;
+        }
+    }
 </style>
