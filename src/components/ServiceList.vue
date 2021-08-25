@@ -120,9 +120,7 @@
                     if(serviceList?.data && serviceList.data.length > 0){          
                         for(let service of serviceList.data){
                             try {
-                                let bindings = await getServiceBindingByServiceName(service.serviceName);                           
-                                let bindings = await getServiceBindingByServiceName(service.serviceName);
-                                let bindings = await getServiceBindingByServiceName(service.serviceName);                           
+                                let bindings = await getServiceBindingByServiceName(service.serviceName);                                                    
                                 if(bindings.result){
                                     service.bindList.forEach((s)=>{
                                         s.bindTime = Tools.getDisplayDate(s.bindTime);
