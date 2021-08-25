@@ -1,6 +1,6 @@
 <template>
-	<div class="service_list_container_content">
-		<div class="service_list_content_wrap">
+    <div class="service_list_container_content">
+        <div class="service_list_content_wrap">
             <div class="service_list_content_wrap_title">
                 <div class="service_list_title">
                     {{ txCount }} {{$t('ExplorerLang.service.services')}}{{txCount > 1 && $t('ExplorerLang.service.services').length > 2 ? 's':'' }}
@@ -87,35 +87,35 @@
                     {{ $t('ExplorerLang.table.emptyDescription') }}
                 </span>
             </div>
-		</div>
-	</div>
+        </div>
+    </div>
 </template>
 
 <script>
-	import Tools from "../util/Tools"
-	import MPagination from "./common/MPagination";
+    import Tools from "../util/Tools"
+    import MPagination from "./common/MPagination";
     import {getAllServiceTxList, getServiceBindingByServiceName} from "../service/api";
     import { ColumnMinWidth } from '../constant';
     export default {
-		name: "ServiceList",
-		components: {MPagination},
-		data() {
-			return {
+        name: "ServiceList",
+        components: {MPagination},
+        data() {
+            return {
                 ColumnMinWidth,
-				pageNum: 1,
-				pageSize: 5,
-				serviceList:[],
-				txCount:0,
+                pageNum: 1,
+                pageSize: 5,
+                serviceList:[],
+                txCount:0,
                 Tools,
                 iptVal:'',
-			}
-		},
-		mounted () {
+            }
+        },
+        mounted () {
             this.getServiceListCount();
-			this.getServiceList();
-		},
-		methods:{
-			async getServiceList(){
+            this.getServiceList();
+        },
+        methods:{
+            async getServiceList(){
                 try {
                     let serviceList = await getAllServiceTxList(this.pageNum, this.pageSize, false, this.iptVal);
                     if(serviceList?.data && serviceList.data.length > 0){          
@@ -146,7 +146,7 @@
                     console.error(e);
                     // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
                 }
-			},
+            },
             async getServiceListCount(){
                 try {
                     let serviceList = await getAllServiceTxList(null,null,true, this.iptVal);
@@ -158,19 +158,19 @@
                 } catch (e) {
                     console.error(e);
                 }
-			},
-			formatTxHash(TxHash){
-				if(TxHash){
-					return Tools.formatTxHash(TxHash)
-				}
-			},
-			formatAddress(address){
-				return Tools.formatValidatorAddress(address)
-			},
-			pageChange(pageNum) {
-				this.pageNum = pageNum;
+            },
+            formatTxHash(TxHash){
+                if(TxHash){
+                return Tools.formatTxHash(TxHash)
+                }
+            },
+            formatAddress(address){
+                return Tools.formatValidatorAddress(address)
+            },
+            pageChange(pageNum) {
+                this.pageNum = pageNum;
                 this.getServiceList();
-			},
+            },
             handleSearchClick(){
                 this.pageNum = 1;
                 this.getServiceListCount()
@@ -180,8 +180,8 @@
                 this.iptVal = '';
                 this.handleSearchClick();
             }
-		}
-	}
+        }
+    }
 </script>
 
 <style scoped lang="scss">
