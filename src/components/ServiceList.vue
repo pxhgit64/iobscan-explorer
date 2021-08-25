@@ -72,12 +72,12 @@
                         <el-table-column :width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.bindTime')" prop="bindTime"></el-table-column>
                     </el-table>
                 </div>	
-			</div>
-			<div class="pagination_content" v-if="txCount > pageSize">
-				<m-pagination :page-size="pageSize"
-				              :total="txCount"
-				              :page="pageNum"
-				              :page-change="pageChange">
+            </div>
+            <div class="pagination_content" v-if="txCount > pageSize">
+                <m-pagination :page-size="pageSize"
+                    :total="txCount"
+                    :page="pageNum"
+                    :page-change="pageChange">
                 </m-pagination>
             </div>
             <div class="service_list_empty_container" v-if="serviceList.length === 0">
@@ -121,7 +121,7 @@
                         for(let service of serviceList.data){
                             try {
                                 let bindings = await getServiceBindingByServiceName(service.serviceName);                           
-              let bindings = await getServiceBindingByServiceName(service.serviceName);
+                                let bindings = await getServiceBindingByServiceName(service.serviceName);
                                 let bindings = await getServiceBindingByServiceName(service.serviceName);                           
                                 if(bindings.result){
                                     service.bindList.forEach((s)=>{
