@@ -350,8 +350,8 @@
           <m-pagination :page-size="consumerTxPageSize" :total="consumerTxCount" :page="consumerTxPageNum" :page-change="consumerTxPageChange">
           </m-pagination>
         </div>
-      <!-- </div>
-      <div class="provider_transaction_content" v-if="moduleSupport('105', prodConfig.navFuncList)" v-show="isIservice"> -->
+      </div>
+      <div class="provider_transaction_content" v-if="moduleSupport('105', prodConfig.navFuncList)" v-show="isIservice">
         <div class="content_title">
           {{ $t("ExplorerLang.addressDetail.providerTitle") }}
         </div>
@@ -643,7 +643,6 @@ export default {
       monikerNum,
       TX_TYPE,
       TX_STATUS,
-      TX_TYPE_DISPLAY,
       ColumnMinWidth,
       prodConfig,
       moduleSupport,
