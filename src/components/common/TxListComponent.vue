@@ -153,7 +153,7 @@
     import Tools from "../../util/Tools";
     import {TxHelper} from "../../helper/TxHelper";
     import { TX_TYPE,TX_STATUS,ColumnMinWidth,monikerNum,decimals, IRIS_ADDRESS_PREFIX, COSMOS_ADDRESS_PREFIX } from '../../constant';
-    import { addressRoute, formatMoniker, converCoin, getMainToken } from '@/helper/IritaHelper';
+    import { addressRoute, formatMoniker, converCoin, getMainToken, getTxType } from '@/helper/IritaHelper';
     import { getAmountByTx, getDenomMap, getDenomTheme } from "../../helper/txListAmoutHelper";
     import prodConfig from '../../productionConfig';
     import parseTimeMixin from '../../mixins/parseTime'
@@ -173,7 +173,7 @@
         },
         data(){
             return {
-                TX_TYPE_DISPLAY: JSON.parse(sessionStorage.getItem('txType'))?.TX_TYPE_DISPLAY,
+                TX_TYPE_DISPLAY: [],
                 tyepWidth: ColumnMinWidth.txType,
                 TxHelper,
                 isShowFee: prodConfig.fee.isShowFee,
@@ -202,8 +202,9 @@
               this.formatTxData();
             }
         },
-        created(){
+        async created(){
             this.formatTxData()
+            this.TX_TYPE_DISPLAY = (await getTxType()).TX_TYPE_DISPLAY
         },
         mounted(){
             this.setMainToken();

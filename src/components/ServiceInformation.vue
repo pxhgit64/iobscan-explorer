@@ -266,14 +266,14 @@
     } from "../service/api";
     import { TxHelper } from "../helper/TxHelper";
     import LargeString from './common/LargeString';
-    import { converCoin, getMainToken } from '@/helper/IritaHelper';
+    import { converCoin, getMainToken,getTxType } from '@/helper/IritaHelper';
     import productionConfig from '@/productionConfig.js'
     export default {
         name : "ServiceInformation",
         components : {MPagination,LargeString},
         data(){
             return {
-                TX_TYPE_DISPLAY: JSON.parse(sessionStorage.getItem('txType'))?.TX_TYPE_DISPLAY,
+                TX_TYPE_DISPLAY: [],
                 isShowFee: productionConfig.fee.isShowFee,
                 isShowDenom: productionConfig.fee.isShowDenom,
                 feeDecimals: decimals.fee,
@@ -331,6 +331,9 @@
                 mainTokenSymbol:'',
             }
         },
+        async created() {
+			this.TX_TYPE_DISPLAY = (await getTxType()).TX_TYPE_DISPLAY
+		},
         mounted(){
             this.getServiceInformation();
             this.getServiceBindingListCount();

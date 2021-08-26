@@ -244,7 +244,7 @@
 		getGovTxsApi
 	} from "@/service/api";
 	import {TxHelper} from '../../helper/TxHelper.js';
-	import { getMainToken, converCoin,addressRoute,formatMoniker } from '@/helper/IritaHelper';
+	import { getMainToken, converCoin,addressRoute,formatMoniker,getTxType } from '@/helper/IritaHelper';
 	import { getAmountByTx } from '@/helper/txListAmoutHelper';
 	import DelegationTxsList from '@/components/common/DelegationTxsList';
 	import ValidationTxsList from '@/components/common/ValidationTxsList';
@@ -257,7 +257,7 @@
 		props: {},
 		data () {
 			return {
-				TX_TYPE_DISPLAY: JSON.parse(sessionStorage.getItem('txType'))?.TX_TYPE_DISPLAY,
+				TX_TYPE_DISPLAY: [],
 				isShowFee: prodConfig.fee.isShowFee,
 				isShowDenom: prodConfig.fee.isShowDenom,
 				Tools,
@@ -316,6 +316,7 @@
 		computed: {},
 		watch: {},
 		async created () {
+			this.TX_TYPE_DISPLAY = (await getTxType()).TX_TYPE_DISPLAY
 			this.mainToken = await getMainToken();
 			this.getValidatorsInfo()
 			this.getDelegations(1, this.pageSize, true)

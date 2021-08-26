@@ -85,7 +85,7 @@
 	import {pageTitleConfig, TxStatus,decimals,TX_TYPE} from "../constant";
 	import {TxHelper} from '@/helper/TxHelper.js';
 	import {getTypeStakingApi, getTypeDeclarationApi, getDelegationTxsApi, getValidationTxsApi,getGovTxsApi,getTypeGovApi} from "@/service/api";
-	import {converCoin,getMainToken} from "../helper/IritaHelper";
+	import {converCoin,getMainToken,getTxType} from "../helper/IritaHelper";
 	import {getAmountByTx} from "../helper/txListAmoutHelper";
 	import DelegationTxsList from '@/components/common/DelegationTxsList'
 	import ValidationTxsList from '@/components/common/ValidationTxsList'
@@ -99,7 +99,7 @@
 		mixins:[parseTimeMixin],
 		data () {
 			return {
-				TX_TYPE_DISPLAY: JSON.parse(sessionStorage.getItem('txType'))?.TX_TYPE_DISPLAY,
+				TX_TYPE_DISPLAY: [],
 				isShowFee: prodConfig.fee.isShowFee,
 				isShowDenom: prodConfig.fee.isShowDenom,
 				proposalTitleNum: 20,
@@ -136,6 +136,9 @@
 				urlParamsShowEndTime: this.getParamsByUrlHash().urlParamShowEndTime ? this.getParamsByUrlHash().urlParamShowEndTime : '',
 				type: '',
 			}
+		},
+		async created() {
+			this.TX_TYPE_DISPLAY = (await getTxType()).TX_TYPE_DISPLAY
 		},
 		mounted () {
 			let statusArray = [

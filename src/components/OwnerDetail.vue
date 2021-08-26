@@ -624,7 +624,7 @@ import {
 } from '@/service/api'
 import BigNumber from 'bignumber.js'
 import moveDecimal from 'move-decimal-point'
-import { converCoin, getMainToken } from '../helper/IritaHelper'
+import { converCoin, getMainToken, getTxType } from '../helper/IritaHelper'
 export default {
   name: 'OwnerDetail',
   components: {
@@ -635,7 +635,7 @@ export default {
   },
   data() {
     return {
-      TX_TYPE_DISPLAY: JSON.parse(sessionStorage.getItem('txType'))?.TX_TYPE_DISPLAY,
+      TX_TYPE_DISPLAY: [],
       IBC: 'IBC',
       HashLock: 'Hash Lock',
       addressRoute,
@@ -799,6 +799,7 @@ export default {
   },
   async created() {
     this.mainToken = await getMainToken()
+    this.TX_TYPE_DISPLAY = (await getTxType()).TX_TYPE_DISPLAY
   },
   mounted() {
     document.documentElement.scrollTop = 0
@@ -1319,22 +1320,12 @@ export default {
     },
     async getAllTxType() {
       try {
-        let typeList = []
-        typeList.unshift({
+        this.txTypeOption.unshift({
           value: '',
           label: this.$t('ExplorerLang.common.allTxType'),
           slot: 'allTxType',
         })
-        if(sessionStorage.getItem('txType')){
-           let txType = JSON.parse(sessionStorage.getItem('txType'))
-            if (txType.txTypeDataOptions) {
-                this.txTypeOption =  txType.txTypeDataOptions || [];
-            }
-        } else {
-            const res = await getAllTxTypes();
-            this.txTypeOption = TxHelper.formatTxTypeData(res.data)
-        }
-            
+        this.txTypeOption =  (await getTxType()).txTypeDataOptions                
       } catch (e) {
           console.error(e)
       }

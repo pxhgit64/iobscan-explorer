@@ -285,29 +285,36 @@ export class TxHelper {
         let map = new Map()
         let index = 0
         let TX_TYPE_DISPLAY = {}
+        let lang = 'en'
+        if (prodConfig.lang === "EN") {
+            lang = 'en'
+        } else {
+            lang = 'cn'
+        }
         TxTypeData.forEach(txType => {
-            let model = prodConfig.lang === "EN" ? txType.module_en : txType.module_cn
-            let type = prodConfig.lang === "EN" ? txType.type_en : txType.type_cn
-            if (map.has(model)) {
-                retOptions[map.get(model)].children.push({
+            let module = txType['module_' + `${lang}`]
+            let type = txType['type_' + `${lang}`]
+  
+            if (map.has(module)) {
+                retOptions[map.get(module)].children.push({
                     label: type,
                     value: type
                 })
             } else {
                 retOptions.push({
-                    label: model,
-                    value: model,
+                    label: module,
+                    value: module,
                     children: []
                 })
-                map.set(model, index)
+                map.set(module, index)
                 index++;
             }
             TX_TYPE_DISPLAY[txType.typeName] = type
         })
-        // retOptions.filter(model => { model.children.length > 0 })
+        // retOptions.filter(module => { module.children.length > 0 })
   
-        retOptions.forEach((model, index) => {
-            if (model.children.length === 0) {
+        retOptions.forEach((module, index) => {
+            if (module.children.length === 0) {
                 retOptions.splice(index, 1)
             }
          })

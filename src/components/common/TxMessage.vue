@@ -2087,7 +2087,7 @@
 	import Tools from "../../util/Tools";
 	import { TxHelper } from '../../helper/TxHelper';
     import LargeString from './LargeString';
-	import { converCoin,addressRoute } from "../../helper/IritaHelper";
+	import { converCoin,addressRoute,getTxType } from "../../helper/IritaHelper";
 	import prodConfig from "../../productionConfig";
 	import axios from '@/axios';
 	export default {
@@ -2116,7 +2116,7 @@
 		},
 		data () {
 			return {
-				TX_TYPE_DISPLAY: JSON.parse(sessionStorage.getItem('txType'))?.TX_TYPE_DISPLAY,
+				TX_TYPE_DISPLAY: [],
 				isShowFee: prodConfig.fee.isShowFee,
 				Tools,
 				prodConfig,
@@ -2323,6 +2323,9 @@
 		mounted () {
 			this.getTransactionInformation();
 		},
+		async created(){
+            this.TX_TYPE_DISPLAY = (await getTxType()).TX_TYPE_DISPLAY
+        },
 		methods: {
 			async getTransactionInformation () {
 				try {

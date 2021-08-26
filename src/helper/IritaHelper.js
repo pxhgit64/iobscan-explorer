@@ -1,10 +1,11 @@
-import { getConfig as getConfigApi,getIbcTransferByHash, getIbcToken } from "@/service/api";
+import { getConfig as getConfigApi,getIbcTransferByHash, getIbcToken, getAllTxTypes } from "@/service/api";
 import moveDecimal from 'move-decimal-point';
 import Tools from "../util/Tools";
 import { COSMOS_ADDRESS_PREFIX , IRIS_ADDRESS_PREFIX} from "@/constant";
 // import { ibcDenomPrefix } from '../constant';
 import {cfg} from "@/config";
 import md5 from "js-md5";
+import { formatTxTypeData } from "./TxHelper";
 
 export function validatePositiveInteger(value){
 	if(+value === 0 || value && +value < 1){
@@ -51,6 +52,22 @@ export async function getConfig(){
         config = JSON.parse(config || "{}");
     }
     return config;
+}
+
+export async function getTxType(){
+    let txType = window.sessionStorage.getItem('txType');
+    if (!txType) {
+        res = await getAllTxTypes().catch((e)=>{throw e});
+        if (res) {
+            txType = await formatTxTypeData(res.data)
+            window.sessionStorage.setItem('txType',JSON.stringify(txType));
+        }else{
+            txType = {};
+        }
+    }else{
+        txType = JSON.parse(txType || "{}");
+    }
+    return txType;
 }
 
 export async function getMainToken(){
