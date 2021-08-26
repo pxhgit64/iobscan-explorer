@@ -2083,7 +2083,7 @@
 </template>
 
 <script>
-	import {TX_TYPE,voteOptions,formatVoteOptions,TX_TYPE_DISPLAY, COSMOS_ADDRESS_PREFIX, IRIS_ADDRESS_PREFIX} from '../../constant';
+	import {TX_TYPE,voteOptions,formatVoteOptions, COSMOS_ADDRESS_PREFIX, IRIS_ADDRESS_PREFIX} from '../../constant';
 	import Tools from "../../util/Tools";
 	import { TxHelper } from '../../helper/TxHelper';
     import LargeString from './LargeString';
@@ -2116,7 +2116,7 @@
 		},
 		data () {
 			return {
-				TX_TYPE_DISPLAY,
+				TX_TYPE_DISPLAY: JSON.parse(sessionStorage.getItem('txType'))?.TX_TYPE_DISPLAY,
 				isShowFee: prodConfig.fee.isShowFee,
 				Tools,
 				prodConfig,

@@ -9,6 +9,8 @@
 <script>
 import Header from "./components/common/Header"
 import Footer from "./components/common/Footer";
+import {getAllTxTypes } from './service/api';
+import {TxHelper} from "./helper/TxHelper";
 export default {
   name: 'app',
   components:{Footer, Header},
@@ -24,6 +26,15 @@ export default {
       } else {
           this.$store.commit('isMobile',true);
       }
+      this.getTxTypes()
+  },
+  methods:{
+    async getTxTypes(){
+      if(!sessionStorage.getItem('txType')){
+        const res = await getAllTxTypes();
+        TxHelper.formatTxTypeData(res.data)
+      }
+    }   
   }
 }
 </script>

@@ -1,4 +1,4 @@
-import { TX_TYPE, PubKeyAlgorithm,LEVEL_TX_TYPE,TX_TYPE_DISPLAY } from "../constant";
+import { TX_TYPE, PubKeyAlgorithm, LEVEL_TX_TYPE,TX_TYPE_DISPLAY } from "../constant";
 import prodConfig from '../productionConfig';
 import Tools from "../util/Tools";
 export class TxHelper {
@@ -279,6 +279,47 @@ export class TxHelper {
             }
             return operator
         }
+    }
+    static formatTxTypeData (TxTypeData) {
+        let retOptions = []
+        let map = new Map()
+        let index = 0
+        let TX_TYPE_DISPLAY = {}
+        TxTypeData.forEach(txType => {
+            let model = prodConfig.lang === "EN" ? txType.module_en : txType.module_cn
+            let type = prodConfig.lang === "EN" ? txType.type_en : txType.type_cn
+            if (map.has(model)) {
+                retOptions[map.get(model)].children.push({
+                    label: type,
+                    value: type
+                })
+            } else {
+                retOptions.push({
+                    label: model,
+                    value: model,
+                    children: []
+                })
+                map.set(model, index)
+                index++;
+            }
+            TX_TYPE_DISPLAY[txType.typeName] = type
+        })
+        // retOptions.filter(model => { model.children.length > 0 })
+  
+        retOptions.forEach((model, index) => {
+            if (model.children.length === 0) {
+                retOptions.splice(index, 1)
+            }
+         })
+
+        let txType = {
+            txTypeData: TxTypeData,
+            txTypeDataOptions: retOptions,
+            TX_TYPE_DISPLAY: TX_TYPE_DISPLAY
+        }
+        sessionStorage.setItem('txType', JSON.stringify(txType))
+
+        return retOptions
     }
     static formatTxType (txTypeArray) {
 		let allTxType = [],

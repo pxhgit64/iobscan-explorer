@@ -152,7 +152,7 @@
 <script>
     import Tools from "../../util/Tools";
     import {TxHelper} from "../../helper/TxHelper";
-    import { TX_TYPE,TX_STATUS,ColumnMinWidth,monikerNum,decimals,TX_TYPE_DISPLAY, IRIS_ADDRESS_PREFIX, COSMOS_ADDRESS_PREFIX } from '../../constant';
+    import { TX_TYPE,TX_STATUS,ColumnMinWidth,monikerNum,decimals, IRIS_ADDRESS_PREFIX, COSMOS_ADDRESS_PREFIX } from '../../constant';
     import { addressRoute, formatMoniker, converCoin, getMainToken } from '@/helper/IritaHelper';
     import { getAmountByTx, getDenomMap, getDenomTheme } from "../../helper/txListAmoutHelper";
     import prodConfig from '../../productionConfig';
@@ -173,6 +173,7 @@
         },
         data(){
             return {
+                TX_TYPE_DISPLAY: JSON.parse(sessionStorage.getItem('txType'))?.TX_TYPE_DISPLAY,
                 tyepWidth: ColumnMinWidth.txType,
                 TxHelper,
                 isShowFee: prodConfig.fee.isShowFee,
@@ -288,7 +289,7 @@
                         this.txDataList.push({
                                 txHash : tx.tx_hash,
                                 blockHeight : tx.height,
-                                txType :(tx.msgs || []).map(item=>TX_TYPE_DISPLAY[item.type] || item.type),
+                                txType :(tx.msgs || []).map(item=>this.TX_TYPE_DISPLAY[item.type] || item.type),
                                 from,
                                 fromMonikers,
                                 toMonikers,

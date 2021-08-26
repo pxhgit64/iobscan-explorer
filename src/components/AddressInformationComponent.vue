@@ -158,7 +158,6 @@
                 }
             },
 		     formatAssetInformation(assetInformation){
-				console.log(161, assetInformation)
 				assetInformation.forEach( item => {
 					if(item && item.token === this.mainTokenSymbol){
 						this.totalAmount = item.totalAmount;

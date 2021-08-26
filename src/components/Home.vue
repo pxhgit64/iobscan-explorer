@@ -92,7 +92,7 @@
 	import MDepositCard from "./common/MDepositCard";
 	import MVotingCard from "./common/MVotingCard";
 	import { getProposalsListApi } from '@/service/api.js';
-	import {proposalStatus,TX_TYPE_DISPLAY} from '../constant';
+	import {proposalStatus} from '../constant';
 	import {moduleSupport} from "../helper/ModulesHelper";
 	import prodConfig from "../productionConfig";
     export default {
@@ -100,6 +100,7 @@
 		components: {StatisticalBar,MDepositCard,MVotingCard},
 		data () {
 			return {
+				TX_TYPE_DISPLAY: JSON.parse(sessionStorage.getItem('txType'))?.TX_TYPE_DISPLAY,
 				syncTimer:null,
 				latestBlockArray:[],
 				latestTransaction:[],
@@ -146,7 +147,7 @@
 		},
 		methods:{
 			getDisplayTxType(types=[]){
-                let type = TX_TYPE_DISPLAY[types[0]] || types[0] || '';
+                let type = this.TX_TYPE_DISPLAY[types[0]] || types[0] || '';
                 if (type && types.length > 1) {
                     type += this.$t('ExplorerLang.unit.ellipsis');
                 }

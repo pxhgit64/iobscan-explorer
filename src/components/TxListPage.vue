@@ -82,7 +82,7 @@
 <script>
 	import Tools from "../util/Tools";
 	import MPagination from "./common/MPagination";
-	import {pageTitleConfig, TxStatus,decimals,TX_TYPE,TX_TYPE_DISPLAY} from "../constant";
+	import {pageTitleConfig, TxStatus,decimals,TX_TYPE} from "../constant";
 	import {TxHelper} from '@/helper/TxHelper.js';
 	import {getTypeStakingApi, getTypeDeclarationApi, getDelegationTxsApi, getValidationTxsApi,getGovTxsApi,getTypeGovApi} from "@/service/api";
 	import {converCoin,getMainToken} from "../helper/IritaHelper";
@@ -99,6 +99,7 @@
 		mixins:[parseTimeMixin],
 		data () {
 			return {
+				TX_TYPE_DISPLAY: JSON.parse(sessionStorage.getItem('txType'))?.TX_TYPE_DISPLAY,
 				isShowFee: prodConfig.fee.isShowFee,
 				isShowDenom: prodConfig.fee.isShowDenom,
 				proposalTitleNum: 20,
@@ -305,7 +306,7 @@
 						typeArray = res.map(item => {
 							return {
 								value: item,
-								label: TX_TYPE_DISPLAY[item] || itme
+								label: this.TX_TYPE_DISPLAY[item] || itme
 							}
 						});
 						this.txTypeListArray = [
@@ -385,7 +386,7 @@
                                             Amount: amount,
                                             To: formTO.to || '--',
                                             toMonikers,
-                                            Tx_Type: (item.msgs || []).map(item=>TX_TYPE_DISPLAY[item.type] || item.type),
+                                            Tx_Type: (item.msgs || []).map(item=>this.TX_TYPE_DISPLAY[item.type] || item.type),
                                             MsgsNum: msgsNumber,
                                             // Tx_Fee: fee && fee.amount ?  this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)} ${fee.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
                                             Tx_Fee: fee && fee.amount ?  `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
@@ -436,7 +437,7 @@
                                                 OperatorAddr,
                                                 OperatorMonikers: OperatorMonikers || '--',
                                                 SelfBonded: selfBonded.amount || '--',
-                                                'Tx_Type': (item.msgs || []).map(item=>TX_TYPE_DISPLAY[item.type] || item.type),
+                                                'Tx_Type': (item.msgs || []).map(item=>this.TX_TYPE_DISPLAY[item.type] || item.type),
                                                 MsgsNum: msgsNumber,
                                                 // 'Tx_Fee': fee && fee.amount ? this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)} ${fee.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
                                                 'Tx_Fee': fee && fee.amount ? this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
@@ -493,7 +494,7 @@
                                         proposalTitle: item.ex && item.ex.title && Tools.formatString(item.ex.title, this.proposalTitleNum, '...'),
                                         // amount: amount ? `${Tools.toDecimal(amount.amount,this.feeDecimals)} ${amount.denom.toLocaleUpperCase()}` : '--',
                                         amount: amount ? `${Tools.toDecimal(amount.amount,this.feeDecimals)}` : '--',
-                                        'Tx_Type': (item.msgs || []).map(item=>TX_TYPE_DISPLAY[item.type] || item.type),
+                                        'Tx_Type': (item.msgs || []).map(item=>this.TX_TYPE_DISPLAY[item.type] || item.type),
                                         MsgsNum: msgsNumber,
                                         // 'Tx_Fee': fee && fee.amount ?  this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)} ${fee.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
                                         'Tx_Fee': fee && fee.amount ?  this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',

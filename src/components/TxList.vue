@@ -210,15 +210,23 @@
             },
             async getAllTxType(){
                 try {
-                    const res = await getAllTxTypes();
-                    const typeList = TxHelper.formatTxType(res.data)
+                    let typeList = []
                     typeList.unshift({
                         value : '',
                         label : this.$t('ExplorerLang.common.allTxType'),
                         slot : 'allTxType',
                     });
-                    this.txTypeOption = typeList;
-                    this.txTypeArray = TxHelper.getTxTypeArray(this.txTypeOption,this.txType)
+                    if(sessionStorage.getItem('txType')){
+                        let txType = JSON.parse(sessionStorage.getItem('txType'))
+                        if (txType.txTypeDataOptions) {
+                            this.txTypeOption =  txType.txTypeDataOptions || [];
+                        }
+                        this.txTypeArray = TxHelper.getTxTypeArray(this.txTypeOption,this.txType)
+                    } else {
+                        const res = await getAllTxTypes();
+                        this.txTypeOption = TxHelper.formatTxTypeData(res.data)
+                        this.txTypeArray = TxHelper.getTxTypeArray(this.txTypeOption,this.txType)
+                    }          
                 }catch (e) {
                     console.error(e);
                     // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));

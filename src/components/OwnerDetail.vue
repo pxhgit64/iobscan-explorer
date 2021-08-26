@@ -597,7 +597,6 @@ import TxListComponent from './common/TxListComponent'
 import prodConfig from '../productionConfig'
 import Constant, {
   TX_TYPE,
-  TX_TYPE_DISPLAY,
   TX_STATUS,
   ColumnMinWidth,
   monikerNum,
@@ -636,6 +635,7 @@ export default {
   },
   data() {
     return {
+      TX_TYPE_DISPLAY: JSON.parse(sessionStorage.getItem('txType'))?.TX_TYPE_DISPLAY,
       IBC: 'IBC',
       HashLock: 'Hash Lock',
       addressRoute,
@@ -879,7 +879,6 @@ export default {
       })
     },
     selectOptions(index) {
-      console.log(index, this.tabList)
       this.tabList.forEach((item) => {
         item.isActive = false
       })
@@ -976,8 +975,10 @@ export default {
           this.pageSize,
           false
         )
-        if (res?.data?.length > 0) {
+        if (res?.data && res.data.length > 0) {
           this.txList = res.data
+        } else {
+          this.txList = []
         }
       } catch (e) {
         console.error(e)
@@ -1027,7 +1028,7 @@ export default {
               serviceName: item.msgs[0].msg.service_name || '--',
               txHash: item.tx_hash,
               blockHeight: item.height,
-              txType: TX_TYPE_DISPLAY[item.type],
+              txType: this.TX_TYPE_DISPLAY[item.type],
               provider: item.msgs[0].msg.providers,
               time: Tools.getDisplayDate(item.time),
               state: 'Running',
@@ -1055,7 +1056,7 @@ export default {
                   serviceName: (r.msgs[0].msg.ex || {}).service_name || '',
                   txHash: r.tx_hash,
                   blockHeight: r.height,
-                  txType: TX_TYPE_DISPLAY[r.type],
+                  txType: this.TX_TYPE_DISPLAY[r.type],
                   provider: r.msgs[0].msg.provider,
                   time: Tools.getDisplayDate(r.time),
                   requestContextId: (r.msgs[0].msg.ex || {}).request_context_id,
@@ -1119,7 +1120,7 @@ export default {
         )
         if (res?.data?.length > 0) {
           this.respondRecordList = (res.data || []).map((tx) => {
-            tx.type = TX_TYPE_DISPLAY[tx.type]
+            tx.type = this.TX_TYPE_DISPLAY[tx.type]
             return tx
           })
         } else {
@@ -1319,16 +1320,24 @@ export default {
     },
     async getAllTxType() {
       try {
-        const res = await getAllTxTypes()
-        const typeList = TxHelper.formatTxType(res.data)
+        let typeList = []
         typeList.unshift({
           value: '',
           label: this.$t('ExplorerLang.common.allTxType'),
           slot: 'allTxType',
         })
-        this.txTypeOption = typeList
+        if(sessionStorage.getItem('txType')){
+           let txType = JSON.parse(sessionStorage.getItem('txType'))
+            if (txType.txTypeDataOptions) {
+                this.txTypeOption =  txType.txTypeDataOptions || [];
+            }
+        } else {
+            const res = await getAllTxTypes();
+            this.txTypeOption = TxHelper.formatTxTypeData(res.data)
+        }
+            
       } catch (e) {
-        console.error(e)
+          console.error(e)
       }
     },
     async getAddressInformation() {
