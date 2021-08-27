@@ -202,9 +202,8 @@
               this.formatTxData();
             }
         },
-        async created(){
+        created(){
             this.formatTxData()
-            this.TX_TYPE_DISPLAY = (await getTxType()).TX_TYPE_DISPLAY
         },
         mounted(){
             this.setMainToken();
@@ -242,6 +241,7 @@
               return amount.match(denomRule)[0];
             },
             async formatTxData() {
+                this.TX_TYPE_DISPLAY = (await getTxType()).TX_TYPE_DISPLAY
                 this.loading = true;
                 this.txDataList = []
                 if(this.txData && this.txData.length) {

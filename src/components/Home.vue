@@ -101,7 +101,7 @@
 		components: {StatisticalBar,MDepositCard,MVotingCard},
 		data () {
 			return {
-				TX_TYPE_DISPLAY: [],
+				TX_TYPE_DISPLAY: {},
 				syncTimer:null,
 				latestBlockArray:[],
 				latestTransaction:[],
@@ -113,8 +113,11 @@
                 txTimer:null,
 			}
 		},
-		async created() {
-			this.TX_TYPE_DISPLAY = (await getTxType()).TX_TYPE_DISPLAY
+		created() {
+			getTxType().then(res => {
+				this.TX_TYPE_DISPLAY = res.TX_TYPE_DISPLAY
+			})
+			// this.TX_TYPE_DISPLAY = (await getTxType()).TX_TYPE_DISPLAY
 		},
 		mounted () {
 			this.getLastBlocks();
