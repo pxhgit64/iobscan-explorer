@@ -113,11 +113,8 @@
                 txTimer:null,
 			}
 		},
-		created() {
-			getTxType().then(res => {
-				this.TX_TYPE_DISPLAY = res.TX_TYPE_DISPLAY
-			})
-			// this.TX_TYPE_DISPLAY = (await getTxType()).TX_TYPE_DISPLAY
+		async created() {
+			this.TX_TYPE_DISPLAY = (await getTxType()).TX_TYPE_DISPLAY
 		},
 		mounted () {
 			this.getLastBlocks();

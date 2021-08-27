@@ -2324,8 +2324,8 @@
 			this.getTransactionInformation();
 		},
 		async created(){
-            this.TX_TYPE_DISPLAY = (await getTxType()).TX_TYPE_DISPLAY
-        },
+			this.TX_TYPE_DISPLAY = (await getTxType()).TX_TYPE_DISPLAY
+		},
 		methods: {
 			async getTransactionInformation () {
 				try {
