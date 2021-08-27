@@ -151,12 +151,12 @@
 		},
 		methods:{
 			getDisplayTxType(types=[]){
-                let type = this.TX_TYPE_DISPLAY[types[0]] || types[0] || '';
-                if (type && types.length > 1) {
-                    type += this.$t('ExplorerLang.unit.ellipsis');
-                }
-                return type;
-            },
+				let type = this.TX_TYPE_DISPLAY[types[0]] || types[0] || '';
+				if (type && types.length > 1) {
+						type += this.$t('ExplorerLang.unit.ellipsis');
+				}
+				return type;
+			},
 			async getLastBlocks(){
 				try{
 					let blockData = await getBlockList(1, 10, false);
