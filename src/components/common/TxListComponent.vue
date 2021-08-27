@@ -173,7 +173,7 @@
         },
         data(){
             return {
-                TX_TYPE_DISPLAY: [],
+                TX_TYPE_DISPLAY: {},
                 tyepWidth: ColumnMinWidth.txType,
                 TxHelper,
                 isShowFee: prodConfig.fee.isShowFee,

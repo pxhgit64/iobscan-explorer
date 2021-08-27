@@ -5,7 +5,7 @@ import { COSMOS_ADDRESS_PREFIX , IRIS_ADDRESS_PREFIX} from "@/constant";
 // import { ibcDenomPrefix } from '../constant';
 import {cfg} from "@/config";
 import md5 from "js-md5";
-import { formatTxTypeData } from "./TxHelper";
+import {TxHelper} from "../helper/TxHelper";
 
 export function validatePositiveInteger(value){
 	if(+value === 0 || value && +value < 1){
@@ -57,16 +57,16 @@ export async function getConfig(){
 export async function getTxType(){
     let txType = window.sessionStorage.getItem('txType');
     if (!txType) {
-        res = await getAllTxTypes().catch((e)=>{throw e});
+        let res = await getAllTxTypes().catch((e) => { throw e });
         if (res) {
-            txType = await formatTxTypeData(res.data)
-            window.sessionStorage.setItem('txType',JSON.stringify(txType));
+            txType = TxHelper.formatTxTypeData(res.data)
         }else{
             txType = {};
         }
     }else{
         txType = JSON.parse(txType || "{}");
     }
+    console.log(70, txType)
     return txType;
 }
 

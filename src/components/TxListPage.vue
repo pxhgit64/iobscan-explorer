@@ -99,7 +99,7 @@
 		mixins:[parseTimeMixin],
 		data () {
 			return {
-				TX_TYPE_DISPLAY: [],
+				TX_TYPE_DISPLAY: {},
 				isShowFee: prodConfig.fee.isShowFee,
 				isShowDenom: prodConfig.fee.isShowDenom,
 				proposalTitleNum: 20,

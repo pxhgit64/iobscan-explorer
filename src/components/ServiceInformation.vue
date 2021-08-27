@@ -273,7 +273,7 @@
         components : {MPagination,LargeString},
         data(){
             return {
-                TX_TYPE_DISPLAY: [],
+                TX_TYPE_DISPLAY: {},
                 isShowFee: productionConfig.fee.isShowFee,
                 isShowDenom: productionConfig.fee.isShowDenom,
                 feeDecimals: decimals.fee,

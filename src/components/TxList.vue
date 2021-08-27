@@ -210,13 +210,13 @@
                 }
             },
             async getAllTxType(){
-                try {
+                try {    
+                    this.txTypeOption = (await getTxType()).txTypeDataOptions
                     this.txTypeOption.unshift({
                         value : '',
                         label : this.$t('ExplorerLang.common.allTxType'),
                         slot : 'allTxType',
                     });
-                    this.txTypeOption = (await getTxType()).txTypeDataOptions
                     this.txTypeArray = TxHelper.getTxTypeArray(this.txTypeOption,this.txType)
                 }catch (e) {
                     console.error(e);

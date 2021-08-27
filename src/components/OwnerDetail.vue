@@ -635,7 +635,7 @@ export default {
   },
   data() {
     return {
-      TX_TYPE_DISPLAY: [],
+      TX_TYPE_DISPLAY: {},
       IBC: 'IBC',
       HashLock: 'Hash Lock',
       addressRoute,
@@ -1320,12 +1320,12 @@ export default {
     },
     async getAllTxType() {
       try {
+        this.txTypeOption =  (await getTxType()).txTypeDataOptions         
         this.txTypeOption.unshift({
           value: '',
           label: this.$t('ExplorerLang.common.allTxType'),
           slot: 'allTxType',
-        })
-        this.txTypeOption =  (await getTxType()).txTypeDataOptions                
+        })       
       } catch (e) {
           console.error(e)
       }

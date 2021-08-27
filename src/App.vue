@@ -9,8 +9,6 @@
 <script>
 import Header from "./components/common/Header"
 import Footer from "./components/common/Footer";
-import {getAllTxTypes } from './service/api';
-import {TxHelper} from "./helper/TxHelper";
 import { getTxType } from './helper/IritaHelper';
 export default {
   name: 'app',
@@ -20,19 +18,14 @@ export default {
       key: new Date(),
     }
   },
-  mounted(){
+  async mounted(){
     // echart不能使用媒体查询
       if (window.innerWidth > 910) {
           this.$store.commit('isMobile',false);
       } else {
           this.$store.commit('isMobile',true);
       }
-      this.getTxTypes()
-  },
-  methods:{
-    async getTxTypes(){
       await getTxType()
-    }   
   }
 }
 </script>
