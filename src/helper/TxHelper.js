@@ -298,7 +298,7 @@ export class TxHelper {
             if (map.has(module)) {
                 retOptions[map.get(module)].children.push({
                     label: type,
-                    value: type
+                    value: txType.typeName
                 })
             } else {
                 retOptions.push({
