@@ -66,7 +66,6 @@ export async function getTxType(){
     }else{
         txType = JSON.parse(txType || "{}");
     }
-    console.log(70, txType)
     return txType;
 }
 
