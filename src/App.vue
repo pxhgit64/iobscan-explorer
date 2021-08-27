@@ -9,8 +9,7 @@
 <script>
 import Header from "./components/common/Header"
 import Footer from "./components/common/Footer";
-import {getAllTxTypes } from './service/api';
-import {TxHelper} from "./helper/TxHelper";
+import { getTxType } from './helper/IritaHelper';
 export default {
   name: 'app',
   components:{Footer, Header},
@@ -29,12 +28,9 @@ export default {
       this.getTxTypes()
   },
   methods:{
-    async getTxTypes(){
-      if(!sessionStorage.getItem('txType')){
-        const res = await getAllTxTypes();
-        TxHelper.formatTxTypeData(res.data)
-      }
-    }   
+     async getTxTypes(){
+      await getTxType()
+     }  
   }
 }
 </script>
