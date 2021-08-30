@@ -294,13 +294,7 @@ export class TxHelper {
         TxTypeData.forEach(txType => {
             let module = txType['module_' + `${lang}`]
             let type = txType['type_' + `${lang}`]
-  
-            if (map.has(module)) {
-                retOptions[map.get(module)].children.push({
-                    label: type,
-                    value: txType.typeName
-                })
-            } else {
+            if (!map.has(module)) {
                 retOptions.push({
                     label: module,
                     value: module,
@@ -309,6 +303,11 @@ export class TxHelper {
                 map.set(module, index)
                 index++;
             }
+            retOptions[map.get(module)].children.push({
+                label: type,
+                value: txType.typeName
+            }) 
+            
             TX_TYPE_DISPLAY[txType.typeName] = type
         })
         // retOptions.filter(module => { module.children.length > 0 })
