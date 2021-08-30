@@ -2319,7 +2319,7 @@
 				return !types.some((item) => item == this.txType);
 			},
 			TX_TYPE_DISPLAY () {
-				return this.$store.state.mainToken
+				return this.$store.state.TX_TYPE_DISPLAY
 			}
 		},
 		mounted () {
