@@ -95,6 +95,7 @@
     import {TxHelper} from "../helper/TxHelper";
     import {getAllTxTypes, getTxList } from '../service/api';
     import { TX_TYPE,TX_STATUS } from '../constant';
+    import { getTxType } from '@/helper/IritaHelper';
     export default {
         name : "TxList",
         components : {MPagination, TxListComponent},
@@ -209,15 +210,13 @@
                 }
             },
             async getAllTxType(){
-                try {
-                    const res = await getAllTxTypes();
-                    const typeList = TxHelper.formatTxType(res.data)
-                    typeList.unshift({
+                try {    
+                    this.txTypeOption = (await getTxType()).txTypeDataOptions
+                    this.txTypeOption.unshift({
                         value : '',
                         label : this.$t('ExplorerLang.common.allTxType'),
                         slot : 'allTxType',
                     });
-                    this.txTypeOption = typeList;
                     this.txTypeArray = TxHelper.getTxTypeArray(this.txTypeOption,this.txType)
                 }catch (e) {
                     console.error(e);

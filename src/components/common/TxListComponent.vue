@@ -152,8 +152,8 @@
 <script>
     import Tools from "../../util/Tools";
     import {TxHelper} from "../../helper/TxHelper";
-    import { TX_TYPE,TX_STATUS,ColumnMinWidth,monikerNum,decimals,TX_TYPE_DISPLAY, IRIS_ADDRESS_PREFIX, COSMOS_ADDRESS_PREFIX } from '../../constant';
-    import { addressRoute, formatMoniker, converCoin, getMainToken } from '@/helper/IritaHelper';
+    import { TX_TYPE,TX_STATUS,ColumnMinWidth,monikerNum,decimals, IRIS_ADDRESS_PREFIX, COSMOS_ADDRESS_PREFIX } from '../../constant';
+    import { addressRoute, formatMoniker, converCoin, getMainToken, getTxType } from '@/helper/IritaHelper';
     import { getAmountByTx, getDenomMap, getDenomTheme } from "../../helper/txListAmoutHelper";
     import prodConfig from '../../productionConfig';
     import parseTimeMixin from '../../mixins/parseTime'
@@ -173,6 +173,7 @@
         },
         data(){
             return {
+                TX_TYPE_DISPLAY: {},
                 tyepWidth: ColumnMinWidth.txType,
                 TxHelper,
                 isShowFee: prodConfig.fee.isShowFee,
@@ -240,101 +241,108 @@
               return amount.match(denomRule)[0];
             },
             async formatTxData() {
-                this.loading = true;
-                this.txDataList = []
-                if(this.txData && this.txData.length) {
-                    let fees = []
-                    let amounts = []
-                    for (const tx of this.txData) {
-                        let msg;
-                        if(tx.msgs.length > 0){
-                            let recvPacketItem = tx.msgs.find((m)=>{
-                                if(m.type === TX_TYPE.recv_packet || m.type === TX_TYPE.transfer || m.type === TX_TYPE.timeout_packet){
-                                    return true;
+                try {
+                    let res = await getTxType()
+                    this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+                    this.loading = true;
+                    this.txDataList = []
+                    if(this.txData && this.txData.length) {
+                        let fees = []
+                        let amounts = []
+                        for (const tx of this.txData) {
+                            let msg;
+                            if(tx.msgs.length > 0){
+                                let recvPacketItem = tx.msgs.find((m)=>{
+                                    if(m.type === TX_TYPE.recv_packet || m.type === TX_TYPE.transfer || m.type === TX_TYPE.timeout_packet){
+                                        return true;
+                                    }
+                                });
+                                if(recvPacketItem){
+                                    msg = recvPacketItem;
+                                }else{
+                                    msg = tx.msgs[0]
                                 }
-                            });
-                            if(recvPacketItem){
-                                msg = recvPacketItem;
-                            }else{
-                                msg = tx.msgs[0]
                             }
+                            let addrObj = TxHelper.getFromAndToAddressFromMsg(msg);
+                            amounts.push(tx.msgs[0] ? getAmountByTx(tx.msgs[0],tx.events,true) : '--');
+                            let from = addrObj.from || '--',
+                                to =  addrObj.to || '--';
+                            let fromMonikers,toMonikers
+                            if((tx.monikers || {}).length) {
+                                tx.monikers.map( item => {
+                                    toMonikers = toMonikers || item[to] || ''
+                                    fromMonikers = fromMonikers || item[from] || ''
+                                })
+                            }
+                            if(this.isShowFee) {
+                                fees.push(tx.fee && tx.fee.amount && tx.fee.amount.length > 0 ? await converCoin(tx.fee.amount[0]) :'--')
+                            }
+                            let isShowMore = false;
+                            const type = tx.msgs && tx.msgs[0] && tx.msgs[0].type;
+                            if(type && (type === TX_TYPE.add_liquidity || type === TX_TYPE.remove_liquidity)) {
+                                isShowMore = true
+                            }
+                            if(tx.type === TX_TYPE.send) {
+                                tx && tx.msgs && tx.msgs[0] && tx.msgs[0].msg && tx.msgs[0].msg.amount && tx.msgs[0].msg.amount.length > 1 ? isShowMore = true : ''
+                                let denom = tx?.msgs?.[0]?.msg?.amount?.[0]?.denom
+                                if(denom !== undefined && /(swap|SWAP)/g.test(denom)) {
+                                isShowMore = true
+                                }
+                            } 
+                            this.txDataList.push({
+                                    txHash : tx.tx_hash,
+                                    blockHeight : tx.height,
+                                    txType :(tx.msgs || []).map(item=>this.TX_TYPE_DISPLAY[item.type] || item.type),
+                                    from,
+                                    fromMonikers,
+                                    toMonikers,
+                                    to,
+                                    signer : tx.signers[0],
+                                    status : tx.status,
+                                    msgCount : tx.msgs.length,
+                                    // time :Tools.getDisplayDate(tx.time),
+                                    Tx_Fee: '',
+                                    Time: tx.time,
+                                    amount: '',
+                                    ageTime: Tools.formatAge(Tools.getTimestamp(),tx.time*1000, this.$t('ExplorerLang.table.suffix')),
+                                    isShowMore,
+                                    denomTheme: {
+                                    denomColor: '',
+                                    tooltipContent: ''
+                                    }
+                            })
+                            /**
+                             * @description: from parseTimeMixin
+                             */
+                            this.parseTime('txDataList', 'Time', 'ageTime')
                         }
-                        let addrObj = TxHelper.getFromAndToAddressFromMsg(msg);
-                        amounts.push(tx.msgs[0] ? getAmountByTx(tx.msgs[0],tx.events,true) : '--');
-                        let from = addrObj.from || '--',
-                            to =  addrObj.to || '--';
-                        let fromMonikers,toMonikers
-                        if((tx.monikers || {}).length) {
-                            tx.monikers.map( item => {
-                                toMonikers = toMonikers || item[to] || ''
-                                fromMonikers = fromMonikers || item[from] || ''
+                        if(fees && fees.length > 0 && this.isShowFee) {
+                            let fee = await Promise.all(fees);
+                            this.txDataList.forEach((item,index) => {
+                                    // this.txDataList[index].Tx_Fee = fee[index] && fee[index].amount ?  this.isShowDenom ? `${Tools.toDecimal(fee[index].amount,this.feeDecimals)} ${fee[index].denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee[index].amount,this.feeDecimals)}` : '--';
+                                    // remove denom
+                                    this.txDataList[index].Tx_Fee = fee[index] && fee[index].amount ?  this.isShowDenom ? `${Tools.toDecimal(fee[index].amount,this.feeDecimals)}` : `${Tools.toDecimal(fee[index].amount,this.feeDecimals)}` : '--';
                             })
                         }
-                        if(this.isShowFee) {
-                            fees.push(tx.fee && tx.fee.amount && tx.fee.amount.length > 0 ? await converCoin(tx.fee.amount[0]) :'--')
+                        if(amounts && amounts.length > 0) {
+                            let amount = await Promise.all(amounts)
+                            this.denomMap = await getDenomMap()
+                            this.txDataList.forEach((item, index) => {    
+                            this.txDataList[index].denomTheme =getDenomTheme(amount[index], this.denomMap)
+                            this.txDataList[index].amount = amount[index] 
+                            })
                         }
-                        let isShowMore = false;
-                        const type = tx.msgs && tx.msgs[0] && tx.msgs[0].type;
-                        if(type && (type === TX_TYPE.add_liquidity || type === TX_TYPE.remove_liquidity)) {
-                            isShowMore = true
-                        }
-                        if(tx.type === TX_TYPE.send) {
-                            tx && tx.msgs && tx.msgs[0] && tx.msgs[0].msg && tx.msgs[0].msg.amount && tx.msgs[0].msg.amount.length > 1 ? isShowMore = true : ''
-                            let denom = tx?.msgs?.[0]?.msg?.amount?.[0]?.denom
-                            if(denom !== undefined && /(swap|SWAP)/g.test(denom)) {
-                              isShowMore = true
-                            }
-                        } 
-                        this.txDataList.push({
-                                txHash : tx.tx_hash,
-                                blockHeight : tx.height,
-                                txType :(tx.msgs || []).map(item=>TX_TYPE_DISPLAY[item.type] || item.type),
-                                from,
-                                fromMonikers,
-                                toMonikers,
-                                to,
-                                signer : tx.signers[0],
-                                status : tx.status,
-                                msgCount : tx.msgs.length,
-                                // time :Tools.getDisplayDate(tx.time),
-                                Tx_Fee: '',
-                                Time: tx.time,
-                                amount: '',
-                                ageTime: Tools.formatAge(Tools.getTimestamp(),tx.time*1000, this.$t('ExplorerLang.table.suffix')),
-                                isShowMore,
-                                denomTheme: {
-                                  denomColor: '',
-                                  tooltipContent: ''
-                                }
-                        })
-                        /**
-                         * @description: from parseTimeMixin
-                         */
-                        this.parseTime('txDataList', 'Time', 'ageTime')
-                    }
-                    if(fees && fees.length > 0 && this.isShowFee) {
-                        let fee = await Promise.all(fees);
-                        this.txDataList.forEach((item,index) => {
-                                // this.txDataList[index].Tx_Fee = fee[index] && fee[index].amount ?  this.isShowDenom ? `${Tools.toDecimal(fee[index].amount,this.feeDecimals)} ${fee[index].denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee[index].amount,this.feeDecimals)}` : '--';
-                                // remove denom
-                                this.txDataList[index].Tx_Fee = fee[index] && fee[index].amount ?  this.isShowDenom ? `${Tools.toDecimal(fee[index].amount,this.feeDecimals)}` : `${Tools.toDecimal(fee[index].amount,this.feeDecimals)}` : '--';
-                        })
-                    }
-                    if(amounts && amounts.length > 0) {
-                        let amount = await Promise.all(amounts)
-                        this.denomMap = await getDenomMap()
-                        this.txDataList.forEach((item, index) => {    
-                          this.txDataList[index].denomTheme =getDenomTheme(amount[index], this.denomMap)
-                          this.txDataList[index].amount = amount[index] 
-                        })
-                    }
-                    this.$nextTick(() => {
-                        setTimeout(() => {
-                            this.colWidthList = this.$adjustColumnWidth(this.$refs['listTable'].$el);
-                            this.loading = false;
+                        this.$nextTick(() => {
+                            setTimeout(() => {
+                                this.colWidthList = this.$adjustColumnWidth(this.$refs['listTable'].$el);
+                                this.loading = false;
+                            });
                         });
-                    });
+                    }
+                } catch (error) {
+                    console.log(error)
                 }
+             
             },
         }
     }

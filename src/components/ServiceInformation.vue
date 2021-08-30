@@ -256,7 +256,7 @@
 <script>
     import Tools from "../util/Tools"
     import MPagination from "./common/MPagination";
-    import { TX_STATUS,ColumnMinWidth,decimals,TX_TYPE_DISPLAY } from '../constant';
+    import { TX_STATUS,ColumnMinWidth,decimals } from '../constant';
     import {
         getAllServiceTxTypes,
         getServiceDetail,
@@ -266,13 +266,14 @@
     } from "../service/api";
     import { TxHelper } from "../helper/TxHelper";
     import LargeString from './common/LargeString';
-    import { converCoin, getMainToken } from '@/helper/IritaHelper';
+    import { converCoin, getMainToken,getTxType } from '@/helper/IritaHelper';
     import productionConfig from '@/productionConfig.js'
     export default {
         name : "ServiceInformation",
         components : {MPagination,LargeString},
         data(){
             return {
+                TX_TYPE_DISPLAY: {},
                 isShowFee: productionConfig.fee.isShowFee,
                 isShowDenom: productionConfig.fee.isShowDenom,
                 feeDecimals: decimals.fee,
@@ -330,6 +331,9 @@
                 mainTokenSymbol:'',
             }
         },
+        created() {
+            this.getTxTypes()
+		},
         mounted(){
             this.getServiceInformation();
             this.getServiceBindingListCount();
@@ -340,6 +344,14 @@
             this.setMainToken();
         },
         methods : {
+            getTxTypes(){
+                try {
+                    let res = getTxType()
+                    this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+                } catch (error) {
+                    console.log(error)
+                }
+            },
             pageChange(pageNum){
                 this.txPageNum = pageNum;
                 this.getServiceTransaction();
@@ -453,7 +465,7 @@
                             msgs = item.msgs || [{}];
                         return {
                             // type : item.msgs.length > 1 ? '--' : item.msgs[0].type,
-                            type : (item.msgs || []).map(item=>TX_TYPE_DISPLAY[item.type] || item.type),
+                            type : (item.msgs || []).map(item=>this.TX_TYPE_DISPLAY[item.type] || item.type),
                             msgCount: item.msgs.length,
                             from,
                             status : item.status,
@@ -498,7 +510,7 @@
                     res.data.forEach((type) =>{
                         this.txTypeOption.push({
                             value : type.typeName,
-                            label : TX_TYPE_DISPLAY[type.typeName],
+                            label : this.TX_TYPE_DISPLAY[type.typeName],
                         });
                     });
                 } catch (e) {

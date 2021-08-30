@@ -126,6 +126,8 @@
                                 time: Tools.getDisplayDate(item.update_block_time) || '--'
                             }
                         })
+                    } else {
+                        this.identityList = []
                     }
                 }catch (e) {
                     this.count = 0;

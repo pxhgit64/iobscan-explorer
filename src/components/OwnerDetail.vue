@@ -14,7 +14,204 @@
           </div>
         </div>
       </div>
-      <div class="address_content" v-if="moduleSupport('103', prodConfig.navFuncList)" v-show="isNftInfo">
+      <div v-if="moduleSupport('107', prodConfig.navFuncList)" v-show="isAsset">
+        <!-- 地址详情 -->
+        <address-information-component :address="address" :data="assetsItems" :isProfiler="isProfiler" />
+        <div class="delegations_wrap">
+          <div class="delegations_container">
+            <!-- Delegations -->
+            <div class="one_table_container">
+              <p class="validator_information_content_title">
+                {{ $t("ExplorerLang.validatorDetail.delegationsTitle") }}
+                <span class="address_information_delegation_value" v-show="totalDelegatorValue">{{ totalDelegatorValue }}</span>
+              </p>
+              <div class="delegations_table_container">
+                <el-table :empty-text="$t('ExplorerLang.table.emptyDescription')" :data="delegationsItems" style="width: 100%">
+                  <el-table-column class-name="address" prop="address" :label="$t('ExplorerLang.table.address')" :min-width="ColumnMinWidth.address">
+                    <template v-slot:default="{ row }">
+                      <el-tooltip :content="`${row.address}`">
+                        <span v-if="row.moniker" class="address_link" @click="addressRoute(row.address)">
+                          {{
+                            formatMoniker(row.moniker, monikerNum.otherTable)
+                          }}
+                        </span>
+                        <span v-if="!row.moniker" style="font-family: Arial" class="address_link" @click="addressRoute(row.address)">
+                          {{ formatAddress(row.address) }}
+                        </span>
+                      </el-tooltip>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="amount" :label="$t('ExplorerLang.table.amount')" align="right" :min-width="ColumnMinWidth.ownerDetailDelegationsAmount">
+                    <template slot="header" slot-scope="scope">
+                      <span>{{ $t("ExplorerLang.table.amount") }}</span>
+                      <el-tooltip :content="mainTokenSymbol" placement="top">
+                        <i class="iconfont iconyiwen yiwen_icon" />
+                      </el-tooltip>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="shares" :label="$t('ExplorerLang.table.shares')" align="left" :min-width="ColumnMinWidth.shares"></el-table-column>
+                  <!-- <el-table-column prop="block" :label="$t('ExplorerLang.table.block')" min-width="100">
+										<template v-slot:default="{ row }">
+										<router-link style="font-family: Arial;" :to="'/block/' + row.block" :style="{ color: '$theme_c !important' }">{{ row.block }}</router-link>
+										</template>
+									</el-table-column> -->
+                </el-table>
+              </div>
+              <m-pagination v-if="flDelegationNextPage" :page="delegationCurrentPage" :page-size="tablePageSize" :total="delegationCountNum" :page-change="delegationPageChange"></m-pagination>
+            </div>
+            <!-- Unbonding Delegations -->
+            <div class="second_table_container">
+              <p class="validator_information_content_title">
+                {{
+                  $t("ExplorerLang.validatorDetail.unbondingDelegationsTitle")
+                }}
+                <span class="address_information_unbonding_delegation_value" v-show="totalUnBondingDelegatorValue">{{ totalUnBondingDelegatorValue }}</span>
+              </p>
+              <div class="delegations_table_container">
+                <el-table :empty-text="$t('ExplorerLang.table.emptyDescription')" :data="unBondingDelegationsItems" style="width: 100%">
+                  <el-table-column class-name="address" prop="address" :label="$t('ExplorerLang.table.address')" :min-width="ColumnMinWidth.address">
+                    <template v-slot:default="{ row }">
+                      <el-tooltip :content="`${row.address}`">
+                        <span v-if="row.moniker" class="address_link" @click="addressRoute(row.address)">
+                          {{
+                            formatMoniker(row.moniker, monikerNum.otherTable)
+                          }}
+                        </span>
+                        <span v-if="!row.moniker" style="font-family: Arial" class="address_link" @click="addressRoute(row.address)">
+                          {{ formatAddress(row.address) }}
+                        </span>
+                      </el-tooltip>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="amount" :label="$t('ExplorerLang.table.amount')" :min-width="ColumnMinWidth.amount">
+                    <template slot="header" slot-scope="scope">
+                      <span>{{ $t("ExplorerLang.table.amount") }}</span>
+                      <el-tooltip :content="mainTokenSymbol" placement="top">
+                        <i class="iconfont iconyiwen yiwen_icon" />
+                      </el-tooltip>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="block" :label="$t('ExplorerLang.table.block')" :min-width="ColumnMinWidth.blockListHeight">
+                    <template v-slot:default="{ row }">
+                      <router-link style="font-family: Arial" :to="'/block/' + row.block" :style="{ color: '$theme_c !important' }">{{ row.block }}
+                      </router-link>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="endTime" :label="$t('ExplorerLang.table.endTime')" :min-width="ColumnMinWidth.time"></el-table-column>
+                </el-table>
+              </div>
+              <m-pagination v-if="flUnBondingDelegationNextPage" :page-size="tablePageSize" :total="unBondingDelegationCountNum" :page="unBondingDelegationCurrentPage" :page-change="unBondingDelegationPageChange"></m-pagination>
+            </div>
+          </div>
+        </div>
+        <!-- Delegator Rewards 标题 -->
+        <div class="address_information_redelegation_header_title">
+          {{ $t("ExplorerLang.addressInformation.delegatorRewards.title") }}
+          <span class="address_information_redelegation_rewards_value" v-show="totalDelegatorRewardValue">{{ totalDelegatorRewardValue }}</span>
+        </div>
+        <div class="address_information_redelegation_tx_container">
+          <div class="address_information_delegator_rewards_content">
+            <!-- Withdraw To: -->
+            <div class="address_information_detail_option">
+              <span class="address_information_detail_option_name">{{
+                  $t(
+                    "ExplorerLang.addressInformation.delegatorRewards.withdrawTo"
+                  )
+                }}:</span>
+              <span class="address_information_detail_option_value">
+                <router-link :to="`/address/${withdrewToAddress}`">{{
+                  withdrewToAddress
+                }}</router-link>
+              </span>
+            </div>
+            <!-- Delegator Rewards 的表格 -->
+            <div class="address_information_list_content">
+              <div>
+                <el-table :empty-text="$t('ExplorerLang.table.emptyDescription')" :data="rewardsItems" style="width: 100%">
+                  <el-table-column class-name="address" prop="address" :label="$t('ExplorerLang.table.address')" align="left" :min-width="ColumnMinWidth.address">
+                    <template v-slot:default="{ row }">
+                      <el-tooltip :content="`${row.address}`">
+                        <router-link v-if="row.moniker" class="address_link" :to="`/staking/${row.address}`">
+                          {{
+                            formatMoniker(row.moniker, monikerNum.otherTable)
+                          }}
+                        </router-link>
+                        <router-link v-if="!row.moniker" style="font-family: Arial" class="address_link" :to="`/staking/${row.address}`">
+                          {{ formatAddress(row.address) }}
+                        </router-link>
+                      </el-tooltip>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="amount" :label="$t('ExplorerLang.table.amount')" align="right" :min-width="ColumnMinWidth.amount">
+                    <template slot="header" slot-scope="scope">
+                      <span>{{ $t("ExplorerLang.table.amount") }}</span>
+                      <el-tooltip :content="mainTokenSymbol" placement="top">
+                        <i class="iconfont iconyiwen yiwen_icon" />
+                      </el-tooltip>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </div>
+            <!-- 换页 -->
+            <div class="pagination_content" v-if="flRewardsDelegationNextPage">
+              <keep-alive>
+                <m-pagination :page-size="pageSize" :total="rewardsDelegationCountNum" :page="rewardsDelegationCurrentPage" :page-change="rewardsDelegationPageChange"></m-pagination>
+              </keep-alive>
+            </div>
+          </div>
+          <!-- Validator Rewards -->
+          <div class="address_information_detail_container" :class="OperatorAddress !== '--' ? '' : 'hide_style'" :style="{
+              visibility:
+                OperatorAddress && OperatorAddress !== '--'
+                  ? 'visible'
+                  : 'hidden',
+            }">
+            <!-- 标题 -->
+            <div class="address_information_redelegation_title">
+              {{ $t("ExplorerLang.addressInformation.validatorRewards.title") }}
+              <span class="address_information_validator_rewards_value" v-show="totalValidatorRewards">{{ totalValidatorRewards }}</span>
+            </div>
+            <!-- 需展示的数据 -->
+            <ul class="address_information_detail_content">
+              <li class="address_information_detail_option">
+                <span class="address_information_detail_option_name">{{
+                    $t(
+                      "ExplorerLang.addressInformation.validatorRewards.validatorMoniker"
+                    )
+                  }}:</span>
+                <div class="validator_status_content">
+                  <span class="address_information_detail_option_value">
+                    <router-link v-show="
+                        OperatorAddress !== '--' && validatorMoniker !== '--'
+                      " :to="`/staking/${OperatorAddress}`">{{ validatorMoniker }}</router-link>
+                    <span v-show="
+                        OperatorAddress === '--' || validatorMoniker === '--'
+                      ">{{ validatorMoniker }}</span>
+                  </span>
+                  <span class="address_information_address_status_active" v-if="validatorStatus === 'active'">{{ $t("ExplorerLang.staking.status.active") }}</span>
+                  <span class="address_information_address_status_candidate" v-if="validatorStatus === 'candidate'">{{ $t("ExplorerLang.staking.status.candidate") }}</span>
+                  <span class="address_information_address_status_jailed" v-if="validatorStatus === 'jailed'">{{ $t("ExplorerLang.staking.status.jailed") }}</span>
+                </div>
+              </li>
+              <li class="address_information_detail_option" style="margin-top: 0.05rem">
+                <span class="address_information_detail_option_name">{{
+                    $t(
+                      "ExplorerLang.addressInformation.validatorRewards.operatorAddress"
+                    )
+                  }}:</span>
+                <span class="address_information_detail_option_value">
+                  <router-link v-show="OperatorAddress !== '--'" :to="`/staking/${OperatorAddress}`">{{ OperatorAddress }}</router-link>
+                  <span v-show="OperatorAddress === '--'">{{
+                    OperatorAddress
+                  }}</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="address_nft_content" v-if="moduleSupport('103', prodConfig.navFuncList)" v-show="isNftInfo">
         <div class="content_title">
           {{ $t("ExplorerLang.addressDetail.assets") }}
         </div>
@@ -52,37 +249,7 @@
           </m-pagination>
         </div>
       </div>
-      <div class="address_content" v-if="moduleSupport('106', prodConfig.navFuncList)" v-show="isIdentity">
-        <div class="content_title">
-          {{ $t("ExplorerLang.addressDetail.identities") }}
-        </div>
-        <el-table class="table" :data="identityList" :empty-text="$t('ExplorerLang.table.emptyDescription')">
-          <el-table-column :min-width="ColumnMinWidth.identity" :label="$t('ExplorerLang.table.identity')">
-            <template slot-scope="scope">
-              <router-link :to="`/identity/${scope.row.id}`">{{
-                scope.row.id
-              }}</router-link>
-            </template>
-          </el-table-column>
-          <el-table-column :min-width="ColumnMinWidth.txHash" :label="$t('ExplorerLang.table.txHash')">
-            <template slot-scope="scope">
-              <el-tooltip :content="scope.row.txHash" placement="top" :disabled="!Tools.isValid(scope.row.txHash)">
-                <router-link :to="`/tx?txHash=${scope.row.txHash}`">{{ formatTxHash(scope.row.txHash) }}
-                </router-link>
-              </el-tooltip>
-            </template>
-          </el-table-column>
-          <el-table-column :min-width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.timestamp')" prop="time">
-            <template slot-scope="scope">
-              <span>{{ scope.row.time }}</span>
-            </template>
-          </el-table-column>
-        </el-table>
-        <div class="pagination_content" v-show="identityCount > identityPageSize">
-          <m-pagination :page-size="identityPageSize" :total="identityCount" :page="identityPageNum" :page-change="identityPageChange">
-          </m-pagination>
-        </div>
-      </div>
+
       <div class="consumer_transaction_content" v-if="moduleSupport('105', prodConfig.navFuncList)" v-show="isIservice">
         <div class="content_title">
           {{ $t("ExplorerLang.addressDetail.consumerTitle") }}
@@ -344,203 +511,39 @@
           </m-pagination>
         </div>
       </div>
-      <div v-if="moduleSupport('107', prodConfig.navFuncList)" v-show="isAsset">
-        <!-- 地址详情 -->
-        <address-information-component :address="address" :data="assetsItems" :isProfiler="isProfiler" />
-        <div class="delegations_wrap">
-          <div class="delegations_container">
-            <!-- Delegations -->
-            <div class="one_table_container">
-              <p class="validator_information_content_title">
-                {{ $t("ExplorerLang.validatorDetail.delegationsTitle") }}
-                <span class="address_information_delegation_value" v-show="totalDelegatorValue">{{ totalDelegatorValue }}</span>
-              </p>
-              <div class="delegations_table_container">
-                <el-table :empty-text="$t('ExplorerLang.table.emptyDescription')" :data="delegationsItems" style="width: 100%">
-                  <el-table-column class-name="address" prop="address" :label="$t('ExplorerLang.table.address')" :min-width="ColumnMinWidth.address">
-                    <template v-slot:default="{ row }">
-                      <el-tooltip :content="`${row.address}`">
-                        <span v-if="row.moniker" class="address_link" @click="addressRoute(row.address)">
-                          {{
-                            formatMoniker(row.moniker, monikerNum.otherTable)
-                          }}
-                        </span>
-                        <span v-if="!row.moniker" style="font-family: Arial" class="address_link" @click="addressRoute(row.address)">
-                          {{ formatAddress(row.address) }}
-                        </span>
-                      </el-tooltip>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="amount" :label="$t('ExplorerLang.table.amount')" align="right" :min-width="ColumnMinWidth.ownerDetailDelegationsAmount">
-                    <template slot="header" slot-scope="scope">
-                      <span>{{ $t("ExplorerLang.table.amount") }}</span>
-                      <el-tooltip :content="mainTokenSymbol" placement="top">
-                        <i class="iconfont iconyiwen yiwen_icon" />
-                      </el-tooltip>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="shares" :label="$t('ExplorerLang.table.shares')" align="left" :min-width="ColumnMinWidth.shares"></el-table-column>
-                  <!-- <el-table-column prop="block" :label="$t('ExplorerLang.table.block')" min-width="100">
-										<template v-slot:default="{ row }">
-										<router-link style="font-family: Arial;" :to="'/block/' + row.block" :style="{ color: '$theme_c !important' }">{{ row.block }}</router-link>
-										</template>
-									</el-table-column> -->
-                </el-table>
-              </div>
-              <m-pagination v-if="flDelegationNextPage" :page="delegationCurrentPage" :page-size="tablePageSize" :total="delegationCountNum" :page-change="delegationPageChange"></m-pagination>
-            </div>
-            <!-- Unbonding Delegations -->
-            <div class="second_table_container">
-              <p class="validator_information_content_title">
-                {{
-                  $t("ExplorerLang.validatorDetail.unbondingDelegationsTitle")
-                }}
-                <span class="address_information_unbonding_delegation_value" v-show="totalUnBondingDelegatorValue">{{ totalUnBondingDelegatorValue }}</span>
-              </p>
-              <div class="delegations_table_container">
-                <el-table :empty-text="$t('ExplorerLang.table.emptyDescription')" :data="unBondingDelegationsItems" style="width: 100%">
-                  <el-table-column class-name="address" prop="address" :label="$t('ExplorerLang.table.address')" :min-width="ColumnMinWidth.address">
-                    <template v-slot:default="{ row }">
-                      <el-tooltip :content="`${row.address}`">
-                        <span v-if="row.moniker" class="address_link" @click="addressRoute(row.address)">
-                          {{
-                            formatMoniker(row.moniker, monikerNum.otherTable)
-                          }}
-                        </span>
-                        <span v-if="!row.moniker" style="font-family: Arial" class="address_link" @click="addressRoute(row.address)">
-                          {{ formatAddress(row.address) }}
-                        </span>
-                      </el-tooltip>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="amount" :label="$t('ExplorerLang.table.amount')" :min-width="ColumnMinWidth.amount">
-                    <template slot="header" slot-scope="scope">
-                      <span>{{ $t("ExplorerLang.table.amount") }}</span>
-                      <el-tooltip :content="mainTokenSymbol" placement="top">
-                        <i class="iconfont iconyiwen yiwen_icon" />
-                      </el-tooltip>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="block" :label="$t('ExplorerLang.table.block')" :min-width="ColumnMinWidth.blockListHeight">
-                    <template v-slot:default="{ row }">
-                      <router-link style="font-family: Arial" :to="'/block/' + row.block" :style="{ color: '$theme_c !important' }">{{ row.block }}
-                      </router-link>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="endTime" :label="$t('ExplorerLang.table.endTime')" :min-width="ColumnMinWidth.time"></el-table-column>
-                </el-table>
-              </div>
-              <m-pagination v-if="flUnBondingDelegationNextPage" :page-size="tablePageSize" :total="unBondingDelegationCountNum" :page="unBondingDelegationCurrentPage" :page-change="unBondingDelegationPageChange"></m-pagination>
-            </div>
-          </div>
+
+      <div class="address_content" v-if="moduleSupport('106', prodConfig.navFuncList)" v-show="isIdentity">
+        <div class="content_title">
+          {{ $t("ExplorerLang.addressDetail.identities") }}
         </div>
-        <!-- Delegator Rewards 标题 -->
-        <div class="address_information_redelegation_header_title">
-          {{ $t("ExplorerLang.addressInformation.delegatorRewards.title") }}
-          <span class="address_information_redelegation_rewards_value" v-show="totalDelegatorRewardValue">{{ totalDelegatorRewardValue }}</span>
-        </div>
-        <div class="address_information_redelegation_tx_container">
-          <div class="address_information_delegator_rewards_content">
-            <!-- Withdraw To: -->
-            <div class="address_information_detail_option">
-              <span class="address_information_detail_option_name">{{
-                  $t(
-                    "ExplorerLang.addressInformation.delegatorRewards.withdrawTo"
-                  )
-                }}:</span>
-              <span class="address_information_detail_option_value">
-                <router-link :to="`/address/${withdrewToAddress}`">{{
-                  withdrewToAddress
-                }}</router-link>
-              </span>
-            </div>
-            <!-- Delegator Rewards 的表格 -->
-            <div class="address_information_list_content">
-              <div>
-                <el-table :empty-text="$t('ExplorerLang.table.emptyDescription')" :data="rewardsItems" style="width: 100%">
-                  <el-table-column class-name="address" prop="address" :label="$t('ExplorerLang.table.address')" align="left" :min-width="ColumnMinWidth.address">
-                    <template v-slot:default="{ row }">
-                      <el-tooltip :content="`${row.address}`">
-                        <router-link v-if="row.moniker" class="address_link" :to="`/staking/${row.address}`">
-                          {{
-                            formatMoniker(row.moniker, monikerNum.otherTable)
-                          }}
-                        </router-link>
-                        <router-link v-if="!row.moniker" style="font-family: Arial" class="address_link" :to="`/staking/${row.address}`">
-                          {{ formatAddress(row.address) }}
-                        </router-link>
-                      </el-tooltip>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="amount" :label="$t('ExplorerLang.table.amount')" align="right" :min-width="ColumnMinWidth.amount">
-                    <template slot="header" slot-scope="scope">
-                      <span>{{ $t("ExplorerLang.table.amount") }}</span>
-                      <el-tooltip :content="mainTokenSymbol" placement="top">
-                        <i class="iconfont iconyiwen yiwen_icon" />
-                      </el-tooltip>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </div>
-            </div>
-            <!-- 换页 -->
-            <div class="pagination_content" v-if="flRewardsDelegationNextPage">
-              <keep-alive>
-                <m-pagination :page-size="pageSize" :total="rewardsDelegationCountNum" :page="rewardsDelegationCurrentPage" :page-change="rewardsDelegationPageChange"></m-pagination>
-              </keep-alive>
-            </div>
-          </div>
-          <!-- Validator Rewards -->
-          <div class="address_information_detail_container" :class="OperatorAddress !== '--' ? '' : 'hide_style'" :style="{
-              visibility:
-                OperatorAddress && OperatorAddress !== '--'
-                  ? 'visible'
-                  : 'hidden',
-            }">
-            <!-- 标题 -->
-            <div class="address_information_redelegation_title">
-              {{ $t("ExplorerLang.addressInformation.validatorRewards.title") }}
-              <span class="address_information_validator_rewards_value" v-show="totalValidatorRewards">{{ totalValidatorRewards }}</span>
-            </div>
-            <!-- 需展示的数据 -->
-            <ul class="address_information_detail_content">
-              <li class="address_information_detail_option">
-                <span class="address_information_detail_option_name">{{
-                    $t(
-                      "ExplorerLang.addressInformation.validatorRewards.validatorMoniker"
-                    )
-                  }}:</span>
-                <div class="validator_status_content">
-                  <span class="address_information_detail_option_value">
-                    <router-link v-show="
-                        OperatorAddress !== '--' && validatorMoniker !== '--'
-                      " :to="`/staking/${OperatorAddress}`">{{ validatorMoniker }}</router-link>
-                    <span v-show="
-                        OperatorAddress === '--' || validatorMoniker === '--'
-                      ">{{ validatorMoniker }}</span>
-                  </span>
-                  <span class="address_information_address_status_active" v-if="validatorStatus === 'active'">{{ $t("ExplorerLang.staking.status.active") }}</span>
-                  <span class="address_information_address_status_candidate" v-if="validatorStatus === 'candidate'">{{ $t("ExplorerLang.staking.status.candidate") }}</span>
-                  <span class="address_information_address_status_jailed" v-if="validatorStatus === 'jailed'">{{ $t("ExplorerLang.staking.status.jailed") }}</span>
-                </div>
-              </li>
-              <li class="address_information_detail_option" style="margin-top: 0.05rem">
-                <span class="address_information_detail_option_name">{{
-                    $t(
-                      "ExplorerLang.addressInformation.validatorRewards.operatorAddress"
-                    )
-                  }}:</span>
-                <span class="address_information_detail_option_value">
-                  <router-link v-show="OperatorAddress !== '--'" :to="`/staking/${OperatorAddress}`">{{ OperatorAddress }}</router-link>
-                  <span v-show="OperatorAddress === '--'">{{
-                    OperatorAddress
-                  }}</span>
-                </span>
-              </li>
-            </ul>
-          </div>
+        <el-table class="table" :data="identityList" :empty-text="$t('ExplorerLang.table.emptyDescription')">
+          <el-table-column :min-width="ColumnMinWidth.identity" :label="$t('ExplorerLang.table.identity')">
+            <template slot-scope="scope">
+              <router-link :to="`/identity/${scope.row.id}`">{{
+                scope.row.id
+              }}</router-link>
+            </template>
+          </el-table-column>
+          <el-table-column :min-width="ColumnMinWidth.txHash" :label="$t('ExplorerLang.table.txHash')">
+            <template slot-scope="scope">
+              <el-tooltip :content="scope.row.txHash" placement="top" :disabled="!Tools.isValid(scope.row.txHash)">
+                <router-link :to="`/tx?txHash=${scope.row.txHash}`">{{ formatTxHash(scope.row.txHash) }}
+                </router-link>
+              </el-tooltip>
+            </template>
+          </el-table-column>
+          <el-table-column :min-width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.timestamp')" prop="time">
+            <template slot-scope="scope">
+              <span>{{ scope.row.time }}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="pagination_content" v-show="identityCount > identityPageSize">
+          <m-pagination :page-size="identityPageSize" :total="identityCount" :page="identityPageNum" :page-change="identityPageChange">
+          </m-pagination>
         </div>
       </div>
+   
       <div v-show="isTx" class="address_transaction_content">
         <div class="content_title">
           {{ $t("ExplorerLang.addressDetail.txRecord") }}
@@ -594,7 +597,6 @@ import TxListComponent from './common/TxListComponent'
 import prodConfig from '../productionConfig'
 import Constant, {
   TX_TYPE,
-  TX_TYPE_DISPLAY,
   TX_STATUS,
   ColumnMinWidth,
   monikerNum,
@@ -622,7 +624,7 @@ import {
 } from '@/service/api'
 import BigNumber from 'bignumber.js'
 import moveDecimal from 'move-decimal-point'
-import { converCoin, getMainToken } from '../helper/IritaHelper'
+import { converCoin, getMainToken, getTxType } from '../helper/IritaHelper'
 export default {
   name: 'OwnerDetail',
   components: {
@@ -633,6 +635,7 @@ export default {
   },
   data() {
     return {
+      TX_TYPE_DISPLAY: {},
       IBC: 'IBC',
       HashLock: 'Hash Lock',
       addressRoute,
@@ -640,7 +643,6 @@ export default {
       monikerNum,
       TX_TYPE,
       TX_STATUS,
-      TX_TYPE_DISPLAY,
       ColumnMinWidth,
       prodConfig,
       moduleSupport,
@@ -796,7 +798,9 @@ export default {
     },
   },
   async created() {
+    this.getTxTypes()
     this.mainToken = await getMainToken()
+    
   },
   mounted() {
     document.documentElement.scrollTop = 0
@@ -805,6 +809,14 @@ export default {
     this.setMainToken()
   },
   methods: {
+    getTxTypes(){
+      try {
+        let res = getTxType()
+        this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+      } catch (error) {
+        console.log(error)
+      }
+    },
     async setMainToken() {
       let mainToken = await getMainToken()
       if (mainToken && mainToken.symbol) {
@@ -972,8 +984,10 @@ export default {
           this.pageSize,
           false
         )
-        if (res?.data?.length > 0) {
+        if (res?.data && res.data.length > 0) {
           this.txList = res.data
+        } else {
+          this.txList = []
         }
       } catch (e) {
         console.error(e)
@@ -1023,7 +1037,7 @@ export default {
               serviceName: item.msgs[0].msg.service_name || '--',
               txHash: item.tx_hash,
               blockHeight: item.height,
-              txType: TX_TYPE_DISPLAY[item.type],
+              txType: this.TX_TYPE_DISPLAY[item.type],
               provider: item.msgs[0].msg.providers,
               time: Tools.getDisplayDate(item.time),
               state: 'Running',
@@ -1051,7 +1065,7 @@ export default {
                   serviceName: (r.msgs[0].msg.ex || {}).service_name || '',
                   txHash: r.tx_hash,
                   blockHeight: r.height,
-                  txType: TX_TYPE_DISPLAY[r.type],
+                  txType: this.TX_TYPE_DISPLAY[r.type],
                   provider: r.msgs[0].msg.provider,
                   time: Tools.getDisplayDate(r.time),
                   requestContextId: (r.msgs[0].msg.ex || {}).request_context_id,
@@ -1115,7 +1129,7 @@ export default {
         )
         if (res?.data?.length > 0) {
           this.respondRecordList = (res.data || []).map((tx) => {
-            tx.type = TX_TYPE_DISPLAY[tx.type]
+            tx.type = this.TX_TYPE_DISPLAY[tx.type]
             return tx
           })
         } else {
@@ -1315,16 +1329,14 @@ export default {
     },
     async getAllTxType() {
       try {
-        const res = await getAllTxTypes()
-        const typeList = TxHelper.formatTxType(res.data)
-        typeList.unshift({
+        this.txTypeOption =  (await getTxType()).txTypeDataOptions         
+        this.txTypeOption.unshift({
           value: '',
           label: this.$t('ExplorerLang.common.allTxType'),
           slot: 'allTxType',
-        })
-        this.txTypeOption = typeList
+        })       
       } catch (e) {
-        console.error(e)
+          console.error(e)
       }
     },
     async getAddressInformation() {
@@ -1804,7 +1816,13 @@ a {
                 color: $t_white_c;
             }
         }
-
+        .address_nft_content {
+            background: $bg_white_c;
+            padding: 0.25rem;
+            border-radius: 0.05rem;
+            // border: 0.01rem solid $bd_first_c;
+            margin-bottom: 0.48rem;
+        }
         .address_content {
             background: $bg_white_c;
             padding: 0.25rem;
