@@ -99,7 +99,6 @@
 		mixins:[parseTimeMixin],
 		data () {
 			return {
-				TX_TYPE_DISPLAY: {},
 				isShowFee: prodConfig.fee.isShowFee,
 				isShowDenom: prodConfig.fee.isShowDenom,
 				proposalTitleNum: 20,
@@ -137,8 +136,10 @@
 				type: '',
 			}
 		},
-		created() {
-			this.getTxTypes()
+		computed: {
+			TX_TYPE_DISPLAY () {
+				return this.$store.state.TX_TYPE_DISPLAY
+			}
 		},
 		mounted () {
 			let statusArray = [
@@ -164,14 +165,6 @@
 
 		},
 		methods: {
-			getTxTypes(){
-				try {
-					let res = getTxType()
-					this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
-				} catch (error) {
-					console.log(error)
-				}
-			},
 			getParamsByUrlHash () {
 				let txType,
 					txStatus,
