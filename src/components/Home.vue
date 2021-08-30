@@ -95,7 +95,7 @@
 	import {proposalStatus} from '../constant';
 	import {moduleSupport} from "../helper/ModulesHelper";
 	import prodConfig from "../productionConfig";
-    export default {
+	export default {
 		name: "Home",
 		components: {StatisticalBar,MDepositCard,MVotingCard},
 		data () {
@@ -144,7 +144,7 @@
 				return 16
 			},
 			TX_TYPE_DISPLAY () {
-				return this.$store.state.mainToken
+				return this.$store.state.TX_TYPE_DISPLAY
 			}
 		},
 		methods:{
