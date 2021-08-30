@@ -95,13 +95,11 @@
 	import {proposalStatus} from '../constant';
 	import {moduleSupport} from "../helper/ModulesHelper";
 	import prodConfig from "../productionConfig";
-	import { getTxType } from "../helper/IritaHelper"
     export default {
 		name: "Home",
 		components: {StatisticalBar,MDepositCard,MVotingCard},
 		data () {
 			return {
-				TX_TYPE_DISPLAY: {},
 				syncTimer:null,
 				latestBlockArray:[],
 				latestTransaction:[],
@@ -110,11 +108,8 @@
 				screenWidth: document.body.clientWidth,
 				depositPeriodDatas:[],
 				votingPeriodDatas: [],
-                txTimer:null,
+				txTimer:null
 			}
-		},
-		created() {
-			this.getTxTypes()	
 		},
 		mounted () {
 			this.getLastBlocks();
@@ -147,17 +142,12 @@
 					return 10
 				}
 				return 16
+			},
+			TX_TYPE_DISPLAY () {
+				return this.$store.state.mainToken
 			}
 		},
 		methods:{
-			getTxTypes(){
-				try {
-					let res = getTxType()
-					this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
-				} catch (error) {
-					console.log(error)
-				}
-			},
 			getDisplayTxType(types=[]){
 				let type = this.TX_TYPE_DISPLAY[types[0]] || types[0] || '';
 				if (type && types.length > 1) {

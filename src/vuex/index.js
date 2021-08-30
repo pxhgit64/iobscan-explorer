@@ -11,7 +11,8 @@ const store = new Vuex.Store({
             symbol:'',
             isMobile:false,
         },
-        mainToken:'',
+        mainToken: '',
+        TX_TYPE_DISPLAY: config.TX_TYPE_DISPLAY
     },
     mutations : {
         SET_TEMP_DENOM_ID(state, data){
@@ -25,6 +26,9 @@ const store = new Vuex.Store({
         },
         setMainToken(state, data){
             state.mainToken = data || '';
+        },
+        setTxTypeDisplay(state, data) {
+            state.TX_TYPE_DISPLAY = data || config.TX_TYPE_DISPLAY;
         }
     }
 });

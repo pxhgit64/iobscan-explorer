@@ -635,7 +635,6 @@ export default {
   },
   data() {
     return {
-      TX_TYPE_DISPLAY: {},
       IBC: 'IBC',
       HashLock: 'Hash Lock',
       addressRoute,
@@ -798,9 +797,7 @@ export default {
     },
   },
   async created() {
-    this.getTxTypes()
-    this.mainToken = await getMainToken()
-    
+    this.mainToken = await getMainToken()    
   },
   mounted() {
     document.documentElement.scrollTop = 0
@@ -808,15 +805,12 @@ export default {
     this.getTabList()
     this.setMainToken()
   },
+  computed: {
+    TX_TYPE_DISPLAY () {
+      return this.$store.state.mainToken
+    }
+  },
   methods: {
-    getTxTypes(){
-      try {
-        let res = getTxType()
-        this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
-      } catch (error) {
-        console.log(error)
-      }
-    },
     async setMainToken() {
       let mainToken = await getMainToken()
       if (mainToken && mainToken.symbol) {

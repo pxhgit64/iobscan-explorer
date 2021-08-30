@@ -93,7 +93,7 @@
     import MPagination from "./common/MPagination";
     import TxListComponent from "./common/TxListComponent";
     import {TxHelper} from "../helper/TxHelper";
-    import {getAllTxTypes, getTxList } from '../service/api';
+    import {getTxList } from '../service/api';
     import { TX_TYPE,TX_STATUS } from '../constant';
     import { getTxType } from '@/helper/IritaHelper';
     export default {
