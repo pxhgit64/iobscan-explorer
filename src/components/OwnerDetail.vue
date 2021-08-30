@@ -798,8 +798,9 @@ export default {
     },
   },
   async created() {
+    this.getTxTypes()
     this.mainToken = await getMainToken()
-    this.TX_TYPE_DISPLAY = (await getTxType()).TX_TYPE_DISPLAY
+    
   },
   mounted() {
     document.documentElement.scrollTop = 0
@@ -808,6 +809,14 @@ export default {
     this.setMainToken()
   },
   methods: {
+    getTxTypes(){
+      try {
+        let res = getTxType()
+        this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+      } catch (error) {
+        console.log(error)
+      }
+    },
     async setMainToken() {
       let mainToken = await getMainToken()
       if (mainToken && mainToken.symbol) {

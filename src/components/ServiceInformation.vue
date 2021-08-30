@@ -331,8 +331,8 @@
                 mainTokenSymbol:'',
             }
         },
-        async created() {
-			this.TX_TYPE_DISPLAY = (await getTxType()).TX_TYPE_DISPLAY
+        created() {
+            this.getTxTypes()
 		},
         mounted(){
             this.getServiceInformation();
@@ -344,6 +344,14 @@
             this.setMainToken();
         },
         methods : {
+            getTxTypes(){
+                try {
+                    let res = getTxType()
+                    this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+                } catch (error) {
+                    console.log(error)
+                }
+            },
             pageChange(pageNum){
                 this.txPageNum = pageNum;
                 this.getServiceTransaction();

@@ -316,34 +316,42 @@
 		computed: {},
 		watch: {},
 		async created () {
-			this.TX_TYPE_DISPLAY = (await getTxType()).TX_TYPE_DISPLAY
+			await this.getTxTypes()
 			this.mainToken = await getMainToken();
 			this.getValidatorsInfo()
 			this.getDelegations(1, this.pageSize, true)
 			this.getUnbondingDelegations(1, this.pageSize, true)
 			this.getDepositedProposals(1, this.pageSize, true)
 			this.getVotedProposals(1, this.pageSize, true)
-            this.getDelegationTxsCount()
+			this.getDelegationTxsCount()
 			this.getDelegationTxs(1, this.pageSize)
-            this.getValidationTxsCount()
+			this.getValidationTxsCount()
 			this.getValidationTxs(1, this.pageSize)
 			this.getGovTxs(1, this.pageSize, true)
 		},
 		mounted () {
-		    this.setMainToken();
-        },
+			this.setMainToken();
+		},
 		methods: {
+			async getTxTypes(){
+				try {
+					let res = await getTxType()
+					this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+				} catch (error) {
+					console.log(error)
+				}
+			},
 			pageChange (key) {
 				return page => {
 					this[key](page)
 				}
 			},
-            async setMainToken(){
-                let mainToken = await getMainToken();
-                if(mainToken && mainToken.symbol){
-                    this.mainTokenSymbol = mainToken.symbol.toUpperCase();
-                }
-            },
+			async setMainToken(){
+				let mainToken = await getMainToken();
+				if(mainToken && mainToken.symbol){
+						this.mainTokenSymbol = mainToken.symbol.toUpperCase();
+				}
+			},
 			async getValidatorsInfo () {
 				let res = await getValidatorsInfoApi(this.$route.params.param)
 				res.delegator_num = this.delegations.total ?? '--';

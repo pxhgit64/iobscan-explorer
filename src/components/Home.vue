@@ -113,8 +113,8 @@
                 txTimer:null,
 			}
 		},
-		async created() {
-			this.TX_TYPE_DISPLAY = (await getTxType()).TX_TYPE_DISPLAY
+		created() {
+			this.getTxTypes()	
 		},
 		mounted () {
 			this.getLastBlocks();
@@ -150,6 +150,14 @@
 			}
 		},
 		methods:{
+			getTxTypes(){
+				try {
+					let res = getTxType()
+					this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+				} catch (error) {
+					console.log(error)
+				}
+			},
 			getDisplayTxType(types=[]){
 				let type = this.TX_TYPE_DISPLAY[types[0]] || types[0] || '';
 				if (type && types.length > 1) {

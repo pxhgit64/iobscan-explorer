@@ -2323,10 +2323,18 @@
 		mounted () {
 			this.getTransactionInformation();
 		},
-		async created(){
-			this.TX_TYPE_DISPLAY = (await getTxType()).TX_TYPE_DISPLAY
+		created(){
+			this.getTxTypes()
 		},
 		methods: {
+			getTxTypes(){
+				try {
+					let res = getTxType()
+					this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+				} catch (error) {
+					console.log(error)
+				}
+			},
 			async getTransactionInformation () {
 				try {
 					const message = this.msg;

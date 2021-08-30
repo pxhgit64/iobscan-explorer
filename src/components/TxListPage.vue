@@ -137,8 +137,8 @@
 				type: '',
 			}
 		},
-		async created() {
-			this.TX_TYPE_DISPLAY = (await getTxType()).TX_TYPE_DISPLAY
+		created() {
+			this.getTxTypes()
 		},
 		mounted () {
 			let statusArray = [
@@ -164,6 +164,14 @@
 
 		},
 		methods: {
+			getTxTypes(){
+				try {
+					let res = getTxType()
+					this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+				} catch (error) {
+					console.log(error)
+				}
+			},
 			getParamsByUrlHash () {
 				let txType,
 					txStatus,
