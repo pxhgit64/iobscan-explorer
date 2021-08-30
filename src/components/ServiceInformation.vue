@@ -332,8 +332,8 @@
         },
         computed: {
             TX_TYPE_DISPLAY () {
-				return this.$store.state.TX_TYPE_DISPLAY
-			}
+		return this.$store.state.TX_TYPE_DISPLAY
+	    }
         },
         mounted(){
             this.getServiceInformation();
