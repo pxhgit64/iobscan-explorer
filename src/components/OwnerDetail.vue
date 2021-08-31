@@ -1328,7 +1328,8 @@ export default {
     },
     async getAllTxType() {
       try {
-        this.txTypeOption =  (await getTxType()).txTypeDataOptions         
+        let res = await getTxType()
+        this.txTypeOption = res?.txTypeDataOptions
         this.txTypeOption.unshift({
           value: '',
           label: this.$t('ExplorerLang.common.allTxType'),
