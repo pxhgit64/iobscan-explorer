@@ -266,13 +266,14 @@
     } from "../service/api";
     import { TxHelper } from "../helper/TxHelper";
     import LargeString from './common/LargeString';
-    import { converCoin, getMainToken } from '@/helper/IritaHelper';
+    import { converCoin, getMainToken, getTxType } from '@/helper/IritaHelper';
     import productionConfig from '@/productionConfig.js'
     export default {
         name : "ServiceInformation",
         components : {MPagination,LargeString},
         data(){
             return {
+                TX_TYPE_DISPLAY: {},
                 isShowFee: productionConfig.fee.isShowFee,
                 isShowDenom: productionConfig.fee.isShowDenom,
                 feeDecimals: decimals.fee,
@@ -330,12 +331,8 @@
                 mainTokenSymbol:'',
             }
         },
-        computed: {
-            TX_TYPE_DISPLAY () {
-				return this.$store.state.TX_TYPE_DISPLAY
-			}
-        },
-        mounted(){
+        async mounted(){
+            await this.getTxTypeData();
             this.getServiceInformation();
             this.getServiceBindingListCount();
             this.getServiceBindingList();
@@ -345,6 +342,14 @@
             this.setMainToken();
         },
         methods : {
+            async getTxTypeData(){
+				try {
+					let res = await getTxType()
+					this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+				} catch (error) {
+					console.log(error)
+				}
+			},
             pageChange(pageNum){
                 this.txPageNum = pageNum;
                 this.getServiceTransaction();

@@ -202,13 +202,22 @@
               this.formatTxData();
             }
         },
-        created(){
+        async created(){
+            await this.getTxTypeData()
             this.formatTxData()
         },
         mounted(){
             this.setMainToken();
         },
         methods : {
+            async getTxTypeData(){
+				try {
+					let res = await getTxType()
+					this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+				} catch (error) {
+					console.log(error)
+				}
+			},
             isValid(value){
                 return (!value || !value.length || value == '--') ? false : true;
             },
@@ -242,8 +251,6 @@
             },
             async formatTxData() {
                 try {
-                    let res = await getTxType()
-                    this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
                     this.loading = true;
                     this.txDataList = []
                     if(this.txData && this.txData.length) {

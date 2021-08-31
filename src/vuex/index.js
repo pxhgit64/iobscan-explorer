@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import config from '../productionConfig';
 
 Vue.use(Vuex);
 const store = new Vuex.Store({
@@ -11,8 +10,7 @@ const store = new Vuex.Store({
             symbol:'',
             isMobile:false,
         },
-        mainToken: '',
-        TX_TYPE_DISPLAY: config.TX_TYPE_DISPLAY
+        mainToken: ''
     },
     mutations : {
         SET_TEMP_DENOM_ID(state, data){
@@ -26,9 +24,6 @@ const store = new Vuex.Store({
         },
         setMainToken(state, data){
             state.mainToken = data || '';
-        },
-        setTxTypeDisplay(state, data) {
-            state.TX_TYPE_DISPLAY = data || config.TX_TYPE_DISPLAY;
         }
     }
 });

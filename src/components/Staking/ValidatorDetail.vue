@@ -257,6 +257,7 @@
 		props: {},
 		data () {
 			return {
+				TX_TYPE_DISPLAY: {},
 				isShowFee: prodConfig.fee.isShowFee,
 				isShowDenom: prodConfig.fee.isShowDenom,
 				Tools,
@@ -315,6 +316,7 @@
 		computed: {},
 		watch: {},
 		async created () {
+			await this.getTxTypeData()
 			this.mainToken = await getMainToken();
 			this.getValidatorsInfo()
 			this.getDelegations(1, this.pageSize, true)
@@ -330,12 +332,15 @@
 		mounted () {
 			this.setMainToken();
 		},
-		computed: {
-			TX_TYPE_DISPLAY () {
-				return this.$store.state.TX_TYPE_DISPLAY
-			}
-		},
 		methods: {
+			async getTxTypeData(){
+				try {
+				let res = await getTxType()
+				this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+				} catch (error) {
+					console.log(error)
+				}
+			},
 			pageChange (key) {
 				return page => {
 					this[key](page)

@@ -601,6 +601,7 @@ import Constant, {
   ColumnMinWidth,
   monikerNum,
   ibcDenomPrefix,
+  TX_TYPE_DISPLAY
 } from '../constant'
 import AddressInformationComponent from './AddressInformationComponent'
 import LargeString from './common/LargeString'
@@ -635,6 +636,7 @@ export default {
   },
   data() {
     return {
+      TX_TYPE_DISPLAY: TX_TYPE_DISPLAY,
       IBC: 'IBC',
       HashLock: 'Hash Lock',
       addressRoute,
@@ -717,7 +719,6 @@ export default {
       validatorRewardsValue: 0,
       allRewardsValue: 0,
       allRewardsAmountValue: 0,
-
       tablePageSize: 5,
       flDelegationNextPage: false,
       flUnBondingDelegationNextPage: false,
@@ -799,18 +800,22 @@ export default {
   async created() {
     this.mainToken = await getMainToken()    
   },
-  mounted() {
+  async mounted() {
+    await this.getTxTypeData()
     document.documentElement.scrollTop = 0
     this.address = this.$route.params.param
     this.getTabList()
     this.setMainToken()
   },
-  computed: {
-    TX_TYPE_DISPLAY () {
-      return this.$store.state.TX_TYPE_DISPLAY
-    }
-  },
   methods: {
+    async getTxTypeData(){
+      try {
+        let res = await getTxType()
+        this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+      } catch (error) {
+        console.log(error)
+      }
+    },
     async setMainToken() {
       let mainToken = await getMainToken()
       if (mainToken && mainToken.symbol) {

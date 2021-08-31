@@ -324,7 +324,6 @@ export class TxHelper {
             txTypeDataOptions: retOptions,
             TX_TYPE_DISPLAY: TX_TYPE_DISPLAY
         }
-        store.commit("setTxTypeDisplay", TX_TYPE_DISPLAY);
         sessionStorage.setItem('txType', JSON.stringify(txType))
 
     }

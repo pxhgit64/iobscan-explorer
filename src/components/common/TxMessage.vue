@@ -2087,7 +2087,7 @@
 	import Tools from "../../util/Tools";
 	import { TxHelper } from '../../helper/TxHelper';
     import LargeString from './LargeString';
-	import { converCoin,addressRoute } from "../../helper/IritaHelper";
+	import { converCoin,addressRoute,getTxType } from "../../helper/IritaHelper";
 	import prodConfig from "../../productionConfig";
 	import axios from '@/axios';
 	export default {
@@ -2116,6 +2116,7 @@
 		},
 		data () {
 			return {
+				TX_TYPE_DISPLAY: {},
 				isShowFee: prodConfig.fee.isShowFee,
 				Tools,
 				prodConfig,
@@ -2307,25 +2308,29 @@
 				tokenPair: '',
 				viewSource: '',
 				amountArray:[],
-                COSMOS_ADDRESS_PREFIX,
-                IRIS_ADDRESS_PREFIX,
-
-
+				COSMOS_ADDRESS_PREFIX,
+				IRIS_ADDRESS_PREFIX
 			}
 		},
 		computed: {
 			hide () {
 				let types = [];
 				return !types.some((item) => item == this.txType);
-			},
-			TX_TYPE_DISPLAY () {
-				return this.$store.state.TX_TYPE_DISPLAY
 			}
 		},
-		mounted () {
+		async mounted () {
+			await this.getTxTypeData()
 			this.getTransactionInformation();
 		},
 		methods: {
+			async getTxTypeData(){
+				try {
+					let res = await getTxType()
+					this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+				} catch (error) {
+					console.log(error)
+				}
+			},
 			async getTransactionInformation () {
 				try {
 					const message = this.msg;
