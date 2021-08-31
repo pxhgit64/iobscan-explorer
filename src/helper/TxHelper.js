@@ -1,7 +1,6 @@
 import { TX_TYPE, PubKeyAlgorithm, LEVEL_TX_TYPE,TX_TYPE_DISPLAY } from "../constant";
 import prodConfig from '../productionConfig';
 import Tools from "../util/Tools";
-import store from '../vuex/index';
 export class TxHelper {
     //The corresponding IBC Denom was deduced through the IBC Packet path
     static getOriginalDenomFromPacket (ibc_package,type) { 
