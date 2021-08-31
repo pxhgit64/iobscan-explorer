@@ -2308,10 +2308,8 @@
 				tokenPair: '',
 				viewSource: '',
 				amountArray:[],
-                COSMOS_ADDRESS_PREFIX,
-                IRIS_ADDRESS_PREFIX,
-
-
+				COSMOS_ADDRESS_PREFIX,
+				IRIS_ADDRESS_PREFIX
 			}
 		},
 		computed: {
@@ -2320,16 +2318,14 @@
 				return !types.some((item) => item == this.txType);
 			}
 		},
-		mounted () {
+		async mounted () {
+			await this.getTxTypeData()
 			this.getTransactionInformation();
 		},
-		created(){
-			this.getTxTypes()
-		},
 		methods: {
-			getTxTypes(){
+			async getTxTypeData(){
 				try {
-					let res = getTxType()
+					let res = await getTxType()
 					this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
 				} catch (error) {
 					console.log(error)

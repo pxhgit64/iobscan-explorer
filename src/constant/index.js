@@ -118,7 +118,7 @@ export const TX_TYPE = {
   request_rand: 'request_rand',
 }
 
-// 展示
+// 展示 abandon
 export const TX_TYPE_DISPLAY = {
   // service
   define_service: 'Define Service',
@@ -136,7 +136,7 @@ export const TX_TYPE_DISPLAY = {
   'service/set_withdraw_address': 'Service Set Withdraw Address',
   withdraw_earned_fees: 'Withdraw Earned Fees',
    // Record
-   create_record: 'Create Record',
+  create_record: 'Create Record',
   // nft
   burn_nft: 'NFT Burn',
   transfer_nft: 'NFT Transfer',

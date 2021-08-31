@@ -316,7 +316,7 @@
 		computed: {},
 		watch: {},
 		async created () {
-			await this.getTxTypes()
+			await this.getTxTypeData()
 			this.mainToken = await getMainToken();
 			this.getValidatorsInfo()
 			this.getDelegations(1, this.pageSize, true)
@@ -333,7 +333,7 @@
 			this.setMainToken();
 		},
 		methods: {
-			async getTxTypes(){
+			async getTxTypeData(){
 				try {
 					let res = await getTxType()
 					this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY

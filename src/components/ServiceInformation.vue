@@ -266,7 +266,7 @@
     } from "../service/api";
     import { TxHelper } from "../helper/TxHelper";
     import LargeString from './common/LargeString';
-    import { converCoin, getMainToken,getTxType } from '@/helper/IritaHelper';
+    import { converCoin, getMainToken, getTxType } from '@/helper/IritaHelper';
     import productionConfig from '@/productionConfig.js'
     export default {
         name : "ServiceInformation",
@@ -331,10 +331,8 @@
                 mainTokenSymbol:'',
             }
         },
-        created() {
-            this.getTxTypes()
-		},
-        mounted(){
+        async mounted(){
+            await this.getTxTypeData();
             this.getServiceInformation();
             this.getServiceBindingListCount();
             this.getServiceBindingList();
@@ -344,9 +342,9 @@
             this.setMainToken();
         },
         methods : {
-            getTxTypes(){
+            async getTxTypeData(){
                 try {
-                    let res = getTxType()
+                    let res = await getTxType()
                     this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
                 } catch (error) {
                     console.log(error)

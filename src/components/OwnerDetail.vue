@@ -600,7 +600,7 @@ import Constant, {
   TX_STATUS,
   ColumnMinWidth,
   monikerNum,
-  ibcDenomPrefix,
+  ibcDenomPrefix
 } from '../constant'
 import AddressInformationComponent from './AddressInformationComponent'
 import LargeString from './common/LargeString'
@@ -718,7 +718,6 @@ export default {
       validatorRewardsValue: 0,
       allRewardsValue: 0,
       allRewardsAmountValue: 0,
-
       tablePageSize: 5,
       flDelegationNextPage: false,
       flUnBondingDelegationNextPage: false,
@@ -798,20 +797,19 @@ export default {
     },
   },
   async created() {
-    this.getTxTypes()
-    this.mainToken = await getMainToken()
-    
+    this.mainToken = await getMainToken()    
   },
-  mounted() {
+  async mounted() {
+    await this.getTxTypeData()
     document.documentElement.scrollTop = 0
     this.address = this.$route.params.param
     this.getTabList()
     this.setMainToken()
   },
   methods: {
-    getTxTypes(){
+    async getTxTypeData(){
       try {
-        let res = getTxType()
+        let res = await getTxType()
         this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
       } catch (error) {
         console.log(error)
@@ -1329,7 +1327,8 @@ export default {
     },
     async getAllTxType() {
       try {
-        this.txTypeOption =  (await getTxType()).txTypeDataOptions         
+        let res = await getTxType()
+        this.txTypeOption = res?.txTypeDataOptions
         this.txTypeOption.unshift({
           value: '',
           label: this.$t('ExplorerLang.common.allTxType'),

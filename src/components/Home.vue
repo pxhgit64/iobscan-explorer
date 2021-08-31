@@ -95,8 +95,8 @@
 	import {proposalStatus} from '../constant';
 	import {moduleSupport} from "../helper/ModulesHelper";
 	import prodConfig from "../productionConfig";
-	import { getTxType } from "../helper/IritaHelper"
-    export default {
+	import { getTxType } from "../helper/IritaHelper";
+	export default {
 		name: "Home",
 		components: {StatisticalBar,MDepositCard,MVotingCard},
 		data () {
@@ -110,17 +110,15 @@
 				screenWidth: document.body.clientWidth,
 				depositPeriodDatas:[],
 				votingPeriodDatas: [],
-                txTimer:null,
+				txTimer:null
 			}
 		},
-		created() {
-			this.getTxTypes()	
-		},
-		mounted () {
+		async mounted () {
+			await this.getTxTypeData()
 			this.getLastBlocks();
 			this.getTransaction();
 			this.gov();
-			clearInterval(this.syncTimer )
+			clearInterval(this.syncTimer)
 			this.syncTimer = setInterval(() => {
 				this.getLastBlocks();
 			},8000);
@@ -150,9 +148,9 @@
 			}
 		},
 		methods:{
-			getTxTypes(){
+			async getTxTypeData(){
 				try {
-					let res = getTxType()
+					let res = await getTxType()
 					this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
 				} catch (error) {
 					console.log(error)

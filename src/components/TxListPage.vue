@@ -82,7 +82,7 @@
 <script>
 	import Tools from "../util/Tools";
 	import MPagination from "./common/MPagination";
-	import {pageTitleConfig, TxStatus,decimals,TX_TYPE} from "../constant";
+	import {pageTitleConfig, TxStatus,decimals} from "../constant";
 	import {TxHelper} from '@/helper/TxHelper.js';
 	import {getTypeStakingApi, getTypeDeclarationApi, getDelegationTxsApi, getValidationTxsApi,getGovTxsApi,getTypeGovApi} from "@/service/api";
 	import {converCoin,getMainToken,getTxType} from "../helper/IritaHelper";
@@ -137,10 +137,8 @@
 				type: '',
 			}
 		},
-		created() {
-			this.getTxTypes()
-		},
-		mounted () {
+		async mounted () {
+			await this.getTxTypeData()
 			let statusArray = [
 				{
 					value: 'allStatus',
@@ -159,14 +157,13 @@
 				this.status.push(item)
 			})
 			this.getType();
-            this.getTxListByFilterCondition(null, null, true)
-            this.getTxListByFilterCondition(this.currentPageNum, this.pageSize)
-
+			this.getTxListByFilterCondition(null, null, true)
+			this.getTxListByFilterCondition(this.currentPageNum, this.pageSize)
 		},
 		methods: {
-			getTxTypes(){
+			async getTxTypeData(){
 				try {
-					let res = getTxType()
+					let res = await getTxType()
 					this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
 				} catch (error) {
 					console.log(error)
