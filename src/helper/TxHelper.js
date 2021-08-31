@@ -326,6 +326,8 @@ export class TxHelper {
         sessionStorage.setItem('txType', JSON.stringify(txType))
 
     }
+
+    // abandon
     static formatTxType (txTypeArray) {
 		let allTxType = [],
 			tansferObj = {

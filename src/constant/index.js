@@ -118,7 +118,7 @@ export const TX_TYPE = {
   request_rand: 'request_rand',
 }
 
-// 展示
+// 展示 abandon
 export const TX_TYPE_DISPLAY = {
   // service
   define_service: 'Define Service',

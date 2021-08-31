@@ -600,8 +600,7 @@ import Constant, {
   TX_STATUS,
   ColumnMinWidth,
   monikerNum,
-  ibcDenomPrefix,
-  TX_TYPE_DISPLAY
+  ibcDenomPrefix
 } from '../constant'
 import AddressInformationComponent from './AddressInformationComponent'
 import LargeString from './common/LargeString'
@@ -636,7 +635,7 @@ export default {
   },
   data() {
     return {
-      TX_TYPE_DISPLAY: TX_TYPE_DISPLAY,
+      TX_TYPE_DISPLAY: {},
       IBC: 'IBC',
       HashLock: 'Hash Lock',
       addressRoute,
