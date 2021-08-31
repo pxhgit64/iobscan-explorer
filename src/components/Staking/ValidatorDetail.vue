@@ -335,8 +335,8 @@
 		methods: {
 			async getTxTypeData(){
 				try {
-				let res = await getTxType()
-				this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+					let res = await getTxType()
+					this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
 				} catch (error) {
 					console.log(error)
 				}
