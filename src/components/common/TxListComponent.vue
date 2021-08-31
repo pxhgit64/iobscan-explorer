@@ -211,13 +211,13 @@
         },
         methods : {
             async getTxTypeData(){
-				try {
-					let res = await getTxType()
-					this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
-				} catch (error) {
-					console.log(error)
-				}
-			},
+                try {
+                    let res = await getTxType()
+                    this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+                } catch (error) {
+                    console.log(error)
+                }
+            },
             isValid(value){
                 return (!value || !value.length || value == '--') ? false : true;
             },
