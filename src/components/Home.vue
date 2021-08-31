@@ -95,7 +95,7 @@
 	import {proposalStatus} from '../constant';
 	import {moduleSupport} from "../helper/ModulesHelper";
 	import prodConfig from "../productionConfig";
-	import { getTxType } from '../helper/IritaHelper';
+	import { getTxType } from "../helper/IritaHelper";
 	export default {
 		name: "Home",
 		components: {StatisticalBar,MDepositCard,MVotingCard},
