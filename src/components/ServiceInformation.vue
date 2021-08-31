@@ -342,7 +342,7 @@
             this.setMainToken();
         },
         methods : {
-            async getTxTypeData(){
+	    async getTxTypeData(){
 		try {
 		    let res = await getTxType()
 		    this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
