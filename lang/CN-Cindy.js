@@ -70,7 +70,7 @@ export const ExplorerLang = {
         bondHeight: 'Bond_Height',
         unbondingHeight: 'Unbonding_Height',
         address: 'Address',
-        amount: 'Amount',
+        amount: '数量',
         shares: 'Shares',
         endTime: 'End Time',
         fee: 'Fee',
