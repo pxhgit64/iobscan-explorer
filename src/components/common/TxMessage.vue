@@ -2083,11 +2083,11 @@
 </template>
 
 <script>
-	import {TX_TYPE,voteOptions,formatVoteOptions,TX_TYPE_DISPLAY, COSMOS_ADDRESS_PREFIX, IRIS_ADDRESS_PREFIX} from '../../constant';
+	import {TX_TYPE,voteOptions,formatVoteOptions, COSMOS_ADDRESS_PREFIX, IRIS_ADDRESS_PREFIX} from '../../constant';
 	import Tools from "../../util/Tools";
 	import { TxHelper } from '../../helper/TxHelper';
     import LargeString from './LargeString';
-	import { converCoin,addressRoute } from "../../helper/IritaHelper";
+	import { converCoin,addressRoute,getTxType } from "../../helper/IritaHelper";
 	import prodConfig from "../../productionConfig";
 	import axios from '@/axios';
 	export default {
@@ -2116,7 +2116,7 @@
 		},
 		data () {
 			return {
-				TX_TYPE_DISPLAY,
+				TX_TYPE_DISPLAY: {},
 				isShowFee: prodConfig.fee.isShowFee,
 				Tools,
 				prodConfig,
@@ -2308,10 +2308,8 @@
 				tokenPair: '',
 				viewSource: '',
 				amountArray:[],
-                COSMOS_ADDRESS_PREFIX,
-                IRIS_ADDRESS_PREFIX,
-
-
+				COSMOS_ADDRESS_PREFIX,
+				IRIS_ADDRESS_PREFIX
 			}
 		},
 		computed: {
@@ -2320,10 +2318,19 @@
 				return !types.some((item) => item == this.txType);
 			}
 		},
-		mounted () {
+		async mounted () {
+			await this.getTxTypeData()
 			this.getTransactionInformation();
 		},
 		methods: {
+			async getTxTypeData(){
+				try {
+					let res = await getTxType()
+					this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+				} catch (error) {
+					console.log(error)
+				}
+			},
 			async getTransactionInformation () {
 				try {
 					const message = this.msg;
@@ -2556,7 +2563,6 @@
 								this.owner = msg.owner || '--';
 								break;
 							case TX_TYPE.recv_packet:
-							    console.log(msg)
 								if(prodConfig.txDetail && prodConfig.txDetail.ibc) {
 									this.packet = JSON.stringify(msg.packet || {}) || '--';
 									this.proof = msg.proof || '--';
@@ -2571,15 +2577,15 @@
 									this.proofCommitment = msg.proof_commitment || '--';
 									this.proofHeight = msg.proof_height ? JSON.stringify(msg.proof_height) : '--';
 									this.signer = msg.signer || '--';
-									let originalDenom = TxHelper.getOriginalDenomFromPacket(msg.packet);
+									let originalDenom = TxHelper.getOriginalDenomFromPacket(msg.packet,message.type);
 									if(msg.packet && msg.packet.data){
-                    this.sender = msg.packet.data.sender;
-                    this.receiver = msg.packet.data.receiver;
-                    this.amount = await converCoin({
-                        denom:originalDenom || msg.packet.data.denom,
-                        amount:msg.packet.data.amount,
-                      });
-                    }
+										this.sender = msg.packet.data.sender;
+										this.receiver = msg.packet.data.receiver;
+										this.amount = await converCoin({
+											denom:originalDenom || msg.packet.data.denom,
+											amount:msg.packet.data.amount,
+										});
+									}
 								}
 								break;
 							case TX_TYPE.create_identity:
@@ -2900,64 +2906,64 @@
 								this.minIrisAmt = msg.min_iris_amt;
 								this.minToken = msg.min_token;
 								this.deadline = Tools.getDisplayDate(msg.deadline)  || '--';
-								break;
+							break;
 							case TX_TYPE.unjail:
-							this.operatorAddress = msg.address || '--';
+								this.operatorAddress = msg.address || '--';
 							break;
 							case TX_TYPE.create_feed:
-							this.serviceName = msg.serviceName || msg.service_name || '--';
-							this.feedName = msg.feed_name || '--';
-							this.description = msg.description || '--';
-							this.latestHistory = msg.latest_history !== 0 ?  msg.latest_history || '--' : '--';
-							this.creator = msg.creator || '--';
-							this.providers = msg.providers || '--';
-							this.input = msg.input || '--';
-							if( msg && msg.service_fee_cap && msg.service_fee_cap[0]) {
-								let serviceFeeCap = await converCoin(msg.service_fee_cap[0])
-								this.serviceFeeCap = `${serviceFeeCap.amount} ${serviceFeeCap.denom.toLocaleUpperCase()}`;
-							} else {
-								this.serviceFeeCap = '--'
-							}
-							this.aggregateFunc = msg.aggregate_func || '--';
-							this.valueJsonPath = msg.value_json_path || '--';
-							this.repeatedFrequency = msg.repeatedFrequency !== 0 ? msg.repeated_frequency || '--' : '--';
-							this.responseThreshold = msg.responseThreshold !== 0 ? msg.response_threshold || '--' : '--';
-							this.timeout = msg.timeout !== 0 ? msg.timeout || '--' : '--';
+								this.serviceName = msg.serviceName || msg.service_name || '--';
+								this.feedName = msg.feed_name || '--';
+								this.description = msg.description || '--';
+								this.latestHistory = msg.latest_history !== 0 ?  msg.latest_history || '--' : '--';
+								this.creator = msg.creator || '--';
+								this.providers = msg.providers || '--';
+								this.input = msg.input || '--';
+								if( msg && msg.service_fee_cap && msg.service_fee_cap[0]) {
+									let serviceFeeCap = await converCoin(msg.service_fee_cap[0])
+									this.serviceFeeCap = `${serviceFeeCap.amount} ${serviceFeeCap.denom.toLocaleUpperCase()}`;
+								} else {
+									this.serviceFeeCap = '--'
+								}
+								this.aggregateFunc = msg.aggregate_func || '--';
+								this.valueJsonPath = msg.value_json_path || '--';
+								this.repeatedFrequency = msg.repeatedFrequency !== 0 ? msg.repeated_frequency || '--' : '--';
+								this.responseThreshold = msg.responseThreshold !== 0 ? msg.response_threshold || '--' : '--';
+								this.timeout = msg.timeout !== 0 ? msg.timeout || '--' : '--';
 							break;
 							case TX_TYPE.start_feed:
-							this.feedName = msg.feed_name || '--';
-							this.creator = msg.creator || '--';
+								this.feedName = msg.feed_name || '--';
+								this.creator = msg.creator || '--';
 							break;
 							case TX_TYPE.pause_feed:
-							this.feedName = msg.feed_name || '--';
-							this.creator = msg.creator || '--';
+								this.feedName = msg.feed_name || '--';
+								this.creator = msg.creator || '--';
 							break;
 							case TX_TYPE.edit_feed:
-							this.feedName = msg.feed_name || '--';
-							this.description = msg.description || '--';
-							this.latestHistory = msg.latest_history !== 0 ?  msg.latest_history || '--' : '--';
-							this.creator = msg.creator || '--';
-							this.providers = msg.providers || '--';
-							if( msg && msg.service_fee_cap && msg.service_fee_cap[0]) {
-								let serviceFeeCap = await converCoin(msg.service_fee_cap[0])
-								this.serviceFeeCap = `${serviceFeeCap.amount} ${serviceFeeCap.denom.toLocaleUpperCase()}`;
-							} else {
-								this.serviceFeeCap = '--'
-							}
-							this.repeatedFrequency = msg.repeatedFrequency !== 0 ? msg.repeated_frequency || '--' : '--';
-							this.responseThreshold = msg.responseThreshold !== 0 ? msg.response_threshold || '--' : '--';
-							this.timeout = msg.timeout !== 0 ? msg.timeout || '--' : '--';
+								this.feedName = msg.feed_name || '--';
+								this.description = msg.description || '--';
+								this.latestHistory = msg.latest_history !== 0 ?  msg.latest_history || '--' : '--';
+								this.creator = msg.creator || '--';
+								this.providers = msg.providers || '--';
+								if( msg && msg.service_fee_cap && msg.service_fee_cap[0]) {
+									let serviceFeeCap = await converCoin(msg.service_fee_cap[0])
+									this.serviceFeeCap = `${serviceFeeCap.amount} ${serviceFeeCap.denom.toLocaleUpperCase()}`;
+								} else {
+									this.serviceFeeCap = '--'
+								}
+								this.repeatedFrequency = msg.repeatedFrequency !== 0 ? msg.repeated_frequency || '--' : '--';
+								this.responseThreshold = msg.responseThreshold !== 0 ? msg.response_threshold || '--' : '--';
+								this.timeout = msg.timeout !== 0 ? msg.timeout || '--' : '--';
 							break;
 							case TX_TYPE.request_rand:
-							this.blockInterval = msg.block_interval == 0 ? msg.block_interval : msg.block_interval || '--';
-							this.consumer = msg.consumer || '--';
-							this.oracle = msg.oracle;
-							if (msg.service_fee_cap && msg.service_fee_cap.length) {
-								let serviceFeeCap = await converCoin(msg.service_fee_cap[0]);
-								this.serviceFeeCap = `${serviceFeeCap.amount} ${serviceFeeCap.denom.toUpperCase()}`;
-							} else {
-								this.serviceFeeCap = '--';
-							}
+								this.blockInterval = msg.block_interval == 0 ? msg.block_interval : msg.block_interval || '--';
+								this.consumer = msg.consumer || '--';
+								this.oracle = msg.oracle;
+								if (msg.service_fee_cap && msg.service_fee_cap.length) {
+									let serviceFeeCap = await converCoin(msg.service_fee_cap[0]);
+									this.serviceFeeCap = `${serviceFeeCap.amount} ${serviceFeeCap.denom.toUpperCase()}`;
+								} else {
+									this.serviceFeeCap = '--';
+								}
 							break;
 							case TX_TYPE.service_set_withdraw_address:
 							this.owner = msg.owner || '--';
@@ -3152,7 +3158,7 @@
 								this.proofHeight = msg.proof_height ? JSON.stringify(msg.proof_height) : '--';
 								this.nextSequenceRecv = msg.next_sequence_recv || '--';
 								this.signer = msg.signer || '--';
-								let originalDenom = TxHelper.getOriginalDenomFromPacket(msg.packet);
+								let originalDenom = TxHelper.getOriginalDenomFromPacket(msg.packet,message.type);
                                 if(msg.packet && msg.packet.data){
                                     this.sender = msg.packet.data.sender;
                                     this.receiver = msg.packet.data.receiver;
@@ -3406,7 +3412,6 @@
 			}
 
 			span:nth-of-type(2) {
-				flex: 1;
 				text-align: left;
 				font-size: $s14;
 				color: $t_first_c;

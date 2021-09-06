@@ -157,10 +157,10 @@
         },
         mounted(){
             this.getIdentityDetail();
-            this.getPubkeyList(null, null, true);
-            this.getPubkeyList(this.pubkeyListPageNum, this.pubkeyListPageSize);
-            this.getCertificateList(null, null, true);
-            this.getCertificateList(this.certificateListPageNum, this.certificateListPageSize);
+            this.getPubkeyListCount();
+            this.getPubkeyList();
+            this.getCertificateListCount();
+            this.getCertificateList();
             this.getTxList();
         },
         methods : {
@@ -182,25 +182,22 @@
             pubkeyPageChange(pageNum){
                 if(this.pubkeyListPageNum === pageNum) return;
                 this.pubkeyListPageNum = pageNum;
-                this.getPubkeyList(this.pubkeyListPageNum, this.pubkeyListPageSize);
+                this.getPubkeyList();
             },
             certificatePageChange(pageNum){
                 if(this.certificateListPageNum === pageNum) return;
                 this.certificateListPageNum = pageNum;
-                this.getCertificateList(this.certificateListPageNum, this.certificateListPageSize);
+                this.getCertificateList();
             },
             txPageChange(pageNum){
                 if(this.txListPageNum === pageNum) return;
                 this.txListPageNum = pageNum;
                 this.getTxList();
             },
-            async getPubkeyList(pageNum, pageSize, useCount = false){
+            async getPubkeyList(){
                 try {
-                    const res = await getPubkeyListByIdentity(this.id, pageNum, pageSize, useCount);
-                    if(res){
-                        if(useCount){
-                          this.pubkeyListCount = res.count;
-                        } 
+                    const res = await getPubkeyListByIdentity(this.id, this.pageNum, this.pageSize, false);
+                    if(res?.data.length > 0){
                         this.pubkeyList = res.data.map((item) =>{
                             let result = {
                                 pubkey: (item.pubkey || {}).pubkey || '',
@@ -210,18 +207,29 @@
                             };
                             return result;
                         });
+                    } else {
+                      this.pubkeyList = []
                     }
                 } catch (e) {
                     console.error(e);
                 }
-            },           
-            async getCertificateList(pageNum, pageSize, useCount = false){
+            },    
+            async getPubkeyListCount(){
+              try {
+                  const res = await getPubkeyListByIdentity(this.id, null, null, true);
+                  if(res?.count){
+                    this.pubkeyListCount = res.count;
+                  } else {
+                    this.pubkeyListCount = 0
+                  }
+              } catch (e) {
+                  console.error(e);
+              }
+            },         
+            async getCertificateList(){
                 try {
-                    const res = await getCertificateListByIdentity(this.id, pageNum, pageSize, useCount);
-                    if(res){
-                        if(useCount){
-                          this.certificateListCount = res.count;
-                        }            
+                    const res = await getCertificateListByIdentity(this.id, this.pageNum, this.pageSize, false);
+                    if(res?.data.length > 0){           
                         this.certificateList = res.data.map((item) =>{
                             let result = {
                                 certificate: item.certificate || '--',
@@ -230,10 +238,24 @@
                             };
                             return result;
                         });
+                    } else {
+                      this.certificateList = []
                     }
                 } catch (e) {
                     console.error(e);
                 }
+            },
+            async getCertificateListCount(){
+              try {
+                  const res = await getCertificateListByIdentity(this.id, null, null,true);
+                  if(res?.count){
+                    this.certificateListCount = res.count;
+                  } else {
+                    this.certificateListCount = 0
+                  }
+              } catch (e) {
+                  console.error(e);
+              }
             },
             async getTxList(){
                 try {

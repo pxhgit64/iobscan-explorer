@@ -81,23 +81,23 @@ export function getRangeBlockList(start, end, useCount=false){
 	return get(url);
 }
 
-export function getDenoms(pageNum, pageSize, useCount, needAll, denomNameOrId){
+export function getDenoms(pageNum, pageSize, useCount = false, needAll, denomNameOrId){
 	let url = `denoms?`;
 	if(needAll){
 	    url += `needAll=${needAll}`;
   } else if(pageNum && pageSize){
-    url += `pageNum=${pageNum}&pageSize=${pageSize}`;
-    if(denomNameOrId){
-      url += `&denomNameOrId=${denomNameOrId}`;
-    }
+     url += `pageNum=${pageNum}&pageSize=${pageSize}`;
+  } 
+  if (denomNameOrId) {
+    url += `${url.length === 7 ? '' : '&' }denomNameOrId=${denomNameOrId}`;
   }
   if(useCount){
-    url += `&useCount=${useCount}`;
+    url += `${url.length === 7 ? '' : '&' }useCount=${useCount}`;
   }
 	return get(url);
 }
 
-export function getNfts(pageNum, pageSize, useCount, denom, nftId, owner){
+export function getNfts(pageNum, pageSize, useCount = false, denom, nftId, owner){
 	let url = `nfts?denomId=${denom||''}&nftId=${nftId||''}&owner=${owner||''}`;
   if(pageNum && pageSize){
     url += `&pageNum=${pageNum}&pageSize=${pageSize}`
@@ -322,7 +322,7 @@ export function getRespondServiceRecord(serviceName, provider, pageNum, pageSize
 export function getNodeInfo(){
     return getFromLcd('node_info');
 }
-export function getIdentities(identity, pageNum, pageSize, useCount){
+export function getIdentities(identity, pageNum, pageSize, useCount = false){
     let url = `identities?search=${identity}`;
     if(pageNum && pageSize){
       url += `&pageNum=${pageNum}&pageSize=${pageSize}`
@@ -455,25 +455,13 @@ export function getAddressInformationApi(address){
     return get(url);
 }
 
-export function getDelegationListApi(address,pageNum,pageSize,useCount){
-    let url = `/staking/delegators/${address}/delegations?`;
-    if(pageNum && pageSize){
-      url += `pageNum=${pageNum}&pageSize=${pageSize}`
-    }
-    if(useCount){
-      url += `useCount=${useCount}`;
-    }
+export function getDelegationListApi(address,pageNum,pageSize){
+    let url = `/staking/delegators/${address}/delegations?useCount=true&pageNum=${pageNum}&pageSize=${pageSize}`;
     return get(url);
 }
 
-export function getUnBondingDelegationListApi(address,pageNum,pageSize,useCount){
-    let url = `/staking/delegators/${address}/unbonding_delegations?`;
-    if(pageNum && pageSize){
-      url += `pageNum=${pageNum}&pageSize=${pageSize}`
-    }
-    if(useCount){
-      url += `useCount=${useCount}`;
-    }
+export function getUnBondingDelegationListApi(address,pageNum,pageSize){
+    let url = `/staking/delegators/${address}/unbonding_delegations?useCount=true&pageNum=${pageNum}&pageSize=${pageSize}`;
     return get(url);
 }
 
@@ -542,13 +530,16 @@ export function getNativeAssetDetailApi (symbol) {
 	return get(url)
 }
 
-export function getProposalsListApi (status, pageNum,pageSize, useCount) {
-    let url = `/gov/proposals?status=${status}`
+export function getProposalsListApi (status, pageNum, pageSize, useCount) {
+    let url = `/gov/proposals?`
     if(pageNum && pageSize){
       url += `&pageNum=${pageNum}&pageSize=${pageSize}`
     }
     if(useCount){
       url += `&useCount=${useCount}`;
+    }
+    if(status){
+      url += `&status=${status}`;
     }
     return get(url)
 }

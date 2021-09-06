@@ -84,21 +84,21 @@ export const TX_TYPE = {
   start_feed: 'start_feed',
   pause_feed: 'pause_feed',
   edit_feed: 'edit_feed',
-  // CrossChain 联盟链
-  recv_packet: 'recv_packet',     //和公有链ibc交易类型名称一致
-  create_client: 'create_client', //和公有链ibc交易类型名称一致
-  update_client: 'update_client', //和公有链ibc交易类型名称一致
+
   // Identity
   create_identity: 'create_identity',
   update_identity: 'update_identity',
   // IBC
   transfer: 'transfer',
   timeout_packet: 'timeout_packet',
-  // recv_packet: 'recv_packet',
+  recv_packet: 'recv_packet',     //和公有链ibc交易类型名称一致
+  create_client: 'create_client', //和公有链ibc交易类型名称一致
+  update_client: 'update_client', //和公有链ibc交易类型名称一致
 
   // IBC => Other
   // create_client: 'create_client',
   // update_client: 'update_client',
+  
   upgrade_client: 'upgrade_client',
   submit_misbehaviour: 'submit_misbehaviour',
   connection_open_init: 'connection_open_init',
@@ -118,7 +118,7 @@ export const TX_TYPE = {
   request_rand: 'request_rand',
 }
 
-// 展示
+// 展示 abandon
 export const TX_TYPE_DISPLAY = {
   // service
   define_service: 'Define Service',
@@ -136,7 +136,7 @@ export const TX_TYPE_DISPLAY = {
   'service/set_withdraw_address': 'Service Set Withdraw Address',
   withdraw_earned_fees: 'Withdraw Earned Fees',
    // Record
-   create_record: 'Create Record',
+  create_record: 'Create Record',
   // nft
   burn_nft: 'NFT Burn',
   transfer_nft: 'NFT Transfer',

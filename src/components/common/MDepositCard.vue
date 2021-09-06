@@ -237,7 +237,6 @@ export default {
         this.burnValue = this.totalDeposit
         this.$set(this.burnStyle0bj, 'width', `${((this.minDepositToken / this.totalDeposit) * 100).toFixed(2)}%`)
         this.$set(this.burnTipStyle0bj, 'left', '100%')
-        // console.log(this.minDepositToken,this.totalDeposit,this.burnStyle0bj.width)
         this.flShowDiffStyle = true
         this.flBurnAll = true
         this.flShowBurnAll = true

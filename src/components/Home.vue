@@ -92,14 +92,16 @@
 	import MDepositCard from "./common/MDepositCard";
 	import MVotingCard from "./common/MVotingCard";
 	import { getProposalsListApi } from '@/service/api.js';
-	import {proposalStatus,TX_TYPE_DISPLAY} from '../constant';
+	import {proposalStatus} from '../constant';
 	import {moduleSupport} from "../helper/ModulesHelper";
 	import prodConfig from "../productionConfig";
-    export default {
+	import { getTxType } from "../helper/IritaHelper";
+	export default {
 		name: "Home",
 		components: {StatisticalBar,MDepositCard,MVotingCard},
 		data () {
 			return {
+				TX_TYPE_DISPLAY: {},
 				syncTimer:null,
 				latestBlockArray:[],
 				latestTransaction:[],
@@ -108,14 +110,15 @@
 				screenWidth: document.body.clientWidth,
 				depositPeriodDatas:[],
 				votingPeriodDatas: [],
-                txTimer:null,
+				txTimer:null
 			}
 		},
-		mounted () {
+		async mounted () {
+			await this.getTxTypeData()
 			this.getLastBlocks();
 			this.getTransaction();
 			this.gov();
-			clearInterval(this.syncTimer )
+			clearInterval(this.syncTimer)
 			this.syncTimer = setInterval(() => {
 				this.getLastBlocks();
 			},8000);
@@ -145,13 +148,21 @@
 			}
 		},
 		methods:{
+			async getTxTypeData(){
+				try {
+					let res = await getTxType()
+					this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+				} catch (error) {
+					console.log(error)
+				}
+			},
 			getDisplayTxType(types=[]){
-                let type = TX_TYPE_DISPLAY[types[0]] || types[0] || '';
-                if (type && types.length > 1) {
-                    type += this.$t('ExplorerLang.unit.ellipsis');
-                }
-                return type;
-            },
+				let type = this.TX_TYPE_DISPLAY[types[0]] || types[0] || '';
+				if (type && types.length > 1) {
+						type += this.$t('ExplorerLang.unit.ellipsis');
+				}
+				return type;
+			},
 			async getLastBlocks(){
 				try{
 					let blockData = await getBlockList(1, 10, false);

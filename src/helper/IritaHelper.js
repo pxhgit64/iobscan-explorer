@@ -1,10 +1,11 @@
-import { getConfig as getConfigApi,getIbcTransferByHash, getIbcToken } from "@/service/api";
+import { getConfig as getConfigApi,getIbcTransferByHash, getIbcToken, getAllTxTypes } from "@/service/api";
 import moveDecimal from 'move-decimal-point';
 import Tools from "../util/Tools";
 import { COSMOS_ADDRESS_PREFIX , IRIS_ADDRESS_PREFIX} from "@/constant";
 // import { ibcDenomPrefix } from '../constant';
 import {cfg} from "@/config";
 import md5 from "js-md5";
+import {TxHelper} from "../helper/TxHelper";
 
 export function validatePositiveInteger(value){
 	if(+value === 0 || value && +value < 1){
@@ -51,6 +52,21 @@ export async function getConfig(){
         config = JSON.parse(config || "{}");
     }
     return config;
+}
+
+export async function getTxType(){
+    let txType = window.sessionStorage.getItem('txType');
+    if (!txType) {
+        let res = await getAllTxTypes().catch((e) => { throw e });
+        if (res) {
+            txType = TxHelper.formatTxTypeData(res.data)
+        }else{
+            txType = {};
+        }
+    }else{
+        txType = JSON.parse(txType || "{}");
+    }
+    return txType;
 }
 
 export async function getMainToken(){
@@ -168,7 +184,6 @@ export async function addressRoute (address) {
     if (addressPrefix.iva) {
         let length = addressPrefix.iva.length
         if(address) {
-            console.log(cfg)
             let isIris = addressPrefix.iaa === IRIS_ADDRESS_PREFIX,
                 isCosmos = addressPrefix.iaa === COSMOS_ADDRESS_PREFIX;
             if (address.substring(0, length) === addressPrefix.iva) {

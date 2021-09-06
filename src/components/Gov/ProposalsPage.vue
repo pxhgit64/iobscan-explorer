@@ -168,19 +168,16 @@ export default {
   computed: {},
   watch: {},
   created() {
-    this.getProposalsList("", this.pageNum, this.pageSize, true);
+    this.getProposalsListCount();
+    this.getProposalsList();
     this.getProposalsByStatus();
   },
   mounted() {},
   methods: {
-    async getProposalsList(status, currentPage, pageSize, useCount = false) {
+    async getProposalsList() {
       try {
-        let res = await getProposalsListApi(status, currentPage, pageSize, useCount);
-        if(useCount){
-          this.count = res?.count;
-        }
-        if (res && res.data && res.data.length > 0) {
-          
+        let res = await getProposalsListApi('', this.pageNum, this.pageSize, false);
+        if (res && res.data && res.data.length > 0) {     
           this.tableData = res.data.map(proposal => {
             let id = proposal.id;
             let title = proposal.content && Tools.formatString(proposal.content.title, this.proposalTitleNum, "...");
@@ -226,6 +223,20 @@ export default {
               finalVotes,
             };
           });
+        } else {
+            this.tableData = []
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    async getProposalsListCount() {
+      try {
+        let res = await getProposalsListApi("", null, null, true);
+        if(res?.count){
+          this.count = res.count;
+        } else {
+          this.count = 0
         }
       } catch (e) {
         console.error(e);
@@ -401,6 +412,8 @@ export default {
           this.votingPeriodDatas = this.votingPeriodDatas.sort((a, b) => {
             return b.proposal_id - a.proposal_id;
           });
+        } else {
+
         }
       } catch (e) {
         console.error(e);

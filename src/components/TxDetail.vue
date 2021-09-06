@@ -179,7 +179,6 @@ export default {
     async getTransactionInformation() {
       try {
         const res = await getTxDetail(this.$route.query.txHash)
-        console.log(res, '交易展示数据')
         if (res) {
           this.monikers = res.monikers
           this.messages = res.msgs || []
@@ -257,11 +256,11 @@ export default {
             case TX_TYPE.recv_packet:
               break
           }
-          this.relevanceTxList(null, null, true)
-          this.relevanceTxList(this.pageNum, this.pageSize)
+          await this.relevanceTxListCount()
+          this.relevanceTxList()
         }
       } catch (e) {
-          console.error(e)
+          console.log(e)
           this.$message.error(this.$t('ExplorerLang.message.requestFailed'))
       }
     },
@@ -273,9 +272,9 @@ export default {
     pageChange(pageNum) {
       if (this.pageNum === pageNum) return
       this.pageNum = pageNum
-      this.relevanceTxList(this.pageNum, this.pageSize)
+      this.relevanceTxList()
     },
-    async relevanceTxList(pageNum, pageSize, useCount = false) {
+    async relevanceTxList() {
       let type = ''
       switch (this.txType) {
         case TX_TYPE.call_service:
@@ -287,11 +286,8 @@ export default {
       }
       if (type && type.length && this.requestContextId && this.requestContextId.length) {
         try {
-          const res = await get(type, this.requestContextId, pageNum, pageSize, useCount)
+          const res = await getRelevanceTxList(type, this.requestContextId, this.pageNum, this.pageSize, false)
           if (res) {
-            if(useCount){
-              this.txCount = res.count
-            }
             this.relevanceTxs = res.data.map(tx => {
               let result = {
                 status: tx.status,
@@ -320,7 +316,30 @@ export default {
             })
           }
         } catch (e) {
-          console.error(e)
+          console.log(e)
+        }
+      }
+    },
+    async relevanceTxListCount() {
+      let type = ''
+      switch (this.txType) {
+        case TX_TYPE.call_service:
+          type = TX_TYPE.respond_service
+          break
+        case TX_TYPE.respond_service:
+          type = TX_TYPE.call_service
+          break
+      }
+      if (type && type.length && this.requestContextId && this.requestContextId.length) {
+        try {
+          const res = await getRelevanceTxList(type, this.requestContextId, null, null, true)
+          if (res?.count) {
+            this.txCount = res.count
+          } else {
+            this.txCount = 0
+          }
+        } catch (e) {
+          console.log(e)
         }
       }
     },
@@ -369,161 +388,159 @@ export default {
 
 <style scoped lang="scss">
 a {
-  color: $t_link_c !important;
+    color: $t_link_c !important;
 }
 .tx_detail_container {
-  padding: 0 0.15rem;
-  .tx_detail_content_wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    .tx_detail_content {
-      .tx_detail_title {
-        display: flex;
-        justify-content: flex-start;
-        color: $t_first_c;
-        font-size: $s18;
-        line-height: 0.21rem;
-        margin: 0.3rem 0 0.15rem 0rem;
-        text-align: left;
-        font-family: Arial;
-        font-weight: 600;
-        .tx_detail_title_first {
-          white-space: nowrap;
-          margin-right: 0.05rem;
+    padding: 0 0.15rem;
+    .tx_detail_content_wrap {
+        max-width: 12rem;
+        margin: 0 auto;
+        .tx_detail_content {
+            .tx_detail_title {
+                display: flex;
+                justify-content: flex-start;
+                color: $t_first_c;
+                font-size: $s18;
+                line-height: 0.21rem;
+                margin: 0.3rem 0 0.15rem 0rem;
+                text-align: left;
+                font-family: Arial;
+                font-weight: 600;
+                .tx_detail_title_first {
+                    white-space: nowrap;
+                    margin-right: 0.05rem;
+                }
+                .tx_detail_title_hash {
+                    font-size: $s14;
+                    font-family: Arial;
+                    font-weight: 400;
+                    color: $t_first_c;
+                    line-height: 0.2rem;
+                    word-break: break-all;
+                    margin-right: 0.05rem;
+                }
+            }
+            .tx_information_content {
+                box-sizing: border-box;
+                padding: 0.25rem;
+                background: $bg_white_c;
+                text-align: left;
+                border-radius: 0.05rem;
+                // border: 1px solid $bd_first_c;
+                .tx_information_list_title {
+                    font-size: $s16;
+                    font-family: Arial;
+                    font-weight: 600;
+                    color: $t_first_c;
+                    line-height: 22px;
+                    margin-bottom: 0.36rem;
+                }
+                .tx_information_list_item {
+                    display: flex;
+                    justify-content: flex-start;
+                    margin-bottom: 0.26rem;
+                    span:nth-of-type(1) {
+                        margin-right: 0.15rem;
+                        text-align: left;
+                        // min-width: 1.5rem;
+                        min-width: 1.64rem;
+                        color: $t_second_c;
+                        font-size: $s14;
+                        line-height: 0.16rem;
+                        font-family: Arial;
+                        font-weight: 600;
+                    }
+                    span:nth-of-type(2) {
+                        text-align: left;
+                        color: $t_first_c;
+                        font-size: $s14;
+                        line-height: 0.16rem;
+                    }
+                }
+                .tx_information_list_item:last-child {
+                    margin-bottom: 0;
+                }
+            }
+            .tx_information_tx_message_content {
+                margin: 0.48rem 0 0.1rem 0;
+                .tx_information_tx_content {
+                    box-sizing: border-box;
+                    padding: 0.25rem;
+                    background: $bg_white_c;
+                    border-radius: 0.05rem;
+                    // border: 1px solid $bd_first_c;
+                    .tx_information_tx_message_title {
+                        text-align: left;
+                        font-size: $s16;
+                        font-weight: bold;
+                        font-family: Arial;
+                        font-weight: 600;
+                    }
+                    .tx_information_tx_message_line {
+                        height: 0.01rem;
+                        background: $bd_first_c;
+                    }
+                }
+            }
         }
-        .tx_detail_title_hash {
-          font-size: $s14;
-          font-family: Arial;
-          font-weight: 400;
-          color: $t_first_c;
-          line-height: 0.2rem;
-          word-break: break-all;
-          margin-right: 0.05rem;
-        }
-      }
-      .tx_information_content {
-        box-sizing: border-box;
-        padding: 0.25rem;
-        background: $bg_white_c;
-        text-align: left;
-        border-radius: 0.05rem;
-        // border: 1px solid $bd_first_c;
-        .tx_information_list_title {
-          font-size: $s16;
-          font-family: Arial;
-          font-weight: 600;
-          color: $t_first_c;
-          line-height: 22px;
-          margin-bottom: 0.36rem;
-        }
-        .tx_information_list_item {
-          display: flex;
-          justify-content: flex-start;
-          margin-bottom: 0.26rem;
-          span:nth-of-type(1) {
-            margin-right: 0.15rem;
-            text-align: left;
-            // min-width: 1.5rem;
-            min-width: 1.64rem;
-            color: $t_second_c;
-            font-size: $s14;
-            line-height: 0.16rem;
-            font-family: Arial;
-            font-weight: 600;
-          }
-          span:nth-of-type(2) {
-            text-align: left;
-            flex: 1;
-            color: $t_first_c;
-            font-size: $s14;
-            line-height: 0.16rem;
-          }
-        }
-        .tx_information_list_item:last-child {
-          margin-bottom: 0;
-        }
-      }
-      .tx_information_tx_message_content {
-        margin: 0.48rem 0 0.1rem 0;
-        .tx_information_tx_content {
-          box-sizing: border-box;
-          padding: 0.25rem;
-          background: $bg_white_c;
-          border-radius: 0.05rem;
-          // border: 1px solid $bd_first_c;
-          .tx_information_tx_message_title {
-            text-align: left;
-            font-size: $s16;
-            font-weight: bold;
-            font-family: Arial;
-            font-weight: 600;
-          }
-          .tx_information_tx_message_line {
-            height: 0.01rem;
-            background: $bd_first_c;
-          }
-        }
-      }
     }
-  }
 }
 @media screen and (max-width: 865px) {
-  .tx_detail_container {
-  .tx_detail_content_wrap {
-    .tx_detail_content {
-      .tx_detail_title {
-        display: block;
-        margin: 0.3rem 0 0.15rem 0.05rem;
-        .tx_detail_title_first {
+    .tx_detail_container {
+        .tx_detail_content_wrap {
+            .tx_detail_content {
+                .tx_detail_title {
+                    display: block;
+                    margin: 0.3rem 0 0.15rem 0.05rem;
+                    .tx_detail_title_first {
+                    }
+                    .tx_detail_title_hash {
+                    }
+                }
+                .tx_information_content {
+                    .tx_information_list_title {
+                    }
+                    .tx_information_list_item {
+                    }
+                    .tx_information_list_item:last-child {
+                    }
+                }
+                .tx_information_tx_message_content {
+                    .tx_information_tx_content {
+                        .tx_information_tx_message_title {
+                        }
+                        .tx_information_tx_message_line {
+                        }
+                    }
+                }
+            }
         }
-        .tx_detail_title_hash {
-
-        }
-      }
-      .tx_information_content {
-        .tx_information_list_title {
-        }
-        .tx_information_list_item {
-        }
-        .tx_information_list_item:last-child {
-        }
-      }
-      .tx_information_tx_message_content {
-        .tx_information_tx_content {
-          .tx_information_tx_message_title {
-          }
-          .tx_information_tx_message_line {
-          }
-        }
-      }
     }
-  }
-}
 }
 
 @media screen and (max-width: 768px) {
-  .tx_detail_container {
-    .tx_detail_content_wrap {
-      .tx_detail_content {
-        .tx_detail_title {
-        }
-        .tx_information_content {
-          .tx_information_list_item {
-            span:nth-of-type(1) {
-              min-width: 1.4rem;
+    .tx_detail_container {
+        .tx_detail_content_wrap {
+            .tx_detail_content {
+                .tx_detail_title {
+                }
+                .tx_information_content {
+                    .tx_information_list_item {
+                        span:nth-of-type(1) {
+                            min-width: 1.4rem;
+                        }
+                        span:nth-of-type(2) {
+                        }
+                    }
+                    .tx_information_list_item:last-child {
+                    }
+                }
+                .tx_information_tx_message_content {
+                    .tx_information_tx_message_title {
+                    }
+                }
             }
-            span:nth-of-type(2) {
-            }
-          }
-          .tx_information_list_item:last-child {
-          }
         }
-        .tx_information_tx_message_content {
-          .tx_information_tx_message_title {
-          }
-        }
-      }
     }
-  }
 }
 </style>

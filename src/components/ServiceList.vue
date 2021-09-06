@@ -1,6 +1,6 @@
 <template>
-	<div class="service_list_container_content">
-		<div class="service_list_content_wrap">
+    <div class="service_list_container_content">
+        <div class="service_list_content_wrap">
             <div class="service_list_content_wrap_title">
                 <div class="service_list_title">
                     {{ txCount }} {{$t('ExplorerLang.service.services')}}{{txCount > 1 && $t('ExplorerLang.service.services').length > 2 ? 's':'' }}
@@ -15,7 +15,7 @@
                     </div>
                 </div>
             </div>
-			<div class="service_list_content" v-for="(service,index) in serviceList" :key="index">
+            <div class="service_list_content" v-for="(service,index) in serviceList" :key="index">
                 <div class="service_list_top">
                     <span class="service_list_service_name bold_name">
                         <router-link :to="`/service?serviceName=${service.serviceName}`">
@@ -72,59 +72,55 @@
                         <el-table-column :width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.bindTime')" prop="bindTime"></el-table-column>
                     </el-table>
                 </div>	
-			</div>
-			<div class="pagination_content" v-if="txCount > pageSize">
-				<m-pagination :page-size="pageSize"
-				              :total="txCount"
-				              :page="pageNum"
-				              :page-change="pageChange">
-					
-				</m-pagination>
-			</div>
+            </div>
+            <div class="pagination_content" v-if="txCount > pageSize">
+                <m-pagination :page-size="pageSize"
+                    :total="txCount"
+                    :page="pageNum"
+                    :page-change="pageChange">
+                </m-pagination>
+            </div>
             <div class="service_list_empty_container" v-if="serviceList.length === 0">
                 <img src="../assets/empty.png" alt="" class="service_list_empty">
                 <span class="service_list_empty_description">
                     {{ $t('ExplorerLang.table.emptyDescription') }}
                 </span>
             </div>
-		</div>
-	</div>
+        </div>
+    </div>
 </template>
 
 <script>
-	import Tools from "../util/Tools"
-	import MPagination from "./common/MPagination";
+    import Tools from "../util/Tools"
+    import MPagination from "./common/MPagination";
     import {getAllServiceTxList, getServiceBindingByServiceName} from "../service/api";
     import { ColumnMinWidth } from '../constant';
     export default {
-		name: "ServiceList",
-		components: {MPagination},
-		data() {
-			return {
+        name: "ServiceList",
+        components: {MPagination},
+        data() {
+            return {
                 ColumnMinWidth,
-				pageNum: 1,
-				pageSize: 5,
-				serviceList:[],
-				txCount:0,
+                pageNum: 1,
+                pageSize: 5,
+                serviceList:[],
+                txCount:0,
                 Tools,
                 iptVal:'',
-			}
-		},
-		mounted () {
-      this.getServiceList(null, null, true);
-			this.getServiceList(this.pageNum,this.pageSize);
-		},
-		methods:{
-			async getServiceList(pageNum, pageSize, useCount = false){
+            }
+        },
+        mounted () {
+            this.getServiceListCount();
+            this.getServiceList();
+        },
+        methods:{
+            async getServiceList(){
                 try {
-                    let serviceList = await getAllServiceTxList(pageNum, pageSize, useCount, this.iptVal);
-                    if(useCount){
-                      this.txCount = serviceList?.count;
-                    }
-                    if(serviceList && serviceList.data){          
+                    let serviceList = await getAllServiceTxList(this.pageNum, this.pageSize, false, this.iptVal);
+                    if(serviceList?.data && serviceList.data.length > 0){          
                         for(let service of serviceList.data){
                             try {
-                                let bindings = await getServiceBindingByServiceName(service.serviceName);                           
+                                let bindings = await getServiceBindingByServiceName(service.serviceName);                                                    
                                 if(bindings.result){
                                     service.bindList.forEach((s)=>{
                                         s.bindTime = Tools.getDisplayDate(s.bindTime);
@@ -142,35 +138,49 @@
                             };                           
                         }
                         this.serviceList = serviceList.data;
+                    } else {
+                        this.serviceList = []
                     }
                 } catch (e) {
                     console.error(e);
                     // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
                 }
-			},
-			formatTxHash(TxHash){
-				if(TxHash){
-					return Tools.formatTxHash(TxHash)
-				}
-			},
-			formatAddress(address){
-				return Tools.formatValidatorAddress(address)
-			},
-			pageChange(pageNum) {
-				this.pageNum = pageNum;
-        this.getServiceList(this.pageNum,this.pageSize);
-			},
+            },
+            async getServiceListCount(){
+                try {
+                    let serviceList = await getAllServiceTxList(null,null,true, this.iptVal);
+                    if(serviceList?.count){
+                        this.txCount = serviceList.count;
+                    } else {
+                        this.txCount = 0;
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            },
+            formatTxHash(TxHash){
+                if(TxHash){
+                return Tools.formatTxHash(TxHash)
+                }
+            },
+            formatAddress(address){
+                return Tools.formatValidatorAddress(address)
+            },
+            pageChange(pageNum) {
+                this.pageNum = pageNum;
+                this.getServiceList();
+            },
             handleSearchClick(){
                 this.pageNum = 1;
-                this.getServiceList(null, null, true)
-                this.getServiceList(this.pageNum,this.pageSize);
+                this.getServiceListCount()
+                this.getServiceList();
             },
             reset(){
                 this.iptVal = '';
                 this.handleSearchClick();
             }
-		}
-	}
+        }
+    }
 </script>
 
 <style scoped lang="scss">
@@ -498,11 +508,11 @@
                     padding: 0.28rem 0.12rem 0.18rem 0.12rem;
                 }
             }
-		}
-		.pagination_content{
-			display: flex;
-			justify-content: flex-end;
-			margin: 0.1rem 0 0.2rem 0;
-		}
-	}
+        }
+        .pagination_content{
+            display: flex;
+            justify-content: flex-end;
+            margin: 0.1rem 0 0.2rem 0;
+        }
+    }
 </style>

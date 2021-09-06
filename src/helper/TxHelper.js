@@ -1,25 +1,33 @@
-import { TX_TYPE, PubKeyAlgorithm,LEVEL_TX_TYPE,TX_TYPE_DISPLAY } from "../constant";
+import { TX_TYPE, PubKeyAlgorithm, LEVEL_TX_TYPE,TX_TYPE_DISPLAY } from "../constant";
 import prodConfig from '../productionConfig';
 import Tools from "../util/Tools";
 export class TxHelper {
     //The corresponding IBC Denom was deduced through the IBC Packet path
-    static getOriginalDenomFromPacket (ibc_package) { 
+    static getOriginalDenomFromPacket (ibc_package,type) { 
         let denom_result = '';
         if (ibc_package && typeof ibc_package == 'object') {
             let { source_port, source_channel, destination_port, destination_channel, data } = ibc_package;
             let prefix_sc = `${source_port}/${source_channel}/`;
             let prefix_dc = `${destination_port}/${destination_channel}/`;
             let denom = data.denom;
-            if (denom.startsWith(prefix_sc)){
-                let denom_clear_prefix = denom.replace(prefix_sc,'');
-                if (denom_clear_prefix.indexOf('/') == -1) {
-                    denom_result = denom_clear_prefix;
+            if (type && type == TX_TYPE.timeout_packet) {
+                if (denom.startsWith(prefix_sc)) {
+                    denom_result = `ibc/${Tools.sha256(denom).toUpperCase()}`;
                 }else{
-                    denom_result = `ibc/${Tools.sha256(denom_clear_prefix).toUpperCase()}`;
+                    denom_result = denom;
                 }
             }else{
-                let denom_add_prefix = `${prefix_dc}${denom}`;
-                denom_result = `ibc/${Tools.sha256(denom_add_prefix).toUpperCase()}`;
+                if (denom.startsWith(prefix_sc)){
+                    let denom_clear_prefix = denom.replace(prefix_sc,'');
+                    if (denom_clear_prefix.indexOf('/') == -1) {
+                        denom_result = denom_clear_prefix;
+                    }else{
+                        denom_result = `ibc/${Tools.sha256(denom_clear_prefix).toUpperCase()}`;
+                    }
+                }else{
+                    let denom_add_prefix = `${prefix_dc}${denom}`;
+                    denom_result = `ibc/${Tools.sha256(denom_add_prefix).toUpperCase()}`;
+                }
             }
         }
         return denom_result;
@@ -272,6 +280,54 @@ export class TxHelper {
             return operator
         }
     }
+    static formatTxTypeData (TxTypeData) {
+        let retOptions = []
+        let map = new Map()
+        let index = 0
+        let TX_TYPE_DISPLAY = {}
+        let lang = 'en'
+        if (prodConfig.lang === "EN") {
+            lang = 'en'
+        } else {
+            lang = 'cn'
+        }
+        TxTypeData.forEach(txType => {
+            let module = txType['module_' + `${lang}`]
+            let type = txType['type_' + `${lang}`]
+            if (!map.has(module)) {
+                retOptions.push({
+                    label: module,
+                    value: module,
+                    children: []
+                })
+                map.set(module, index)
+                index++;
+            }
+            retOptions[map.get(module)].children.push({
+                label: type,
+                value: txType.typeName
+            }) 
+            
+            TX_TYPE_DISPLAY[txType.typeName] = type
+        })
+        // retOptions.filter(module => { module.children.length > 0 })
+  
+        retOptions.forEach((module, index) => {
+            if (module.children.length === 0) {
+                retOptions.splice(index, 1)
+            }
+         })
+
+        let txType = {
+            txTypeData: TxTypeData,
+            txTypeDataOptions: retOptions,
+            TX_TYPE_DISPLAY: TX_TYPE_DISPLAY
+        }
+        sessionStorage.setItem('txType', JSON.stringify(txType))
+
+    }
+
+    // abandon
     static formatTxType (txTypeArray) {
 		let allTxType = [],
 			tansferObj = {
