@@ -12,6 +12,7 @@ import VueI18n from 'vue-i18n';
 import prodConfig from "./productionConfig";
 import adjustColumnWidth from '@/helper/adjustColumnWidth';
 import {getMainToken} from "@/helper/IritaHelper";
+import 'spinkit/spinkit.css'
 
 Vue.prototype.$adjustColumnWidth = adjustColumnWidth;
 
