@@ -67,7 +67,19 @@
                         <div class="reset_btn" @click="resetFilterCondition"><i class="iconfont iconzhongzhi"></i></div>
                     </div>
             </div>
-            <TxListComponent :txData="transactionArray"></TxListComponent>
+<!--            <TxListComponent :txData="transactionArray"></TxListComponent>-->
+			<list-component
+				:is-loading="isLoading"
+				:token-symbol="mainTokenSymbol"
+				:list-data="transactionArray"
+				:column-list="txColumnList"
+				:pagination="{pageSize:Number(pageSize),dataCount:txCount,pageNum:Number(pageNum)}"
+				@pageChange="pageChange">
+				<template v-slot:msgType>
+					<tabs-component :tab-list="txTypeOption"
+									@onSelectMagType="getFilterTxs"></tabs-component>
+				</template>
+			</list-component>
             <div class="pagination_content">
                 <div class="tooltip_box">
                   <span class="tooltip_title">Cross-chain TokenType:</span>
@@ -93,15 +105,33 @@
     import MPagination from "./common/MPagination";
     import TxListComponent from "./common/TxListComponent";
     import {TxHelper} from "../helper/TxHelper";
-    import {getTxList } from '../service/api';
-    import { TX_TYPE,TX_STATUS } from '../constant';
-    import { getTxType } from '@/helper/IritaHelper';
+    import {getTxList,getAllTxTypes } from '../service/api';
+	import {
+		TX_TYPE,
+		TX_STATUS,
+		ColumnMinWidth,
+		monikerNum,
+		decimals,
+		IRIS_ADDRESS_PREFIX,
+		COSMOS_ADDRESS_PREFIX
+	} from '../constant';
+	import ListComponent from "./common/ListComponent";
+	import txCommonTable from "./tableListColumnConfig/txCommonTable";
+	import txCommonLatestTable from "./tableListColumnConfig/txCommonLatestTable";
+	import {getAmountByTx, getDenomMap, getDenomTheme} from "../helper/txListAmoutHelper";
+	import { addressRoute, formatMoniker, converCoin, getMainToken, getTxType } from '@/helper/IritaHelper';
+	import parseTimeMixin from '../mixins/parseTime'
+	import prodConfig from "../productionConfig";
+	import TabsComponent from "./common/TabsComponent";
     export default {
         name : "TxList",
-        components : {MPagination, TxListComponent},
+        components : {TabsComponent, ListComponent, MPagination, TxListComponent},
+		mixins: [parseTimeMixin],
         data(){
             const {txType, status, beginTime, endTime, pageNum, pageSize} = Tools.urlParser();
             return {
+            	isLoading:false,
+				TX_TYPE_DISPLAY: {},
                 IBC: 'IBC',
                 HashLock: 'Hash Lock',
                 PickerOptions: {
@@ -140,22 +170,47 @@
                 pageNum: pageNum ? pageNum : 1,
                 pageSize: pageSize ? pageSize : 30,
                 txTypeArray:[''],
+				txColumnList:[],
+				tyepWidth: ColumnMinWidth.txType,
+				TxHelper,
+				isShowFee: prodConfig.fee.isShowFee,
+				isShowDenom: prodConfig.fee.isShowDenom,
+				ColumnMinWidth,
+				Tools,
+				addressRoute,
+				formatMoniker,
+				monikerNum,
+				feeDecimals: decimals.fee,
+				txDataList: [],
+				colWidthList: [],
+				loading: false,
+				mainTokenSymbol:'',
+				IRIS_ADDRESS_PREFIX,
+				COSMOS_ADDRESS_PREFIX,
+				denomMap: {},
             }
         },
+		async created(){
+			await this.getTxTypeData()
+			this.formatTxData()
+		},
         mounted(){
+        	this.txColumnList = txCommonTable.concat(txCommonLatestTable)
             this.getFilterTxs('init');
             this.getAllTxType();
+			this.setMainToken();
         },
         methods : {
             getFilterTxs(param){
+				console.log(param,'应该会执行两次')
                 this.statusValue = Number(this.statusValue || 0);
                 this.pageNum = 1;
                 let url = `/#/txs?pageNum=${this.pageNum}&pageSize=${this.pageSize}`;
                 // if(this.txType){
                 //     url += `&txType=${this.txType}`;
                 // }
-                if(this.txType){
-                    url += `&txType=${this.txType}`;
+                if(param?.value){
+                    url += `&txType=${param?.value}`;
                 }
                 if(this.statusValue){
                     url += `&status=${this.statusValue}`;
@@ -188,6 +243,7 @@
                 history.pushState(null, null, `/#/txs?pageNum=${this.pageNum}&pageSize=${this.pageSize}&useCount=true`);
             },
             async getTxListData(pageNum, pageSize, useCount = false){
+            	this.isLoading = true
                 const {txType, status, beginTime, endTime} = Tools.urlParser();
                 let params = {txType, status, beginTime, endTime};
                 if(pageNum && pageSize){
@@ -198,27 +254,35 @@
                 }
                 try{
                     const res = await getTxList(params);
+					this.isLoading = false
                     if(this.pageNum === Number(res.pageNum)){
-                      this.transactionArray = res.data;
+                    	if(res?.data?.length){
+							this.txData = res.data
+							this.formatTxData()
+						}
+						
                     }
                     if(useCount){
 			                this.txCount = res.count
 		                }
                 }catch (e) {
+					this.isLoading = false
                     console.error(e);
                     // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
                 }
             },
             async getAllTxType(){
-                try {    
-                    let res = await getTxType()
-                    this.txTypeOption = res?.txTypeDataOptions
-                    this.txTypeOption.unshift({
-                        value : '',
-                        label : this.$t('ExplorerLang.common.allTxType'),
-                        slot : 'allTxType',
-                    });
-                    this.txTypeArray = TxHelper.getTxTypeArray(this.txTypeOption,this.txType)
+                try {
+					const res = await getAllTxTypes()
+					const typeList = TxHelper.formatTxType(res.data)
+					typeList.unshift({
+						value : '',
+						label : this.$t('ExplorerLang.common.allTxType'),
+						slot : 'allTxType',
+					});
+					this.txTypeOption = typeList;
+					this.txTypeArray = TxHelper.getTxTypeArray(this.txTypeOption,this.txType)
+					console.log(this.txTypeOption,"数值")
                 }catch (e) {
                     console.error(e);
                     // this.$message.error(this.$t('ExplorerLang.message.requestFailed'));
@@ -260,6 +324,37 @@
                 this.getTxListData(this.pageNum, this.pageSize)
                 this.txTypeArray=['']
             },
+			async getTxTypeData(){
+				try {
+					let res = await getTxType()
+					this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+				} catch (error) {
+					console.log(error)
+				}
+			},
+			isValid(value){
+				return (!value || !value.length || value == '--') ? false : true;
+			},
+			async setMainToken(){
+				let mainToken = await getMainToken();
+				if(mainToken && mainToken.symbol){
+					this.mainTokenSymbol = mainToken.symbol.toUpperCase();
+				}
+			},
+			getAmount(amount) {
+				if (!amount) {
+					return "";
+				}
+				let denomRule = /[0-9.]+/
+				return amount.match(denomRule)[0];
+			},
+			getAmountUnit(amount) {
+				if (!amount) {
+					return "";
+				}
+				let denomRule = /[A-Za-z\/]+/
+				return amount.match(denomRule)[0];
+			},
             /*getParamsByUrlHash(){
                 let txType,
                     txStatus,
@@ -338,7 +433,110 @@
             },
             handleChange(value) {
                 this.txType = value[1] ? value[1] : ''
-            }
+            },
+			async formatTxData() {
+				this.transactionArray =[]
+				try {
+					this.loading = true;
+					if(this.txData && this.txData.length) {
+						let fees = []
+						let amounts = []
+						for (const tx of this.txData) {
+							let msg;
+							if(tx.msgs.length > 0){
+								let recvPacketItem = tx.msgs.find((m)=>{
+									if(m.type === TX_TYPE.recv_packet || m.type === TX_TYPE.transfer || m.type === TX_TYPE.timeout_packet){
+										return true;
+									}
+								});
+								if(recvPacketItem){
+									msg = recvPacketItem;
+								}else{
+									msg = tx.msgs[0]
+								}
+							}
+							let addrObj = TxHelper.getFromAndToAddressFromMsg(msg);
+							amounts.push(tx.msgs[0] ? getAmountByTx(tx.msgs[0],tx.events,true) : '--');
+							let from = addrObj.from || '--',
+								to =  addrObj.to || '--';
+							let fromMonikers,toMonikers
+							if((tx.monikers || {}).length) {
+								tx.monikers.map( item => {
+									toMonikers = toMonikers || item[to] || ''
+									fromMonikers = fromMonikers || item[from] || ''
+								})
+							}
+							if(this.isShowFee) {
+								fees.push(tx.fee && tx.fee.amount && tx.fee.amount.length > 0 ? await converCoin(tx.fee.amount[0]) :'--')
+							}
+							let isShowMore = false;
+							const type = tx.msgs && tx.msgs[0] && tx.msgs[0].type;
+							if(type && (type === TX_TYPE.add_liquidity || type === TX_TYPE.remove_liquidity)) {
+								isShowMore = true
+							}
+							if(tx.type === TX_TYPE.send) {
+								tx && tx.msgs && tx.msgs[0] && tx.msgs[0].msg && tx.msgs[0].msg.amount && tx.msgs[0].msg.amount.length > 1 ? isShowMore = true : ''
+								let denom = tx?.msgs?.[0]?.msg?.amount?.[0]?.denom
+								if(denom !== undefined && /(swap|SWAP)/g.test(denom)) {
+									isShowMore = true
+								}
+							}
+							this.transactionArray.push({
+								txHash : tx.tx_hash,
+								blockHeight : tx.height,
+								txType :(tx.msgs || []).map(item=>this.TX_TYPE_DISPLAY[item.type] || item.type),
+								from,
+								fromMonikers,
+								toMonikers,
+								to,
+								signer : tx.signers[0],
+								status : tx.status,
+								msgCount : tx.msgs.length,
+								// time :Tools.getDisplayDate(tx.time),
+								Tx_Fee: '',
+								Time: tx.time,
+								amount: '',
+								ageTime: Tools.formatAge(Tools.getTimestamp(),tx.time*1000, this.$t('ExplorerLang.table.suffix')),
+								isShowMore,
+								denomTheme: {
+									denomColor: '',
+									tooltipContent: ''
+								}
+							})
+							/**
+							 * @description: from parseTimeMixin
+							 */
+							this.parseTime('transactionArray', 'Time', 'ageTime')
+						}
+						if(fees && fees.length > 0 && this.isShowFee) {
+							let fee = await Promise.all(fees);
+							this.transactionArray.forEach((item,index) => {
+								// this.transactionArray[index].Tx_Fee = fee[index] && fee[index].amount ?  this.isShowDenom ? `${Tools.toDecimal(fee[index].amount,this.feeDecimals)} ${fee[index].denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee[index].amount,this.feeDecimals)}` : '--';
+								// remove denom
+								this.transactionArray[index].Tx_Fee = fee[index] && fee[index].amount ?  this.isShowDenom ? `${Tools.toDecimal(fee[index].amount,this.feeDecimals)}` : `${Tools.toDecimal(fee[index].amount,this.feeDecimals)}` : '--';
+								console.log(this.transactionArray[index].Tx_Fee,"数据格式展示")
+							})
+						}
+						if(amounts && amounts.length > 0) {
+							let amount = await Promise.all(amounts)
+							this.denomMap = await getDenomMap()
+							this.transactionArray.forEach((item, index) => {
+								this.transactionArray[index].denomTheme =getDenomTheme(amount[index], this.denomMap)
+								this.transactionArray[index].amount = amount[index]
+							})
+						}
+						/*this.$nextTick(() => {
+							setTimeout(() => {
+								this.colWidthList = this.$adjustColumnWidth(this.$refs['listTable'].$el);
+								this.loading = false;
+							});
+						});*/
+					}
+				} catch (error) {
+					console.log(error)
+				}
+		
+			},
         }
     }
 </script>
