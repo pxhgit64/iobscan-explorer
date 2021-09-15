@@ -467,7 +467,7 @@ export const ExplorerLang = {
             to: 'To',
             receiverOnOtherChain: 'ReceiverOnOtherChain',
             senderOnOtherChain: 'SenderOnOtherChain',
-            amount: 'Amount',
+            amount:'Amount',
             hashLock: 'HashLock',
             timestamp: 'Timestamp',
             timeLock: 'TimeLock',

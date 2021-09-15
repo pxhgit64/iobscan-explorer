@@ -46,7 +46,7 @@ export default class Tools {
     let minutes = Math.floor(minuteLevel / 60)
     let seconds = dateDiff % 60
 
-    console.log(cn.ExplorerLang,'引入的数据');
+
 
     const day1 = config.lang === 'CN'? cn.ExplorerLang.common.day1 : en.ExplorerLang.common.day1
     const day = config.lang === 'CN'? cn.ExplorerLang.common.day : en.ExplorerLang.common.day
