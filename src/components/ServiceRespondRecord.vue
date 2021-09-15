@@ -162,6 +162,7 @@
     import { TX_STATUS,ColumnMinWidth } from '../constant';
     import { converCoin } from '../helper/IritaHelper';
     import productionConfig from '@/productionConfig.js';
+    import {ExplorerLang} from "../../lang/CN-Cindy";
     export default {
         name : "ServiceInformation",
         components : {MPagination},
@@ -211,7 +212,7 @@
                     }
                     if(bindings && bindings.result){
                         let {available, pricing, qos, deposit, disabled_time} = bindings.result;
-                        this.isAvailable = available ? 'True' : 'False';
+                        this.isAvailable = available ? this.$t('ExplorerLang .common.true') : this.$t('ExplorerLang .common.false');
                         this.price = pricing;
                         this.qos = qos;
                         if(deposit && deposit[0] && this.isShowFee) {

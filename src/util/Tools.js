@@ -3,6 +3,11 @@ import BigNumber from 'bignumber.js'
 import URLSearchParams from 'url-search-params'
 import { bech32 } from 'bech32'
 import moveDecimal from 'move-decimal-point'
+
+const  cn = require("../../lang/CN-Cindy")
+const  en = require( "../../lang/EN-Cindy")
+import config from "../../productionConfig/productionConfig"
+
 //import Constant from '../constant/index.js'
 //import { getConfig } from '@/helper/IritaHelper'
 import { utcOffset,isShowUTC } from '../productionConfig';
@@ -41,12 +46,26 @@ export default class Tools {
     let minutes = Math.floor(minuteLevel / 60)
     let seconds = dateDiff % 60
 
-    let str = `${dayDiff ? (dayDiff < 2 ? `${dayDiff} day` : `${dayDiff} days`) : ''} ${hours ? (hours < 2 ? `${hours} hr` : `${hours} hrs`) : ''} ${dayDiff ? '' : minutes ? (minutes < 2 ? `${minutes} min` : `${minutes} mins`) : ''} ${dayDiff || hours ? '' : seconds ? (seconds < 2 ? `${seconds} sec` : `${seconds} secs`) : ''}`
+    console.log(cn.ExplorerLang,'引入的数据');
+
+    const day1 = config.lang === 'CN'? cn.ExplorerLang.common.day1 : en.ExplorerLang.common.day1
+    const day = config.lang === 'CN'? cn.ExplorerLang.common.day : en.ExplorerLang.common.day
+    const hrs = config.lang === 'CN'? cn.ExplorerLang.common.hrs: en.ExplorerLang.common.hrs
+    const hr = config.lang === 'CN'? cn.ExplorerLang.common.hr : en.ExplorerLang.common.hr
+    const mins = config.lang === 'CN'? cn.ExplorerLang.common.mins : en.ExplorerLang.common.mins
+    const min = config.lang === 'CN'? cn.ExplorerLang.common.min : en.ExplorerLang.common.min
+    const secs = config.lang === 'CN'? cn.ExplorerLang.common.secs : en.ExplorerLang.common.secs
+    const sec = config.lang === 'CN'? cn.ExplorerLang.common.sec : en.ExplorerLang.common.sec
+    const ago = config.lang === 'CN'? cn.ExplorerLang.table.suffix : en.ExplorerLang.table.suffix
+
+    let str = `${dayDiff ? (dayDiff < 2 ? `${dayDiff} ${day1}` : `${dayDiff} ${day}`) : ''} ${hours ? (hours < 2 ? `${hours} ${hrs}` : `${hours} ${hr}`) : ''} ${dayDiff ? '' : minutes ? (minutes < 2 ? `${minutes}${mins}` : `${minutes} ${min}`) : ''} ${dayDiff || hours ? '' : seconds ? (seconds < 2 ? `${seconds} ${secs}` : `${seconds} ${sec}`) : ''}`
+
+
 
     if (prefix && suffix) {
-      return `${prefix} ${str} ${suffix}`
+      return `${prefix} ${str} ${ago}`
     } else if (suffix) {
-      return `${str} ${suffix}`
+      return `${str} ${ago}`
     } else {
       return `${str}`
     }

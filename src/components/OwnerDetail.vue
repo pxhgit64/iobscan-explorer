@@ -381,7 +381,7 @@
                     scope.row.isAvailable ? '#B1E96E' : '#C4C4C4'
                   }`"></span>
                 <span class="provider_transaction_content_available_status">{{
-                  scope.row.isAvailable ? "True" : "False"
+                    scope.row.isAvailable ? "True" : "False"
                 }}</span>
               </div>
             </template>
@@ -625,6 +625,7 @@ import {
 import BigNumber from 'bignumber.js'
 import moveDecimal from 'move-decimal-point'
 import { converCoin, getMainToken, getTxType } from '../helper/IritaHelper'
+import {ExplorerLang} from "../../lang/CN-Cindy";
 export default {
   name: 'OwnerDetail',
   components: {
@@ -1192,13 +1193,13 @@ export default {
             if (item.msgs[0].msg.deposit && item.msgs[0].msg.deposit.length) {
               result.deposit = `${item.msgs[0].msg.deposit[0].amount} ${item.msgs[0].msg.deposit[0].denom}`
             }
-            let bindings = await getServiceBindingByServiceName(result.serviceName);
+            let bindings = await getServiceBindingByServiceName(result.serviceName );
+            result.isAvailable = this.$t('ExplorerLang.common.false')
             (bindings.result || []).forEach((bind) => {
               if (
                 result.provider === bind.provider &&
-                result.owner == bind.owner
-              ) {
-                result.isAvailable = bind.available
+                result.owner == bind.owner) {
+                result.isAvailable = bind.available ? this.$t('ExplorerLang.common.true') : this.$t('ExplorerLang.common.false')
                 result.pricing = JSON.parse(bind.pricing || '{}').price
                 result.qos = bind.qos
                 if (bind.disabled_time) {

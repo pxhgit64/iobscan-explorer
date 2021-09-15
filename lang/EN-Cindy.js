@@ -11,6 +11,21 @@ export const ExplorerLang = {
         all:'All',
         more:'Expand',
         fewer:'Collapse',
+        //新增（时间）
+        day1:'days',
+        day:'day',
+        hrs:'hrs',
+        hr:'hr',
+        mins:'mins',
+        min:'min',
+        secs:'secs',
+        sec:'sec',
+        ago:'ago',
+        //新增可用状态
+        true:'true',
+        false:'false'
+
+
     },
     table:{
         emptyDescription:'- No Data -',
@@ -119,7 +134,7 @@ export const ExplorerLang = {
         time:'Time',
         blocks:'Blocks',
         totalRespond:'Total ${%value%} Responds',
-        Txs:'Txs',
+        Txs:'Tsx',
         // second:'Second',
     },
     message:{
@@ -304,7 +319,7 @@ export const ExplorerLang = {
         // 新增
         staking: {
             from: 'From :',
-            amount: 'Amount :',
+            amount: 'Amount:',
             to: 'To :',
             shares: 'Shares :',
             toShares: 'Shares : ',//'Shares : '此处有空格
@@ -339,7 +354,7 @@ export const ExplorerLang = {
             minToken: 'Min Token :',
             minLiquidity: 'Min Liquidity :',
             withdrawLiquidity: 'Withdraw Liquidity :',
-            amount: 'Amount :', // 新增
+            amount: 'Amount:', // 新增
             tokenPair: 'Token Pair :', // 新增
         },
         oracle: {
