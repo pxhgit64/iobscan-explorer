@@ -38,7 +38,7 @@
 
 let config = {
   //国际化 CN / EN 默认CN
-  lang:'CN',
+  lang:'EN',
   //浏览器标签标题 必填
   title:'Internet of Blockchains Scan - IRIS Hub',
   //主题色 作用于非直接干预的文字、背景、边框颜色(如输入框边框高亮、首页卡片图标等) 优先级较低
