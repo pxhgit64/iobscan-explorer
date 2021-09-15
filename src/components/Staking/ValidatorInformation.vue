@@ -284,7 +284,7 @@
 								? `${information.self_power} (${Tools.formatPerNumber((information.self_power / information.total_power) * 100,this.percentageFixedNumber)}%)`
 								: "";
 						}else if(item.dataName === 'missed_blocks_count'){
-							item.value = `${information.missed_blocks_count} in ${information.stats_blocks_window} this.$t('ExplorerLang.common.blocks')`;
+							item.value = `${information.missed_blocks_count} in ${information.stats_blocks_window} ${this.$t('ExplorerLang.common.blocks')}')`;
 						}else if(item.dataName === 'jailed_until'){
 							item.value = new Date(Number(information[item.dataName])).getTime() ? Tools.getDisplayDate(information[item.dataName]) : "--";
 						} else {
