@@ -321,8 +321,8 @@ export const ExplorerLang = {
         // 新增
         staking: {
             from: 'From :',
-            amount: 'Amount:',
-            to: 'To :',
+            amount:'Amount:',
+            to:'To :',
             shares: 'Shares :',
             toShares: 'Shares : ',//'Shares : '此处有空格
             endTime: 'End Time :',
