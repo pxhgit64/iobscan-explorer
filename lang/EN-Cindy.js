@@ -136,7 +136,7 @@ export const ExplorerLang = {
         time:'Time',
         blocks:'Blocks',
         totalRespond:'Total ${%value%} Responds',
-        Txs:'Tsx',
+        Txs:'Txs',
         // second:'Second',
     },
     message:{
