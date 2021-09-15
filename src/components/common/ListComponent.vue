@@ -1,9 +1,13 @@
 <template>
 	<div class="list_table_content_container">
 		<el-card class="box-card">
+			<div class="header_content">
+				<slot name="txCount"></slot>
+				<slot name="dataPicket"></slot>
+			</div>
 			<slot name="msgType"></slot>
 			<loading v-if="isLoading"></loading>
-			<el-table v-if="!isLoading" :data="listData" stripe ref="listTable">
+			<el-table v-if="!isLoading" :data="tabList" stripe ref="listTable">
 				<el-table-column
 					v-for="(item,index) in columns"
 					:key="index"
@@ -28,8 +32,7 @@
 									:content="formatStr(scope.row[item.nativeValue])">
 							<router-link class="link_style" v-if="item.isLink"
 										 :to="`${item.linkRoute}/${scope.row[item.nativeValue]}`">
-								<span
-									v-if="item.isNeedFormatHash">{{ formatTxHash(scope.row[item.displayValue]) }}</span>
+								<span v-if="item.isNeedFormatHash">{{ formatTxHash(scope.row[item.displayValue]) }}</span>
 								<span v-else>{{ scope.row[item.displayValue] }}</span>
 							</router-link>
 							<span v-else-if="item.isShowTag">
@@ -185,6 +188,7 @@ export default {
 	},
 	mounted() {
 		this.columns = this.columnList
+		this.listData = this.listData
 	}
 }
 </script>
@@ -198,7 +202,11 @@ export default {
 		border: none;
 		box-shadow: 0 0.03rem 0.06rem 0 #EDEDED;
 		margin-bottom: 0.2rem;
-		
+		.header_content{
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
 		.el-card__body {
 			width: 100%;
 			height: 100%;

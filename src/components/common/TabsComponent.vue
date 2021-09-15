@@ -6,7 +6,7 @@
 				v-for="(item,index) in tabList"
 				:key="index"
 				@click="clickButton(item,index)"
-				:class="currentClickIndex === index ? 'active_style' :'default_style'">{{ item.label }}
+				:class="$store.state.currentTxModelIndex === index ? 'active_style' :'default_style'">{{ item.label }}
 			</el-button>
 		</div>
 		<div class="child_tabs_content" v-if="isShowChildren">
@@ -32,59 +32,66 @@ export default {
 			isShowChildren: false,
 			childrenTabs: [],
 			positionTop: 0,
-			currentMsgTypeClickIndex: ''
+			currentMsgTypeClickIndex: '',
+			currentMsgType:  null,
 		}
 	},
 	props: {
 		tabList: {
 			type: Array,
 			default: [],
+		},
+		reset: {
+			type: Function
 		}
 	},
 	watch: {
 		tabList: {
 			handler(newValue, oldValue) {
-				console.log(newValue, "数据")
+			},
+			deep: true
+		},
+		currentChoiceMsgType: {
+			header(newValue, oldValue) {
 			},
 			deep: true
 		}
 	},
 	mounted() {
+		this.currentMsgType = this.reset
 	},
 	methods: {
 		clickButton(value, index) {
-			console.log(value,'数值')
-		
 			this.isShowChildren = false
 			if (value?.children) {
 				this.childrenTabs = value.children
 				this.isShowChildren = true
 				const currentSearchType = sessionStorage.getItem('currentChoiceMsgType') || ''
-				value.children.forEach((item,index) => {
+				value.children.forEach((item, index) => {
 					item.active = 0
-					if(item.value === currentSearchType){
+					if (item.value === currentSearchType) {
 						item.active = 1
 					}
 				})
 			}
-			this.currentClickIndex = index
-			if(!value.value){
-				sessionStorage.setItem('currentChoiceMsgType','')
-				this.$emit('onSelectMagType','')
+			this.$store.commit('currentTxModelIndex',index)
+			if (!value.value) {
+				sessionStorage.setItem('currentChoiceMsgType', '')
+				this.$emit('onSelectMagType', '')
 			}
 		},
-		selectMsgType(msgType,index){
+		selectMsgType(msgType, index) {
 			this.childrenTabs.forEach((item) => {
-				if(item.active){
+				if (item.active) {
 					item.active = 0
 				}
-				if(msgType.value === item.value){
+				if (msgType.value === item.value) {
 					item.active = 1
 				}
 			})
 			this.isShowChildren = false
-			sessionStorage.setItem('currentChoiceMsgType',msgType.value)
-			this.$emit('onSelectMagType',msgType)
+			sessionStorage.setItem('currentChoiceMsgType', msgType.value)
+			this.$emit('onSelectMagType', msgType)
 		}
 	}
 }
@@ -162,7 +169,8 @@ export default {
 					font-size: 0.12rem;
 					cursor: pointer;
 				}
-				.active_tag_style{
+				
+				.active_tag_style {
 					color: $theme_c !important;
 					background: $tag_c !important;;
 				}

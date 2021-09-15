@@ -12,6 +12,7 @@ const store = new Vuex.Store({
             isMobile:false,
         },
         mainToken:'',
+        currentTxModelIndex:0,
     },
     mutations : {
         SET_TEMP_DENOM_ID(state, data){
@@ -25,6 +26,9 @@ const store = new Vuex.Store({
         },
         setMainToken(state, data){
             state.mainToken = data || '';
+        },
+        currentTxModelIndex(state, data){
+            state.currentTxModelIndex = data;
         }
     }
 });
