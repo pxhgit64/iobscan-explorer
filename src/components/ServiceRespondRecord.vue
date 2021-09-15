@@ -162,7 +162,6 @@
     import { TX_STATUS,ColumnMinWidth } from '../constant';
     import { converCoin } from '../helper/IritaHelper';
     import productionConfig from '@/productionConfig.js';
-    import {ExplorerLang} from "../../lang/CN-Cindy";
     export default {
         name : "ServiceInformation",
         components : {MPagination},
