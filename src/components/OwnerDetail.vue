@@ -381,7 +381,7 @@
                     scope.row.isAvailable ? '#B1E96E' : '#C4C4C4'
                   }`"></span>
                 <span class="provider_transaction_content_available_status">{{
-                    scope.row.isAvailable ? this.$t('ExplorerLang.common.true') : this.$t('ExplorerLang.common.false')
+                    scope.row.isAvailable 
                 }}</span>
               </div>
             </template>
