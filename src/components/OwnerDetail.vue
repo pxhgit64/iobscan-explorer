@@ -625,7 +625,6 @@ import {
 import BigNumber from 'bignumber.js'
 import moveDecimal from 'move-decimal-point'
 import { converCoin, getMainToken, getTxType } from '../helper/IritaHelper'
-import {ExplorerLang} from "../../lang/CN-Cindy";
 export default {
   name: 'OwnerDetail',
   components: {
