@@ -22,7 +22,9 @@ export const ExplorerLang = {
         ago:'前',
         //新增可用状态
         true:'可用',
-        false:'不可用'
+        false:'不可用',
+        //新增
+        block:'区块数'
 
     },
     table:{

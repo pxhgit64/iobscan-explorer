@@ -23,7 +23,9 @@ export const ExplorerLang = {
         ago:'ago',
         //新增可用状态
         true:'true',
-        false:'false'
+        false:'false',
+        //新增
+        blocks:'blocks'
 
 
     },
