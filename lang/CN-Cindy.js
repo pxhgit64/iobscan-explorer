@@ -451,7 +451,7 @@ export const ExplorerLang = {
             timeoutTimestamp: 'TimeoutTimestamp',
             from:'发送者',
             to:'接收者',
-            amount: '数量 ',
+            amount: '数量',
         },
         multisend: {
             inputs: 'Inputs',
