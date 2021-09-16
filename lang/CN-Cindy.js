@@ -119,7 +119,7 @@ export const ExplorerLang = {
         voted: 'voted',
         validators: 'Validators',
         sender: '转移',
-        more: '多发',
+        more: '更多',
         suffix: '前',
         running: '运行中',
         paused: '暂停',
