@@ -186,7 +186,7 @@ export default {
           this.eventsNew = res.events_new
           this.txHash = res.tx_hash || '--'
           this.blockHeight = res.height || '--'
-          this.status = res.status === TX_STATUS.success ? 'Success' : 'Failed'
+          this.status = res.status === TX_STATUS.success ? this.$t('ExplorerLang.common.success') : this.$t('ExplorerLang.common.failed')
           this.log = res.log || '--'
           if(res.time) {
             this.timeData = res.time
