@@ -321,7 +321,7 @@ export const ExplorerLang = {
         // 新增
         staking: {
             from: 'From :',
-            amount:'Amount:',
+            amount:'Amount :',
             to:'To :',
             shares: 'Shares :',
             toShares: 'Shares : ',//'Shares : '此处有空格
@@ -356,7 +356,7 @@ export const ExplorerLang = {
             minToken: 'Min Token :',
             minLiquidity: 'Min Liquidity :',
             withdrawLiquidity: 'Withdraw Liquidity :',
-            amount: 'Amount:', // 新增
+            amount: 'Amount :', // 新增
             tokenPair: 'Token Pair :', // 新增
         },
         oracle: {
@@ -647,7 +647,7 @@ export const ExplorerLang = {
         stats: `Token Stats`,
         id:'#',
         address:'Address',
-        amount:`Amount`,
+        amount:'Amount',
         percentage:'Percentage',
         title:`Top 100 Addresses by`,
         help:'The assets include the balance tokens，delegated tokens, unbonding tokens and remaining tokens on the address.',
