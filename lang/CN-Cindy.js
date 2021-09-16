@@ -24,7 +24,8 @@ export const ExplorerLang = {
         true:'可用',
         false:'不可用',
         //新增
-        block:'区块数'
+        block:'区块数',
+        s:'秒'
 
     },
     table:{

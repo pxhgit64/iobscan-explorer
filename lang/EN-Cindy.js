@@ -25,7 +25,8 @@ export const ExplorerLang = {
         true:'true',
         false:'false',
         //新增
-        blocks:'blocks'
+        blocks:'blocks',
+        s:'s'
 
 
     },
