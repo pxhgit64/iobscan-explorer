@@ -191,7 +191,7 @@ export const ExplorerLang = {
         // 新增
         delegationTxsList: 'Delegation Txs List',
         validationTxsList: 'Validation Txs List',
-        tooltip: 'Date selection range from the first block to the latest block.',
+        tooltip: '数据可选范围从第一个区块至当前区块为止',
         govTxsList: 'Gov Txs List'
     },
     validators:{
