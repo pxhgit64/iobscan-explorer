@@ -24,7 +24,8 @@ export const ExplorerLang = {
         true:'可用',
         false:'不可用',
         //新增
-        block:'区块数'
+        block:'区块数',
+        s:'秒'
 
     },
     table:{
@@ -119,7 +120,7 @@ export const ExplorerLang = {
         voted: 'voted',
         validators: 'Validators',
         sender: '转移',
-        more: '多发',
+        more: '更多',
         suffix: '前',
         running: '运行中',
         paused: '暂停',
@@ -190,7 +191,7 @@ export const ExplorerLang = {
         // 新增
         delegationTxsList: 'Delegation Txs List',
         validationTxsList: 'Validation Txs List',
-        tooltip: 'Date selection range from the first block to the latest block.',
+        tooltip: '数据可选范围从第一个区块至当前区块为止',
         govTxsList: 'Gov Txs List'
     },
     validators:{

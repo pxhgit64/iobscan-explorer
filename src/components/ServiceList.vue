@@ -58,7 +58,7 @@
                                         v-if="(typeof scope.row.available !== 'undefined')"
                                         :src="require(`../assets/${scope.row.available?'true':'false'}.png`)"/>
                                     <span>
-                                        {{(typeof scope.row.available == 'undefined')?'--':(scope.row.available?'True':'False')}}
+                                       {{(typeof scope.row.available == 'undefined')?'--':(scope.row.available?$t('ExplorerLang.common.true'):$t('ExplorerLang.common.false'))}}
                                     </span>
                                 </div>
                             </template>
