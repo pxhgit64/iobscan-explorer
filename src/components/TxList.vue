@@ -1,15 +1,18 @@
 <template>
 	<div class="tx_content_container">
 		<div class="tx_content_wrap">
-			<div class="tx_content_header_wrap">
+			<div class="tx_content_header_title">
+				<p class="tc_content_header">Transactions</p>
+			</div>
+<!--			<div class="tx_content_header_wrap">
 				<div class="total_tx_content">{{ txCount }} {{ $t('ExplorerLang.transactions.txs') }}</div>
 				<div class="tx_type_mobile_content">
-					<!--<el-select popper-class="tooltip" v-model="value" filterable :change="filterTxByTxType(value)">
+					&lt;!&ndash;<el-select popper-class="tooltip" v-model="value" filterable :change="filterTxByTxType(value)">
 						<el-option v-for="(item, index) in txTypeOption"
 								   :key="index"
 								   :label="item.label"
 								   :value="item.value"></el-option>
-					</el-select>-->
+					</el-select>&ndash;&gt;
 					
 					<el-cascader
 						class="tx_type_transactions"
@@ -22,12 +25,12 @@
 						:filterable="true"
 						@change="handleChange"></el-cascader>
 					
-					<!--<el-select  popper-class="tooltip" v-model="statusValue" :change="filterTxByStatus(statusValue)">
+					&lt;!&ndash;<el-select  popper-class="tooltip" v-model="statusValue" :change="filterTxByStatus(statusValue)">
 						<el-option v-for="(item, index) in statusOpt"
 								   :key="index"
 								   :label="item.label"
 								   :value="item.value"></el-option>
-					</el-select>-->
+					</el-select>&ndash;&gt;
 					<el-select popper-class="tooltip" v-model="statusValue">
 						<el-option v-for="(item) in statusOpt"
 								   :key="item.value"
@@ -66,7 +69,7 @@
 					<div class="search_btn" @click="getFilterTxs">{{ $t('ExplorerLang.transactions.search') }}</div>
 					<div class="reset_btn" @click="resetFilterCondition"><i class="iconfont iconzhongzhi"></i></div>
 				</div>
-			</div>
+			</div>-->
 			<!--            <TxListComponent :txData="transactionArray"></TxListComponent>-->
 			<list-component
 				:is-loading="isLoading"
@@ -639,7 +642,7 @@ export default {
 							msgCount: tx.msgs.length,
 							// time :Tools.getDisplayDate(tx.time),
 							Tx_Fee: '',
-							Time: tx.time,
+							Time: Tools.formatLocalTime(tx.time),
 							amount: '',
 							ageTime: Tools.formatAge(Tools.getTimestamp(), tx.time * 1000, this.$t('ExplorerLang.table.suffix')),
 							isShowMore,
@@ -695,7 +698,17 @@ a {
 	@media screen and (min-width: 910px) {
 		.tx_content_wrap {
 			max-width: 12.3rem;
-			
+			.tx_content_header_title{
+				text-align: left;
+				margin-top: 0.38rem;
+				padding-bottom: 0.11rem;
+				.tc_content_header{
+					font-size: 0.22rem;
+					font-weight: 600;
+					color: #171D44;
+					line-height: 0.26rem;
+				}
+			}
 			.tx_content_header_wrap {
 				display: flex;
 				justify-content: flex-start;

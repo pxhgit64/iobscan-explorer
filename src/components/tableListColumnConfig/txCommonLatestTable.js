@@ -21,10 +21,11 @@ export default [
     },
     {
         label:'Time',
-        displayValue:'ageTime',
-        nativeValue:'ageTime',
+        displayValue:'Time',
+        nativeValue:'Time',
         isLink:false,
         linkRoute:'',
-        isShowMoniker:false
+        isShowMoniker:false,
+        width: 150
     },
 ]

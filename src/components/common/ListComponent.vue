@@ -12,7 +12,8 @@
 					v-for="(item,index) in columns"
 					:key="index"
 					:prop="item.displayValue"
-					:label="item.label">
+					:label="item.label"
+					:width="item.width ? item.width : 'auto'">
 					
 					<template slot="header" slot-scope="scope">
 						<span>{{ item.label }}</span>
