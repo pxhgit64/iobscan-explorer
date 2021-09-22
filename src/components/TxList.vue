@@ -244,12 +244,12 @@ export default {
 			this.statusValue = Number(this.statusValue || 0);
 			this.pageNum = 1;
 			let url = `/#/txs?pageNum=${this.pageNum}&pageSize=${this.pageSize}`;
-			// if(this.txType){
-			//     url += `&txType=${this.txType}`;
-			// }
-			if (param?.value) {
-				url += `&txType=${param?.value}`;
+			if(this.txType){
+			    url += `&txType=${this.txType}`;
 			}
+			/*if (param?.value) {
+				url += `&txType=${param?.value}`;
+			}*/
 			if (this.statusValue) {
 				url += `&status=${this.statusValue}`;
 			}
@@ -365,6 +365,8 @@ export default {
 			this.getTxListData(null, null, true)
 			this.getTxListData(this.pageNum, this.pageSize)
 			this.$store.commit('currentTxModelIndex', 0)
+			sessionStorage.setItem('lastChoiceMsgModelIndex',0)
+			sessionStorage.setItem('txTimeRange',[])
 			this.txTypeArray = ['']
 		},
 		async getTxTypeData() {
