@@ -576,7 +576,7 @@ export default {
 							title = msg.msg.content.title
 						}
 						let addrObj = TxHelper.getFromAndToAddressFromMsg(msg);
-						amounts.push(tx.msgs[0] ? getAmountByTx(tx.msgs[0], tx.events, true) : '--');
+						amounts.push(msg ? getAmountByTx(msg, tx.events, true) : '--');
 						let from = addrObj.from || '--',
 							to = addrObj.to || '--';
 						let fromMonikers, toMonikers ,validatorMoniker,validatorAddress;

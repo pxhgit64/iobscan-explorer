@@ -671,6 +671,7 @@ export const needAddColumn = {
         {
             label: 'Amount',
             displayValue: 'amount',
+            isShowDenomTip: true
         },
         {
             label: 'Sender',
@@ -717,6 +718,7 @@ export const needAddColumn = {
         {
             label: 'Amount',
             displayValue: 'amount',
+            isShowDenomTip: true
         },
         {
             label: 'Sender',
@@ -741,6 +743,7 @@ export const needAddColumn = {
         {
             label: 'Amount',
             displayValue: 'amount',
+            isShowDenomTip: true
         },
         {
             label: 'Sender',

@@ -5,15 +5,15 @@
 				size="small"
 				v-for="(item,index) in tabList"
 				:key="index"
-				@click="clickButton(item,index)"
+				@click.stop="clickButton(item,index)"
 				:class="Number($store.state.currentTxModelIndex) === index ? 'active_style' :'default_style'">{{ item.label }}
 			</el-button>
 		</div>
-		<div class="child_tabs_content" v-if="isShowChildren">
+		<div class="child_tabs_content" v-if="$store.state.isShowMsgChildrenType">
 			<div class="tag_content">
 				<el-card>
 					<el-tag v-for="(value,index) in childrenTabs"
-							@click="selectMsgType(value,index)"
+							@click.stop="selectMsgType(value,index)"
 							:class="value.active ? 'active_tag_style' : 'default_tag_style'">
 						{{ value.value }}
 					</el-tag>
@@ -29,7 +29,7 @@ export default {
 	data() {
 		return {
 			currentClickIndex: 0,
-			isShowChildren: false,
+			// isShowChildren: false,
 			childrenTabs: [],
 			positionTop: 0,
 			currentMsgTypeClickIndex: '',
@@ -59,13 +59,16 @@ export default {
 	},
 	mounted() {
 		// const currentMstType = sessionStorage.
+		
 	},
 	methods: {
 		clickButton(value, index) {
-			this.isShowChildren = false
+			// this.isShowChildren = false
+			this.$store.commit('isShowMsgChildrenType',false)
 			if (value?.children) {
 				this.childrenTabs = value.children
-				this.isShowChildren = true
+				// this.isShowChildren = true
+				this.$store.commit('isShowMsgChildrenType',true)
 				const currentSearchType = sessionStorage.getItem('currentChoiceMsgType') || ''
 				value.children.forEach((item, index) => {
 					item.active = 0
@@ -74,8 +77,12 @@ export default {
 					}
 				})
 			}
+			this.currentClickIndex = index
 			this.$store.commit('currentTxModelIndex',index)
 			sessionStorage.setItem('currentTxModelIndex',index)
+			if(!index){
+				sessionStorage.setItem('lastChoiceMsgModelIndex',this.currentClickIndex)
+			}
 			if (!value.value) {
 				sessionStorage.setItem('currentChoiceMsgType', '')
 				this.$emit('onSelectMagType', '')
@@ -90,7 +97,9 @@ export default {
 					item.active = 1
 				}
 			})
-			this.isShowChildren = false
+			// this.isShowChildren = false
+			sessionStorage.setItem('lastChoiceMsgModelIndex',this.currentClickIndex)
+			this.$store.commit('isShowMsgChildrenType',false)
 			sessionStorage.setItem('currentChoiceMsgType', msgType.value)
 			this.$emit('onSelectMagType', msgType)
 		}

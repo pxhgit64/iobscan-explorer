@@ -54,6 +54,15 @@
 									{{ formatAddress(scope.row[item.displayValue]) }}
 								</span>
 							</span>
+							<span v-else-if="item.isShowDenomTip">
+								<span>
+									{{getAmount(scope.row[item.displayValue])}}
+								</span>
+								<el-tooltip :manual="isShowDenomTip(scope.row.denomTheme.tooltipContent)"
+											:content="scope.row.denomTheme.tooltipContent" placement="top">
+									<span :style="{ color: scope.row.denomTheme.denomColor }">{{ getAmountUnit(scope.row[item.displayValue] )}}</span>
+								</el-tooltip>
+							</span>
 							<span v-else>{{ scope.row[item.displayValue] || '--' }}</span>
 						</el-tooltip>
 					
@@ -161,8 +170,34 @@ export default {
 			return true
 			
 		},
+		isShowDenomTip(denom){
+			if(denom){
+				return false
+			}
+			return  true
+		},
 		pageChange(pageNum) {
 			this.$emit('pageChange', pageNum)
+		},
+		getAmount(amount) {
+			if (!amount) {
+				return "";
+			}
+			if(amount === '--'){
+				return '--'
+			}
+			let denomRule = /[0-9.]+/
+			return amount.match(denomRule)[0];
+		},
+		getAmountUnit(amount) {
+			if (!amount) {
+				return "";
+			}
+			if(amount === '--'){
+				return ''
+			}
+			let denomRule = /[A-Za-z\/]+/
+			return amount.match(denomRule)[0];
 		},
 		isShowHref(address){
 			
