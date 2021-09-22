@@ -6,7 +6,7 @@
 				v-for="(item,index) in tabList"
 				:key="index"
 				@click="clickButton(item,index)"
-				:class="$store.state.currentTxModelIndex === index ? 'active_style' :'default_style'">{{ item.label }}
+				:class="Number($store.state.currentTxModelIndex) === index ? 'active_style' :'default_style'">{{ item.label }}
 			</el-button>
 		</div>
 		<div class="child_tabs_content" v-if="isShowChildren">
@@ -58,7 +58,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.currentMsgType = this.reset
+		// const currentMstType = sessionStorage.
 	},
 	methods: {
 		clickButton(value, index) {
@@ -75,6 +75,7 @@ export default {
 				})
 			}
 			this.$store.commit('currentTxModelIndex',index)
+			sessionStorage.setItem('currentTxModelIndex',index)
 			if (!value.value) {
 				sessionStorage.setItem('currentChoiceMsgType', '')
 				this.$emit('onSelectMagType', '')
@@ -163,7 +164,7 @@ export default {
 				.el-tag {
 					background: #fff;
 					border-color: rgba(231, 234, 243, 1);
-					color: rgba(23, 29, 68, 0.5) !important;
+					color: #909399 !important;
 					margin-right: 0.12rem;
 					margin-bottom: 0.14rem;
 					font-size: 0.12rem;

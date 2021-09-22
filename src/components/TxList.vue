@@ -87,7 +87,7 @@
 						@resetParams="resetFilterCondition"></tx-status-tabs-components>
 				</template>
 				<template v-slot:txCount>
-					<tx-count-component :tx-count="txCount"></tx-count-component>
+					<tx-count-component :icon="'iconTrainsaction'" :tx-count="txCount"></tx-count-component>
 				</template>
 			</list-component>
 			<div class="pagination_content">
@@ -134,8 +134,8 @@ import parseTimeMixin from '../mixins/parseTime'
 import prodConfig from "../productionConfig";
 import TabsComponent from "./common/TabsComponent";
 import TxStatusTabsComponents from "./common/TxStatusTabsComponents";
-import TxCountComponent from "./tableListColumnConfig/TxCountComponent";
-
+import TxCountComponent from "./TxCountComponent";
+import {needAddColumn} from "./tableListColumnConfig/sendColumn";
 export default {
 	name: "TxList",
 	components: {
@@ -208,11 +208,16 @@ export default {
 	},
 	async created() {
 		await this.getTxTypeData()
-		this.formatTxData()
+		const {txType, status, beginTime, endTime} = Tools.urlParser();
+		this.formatTxData(txType)
 	},
 	mounted() {
+		const {txType, status, beginTime, endTime} = Tools.urlParser();
 		this.txColumnList = txCommonTable.concat(txCommonLatestTable)
-		this.getFilterTxs('init');
+		if(txType && needAddColumn[txType]){
+			this.txColumnList = txCommonTable.concat(needAddColumn[txType],txCommonLatestTable)
+		}
+		this.getTxListData(this.pageNum,this.pageSize,true)
 		this.getAllTxType();
 		this.setMainToken();
 	},
@@ -229,6 +234,10 @@ export default {
 			this.getFilterTxs()
 		},
 		getFilterTxs(param) {
+			this.txColumnList = txCommonTable.concat(txCommonLatestTable)
+			if(param?.value && needAddColumn[param.value]){
+				this.txColumnList = txCommonTable.concat(needAddColumn[param.value],txCommonLatestTable)
+			}
 			this.statusValue = Number(this.statusValue || 0);
 			this.pageNum = 1;
 			let url = `/#/txs?pageNum=${this.pageNum}&pageSize=${this.pageSize}`;
@@ -247,6 +256,7 @@ export default {
 			if (this.endTime) {
 				url += `&endTime=${this.endTime}`;
 			}
+			
 			param == 'init' ? history.replaceState(null, null, url) : history.pushState(null, null, url);
 			this.getTxListData(null, null, true)
 			this.getTxListData(this.pageNum, this.pageSize)
@@ -281,13 +291,19 @@ export default {
 			}
 			try {
 				const res = await getTxList(params);
-				if (this.pageNum === Number(res.pageNum)) {
+				if (Number(this.pageNum) === Number(res.pageNum)) {
 					this.txData = res.data
-					this.formatTxData()
+					this.formatTxData(txType)
 					this.isLoading = false
 				}
 				if (useCount) {
 					this.txCount = res.count
+				}
+				if(pageNum){
+					this.pageNum = res.pageNum
+				}
+				if(pageSize){
+					this.pageSize = res.pageSize
 				}
 			} catch (e) {
 				this.isLoading = false
@@ -409,7 +425,6 @@ export default {
 		pageChange(pageNum) {
 			if (this.pageNum === pageNum) return;
 			this.pageNum = pageNum;
-			
 			/*let urlParams = this.getParamsByUrlHash();
 			this.statusValue = urlParams.txStatus ? urlParams.txStatus : '';
 			this.txType = urlParams.txType ? urlParams.txType : 'allTxType';
@@ -458,12 +473,33 @@ export default {
 		handleChange(value) {
 			this.txType = value[1] ? value[1] : ''
 		},
-		async formatTxData() {
+		async formatTxData(msgType) {
 			this.transactionArray = []
 			try {
 				if (this.txData && this.txData.length) {
-					let fees = []
-					let amounts = []
+					let fees = [],
+						amounts = [],
+						numberOfTo = '--',
+						requestId= '--',
+						denomId = '--',
+						nftId='--',
+						feedName='--',
+						oracleCreator = '--',
+						consumer = '--',
+						digest='--',
+						digest_algo ='--',
+						symbol='--',
+						minUnit='--',
+						owner='--',
+						dstOwner = '--',
+						srcOwner = '--',
+						sender = '--',
+						proposalId = '--',
+						option='--',
+						voter='--',
+						depositor='--',
+						title='--'
+					;
 					for (const tx of this.txData) {
 						let msg;
 						if (tx.msgs.length > 0) {
@@ -475,18 +511,82 @@ export default {
 							if (recvPacketItem) {
 								msg = recvPacketItem;
 							} else {
-								msg = tx.msgs[0]
+								tx.msgs.forEach(item => {
+									if(item.type === msgType){
+										msg = item
+									}
+								})
+								
 							}
+						}
+						if(msg?.type === TX_TYPE.multisend && msg?.msg?.outputs?.length){
+							numberOfTo = msg.msg.outputs.length
+						}
+						if(msg?.type === TX_TYPE.respond_service && msg?.msg?.request_id){
+							requestId = msg.msg.request_id
+						}
+						if(msg?.type === TX_TYPE.burn_nft || msg?.type === TX_TYPE.edit_nft || msg?.type === TX_TYPE.mint_nft && msg?.msg?.denom && msg?.msg?.id){
+							denomId = msg.msg.denom
+							nftId = msg.msg.id
+						}
+						if(msg?.type === TX_TYPE.start_feed || msg?.type === TX_TYPE.edit_feed || msg?.type === TX_TYPE.pause_feed || msg?.type === TX_TYPE.create_feed  && msg?.msg?.feed_name && msg?.msg?.creator){
+							feedName = msg.msg.feed_name
+							oracleCreator = msg.msg.creator
+						}
+						
+						if(msg?.type=== TX_TYPE.request_rand && msg?.msg?.consumer){
+							consumer = msg.msg.consumer
+						}
+						if(msg?.type === TX_TYPE.create_record && msg?.msg?.contents?.length && msg?.msg?.contents[0]?.digest  && msg?.msg?.contents[0]?.digest_algo){
+							digest = msg.msg.contents[0].digest
+							digest_algo = msg.msg.contents[0].digest_algo
+						}
+						if(msg?.type === TX_TYPE.issue_token && msg?.msg?.symbol && msg?.msg?.owner && msg?.msg?.min_unit){
+							symbol = msg.msg.symbol
+							minUnit = msg.msg.min_unit
+							owner = msg.msg.owner
+						}
+						if(msg?.type === TX_TYPE.edit_token && msg?.msg?.symbol  && msg?.msg?.owner){
+							symbol = msg.msg.symbol
+							owner = msg.msg.owner
+						}
+						if(msg?.type === TX_TYPE.transfer_token_owner && msg?.msg?.symbol && msg?.msg?.dst_owner  && msg?.msg?.src_owner){
+							symbol = msg.msg.symbol
+							dstOwner = msg.msg.dst_owner
+							srcOwner = msg.msg.src_owner
+						}
+						if(msg?.type === TX_TYPE.mint_token && msg?.msg?.owner && msg?.msg?.symbol && msg?.msg?.amount  && msg?.msg?.to){
+							symbol = msg.msg.symbol
+							owner = msg.msg.owner
+						}
+						if(msg?.type === TX_TYPE.burn_token && msg?.msg?.sender && msg?.msg?.symbol && msg?.msg?.amount){
+							symbol = msg.msg.symbol
+							sender = msg.msg.sender
+						}
+						if(msg?.type === TX_TYPE.vote && msg?.msg?.option && msg?.msg?.proposal_id && msg?.msg?.voter){
+							proposalId = msg.msg.proposal_id
+							option = msg.msg.option
+							voter = msg.msg.voter
+						}
+						if(msg?.type === TX_TYPE.deposit && msg?.msg?.depositor && msg?.msg?.proposal_id ){
+							proposalId = msg.msg.proposal_id
+							depositor = msg.msg.depositor
+						}
+						if(msg?.type === TX_TYPE.submit_proposal && msg?.msg?.content?.title ){
+							title = msg.msg.content.title
 						}
 						let addrObj = TxHelper.getFromAndToAddressFromMsg(msg);
 						amounts.push(tx.msgs[0] ? getAmountByTx(tx.msgs[0], tx.events, true) : '--');
 						let from = addrObj.from || '--',
 							to = addrObj.to || '--';
-						let fromMonikers, toMonikers
+						let fromMonikers, toMonikers ,validatorMoniker,validatorAddress;
 						if ((tx.monikers || {}).length) {
 							tx.monikers.map(item => {
 								toMonikers = toMonikers || item[to] || ''
 								fromMonikers = fromMonikers || item[from] || ''
+								let data = Object.values(item)
+								validatorMoniker = Object.values(item)[0] || ''
+								validatorAddress = Object.keys(item)[0] || ''
 							})
 						}
 						if (this.isShowFee) {
@@ -512,6 +612,28 @@ export default {
 							fromMonikers,
 							toMonikers,
 							to,
+							validatorMoniker,
+							validatorAddress,
+							numberOfTo,
+							requestId,
+							denomId,
+							nftId,
+							feedName,
+							oracleCreator,
+							consumer,
+							digest,
+							digest_algo,
+							symbol,
+							minUnit,
+							owner,
+							dstOwner,
+							srcOwner,
+							sender,
+							proposalId,
+							option,
+							voter,
+							depositor,
+							title,
 							signer: tx.signers[0],
 							status: tx.status,
 							msgCount: tx.msgs.length,

@@ -33,6 +33,7 @@
 <script>
 import config from '../../productionConfig'
 import moment from 'moment'
+import Tools from "../../util/Tools";
 export default {
 	name: "TxStatusTabsComponents",
 	data() {
@@ -54,7 +55,7 @@ export default {
 					isActive: false
 				}
 			],
-			value: '',
+			value: sessionStorage.getItem('txTimeRange') ?JSON.parse(sessionStorage.getItem('txTimeRange')) : [],
 			pickerOptions:{
 				disabledDate(time){
 					let _now = Date.now(),
@@ -67,7 +68,15 @@ export default {
 		}
 	},
 	mounted(){
-	
+		const {status} = Tools.urlParser();
+		if(status){
+			this.statusTypes.forEach(item => {
+				item.isActive = false
+				if(item.value === Number(status)){
+					item.isActive = true
+				}
+			})
+		}
 	},
 	methods: {
 		choiceTxStatus(index) {
@@ -83,6 +92,7 @@ export default {
 				const endTime = this.value[1].toString();
 				const startTimeStamp = moment(startTime).format('YYYY-MM-DD')
 				const engTimeStamp = moment(endTime).format('YYYY-MM-DD')
+				sessionStorage.setItem('txTimeRange',JSON.stringify([startTimeStamp,engTimeStamp]))
 				this.$emit('onChangeDate',[startTimeStamp,engTimeStamp])
 			}else {
 				this.$emit('onChangeDate',[])

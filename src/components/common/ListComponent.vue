@@ -7,7 +7,7 @@
 			</div>
 			<slot name="msgType"></slot>
 			<loading v-if="isLoading"></loading>
-			<el-table v-if="!isLoading" :data="tabList" stripe ref="listTable">
+			<el-table v-if="!isLoading" :data="tableList" stripe ref="listTable">
 				<el-table-column
 					v-for="(item,index) in columns"
 					:key="index"
@@ -30,9 +30,11 @@
 						
 						<el-tooltip :manual="setManual(!item.isNeedFormat,scope.row[item.displayValue])"
 									:content="formatStr(scope.row[item.nativeValue])">
-							<router-link class="link_style" v-if="item.isLink"
-										 :to="`${item.linkRoute}/${scope.row[item.nativeValue]}`">
-								<span v-if="item.isNeedFormatHash">{{ formatTxHash(scope.row[item.displayValue]) }}</span>
+							<router-link class="link_style" v-if="item.isLink &&  scope.row[item.displayValue] && scope.row[item.displayValue] !== '--'"
+										 :to="!item.isNft ? `${item.linkRoute}/${scope.row[item.nativeValue]}` : `${item.linkRoute}${scope.row[item.nftRouterParamsValue]}${item.denomRouter}${scope.row[item.nativeValue]}`">
+								<span v-if="item.isNeedFormatHash">{{formatTxHash(scope.row[item.displayValue]) }} </span>
+								<span v-else-if="item.isFormatAddress">{{ formatAddress(scope.row[item.displayValue]) }}</span>
+								<span v-else-if="item.isFormatMoniker">{{ formatTableMoniker(scope.row[item.displayValue]) }}</span>
 								<span v-else>{{ scope.row[item.displayValue] }}</span>
 							</router-link>
 							<span v-else-if="item.isShowTag">
@@ -40,16 +42,28 @@
 									class="tag_style">{{ formatTypeNotString(scope.row[item.displayValue]) }}</el-tag>
 								<span class="tag_num">{{ setTagNum(scope.row[item.displayValue]) }}</span>
 							</span>
-							<span v-else>{{ scope.row[item.displayValue] }}</span>
+							<span v-else-if="item.isFormatAddress && !item.isHref">{{ formatAddress(scope.row[item.displayValue]) }}</span>
+							<span v-else-if="item.isHref">
+								<a v-show="isShowHref(scope.row[item.displayValue])"
+								   class="route_link_style" :href="`${item.href}/#/address/${scope.row[item.nativeValue]}`"
+								   target="_blank"
+								   rel="noreferrer noopener">
+									{{ formatAddress(scope.row[item.displayValue]) }}
+								</a>
+								<span v-show="!isShowHref(scope.row[item.displayValue])" >
+									{{ formatAddress(scope.row[item.displayValue]) }}
+								</span>
+							</span>
+							<span v-else>{{ scope.row[item.displayValue] || '--' }}</span>
 						</el-tooltip>
 					
 					</template>
 				</el-table-column>
 			</el-table>
-			<m-pagination v-show="pagination.dataCount !==0"
-						  :page-size="pagination.pageSize"
-						  :total="pagination.dataCount"
-						  :page="pagination.pageNumber"
+			<m-pagination v-show="dataCount !==0"
+						  :page-size="pageSize"
+						  :total="dataCount"
+						  :page="pageNum"
 						  :page-change="pageChange"></m-pagination>
 		</el-card>
 	</div>
@@ -59,6 +73,8 @@
 import Loading from "./Loading";
 import MPagination from "./MPagination";
 import Tools from "../../util/Tools";
+import {formatMoniker, getConfig} from "../../helper/IritaHelper";
+import {cfg} from "../../config";
 import {
 	TX_TYPE,
 	TX_STATUS,
@@ -74,11 +90,15 @@ export default {
 	components: {MPagination, Loading},
 	data() {
 		return {
-			tabList: [],
+			tableList: [],
 			columns: [],
 			TX_STATUS,
 			isShowTooltip: false,
-			tagNum: ''
+			tagNum: '',
+			pageNum: 1,
+			pageSize: 30,
+			dataCount: 0,
+			sessionStorage: sessionStorage.getItem('config') || null
 		}
 	},
 	props: {
@@ -112,7 +132,17 @@ export default {
 		},
 		listData: {
 			handler(newValue, oldValue) {
-				this.tabList = newValue
+				this.tableList = newValue
+			},
+			deep: true
+		},
+		pagination: {
+			handler(newValue, oldValue) {
+				if (JSON.stringify(newValue) !== '{}') {
+					this.pageNum = newValue.pageNum
+					this.pageSize = newValue.pageSize
+					this.dataCount = newValue.dataCount
+				}
 			},
 			deep: true
 		}
@@ -123,6 +153,9 @@ export default {
 				if (data?.length <= 1) {
 					return true
 				}
+				if(!data || data === '--'){
+					return  true
+				}
 				return false
 			}
 			return true
@@ -131,14 +164,69 @@ export default {
 		pageChange(pageNum) {
 			this.$emit('pageChange', pageNum)
 		},
+		isShowHref(address){
+			
+			let storageAddressPrefix = JSON.parse(this.sessionStorage) || null
+			let addressPrefix = null
+			if(storageAddressPrefix){
+				addressPrefix = storageAddressPrefix.addressPrefix
+			}else {
+				getConfig().then(res => {
+					addressPrefix = res.addressPrefix
+				});
+				
+			}
+			if (addressPrefix.iva) {
+				let length = addressPrefix.iva.length
+				if(address) {
+					let isIris = addressPrefix.iaa === IRIS_ADDRESS_PREFIX,
+						isCosmos = addressPrefix.iaa === COSMOS_ADDRESS_PREFIX;
+					if (address.substring(0, length) === addressPrefix.iva) {
+						return 'false'
+					} else if (isIris && address.startsWith(COSMOS_ADDRESS_PREFIX)) {
+						return 'true'
+					}  else if (isCosmos && address.startsWith(IRIS_ADDRESS_PREFIX)) {
+						return 'false'
+					}  else if (address.startsWith(IRIS_ADDRESS_PREFIX) || address.startsWith(COSMOS_ADDRESS_PREFIX)) {
+						return 'false'
+					}
+				}else {
+					return  'false'
+				}
+			}
+		},
+		formatTableMoniker(moniker) {
+			if(moniker){
+				return formatMoniker(moniker,monikerNum.validatorList)
+			}
+			return  '--'
+		},
 		formatTxHash(TxHash) {
 			if (TxHash) {
 				return Tools.formatTxHash(TxHash)
 			}
+			return '--'
 		},
-		
+		formatAddress(address) {
+			if(address){
+				return Tools.formatValidatorAddress(address)
+			}
+			return '--'
+		},
 		formatStr(str) {
 			if (str && Array.isArray(str)) {
+				const {txType} = Tools.urlParser();
+				let msgTxTypeIndex = 0,tmp =str[0]
+				str.forEach((item,index) => {
+					if(txType && item === txType){
+						msgTxTypeIndex = index
+					}
+				})
+				if(msgTxTypeIndex !== 0){
+					str[0] = txType
+					str[msgTxTypeIndex] = tmp
+				}
+				
 				let data = str.reduce(function (prev, next) {
 					prev[next] = (prev[next] + 1) || 1;
 					return prev;
@@ -147,9 +235,9 @@ export default {
 				for (let dataKey in data) {
 					formatStr += `${dataKey} *${data[dataKey]},`
 				}
-				return formatStr.substring(0,formatStr.length -1)
-			}else {
-				return  str?.toString() || str
+				return formatStr.substring(0, formatStr.length - 1)
+			} else {
+				return str?.toString() || str
 			}
 		},
 		setTagNum(value) {
@@ -168,10 +256,10 @@ export default {
 					this.isShowTooltip = true
 					const currentChoiceTxType = sessionStorage.getItem('currentChoiceMsgType') || ''
 					let displayMsgType = ''
-					value.forEach( item => {
-						if(item === currentChoiceTxType){
+					value.forEach(item => {
+						if (item === currentChoiceTxType) {
 							displayMsgType = item
-						}else {
+						} else {
 							displayMsgType = value[0]
 						}
 					})
@@ -202,11 +290,13 @@ export default {
 		border: none;
 		box-shadow: 0 0.03rem 0.06rem 0 #EDEDED;
 		margin-bottom: 0.2rem;
-		.header_content{
+		
+		.header_content {
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
 		}
+		
 		.el-card__body {
 			width: 100%;
 			height: 100%;
@@ -227,7 +317,9 @@ export default {
 		.yiwen_icon {
 			cursor: pointer;
 		}
-		
+		.route_link_style{
+			color: $theme_c !important;
+		}
 		.tag_num {
 			color: $theme_c !important;
 			margin-left: 0.06rem;

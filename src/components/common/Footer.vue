@@ -48,7 +48,7 @@
 		computed:{
 			logoImg(){
 				let img = '';
-				try {img = require('../../assets/footer_logo.png');}catch(e){}
+				// try {img = require('../../assets/footer_logo.png');}catch(e){}
 				return img;
 			}
 		},

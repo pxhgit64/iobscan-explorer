@@ -12,7 +12,7 @@ const store = new Vuex.Store({
             isMobile:false,
         },
         mainToken:'',
-        currentTxModelIndex:0,
+        currentTxModelIndex:sessionStorage.getItem('currentTxModelIndex') ? sessionStorage.getItem('currentTxModelIndex') : 0,
     },
     mutations : {
         SET_TEMP_DENOM_ID(state, data){
