@@ -55,7 +55,7 @@
 							</p>
 							<p class="home_tx_type_content">
 								<!-- <span class="home_tx_type">{{item.txType}}</span> -->
-								<el-tooltip :content="item.txType.join(',')"
+								<el-tooltip :content="setTipDisplay(item.txType)"
 											placement="top"
 											:disabled="item.txType.length <= 1">
 									<span class="home_tx_type">{{getDisplayTxType(item.txType)}}</span>
@@ -157,11 +157,21 @@
 				}
 			},
 			getDisplayTxType(types=[]){
-				let type = this.TX_TYPE_DISPLAY[types[0]] || types[0] || '';
-				if (type && types.length > 1) {
+				if(types?.length){
+					let type = this.TX_TYPE_DISPLAY[types[0]] || types[0] || '';
+					if (type && types.length > 1) {
 						type += this.$t('ExplorerLang.unit.ellipsis');
+					}
+					return type;
 				}
-				return type;
+			},
+			setTipDisplay(txType){
+				if(txType?.length){
+					txType = txType.map(item => {
+						return this.TX_TYPE_DISPLAY[item] || ''
+					})
+					return txType.join(',')
+				}
 			},
 			async getLastBlocks(){
 				try{
