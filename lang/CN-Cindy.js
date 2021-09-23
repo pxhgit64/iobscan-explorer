@@ -11,6 +11,22 @@ export const ExplorerLang = {
         all:'全部',
         more:'展开',
         fewer:'收起',
+        day1:'天',
+        day:'天',
+        hrs:'小时',
+        hr:'小时',
+        mins:'分钟',
+        min:'分钟',
+        secs:'秒',
+        sec:'秒',
+        ago:'前',
+        //新增可用状态
+        true:'可用',
+        false:'不可用',
+        //新增
+        block:'区块数',
+        s:'秒'
+
     },
     table:{
         emptyDescription:'- 暂时没有内容 -',
@@ -103,9 +119,9 @@ export const ExplorerLang = {
         proposalStatus: 'Status',
         voted: 'voted',
         validators: 'Validators',
-        sender: 'Sender',
-        more: 'More',
-        suffix: 'ago',
+        sender: '转移',
+        more: '更多',
+        suffix: '前',
         running: '运行中',
         paused: '暂停',
         completed: '完成'
@@ -115,9 +131,9 @@ export const ExplorerLang = {
         msgCountUnit:'条',
         providers:'providers',
         time:'次',
-        blocks:'blocks',
+        blocks:'区块数',
         totalRespond:'共 ${%value%} 条回复',
-        Txs:'Txs',
+        Txs:'交易',
         // second:'秒',
     },
     message:{
@@ -175,7 +191,7 @@ export const ExplorerLang = {
         // 新增
         delegationTxsList: 'Delegation Txs List',
         validationTxsList: 'Validation Txs List',
-        tooltip: 'Date selection range from the first block to the latest block.',
+        tooltip: '数据可选范围从第一个区块至当前区块为止',
         govTxsList: 'Gov Txs List'
     },
     validators:{
@@ -336,7 +352,7 @@ export const ExplorerLang = {
             minToken: '最少可兑换数量 :',
             minLiquidity: '流动性凭证 :',
             withdrawLiquidity: '提出流动性凭证 :',
-            amount: 'Amount :', // 新增
+            amount: '数量 :', // 新增
             tokenPair: 'Token Pair :', // 新增
         },
         oracle: {
@@ -364,7 +380,7 @@ export const ExplorerLang = {
             mintable: 'Mintable',
             owner: 'Owner',
             tokenId: 'TokenId',
-            amount: 'Amount',
+            amount: '数量',
             to: 'To',
             originalOwner: 'Original Owner',
             newOwner: 'New Owner',
@@ -387,7 +403,7 @@ export const ExplorerLang = {
             switchHeight: 'Switch Height',
             info: 'Info',
             recipient: 'Recipient',
-            amount: 'Amount',
+            amount: '数量',
             upgradedClientState: 'Upgraded Client State',
         },
         bindService: {
@@ -429,14 +445,14 @@ export const ExplorerLang = {
             proofCommitment: 'ProofCommitment',
             sourcePort: 'SourcePort',
             sourceChannel: 'SourceChannel',
-            token: 'Amount',
+            token: '数量',
             sender: 'Sender',
             receiver: 'Receiver',
             timeoutHeight: 'TimeoutHeight',
             timeoutTimestamp: 'TimeoutTimestamp',
             from:'发送者',
             to:'接收者',
-            amount: '数量 ',
+            amount: '数量',
         },
         multisend: {
             inputs: 'Inputs',
@@ -447,7 +463,7 @@ export const ExplorerLang = {
             to: 'To',
             receiverOnOtherChain: 'ReceiverOnOtherChain',
             senderOnOtherChain: 'SenderOnOtherChain',
-            amount: 'Amount',
+            amount: '数量',
             hashLock: 'HashLock',
             timestamp: 'Timestamp',
             timeLock: 'TimeLock',
@@ -626,7 +642,7 @@ export const ExplorerLang = {
         stats: `Token Stats`,
         id:'#',
         address:'Address',
-        amount:`Amount`,
+        amount:`数量`,
         percentage:'Percentage',
         title:`Top 100 Addresses by`,
         help:'The assets include the balance tokens，delegated tokens, unbonding tokens and remaining tokens on the address.',
@@ -658,7 +674,7 @@ export const ExplorerLang = {
             submitHash: 'Submit Hash',
             type: 'Type',
             recipient: 'Recipient',
-            amount: 'Amount',
+            amount: '数量',
             description: 'Description',
             name: 'Name',
             switchHeight: 'Switch Height',

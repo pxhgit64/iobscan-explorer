@@ -155,12 +155,12 @@
     import Tools from "../util/Tools"
     import MPagination from "./common/MPagination";
     import {
-        getRespondServiceRecord,
-        getServiceRespondInfo,
-        getServiceBindingByServiceName,
+      getRespondServiceRecord,
+      getServiceRespondInfo,
+      getServiceBindingByServiceName, getAllTxTypes,
     } from "../service/api";
     import { TX_STATUS,ColumnMinWidth } from '../constant';
-    import { converCoin } from '../helper/IritaHelper';
+    import {converCoin, getTxType} from '../helper/IritaHelper';
     import productionConfig from '@/productionConfig.js';
     export default {
         name : "ServiceInformation",
@@ -211,7 +211,7 @@
                     }
                     if(bindings && bindings.result){
                         let {available, pricing, qos, deposit, disabled_time} = bindings.result;
-                        this.isAvailable = available ? 'True' : 'False';
+                        this.isAvailable = available ? this.$t('ExplorerLang.common.true') : this.$t('ExplorerLang .common.false');
                         this.price = pricing;
                         this.qos = qos;
                         if(deposit && deposit[0] && this.isShowFee) {
@@ -239,9 +239,10 @@
                         this.txPageSize, 
                         false                      
                     );
+                    const txType = await  getTxType()
                     this.txList = res.data.map((item) =>{
                         return {
-                            type : item.type,
+                            type : txType.TX_TYPE_DISPLAY[item.type],
                             respondHash : item.respondHash,
                             requestContextId : item.requestContextId,
                             height : item.height,

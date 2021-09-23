@@ -6,8 +6,12 @@ import './theme/index.css';
 import '../icon/iconfont.css';
 import ElementUI from "element-ui";
 import 'element-ui/lib/theme-chalk/index.css';
+//日期选择器
 import lang from 'element-ui/lib/locale/lang/en';
 import locale from 'element-ui/lib/locale';
+//日期中文
+import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
+
 import VueI18n from 'vue-i18n';
 import prodConfig from "./productionConfig";
 import adjustColumnWidth from '@/helper/adjustColumnWidth';
@@ -19,8 +23,10 @@ Vue.prototype.$adjustColumnWidth = adjustColumnWidth;
 import directives from './directives';
 Vue.use(directives);
 
-locale.use(lang);
+locale.use(prodConfig.lang === 'EN'? lang:zhLocale);
 Vue.use(ElementUI)
+
+
 Vue.use(VueI18n)
 const i18n = new VueI18n({
   locale:prodConfig.lang == 'EN' ? 'EN' : 'CN',

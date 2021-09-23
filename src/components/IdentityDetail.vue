@@ -196,7 +196,7 @@
             },
             async getPubkeyList(){
                 try {
-                    const res = await getPubkeyListByIdentity(this.id, this.pageNum, this.pageSize, false);
+                    const res = await getPubkeyListByIdentity(this.id, this.pubkeyListPageNum, this.pubkeyListPageSize, false);
                     if(res?.data.length > 0){
                         this.pubkeyList = res.data.map((item) =>{
                             let result = {
@@ -228,7 +228,7 @@
             },         
             async getCertificateList(){
                 try {
-                    const res = await getCertificateListByIdentity(this.id, this.pageNum, this.pageSize, false);
+                    const res = await getCertificateListByIdentity(this.id, this.certificateListPageNum, this.certificateListPageSize, false);
                     if(res?.data.length > 0){           
                         this.certificateList = res.data.map((item) =>{
                             let result = {
