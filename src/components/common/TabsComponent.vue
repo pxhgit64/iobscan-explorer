@@ -4,7 +4,7 @@
 			<el-button
 				size="small"
 				v-for="(item,index) in tabList"
-				:key="index"
+				:key="item.label"
 				@click.stop="clickButton(item,index)"
 				:class="Number($store.state.currentTxModelIndex) === index ? 'active_style' :'default_style'">{{ item.label }}
 			</el-button>
@@ -13,9 +13,10 @@
 			<div class="tag_content">
 				<el-card>
 					<el-tag v-for="(value,index) in childrenTabs"
+							:key="value.value"
 							@click.stop="selectMsgType(value,index)"
 							:class="value.active ? 'active_tag_style' : 'default_tag_style'">
-						{{ value.value }}
+						{{ setDisplayMsgType(value.value) }}
 					</el-tag>
 				</el-card>
 			</div>
@@ -24,6 +25,7 @@
 </template>
 
 <script>
+import {TX_TYPE_DISPLAY} from "../../constant";
 export default {
 	name: "TabsComponent",
 	data() {
@@ -48,6 +50,7 @@ export default {
 	watch: {
 		tabList: {
 			handler(newValue, oldValue) {
+				console.log(newValue,"交易类型")
 			},
 			deep: true
 		},
@@ -62,6 +65,12 @@ export default {
 		
 	},
 	methods: {
+		setDisplayMsgType(msgType){
+			if(msgType){
+				return TX_TYPE_DISPLAY[msgType]
+			}
+			return ''
+		},
 		clickButton(value, index) {
 			// this.isShowChildren = false
 			this.$store.commit('isShowMsgChildrenType',false)
@@ -87,6 +96,8 @@ export default {
 				sessionStorage.setItem('currentChoiceMsgType', '')
 				this.$emit('onSelectMagType', '')
 			}
+			value.index = index
+			this.$emit('onSelectMagModel', value)
 		},
 		selectMsgType(msgType, index) {
 			this.childrenTabs.forEach((item) => {

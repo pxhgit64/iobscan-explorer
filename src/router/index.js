@@ -117,4 +117,14 @@ const router = new Router({
 
 	]
 })
+router.beforeEach((to,from,next) => {
+	if(to){
+		sessionStorage.removeItem('lastChoiceMsgModelIndex')
+		sessionStorage.removeItem('lastChoiceMsgModelIndex')
+		sessionStorage.removeItem('txTimeRange')
+		sessionStorage.removeItem('currentChoiceMsgType')
+		sessionStorage.removeItem('currentTxModelIndex')
+	}
+	next()
+})
 export default router
