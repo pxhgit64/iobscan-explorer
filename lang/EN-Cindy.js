@@ -11,6 +11,24 @@ export const ExplorerLang = {
         all:'All',
         more:'Expand',
         fewer:'Collapse',
+        //新增（时间）
+        day1:'days',
+        day:'day',
+        hrs:'hrs',
+        hr:'hr',
+        mins:'mins',
+        min:'min',
+        secs:'secs',
+        sec:'sec',
+        ago:'ago',
+        //新增可用状态
+        true:'true',
+        false:'false',
+        //新增
+        blocks:'blocks',
+        s:'s'
+
+
     },
     table:{
         emptyDescription:'- No Data -',
@@ -304,8 +322,8 @@ export const ExplorerLang = {
         // 新增
         staking: {
             from: 'From :',
-            amount: 'Amount :',
-            to: 'To :',
+            amount:'Amount :',
+            to:'To :',
             shares: 'Shares :',
             toShares: 'Shares : ',//'Shares : '此处有空格
             endTime: 'End Time :',
@@ -450,7 +468,7 @@ export const ExplorerLang = {
             to: 'To',
             receiverOnOtherChain: 'ReceiverOnOtherChain',
             senderOnOtherChain: 'SenderOnOtherChain',
-            amount: 'Amount',
+            amount:'Amount',
             hashLock: 'HashLock',
             timestamp: 'Timestamp',
             timeLock: 'TimeLock',
@@ -630,7 +648,7 @@ export const ExplorerLang = {
         stats: `Token Stats`,
         id:'#',
         address:'Address',
-        amount:`Amount`,
+        amount:'Amount',
         percentage:'Percentage',
         title:`Top 100 Addresses by`,
         help:'The assets include the balance tokens，delegated tokens, unbonding tokens and remaining tokens on the address.',
