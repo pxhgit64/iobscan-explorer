@@ -145,7 +145,7 @@ export function getTxList(params){
       url += `pageNum=${pageNum}&pageSize=${pageSize}`
     }
     if(useCount){
-        url += `useCount=${useCount}`;
+        url += `&useCount=${useCount}`;
     }
     if(txType){
         url += `&type=${txType}`;

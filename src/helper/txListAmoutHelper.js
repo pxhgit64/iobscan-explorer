@@ -73,6 +73,13 @@ export async function getAmountByTx (message, events, isShowDenom) {
 				}
 				break;
 			case TX_TYPE.multisend:
+				if(msg && msg.inputs && msg.inputs.length && msg.inputs.length  === 1){
+					amount = msg?.inputs[0]?.coins ? `${Tools.toDecimal(msg.inputs[0].coins[0].amount,amountDecimals) } ${msg.inputs[0].coins[0].denom.toLocaleUpperCase()}` :'--'
+				}else if(msg && msg.inputs && msg.inputs.length && msg.inputs.length  > 1) {
+					amount = ''
+				}else {
+					amount = '--'
+				}
 				break;
 			case TX_TYPE.verify_invariant:
 				break;
@@ -85,6 +92,10 @@ export async function getAmountByTx (message, events, isShowDenom) {
 			case TX_TYPE.edit_validator:
 				break;
 			case TX_TYPE.create_validator:
+				if(msg && msg?.value){
+					let selfBond = await converCoin(msg.value)
+					amount = msg?.value ? `${Tools.toDecimal(selfBond.amount,amountDecimals) } ${selfBond.denom.toLocaleUpperCase()}` :'--'
+				}
 				break;
 			case TX_TYPE.delegate:
 				let delegateAmount = msg &&  msg.amount ? await converCoin(msg.amount) : null
@@ -109,6 +120,10 @@ export async function getAmountByTx (message, events, isShowDenom) {
 				amount = poolAmount && poolAmount.amount  && poolAmount.denom?  isShowDenom ? `${Tools.toDecimal(poolAmount.amount,amountDecimals)} ${poolAmount.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(poolAmount.amount,amountDecimals)}` : '--'
 				break;
 			case TX_TYPE.deposit:
+				if(msg?.amount?.length  === 1) {
+					let amountMaxUnit = await converCoin(msg.amount[0]);
+					amount = isShowDenom ? `${Tools.toDecimal(amountMaxUnit.amount,amountDecimals)} ${amountMaxUnit.denom.toUpperCase()}` : `${Tools.toDecimal(amountMaxUnit.amount,amountDecimals)}`;
+				}
 				break;
 			case TX_TYPE.vote:
 				break;
@@ -212,13 +227,13 @@ export async function getAmountByTx (message, events, isShowDenom) {
 			case TX_TYPE.update_identity:
 				break;
 			case TX_TYPE.transfer:
-                if(msg.token) {
+                if(msg?.token) {
                     let amountMaxUnit = await converCoin(msg.token);
                     amount = isShowDenom ? `${Tools.toDecimal(amountMaxUnit.amount,amountDecimals)} ${amountMaxUnit.denom.toUpperCase()}` : `${Tools.toDecimal(amountMaxUnit.amount,amountDecimals)}`;
                 }
 				break;
 			case TX_TYPE.timeout_packet:
-                if(msg.packet && msg.packet.data) {
+                if(msg?.packet && msg?.packet?.data) {
 					let originalDenom = TxHelper.getOriginalDenomFromPacket(msg.packet,txType);
                     let amountMaxUnit = await converCoin({
                         amount:msg.packet.data.amount,
@@ -256,6 +271,10 @@ export async function getAmountByTx (message, events, isShowDenom) {
 			case TX_TYPE.acknowledge_packet:
 				break;
 			case TX_TYPE.request_rand:
+				if(msg?.service_fee_cap?.length  === 1) {
+					let amountMaxUnit = await converCoin(msg.service_fee_cap[0]);
+					amount = isShowDenom ? `${Tools.toDecimal(amountMaxUnit.amount,amountDecimals)} ${amountMaxUnit.denom.toUpperCase()}` : `${Tools.toDecimal(amountMaxUnit.amount,amountDecimals)}`;
+				}
 				break;
 		}
 		return amount

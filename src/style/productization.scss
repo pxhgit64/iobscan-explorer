@@ -1,17 +1,17 @@
 // theme
-$theme_c:${theme_color};						//主题色 var(--bgColor)
+$theme_c:#3264FD;						//主题色 var(--bgColor)
 
 // text-color
-$t_first_c: ${text_color_first};  					//一级文字色
-$t_second_c: ${text_color_second};					//二级文字色
-$t_third_c: ${text_color_third};					//三级文字色
-$t_fourth_c: ${text_color_fourth};					//四级文字色
-$t_link_c: ${text_color_link};						//链接文字色
-$t_button_c: ${button_color_common};				//通用按钮文字色
-$bg_cancel_c: ${background_color_common};		    //通用背景色
-
+$t_first_c: #171D44;  					//一级文字色
+$t_second_c: #787C99;					//二级文字色
+$t_third_c: #C0C4CC;					//三级文字色
+$t_fourth_c: rgba(255,255,255,0.5);					//四级文字色
+$t_link_c: #3264FD;						//链接文字色
+$t_button_c: #fff;				//通用按钮文字色
+$bg_cancel_c: #F8F8F8;		    //通用背景色
+$tag_c:${tag_color_common};                                    //交易列表标签色
 // background-color
-$bg_button_c: ${button_bgColor_common};
+$bg_button_c: #3264FD;
 
 :root {
     --bgColor:  #{$theme_c};

@@ -195,6 +195,8 @@ export class TxHelper {
             case TX_TYPE.burn_token:
                 res.from = msg.sender;
                 break;
+            case TX_TYPE.multisend:
+                res.from = msg.inputs && msg.inputs.length > 0 ? msg.inputs[0].address : '';
         }
         return res;
     }

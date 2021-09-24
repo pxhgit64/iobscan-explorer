@@ -1,14 +1,16 @@
 <template>
     <div class="common_pagination_content">
         <button
+			class="first_button"
             v-if="showToFristEnd"
             @click="toFrist"
             :class="[currentPage === 1 || total === 0 ? 'no_disable' : '']"
         >«</button>
-        <button v-debounce="[prev,`click`,300]" :class="[currentPage === 1 || total === 0 ? 'no_disable' : '']">‹</button>
+        <button class="prev_button" v-debounce="[prev,`click`,300]" :class="[currentPage === 1 || total === 0 ? 'no_disable' : '']">‹</button>
         <span class="page_number_content">{{currentPage}}/{{Math.ceil(total/pageSize) === 0 ? 1 : Math.ceil(total/pageSize)}}</span>
-        <button v-debounce="[after,`click`,300]" :class="[forMaxRange() || total === 0 ? 'no_disable' : '']">›</button>
+        <button class="next_button" v-debounce="[after,`click`,300]" :class="[forMaxRange() || total === 0 ? 'no_disable' : '']">›</button>
         <button
+			class="latest_button"
             v-if="showToFristEnd"
             @click="toEnd"
             :class="[currentPage === totalPages || total === 0 ? 'no_disable' : '']"
@@ -152,14 +154,37 @@ export default {
     margin-right: 0.1rem;
 }
 .common_pagination_content{
-    border: 0.01rem solid $bd_second_c;
+	margin: 0.2rem 0;
+	display: flex;
+	justify-content: flex-end;
+    //border: 0.01rem solid $bd_second_c;
+	.first_button{
+		border: 0.01rem solid $bd_second_c;
+		border-radius: 0.08rem;
+		margin-right: 0.06rem;
+	}
+	.latest_button{
+		border: 0.01rem solid $bd_second_c;
+		border-radius: 0.08rem;
+		margin-left: 0.06rem;
+	}
+	.prev_button{
+		border: 0.01rem solid $bd_second_c;
+		border-radius: 0.08rem 0 0 0.08rem;
+	}
+	.next_button{
+		border: 0.01rem solid $bd_second_c;
+		border-radius: 0 0.08rem 0.08rem 0;
+	}
 }
 .page_number_content{
-    padding: 0.05rem 0.05rem;
+    padding: 0.07rem 0.05rem;
     font-size: $s14;
     line-height: 1;
     background: $bg_white_c;
     display: inline-block;
+	border-bottom: 0.01rem solid $bd_second_c;
+	border-top: 0.01rem solid $bd_second_c;
 }
 button {
     outline: none;

@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" @click.stop="closeMsgChildrenType()">
     <Header></Header>
     <router-view class="content" :key="$route.fullPath"/>
     <Footer></Footer>
@@ -32,7 +32,14 @@ export default {
     } else {
         this.$store.commit('isMobile',true);
     }
-  }
+  },
+	methods:{
+		closeMsgChildrenType(){
+			const lastChoiceMsgModelIndex = sessionStorage.getItem('lastChoiceMsgModelIndex') || 0
+			this.$store.commit('isShowMsgChildrenType',false)
+			this.$store.commit('currentTxModelIndex',Number(lastChoiceMsgModelIndex))
+		}
+	}
 }
 </script>
 
