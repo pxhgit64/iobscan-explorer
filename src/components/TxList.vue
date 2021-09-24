@@ -138,7 +138,7 @@ import prodConfig from "../productionConfig";
 import TabsComponent from "./common/TabsComponent";
 import TxStatusTabsComponents from "./common/TxStatusTabsComponents";
 import TxCountComponent from "./TxCountComponent";
-import {needAddColumn} from "./tableListColumnConfig/sendColumn";
+import {needAddColumn} from "./tableListColumnConfig/allTxTableColumnConfig";
 export default {
 	name: "TxList",
 	components: {
@@ -230,16 +230,25 @@ export default {
 			this.getFilterTxs()
 		},
 		changeTime(selectTime) {
+			this.beginTime = ''
+			this.endTime = ''
 			if (selectTime?.length === 2) {
 				this.beginTime = selectTime[0]
 				this.endTime = selectTime[1]
 			}
+			
 			this.getFilterTxs()
 		},
 		getFilterTxs(param) {
+			if (param?.value) {
+				this.txType = param.value
+			}else {
+				//处理点击all的情况
+				this.txType = ''
+			}
 			this.txColumnList = txCommonTable.concat(txCommonLatestTable)
-			if(param?.value && needAddColumn[param.value]){
-				this.txColumnList = txCommonTable.concat(needAddColumn[param.value],txCommonLatestTable)
+			if(this.txType && needAddColumn[this.txType]){
+				this.txColumnList = txCommonTable.concat(needAddColumn[this.txType],txCommonLatestTable)
 			}
 			this.statusValue = Number(this.statusValue || 0);
 			this.pageNum = 1;
@@ -247,9 +256,6 @@ export default {
 			if(this.txType){
 			    url += `&txType=${this.txType}`;
 			}
-			/*if (param?.value) {
-				url += `&txType=${param?.value}`;
-			}*/
 			if (this.statusValue) {
 				url += `&status=${this.statusValue}`;
 			}
@@ -686,6 +692,9 @@ export default {
 			}
 			
 		},
+	},
+	beforeDestroy(){
+		this.$store.commit('currentTxModelIndex',0)
 	}
 }
 </script>
@@ -702,8 +711,8 @@ a {
 			max-width: 12.3rem;
 			.tx_content_header_title{
 				text-align: left;
-				margin-top: 0.38rem;
-				padding-bottom: 0.11rem;
+				margin-top: 0.4rem;
+				padding-bottom: 0.1rem;
 				.tc_content_header{
 					font-size: 0.22rem;
 					font-weight: 600;

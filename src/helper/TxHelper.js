@@ -276,6 +276,9 @@ export class TxHelper {
                 case TX_TYPE.unjail:
                     operator = msg.address ? msg.address : '--'
                     break;
+                case TX_TYPE.withdraw_validator_commission:
+                    operator = msg.validator_address || '--'
+                    break;
                 default:
                     operator = '--'
             }

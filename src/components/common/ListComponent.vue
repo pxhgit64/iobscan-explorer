@@ -10,7 +10,7 @@
 			<el-table v-if="!isLoading" :data="tableList" stripe ref="listTable">
 				<el-table-column
 					v-for="(item,index) in columns"
-					:key="index"
+					:key="item.label"
 					:prop="item.displayValue"
 					:label="item.label"
 					:width="item.width ? item.width : 'auto'">
@@ -84,7 +84,6 @@ import Loading from "./Loading";
 import MPagination from "./MPagination";
 import Tools from "../../util/Tools";
 import {formatMoniker, getConfig} from "../../helper/IritaHelper";
-import {cfg} from "../../config";
 import {
 	TX_TYPE,
 	TX_STATUS,
@@ -92,7 +91,7 @@ import {
 	monikerNum,
 	decimals,
 	IRIS_ADDRESS_PREFIX,
-	COSMOS_ADDRESS_PREFIX
+	COSMOS_ADDRESS_PREFIX, TX_TYPE_DISPLAY
 } from '../../constant';
 
 export default {
@@ -136,6 +135,7 @@ export default {
 	watch: {
 		columnList: {
 			handler(newValue, oldValue) {
+				this.columns = []
 				this.columns = newValue
 			},
 			deep: true
@@ -269,11 +269,11 @@ export default {
 				}, {});
 				let formatStr = ''
 				for (let dataKey in data) {
-					formatStr += `${dataKey} *${data[dataKey]},`
+					formatStr += `${TX_TYPE_DISPLAY[dataKey]} *${data[dataKey]},`
 				}
 				return formatStr.substring(0, formatStr.length - 1)
 			} else {
-				return str?.toString() || str
+				return TX_TYPE_DISPLAY[str?.toString()]  || TX_TYPE_DISPLAY[str] || str?.toString() || str
 			}
 		},
 		setTagNum(value) {
@@ -299,18 +299,19 @@ export default {
 							displayMsgType = value[0]
 						}
 					})
-					return displayMsgType
+					return TX_TYPE_DISPLAY[displayMsgType] || displayMsgType
 				} else {
 					this.isShowTooltip = false
-					return value[0]
+					return TX_TYPE_DISPLAY[value[0]] || value[0]
 				}
 			} else {
 				this.isShowTooltip = false
-				return value
+				return TX_TYPE_DISPLAY[value] || value
 			}
 		}
 	},
 	mounted() {
+		this.columns = []
 		this.columns = this.columnList
 		this.listData = this.listData
 	}
