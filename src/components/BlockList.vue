@@ -92,7 +92,7 @@ export default {
 			ColumnMinWidth,
 			productionConfig,
 			pageNumber: 1,
-			pageSize: 20,
+			pageSize: 15,
 			dataCount: 0,
 			latestBlockHeight: 0,
 			dbHeight: 0,

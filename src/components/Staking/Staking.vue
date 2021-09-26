@@ -86,7 +86,7 @@ export default {
       percentum:4,
       ColumnMinWidth,
       count: 0,
-      pageSize: 500,
+      pageSize: 10,
       pageNum: 1,
       titleStatus: this.$t('ExplorerLang.staking.status.active'),
       stakingStatusTitleList: [

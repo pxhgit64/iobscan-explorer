@@ -166,8 +166,8 @@ export const TX_TYPE_DISPLAY = {
   unjail: 'Unjail',
   // Distribution
   set_withdraw_address: 'Set Withdraw Address',
-  withdraw_delegator_reward: 'Withdraw Delegator Reward',
-  withdraw_validator_commission: 'Withdraw Validator Commission',
+  withdraw_delegator_reward: 'Withdraw Reward',
+  withdraw_validator_commission: 'Withdraw Commission',
   fund_community_pool: 'Fund Community Pool',
   // Gov
   deposit: 'Deposit',

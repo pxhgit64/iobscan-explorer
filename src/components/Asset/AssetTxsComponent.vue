@@ -311,7 +311,7 @@ export default {
       mintTokenCurrentPageNum: 1,
       burnTokenCurrentPageNum: 1,
       transferTokenCurrentPageNum: 1,
-      pageSize: 10,
+      pageSize: 5,
         mainTokenSymbol:'',
     }
   },

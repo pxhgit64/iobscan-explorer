@@ -97,8 +97,8 @@
 				<div class="tooltip_box">
 					<span class="tooltip_title">Cross-chain TokenType:</span>
 					<span class="tooltip_title_box">
-                    <span class="tooltip_title_IBC">{{ IBC }}</span>
-                    <span class="tooltip_title_HTLT">{{ HashLock }}</span>
+                    <span class="tooltip_title_IBC" v-show="isShowIbc">{{ IBC }}</span>
+                    <span class="tooltip_title_HTLT" v-show="isShowHashLock">{{ HashLock }}</span>
                   </span>
 				</div>
 				<keep-alive>
@@ -187,7 +187,7 @@ export default {
 			urlParamsShowEndTime : this.getParamsByUrlHash().urlParamShowEndTime ? this.getParamsByUrlHash().urlParamShowEndTime : '',*/
 			txStatus: '',
 			pageNum: pageNum ? pageNum : 1,
-			pageSize: pageSize ? pageSize : 30,
+			pageSize: pageSize ? pageSize : 15,
 			txTypeArray: [''],
 			txColumnList: [],
 			tyepWidth: ColumnMinWidth.txType,
@@ -207,6 +207,8 @@ export default {
 			IRIS_ADDRESS_PREFIX,
 			COSMOS_ADDRESS_PREFIX,
 			denomMap: {},
+      isShowIbc:false,
+      isShowHashLock:false,
 		}
 	},
 	async created() {
@@ -223,9 +225,56 @@ export default {
 		this.getTxListData(this.pageNum,this.pageSize,true)
 		this.getAllTxType();
 		this.setMainToken();
+    this.setIsShowIbc();
+    this.setIsShowHashLock();
 	},
 	methods: {
-		changeTxStatus(txStatus) {
+    async setIsShowIbc() {
+      const msgTypeIbcList = await getTxType()
+      const IbcList = [TX_TYPE.recv_packet, TX_TYPE.create_client, TX_TYPE.update_client,
+        TX_TYPE.transfer, TX_TYPE.timeout_packet, TX_TYPE.upgrade_client, TX_TYPE.submit_misbehaviour,
+        TX_TYPE.connection_open_init, TX_TYPE.connection_open_try, TX_TYPE.connection_open_ack,
+        TX_TYPE.connection_open_confirm, TX_TYPE.channel_open_init, TX_TYPE.channel_open_try,
+        TX_TYPE.channel_open_ack, TX_TYPE.channel_open_confirm, TX_TYPE.channel_close_init,
+        TX_TYPE.channel_close_confirm, TX_TYPE.timeout_on_close_packet, TX_TYPE.acknowledge_packet];
+
+      if (msgTypeIbcList?.txTypeData?.length) {
+        let ibcArr = []
+        ibcArr = msgTypeIbcList.txTypeData.filter((item) => {
+          if (item?.typeName) {
+            if (IbcList.includes(item.typeName)) {
+              return item
+            }
+          }
+        })
+        this.isShowIbc = false
+        if (ibcArr?.length) {
+          this.isShowIbc = true
+        }
+      }
+    },
+    async setIsShowHashLock() {
+        const msgTypeHashLockList = await getTxType()
+        const HashLockList = [TX_TYPE.create_htlc, TX_TYPE.claim_htlc]
+
+        if(msgTypeHashLockList?.txTypeData?.length){
+          let HashLockArr =[]
+          HashLockArr = msgTypeHashLockList.txTypeData.filter((item)=>{
+            if(item?.typeName){
+              if(HashLockList.includes(item.typeName)){
+                return item
+              }
+            }
+          })
+          this.isShowHashLock = false
+          if(HashLockArr?.length){
+            this.isShowHashLock = true
+          }
+
+        }
+      },
+
+    changeTxStatus(txStatus) {
 			this.statusValue = Number(txStatus)
 			this.getFilterTxs()
 		},
@@ -695,8 +744,9 @@ export default {
 	},
 	beforeDestroy(){
 		this.$store.commit('currentTxModelIndex',0)
-	}
+	},
 }
+
 </script>
 
 <style scoped lang="scss">
