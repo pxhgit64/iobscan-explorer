@@ -86,7 +86,7 @@ export default {
       value: "all",
       denom: "",
       pageNum: 1,
-      pageSize: 20,
+      pageSize: 10,
       input: "",
       count: 0
     };

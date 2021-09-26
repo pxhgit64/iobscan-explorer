@@ -48,7 +48,7 @@ export default {
       addressRoute,
       ColumnMinWidth,
       tableData: [],
-      pageSize: 30,
+      pageSize: 10,
       pageNumber: 1,
       dataCount: 0
     };

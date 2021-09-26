@@ -287,7 +287,7 @@
                 idlContent : '',
                 serviceList : [],
                 transactionArray : [],
-                txPageSize : 10,
+                txPageSize : 5,
                 txPageNum : 1,
                 txCount : 0,
                 author : '',
