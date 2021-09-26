@@ -158,7 +158,7 @@ export default {
       proposalStatus,
       count: 0,
       pageNum: 1,
-      pageSize: 30,
+      pageSize: 10,
       tableData: [],
       proposalTitleNum: 20,
       depositPeriodDatas: [],

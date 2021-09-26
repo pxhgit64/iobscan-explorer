@@ -97,8 +97,8 @@
 				<div class="tooltip_box">
 					<span class="tooltip_title">Cross-chain TokenType:</span>
 					<span class="tooltip_title_box">
-                    <span class="tooltip_title_IBC">{{ IBC }}</span>
-                    <span class="tooltip_title_HTLT">{{ HashLock }}</span>
+                    <span class="tooltip_title_IBC" v-show="a1">{{ IBC }}</span>
+                    <span class="tooltip_title_HTLT" v-show="a2">{{ HashLock }}</span>
                   </span>
 				</div>
 				<keep-alive>
@@ -187,7 +187,7 @@ export default {
 			urlParamsShowEndTime : this.getParamsByUrlHash().urlParamShowEndTime ? this.getParamsByUrlHash().urlParamShowEndTime : '',*/
 			txStatus: '',
 			pageNum: pageNum ? pageNum : 1,
-			pageSize: pageSize ? pageSize : 30,
+			pageSize: pageSize ? pageSize : 15,
 			txTypeArray: [''],
 			txColumnList: [],
 			tyepWidth: ColumnMinWidth.txType,
@@ -207,6 +207,8 @@ export default {
 			IRIS_ADDRESS_PREFIX,
 			COSMOS_ADDRESS_PREFIX,
 			denomMap: {},
+      a1:false,
+      a2:false,
 		}
 	},
 	async created() {
@@ -223,9 +225,43 @@ export default {
 		this.getTxListData(this.pageNum,this.pageSize,true)
 		this.getAllTxType();
 		this.setMainToken();
+    this.test1();
+    this.test2();
 	},
 	methods: {
-		changeTxStatus(txStatus) {
+    async test1() {
+      const typeArr1 = await getTxType()
+      const IbcArr = ['IBC Transfer In', 'IBC Create Client', 'IBC Timeout Packet', 'IBC Transfer Out',
+        'IBC Connection Open Confirm', 'IBC Channel Close Confirm', 'IBC Channel Open Confirm',
+        'IBC Channel Close Init', 'IBC Timeout On Close Packet', 'IBC Connection Open Init', 'IBC Update Client',
+        'IBC Connection Open Try', 'IBC Channel Open Try', 'IBC Channel Open Ack', 'IBC Connection Open Ack',
+        'IBC Upgrade Client', 'IBC Channel Open Init', 'IBC Submit Misbehaviour', 'IBC Acknowledge Packet']
+      try {
+        typeArr1.forEach(item => {
+          if (IbcArr.includes(item)) {
+            throw Error()
+          }
+        })
+      } catch (e) {
+        this.a1 = true
+      }
+    },
+    async test2(){
+      const  typeArr3 = await getTxType()
+      const  HtlcArr =['Create Hash Lock','Claim Hash Lock']
+
+        try {
+          typeArr3.forEach( item =>{
+            if(HtlcArr.includes(item)){
+              throw Error()
+            }
+          })
+        }catch (e){
+          this.a2= true
+        }
+      },
+
+    changeTxStatus(txStatus) {
 			this.statusValue = Number(txStatus)
 			this.getFilterTxs()
 		},

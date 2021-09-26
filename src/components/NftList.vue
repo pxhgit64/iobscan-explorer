@@ -97,7 +97,7 @@ export default {
       denomArray: [],
       denom,
       currentPageNum: 1,
-      pageSize: 20,
+      pageSize: 10,
       tokenId: '',
       owner: '',
       input: '',
