@@ -97,8 +97,8 @@
 				<div class="tooltip_box">
 					<span class="tooltip_title">Cross-chain TokenType:</span>
 					<span class="tooltip_title_box">
-                    <span class="tooltip_title_IBC" v-show="a1">{{ IBC }}</span>
-                    <span class="tooltip_title_HTLT" v-show="a2">{{ HashLock }}</span>
+                    <span class="tooltip_title_IBC" v-show="isShowIbc">{{ IBC }}</span>
+                    <span class="tooltip_title_HTLT" v-show="isShowHashLock">{{ HashLock }}</span>
                   </span>
 				</div>
 				<keep-alive>
@@ -207,8 +207,8 @@ export default {
 			IRIS_ADDRESS_PREFIX,
 			COSMOS_ADDRESS_PREFIX,
 			denomMap: {},
-      a1:false,
-      a2:false,
+      isShowIbc:false,
+      isShowHashLock:false,
 		}
 	},
 	async created() {
@@ -225,39 +225,52 @@ export default {
 		this.getTxListData(this.pageNum,this.pageSize,true)
 		this.getAllTxType();
 		this.setMainToken();
-    this.test1();
-    this.test2();
+    this.setIsShowIbc();
+    this.setIsShowHashLock();
 	},
 	methods: {
-    async test1() {
-      const typeArr1 = await getTxType()
-      const IbcArr = ['IBC Transfer In', 'IBC Create Client', 'IBC Timeout Packet', 'IBC Transfer Out',
-        'IBC Connection Open Confirm', 'IBC Channel Close Confirm', 'IBC Channel Open Confirm',
-        'IBC Channel Close Init', 'IBC Timeout On Close Packet', 'IBC Connection Open Init', 'IBC Update Client',
-        'IBC Connection Open Try', 'IBC Channel Open Try', 'IBC Channel Open Ack', 'IBC Connection Open Ack',
-        'IBC Upgrade Client', 'IBC Channel Open Init', 'IBC Submit Misbehaviour', 'IBC Acknowledge Packet']
-      try {
-        typeArr1.forEach(item => {
-          if (IbcArr.includes(item)) {
-            throw Error()
+    async setIsShowIbc() {
+      const msgTypeIbcList = await getTxType()
+      const IbcList = [TX_TYPE.recv_packet, TX_TYPE.create_client, TX_TYPE.update_client,
+        TX_TYPE.transfer, TX_TYPE.timeout_packet, TX_TYPE.upgrade_client, TX_TYPE.submit_misbehaviour,
+        TX_TYPE.connection_open_init, TX_TYPE.connection_open_try, TX_TYPE.connection_open_ack,
+        TX_TYPE.connection_open_confirm, TX_TYPE.channel_open_init, TX_TYPE.channel_open_try,
+        TX_TYPE.channel_open_ack, TX_TYPE.channel_open_confirm, TX_TYPE.channel_close_init,
+        TX_TYPE.channel_close_confirm, TX_TYPE.timeout_on_close_packet, TX_TYPE.acknowledge_packet];
+
+      if (msgTypeIbcList?.txTypeData?.length) {
+        let ibcArr = []
+        ibcArr = msgTypeIbcList.txTypeData.filter((item) => {
+          if (item?.typeName) {
+            if (IbcList.includes(item.typeName)) {
+              return item
+            }
           }
         })
-      } catch (e) {
-        this.a1 = true
+        this.isShowIbc = false
+        if (ibcArr?.length) {
+          this.isShowIbc = true
+        }
       }
     },
-    async test2(){
-      const  typeArr3 = await getTxType()
-      const  HtlcArr =['Create Hash Lock','Claim Hash Lock']
+    async setIsShowHashLock() {
+        const msgTypeHashLockList = await getTxType()
+        const HashLockList = [TX_TYPE.create_htlc, TX_TYPE.claim_htlc]
 
-        try {
-          typeArr3.forEach( item =>{
-            if(HtlcArr.includes(item)){
-              throw Error()
+        if(msgTypeHashLockList?.txTypeData?.length){
+          let HashLockArr =[]
+          HashLockArr = msgTypeHashLockList.txTypeData.filter((item)=>{
+            if(item?.typeName){
+              if(HashLockList.includes(item.typeName)){
+                return item
+              }
             }
           })
-        }catch (e){
-          this.a2= true
+          this.isShowHashLock = false
+          if(HashLockArr?.length){
+            this.isShowHashLock = true
+          }
+
         }
       },
 
@@ -731,8 +744,9 @@ export default {
 	},
 	beforeDestroy(){
 		this.$store.commit('currentTxModelIndex',0)
-	}
+	},
 }
+
 </script>
 
 <style scoped lang="scss">
