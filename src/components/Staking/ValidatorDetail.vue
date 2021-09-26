@@ -16,7 +16,7 @@
 							<p class="validator_information_content_title">{{
 								$t('ExplorerLang.validatorDetail.delegationsTitle') }}</p>
 							<div class="delegations_table_container" ref="delegationsList">
-								<el-table :data="delegations.items" style="width: 100%"
+<!--								<el-table :data="delegations.items" style="width: 100%"
 								          :empty-text="$t('ExplorerLang.table.emptyDescription')" id="element_del">
 									<el-table-column class-name="address" prop="address" :label="$t('ExplorerLang.table.address')"
 									                 :width="ColumnMinWidth.iaaAddress">
@@ -43,24 +43,39 @@
 									</el-table-column>
 									<el-table-column prop="shares" :label="$t('ExplorerLang.table.shares')" align="left"
 									                 :min-width="ColumnMinWidth.shares"></el-table-column>
-									<!-- 待处理 -->
-									<!-- <el-table-column prop="block" :label="$t('ExplorerLang.table.block')" width="110">
+									&lt;!&ndash; 待处理 &ndash;&gt;
+									&lt;!&ndash; <el-table-column prop="block" :label="$t('ExplorerLang.table.block')" width="110">
 									  <template v-slot:default="{ row }">
 										<router-link style="font-family: Arial;" :to="'/block/' + row.block" :style="{ color: '$theme_c !important' }">{{ row.block }}</router-link>
 									  </template>
-									</el-table-column> -->
-								</el-table>
+									</el-table-column> &ndash;&gt;
+								</el-table>-->
+								<list-component
+									:token-symbol="mainTokenSymbol"
+									:is-loading="isDelegationLoading"
+									:list-data="delegations.items"
+									:column-list="validatorDelegationColumn"
+									:pagination=" delegations.total > pageSize ? {pageSize:Number(pageSize),dataCount:delegations.total,pageNum:Number(1)} : {}"
+									@pageChange="(e) => pageChange(e,'getDelegations')"
+								></list-component>
 							</div>
-							<m-pagination v-if="delegations.total > pageSize" :page-size="pageSize"
+<!--							<m-pagination v-if="delegations.total > pageSize" :page-size="pageSize"
 							              :total="delegations.total"
-							              :page-change="pageChange('getDelegations')"></m-pagination>
+							              :page-change="pageChange('getDelegations')"></m-pagination>-->
 						</div>
 						<!-- Unbonding Delegations -->
 						<div class="second_table_container clearfloat">
 							<p class="validator_information_content_title">{{
 								$t('ExplorerLang.validatorDetail.unbondingDelegationsTitle') }}</p>
 							<div class="delegations_table_container" ref="UnbondingDelList">
-								<el-table :data="unbondingDelegations.items" style="width: 100%"
+								<list-component :token-symbol="mainTokenSymbol"
+												:is-loading="isUnbondingLoading"
+												:list-data="unbondingDelegations.items"
+												:column-list="unBondingColumn"
+												:pagination=" unbondingDelegations.total > pageSize ? {pageSize:Number(pageSize),dataCount:unbondingDelegations.total,pageNum:Number(1)} : {}"
+												@pageChange="(e) => pageChange(e,'getUnbondingDelegations')"
+								></list-component>
+<!--								<el-table :data="unbondingDelegations.items" style="width: 100%"
 								          :empty-text="$t('ExplorerLang.table.emptyDescription')" id="element_undel">
 									<el-table-column class-name="address" prop="address" :label="$t('ExplorerLang.table.address')"
 									                 :width="ColumnMinWidth.iaaAddress">
@@ -96,7 +111,7 @@
 									</el-table-column>
 									<el-table-column prop="end_time" :label="$t('ExplorerLang.table.endTime')"
 									                 :width="ColumnMinWidth.time"></el-table-column>
-								</el-table>
+								</el-table>-->
 							</div>
 							<m-pagination v-if="unbondingDelegations.total > pageSize" :page-size="pageSize"
 							              :total="unbondingDelegations.total"
@@ -112,8 +127,17 @@
 							<p class="validator_information_content_title">{{
 								$t('ExplorerLang.validatorDetail.depositedProposalsTitle') }}</p>
 							<div class="delegations_table_container">
-								<el-table :data="depositedProposals.items" style="width: 100%"
+								<list-component
+									:token-symbol="mainTokenSymbol"
+									:is-loading="isDepositedLoading"
+									:list-data="depositedProposals.items"
+									:column-list="depositedColumn"
+									:pagination=" depositedProposals.total > pageSize ? {pageSize:Number(pageSize),dataCount:depositedProposals.total,pageNum:Number(1)} : {}"
+									@pageChange="(e) => pageChange(e,'getDepositedProposals')"
+								></list-component>
+<!--								<el-table :data="depositedProposals.items" style="width: 100%"
 								          :empty-text="$t('ExplorerLang.table.emptyDescription')">
+									
 									<el-table-column prop="id" :label="$t('ExplorerLang.table.proposalId')"
 									                 :min-width="ColumnMinWidth.proposalId">
 										 <template v-slot:default="{ row }">
@@ -148,18 +172,27 @@
 											</el-tooltip>
 										</template>
 									</el-table-column>
-								</el-table>
+								</el-table>-->
 							</div>
-							<m-pagination v-if="depositedProposals.total > pageSize" :page-size="pageSize"
+<!--							<m-pagination v-if="depositedProposals.total > pageSize" :page-size="pageSize"
 							              :total="depositedProposals.total"
-							              :page-change="pageChange('getDepositedProposals')"></m-pagination>
+							              :page-change="pageChange('getDepositedProposals')"></m-pagination>-->
 						</div>
 						<!-- Voted Proposals -->
 						<div class="second_table_container clearfloat" v-show="votedProposals.items && votedProposals.items.length > 0" :style="!(depositedProposals.items && depositedProposals.items.length > 0) ? 'margin-left:0rem': ''">
 							<p class="validator_information_content_title">{{
 								$t('ExplorerLang.validatorDetail.votedProposalsTitle') }}</p>
 							<div class="delegations_table_container">
-								<el-table :data="votedProposals.items" style="width: 100%"
+								<list-component
+									:is-loading="isVotedLoading"
+									:list-data="votedProposals.items"
+									:column-list="votedColumn"
+									:pagination=" votedProposals.total > pageSize ? {pageSize:Number(pageSize),dataCount:votedProposals.total,pageNum:Number(1)} : {}"
+									@pageChange="(e) => pageChange(e,'getVotedProposals')"
+								></list-component>
+								
+								
+<!--								<el-table :data="votedProposals.items" style="width: 100%"
 								          :empty-text="$t('ExplorerLang.table.emptyDescription')">
 									<el-table-column prop="id" :label="$t('ExplorerLang.table.proposalId')"
 									                 :min-width="ColumnMinWidth.proposalId">
@@ -180,11 +213,11 @@
 											</el-tooltip>
 										</template>
 									</el-table-column>
-								</el-table>
+								</el-table>-->
 							</div>
-							<m-pagination v-if="votedProposals.total > pageSize" :page-size="pageSize"
+<!--							<m-pagination v-if="votedProposals.total > pageSize" :page-size="pageSize"
 							              :total="votedProposals.total"
-							              :page-change="pageChange('getVotedProposals')"></m-pagination>
+							              :page-change="pageChange('getVotedProposals')"></m-pagination>-->
 						</div>
 					</div>
 				</div>
@@ -194,10 +227,18 @@
 					<div class="delegations_txs_container">
 						<p class="validator_information_content_title">{{
 							$t('ExplorerLang.validatorDetail.delegationsTxsTitle') }}</p>
-						<DelegationTxsList class="delegations_txs_table_container" :isShowFee="isShowFee" :dataList="delegationTxs.items" />
-						<m-pagination v-if="delegationTxs.total > pageSize" :page-size="pageSize"
+<!--						<DelegationTxsList class="delegations_txs_table_container" :isShowFee="isShowFee" :dataList="delegationTxs.items" />-->
+						<list-component
+							:token-symbol="mainTokenSymbol"
+							:is-loading="isDelegationTxLoading"
+							:list-data="delegationTxs.items"
+							:column-list="delegationTxColumn"
+							:pagination=" delegationTxs.total > pageSize ? {pageSize:Number(pageSize),dataCount:delegationTxs.total,pageNum:Number(1)} : {}"
+							@pageChange="(e) => pageChange(e,'getDelegationTxs')"
+						></list-component>
+<!--						<m-pagination v-if="delegationTxs.total > pageSize" :page-size="pageSize"
 						              :total="delegationTxs.total"
-						              :page-change="pageChange('getDelegationTxs')"></m-pagination>
+						              :page-change="pageChange('getDelegationTxs')"></m-pagination>-->
 					</div>
 				</div>
 				<!-- Validation Txs -->
@@ -205,10 +246,18 @@
 					<div class="validation_txs_container">
 						<p class="validator_information_content_title">{{
 							$t('ExplorerLang.validatorDetail.validationTxsTitle') }}</p>
-						<ValidationTxsList class="validation_txs_table_container" :isShowFee="isShowFee" :dataList="validationTxs.items" />
-						<m-pagination v-if="validationTxs.total > pageSize" :page-size="pageSize"
+<!--						<ValidationTxsList class="validation_txs_table_container" :isShowFee="isShowFee" :dataList="validationTxs.items" />-->
+						<list-component
+							:token-symbol="mainTokenSymbol"
+							:is-loading="isValidationTxLoading"
+							:list-data="validationTxs.items"
+							:column-list="validationTxColumn"
+							:pagination=" validationTxs.total > pageSize ? {pageSize:Number(pageSize),dataCount:validationTxs.total,pageNum:Number(1)} : {}"
+							@pageChange="(e) => pageChange(e,'getValidationTxs')"
+						></list-component>
+<!--						<m-pagination v-if="validationTxs.total > pageSize" :page-size="pageSize"
 						              :total="validationTxs.total"
-						              :page-change="pageChange('getValidationTxs')"></m-pagination>
+						              :page-change="pageChange('getValidationTxs')"></m-pagination>-->
 					</div>
 				</div>
 				<!-- Gov Txs -->
@@ -216,10 +265,17 @@
 					<div class="gov_txs_container">
 						<p class="gov_information_content_title">{{
 							$t('ExplorerLang.validatorDetail.govTxsTitle') }}</p>
-						<GovTxsList class="gov_txs_table_containers" :isShowFee="isShowFee" :dataList="govTxs.items" />
-						<m-pagination v-if="govTxs.total > pageSize" :page-size="pageSize"
+<!--						<GovTxsList class="gov_txs_table_containers" :isShowFee="isShowFee" :dataList="govTxs.items" />-->
+						<list-component
+							:is-loading="isGovLoading"
+							:list-data="govTxs.items"
+							:column-list="govTxColumn"
+							:pagination=" govTxs.total > pageSize ? {pageSize:Number(pageSize),dataCount:govTxs.total,pageNum:Number(1)} : {}"
+							@pageChange="(e) => pageChange(e,'getGovTxs')"
+						></list-component>
+<!--						<m-pagination v-if="govTxs.total > pageSize" :page-size="pageSize"
 						              :total="govTxs.total"
-						              :page-change="pageChange('getGovTxs')"></m-pagination>
+						              :page-change="pageChange('getGovTxs')"></m-pagination>-->
 					</div>
 				</div>
 			</div>
@@ -250,13 +306,35 @@
 	import ValidationTxsList from '@/components/common/ValidationTxsList';
 	import GovTxsList from '@/components/common/GovTxsList';
 	import prodConfig from '../../productionConfig';
-
+	import ListComponent from "../common/ListComponent";
+	import validatorDelegationColumnList from "./tableColumnConfig/validatorDelegationColumnList";
+	import validatorUnbondingDelegationColumnList from "./tableColumnConfig/validatorUnbondingDelegationColumnList";
+	import validatorDelegationTxsColumn from "./tableColumnConfig/validatorDelegationTxsColumn";
+	import validatorValidationColumn from "./tableColumnConfig/validatorValidationColumn";
+	import validatorVotedColumn from "./tableColumnConfig/validatorVotedColumn";
+	import validatorGovColumn from "./tableColumnConfig/validatorGovColumn";
 	export default {
 		name: '',
-		components: {ValidatorInformation, ValidatorCommissionInformation, MPagination,DelegationTxsList,ValidationTxsList,GovTxsList},
+		components: {
+			ListComponent,
+			ValidatorInformation, ValidatorCommissionInformation, MPagination,DelegationTxsList,ValidationTxsList,GovTxsList},
 		props: {},
 		data () {
 			return {
+				isVotedLoading:false,
+				isUnbondingLoading:false,
+				isDelegationLoading:false,
+				isDelegationTxLoading:false,
+				isValidationTxLoading:false,
+				isGovLoading:false,
+				isDepositedLoading:false,
+				validatorDelegationColumn:[],
+				unBondingColumn:[],
+				delegationTxColumn:[],
+				validationTxColumn:[],
+				govTxColumn:[],
+				votedColumn:[],
+				depositedColumn:[],
 				TX_TYPE_DISPLAY: {},
 				isShowFee: prodConfig.fee.isShowFee,
 				isShowDenom: prodConfig.fee.isShowDenom,
@@ -330,6 +408,12 @@
 			this.getGovTxs(1, this.pageSize, true)
 		},
 		mounted () {
+			this.validatorDelegationColumn = validatorDelegationColumnList
+			this.unBondingColumn = validatorUnbondingDelegationColumnList
+			this.delegationTxColumn = validatorDelegationTxsColumn
+			this.validationTxColumn = validatorValidationColumn
+			this.votedColumn = validatorVotedColumn
+			this.govTxColumn = validatorGovColumn
 			this.setMainToken();
 		},
 		methods: {
@@ -341,8 +425,12 @@
 					console.log(error)
 				}
 			},
-			pageChange (key) {
+			pageChange (page,key) {
+				if(key){
+					this[key](page)
+				}
 				return page => {
+					
 					this[key](page)
 				}
 			},
@@ -399,7 +487,7 @@
 					})
 					// item.amount = `${Tools.toDecimal(amount.amount,this.amountDecimals)} ${amount.denom.toUpperCase()}`
 					item.amount = `${Tools.toDecimal(amount.amount,this.amountDecimals)}`
-					item.until = Tools.getFormatDate(new Date(item.until).getTime())
+					item.until = Tools.formatLocalTime(new Date(item.until).getTime() / 1000)
 					this.unbondingDelegations.items.push({
 						address: item.address,
 						amount: item.amount,
@@ -444,19 +532,19 @@
 					const time = Tools.getDisplayDate(item.time)
 					const fee =  this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) : ''
 					this.delegationTxs.items.push({
-						Tx_Hash: item.tx_hash,
-						Block: item.height,
+						txHash: item.tx_hash,
+						blockHeight: item.height,
 						From: formTO.from || "--",
 						fromMonikers,
-						Amount: amount,
+						amount: amount,
 						To: formTO.to || '--',
 						toMonikers,
-						Tx_Type: (item.msgs || []).map(item=>this.TX_TYPE_DISPLAY[item.type] || item.type),
+						txType: (item.msgs || []).map(item=>this.TX_TYPE_DISPLAY[item.type] || item.type),
 						MsgsNum: msgsNumber,
 						// Tx_Fee: fee && fee.amount ? this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)} ${fee.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
 						Tx_Fee: fee && fee.amount ? `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
-						Tx_Signer: item.signers[0] ? item.signers[0] : '--',
-						Tx_Status: TxStatus[item.status],
+						signer: item.signers[0] ? item.signers[0] : '--',
+						status: item.status,
 						Timestamp: time,
 					})
 				}
@@ -477,7 +565,7 @@
 					let msgsNumber = item.msgs ? item.msgs.length : 0
 					const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) : ''
 					const selfBonded = item.msgs && item.msgs.length === 1 ? item.msgs[0].msg && item.msgs[0].msg.value ? await converCoin(item.msgs[0].msg.value) : '--' : '--';
-					const time = Tools.getDisplayDate(item.time)
+					const time = Tools.formatLocalTime(item.time)
 					let OperatorAddr = item.msgs && item.msgs.length === 1 ? item.msgs[0] && TxHelper.getValidationTxsOperator(item.msgs[0]) : '--'
 					let OperatorMonikers
 					if(item.monikers.length) {
@@ -486,18 +574,18 @@
 						})
 					}
 					this.validationTxs.items.push({
-						Tx_Hash: item.tx_hash,
-						Block: item.height,
+						txHash: item.tx_hash,
+						blockHeight: item.height,
 						OperatorAddr,
 						OperatorMonikers: OperatorMonikers || '--',
 						SelfBonded: selfBonded.amount || '--',
-						'Tx_Type': (item.msgs || []).map(item=>this.TX_TYPE_DISPLAY[item.type] || item.type),
+						txType: (item.msgs || []).map(item=>this.TX_TYPE_DISPLAY[item.type] || item.type),
 						MsgsNum: msgsNumber,
 						// 'Tx_Fee': fee && fee.amount ? this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)} ${fee.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
 						'Tx_Fee': fee && fee.amount ?  `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
-						'Tx_Signer': item.signers[0] ? item.signers[0] : '--',
-						'Tx_Status': TxStatus[item.status],
-						Timestamp: time,
+						signer: item.signers[0] ? item.signers[0] : '--',
+						status: item.status,
+						Time: time,
 					})
 				}
 			},
@@ -528,7 +616,7 @@
                                 proposer: deposit.proposer,
                                 moniker: deposit.moniker,
                                 submited: String(deposit.submited),
-                                hash: deposit.tx_hash,
+								txHash: deposit.tx_hash,
                                 // deposit: deposits ? `${Tools.toDecimal(deposits.amount,this.amountDecimals)} ${deposits.denom.toLocaleUpperCase()}` : '--',
                                 deposit: deposits ? `${Tools.toDecimal(deposits.amount,this.amountDecimals)}` : '--',
                                 link: deposit.proposal_link,
@@ -547,15 +635,15 @@
 					if(res) {
                     if(useCount){
                     this.votedProposals.total = res.count;
-                    }	
+                    }
                     if(res.data && res.data.length > 0) {
                         this.votedProposals.items = res.data.map(vote => {
-                            return {
+							return {
                                 id: vote.proposal_id,
                                 title: Tools.formatString(vote.title, this.proposalTitleNum, '...'),
-                                status: vote.status,
+								status: vote.status,
                                 voted: vote.voted,
-                                hash: vote.tx_hash,
+								txHash: vote.tx_hash,
                                 link: vote.proposal_link,
                             }
                         })
@@ -577,7 +665,7 @@
                     for (const item of res.data) {
                         let msgsNumber = item.msgs ? item.msgs.length : 0
                         const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) : ''
-                        const time = Tools.getDisplayDate(item.time)
+                        const time = Tools.formatLocalTime(item.time)
                         let amount = null
                         let msg = item.msgs && item.msgs[0]
                         if(msg) {
@@ -594,20 +682,20 @@
                             }
                         }
                         this.govTxs.items.push({
-                            Tx_Hash: item.tx_hash,
-                            Block: item.height,
+							txHash: item.tx_hash,
+                            blockHeight: item.height,
                             proposalType: item.ex && item.ex.type,
                             proposalId: item.ex && item.ex.id,
                             proposalTitle: item.ex && item.ex.title && Tools.formatString(item.ex.title, this.proposalTitleNum, '...'),
                             // amount: amount ? `${Tools.toDecimal(amount.amount,this.amountDecimals)} ${amount.denom.toLocaleUpperCase()}` : '--',
                             amount: amount ? `${Tools.toDecimal(amount.amount,this.amountDecimals)}` : '--',
-                            'Tx_Type': (item.msgs || []).map(item=>this.TX_TYPE_DISPLAY[item.type] || item.type),
+                           	txType: (item.msgs || []).map(item=>this.TX_TYPE_DISPLAY[item.type] || item.type),
                             MsgsNum: msgsNumber,
                             // 'Tx_Fee': fee && fee.amount ? this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)} ${fee.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
                             'Tx_Fee': fee && fee.amount ? `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
-                            'Tx_Signer': item.signers[0] ? item.signers[0] : '--',
-                            'Tx_Status': TxStatus[item.status],
-                            Timestamp: time,
+							signer: item.signers[0] ? item.signers[0] : '--',
+                            status: item.status,
+                            Time: time,
                             proposalLink: item.ex && item.ex.proposal_link
                         })
                     }

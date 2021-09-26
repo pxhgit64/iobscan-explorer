@@ -20,7 +20,6 @@ export default [
         isNeedFormat:true,
         isShowTag:true,
         isLink:false,
-        linkRoute:'/',
         isShowMoniker:false
     },
 ]
