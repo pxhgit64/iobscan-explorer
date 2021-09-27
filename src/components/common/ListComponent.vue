@@ -313,7 +313,7 @@ export default {
 	mounted() {
 		this.columns = []
 		this.columns = this.columnList
-		this.listData = this.listData
+		this.tableList = this.listData
 	}
 }
 </script>
