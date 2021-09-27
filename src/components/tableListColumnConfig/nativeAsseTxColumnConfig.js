@@ -1,43 +1,58 @@
 export default [
     {
         label:'TxHash',
-        displayValue:'',
-        nativeValue:''
+        displayValue:'txHash',
+        nativeValue: 'txHash',
+        isLink:true,
+        linkRoute:'/tx?txHash=',
+        isNeedFormat:true,
+        isNeedFormatHash:true,
     },
     {
         label:'Owner',
-        displayValue: '',
-        nativeValue: '',
+        displayValue: 'owner',
+        nativeValue: 'owner',
+        isLink:true,
+        linkRoute:'/address',
+        isNeedFormat:true,
+        isNeedFormatHash:true,
+
     },
     {
         label: 'Symbol',
-        displayValue: '',
-        nativeValue: ''
+        displayValue: 'symbol',
+        nativeValue: 'symbol',
+        isLink:true,
+        linkRoute:'/assets'
+
     },
     {
         label: 'InitialSupply',
-        displayValue: '',
-        nativeValue: ''
+        displayValue: 'initialSupply',
+        nativeValue: 'initialSupply'
     },
     {
         label: 'MinTable',
-        displayValue: '',
-        nativeValue: ''
+        displayValue: 'mintable',
+        nativeValue: 'mintable'
     },
     {
         label: 'Block',
-        displayValue: '',
-        nativeValue: ''
+        displayValue: 'block',
+        nativeValue: 'block',
+        isLink:true,
+        linkRoute:'/block'
     },
     {
         label: 'Fee',
-        displayValue: '',
-        nativeValue: ''
+        displayValue: 'fee',
+        nativeValue: 'fee',
+
     },
     {
         label: 'Age',
-        displayValue: '',
-        nativeValue: ''
+        displayValue: 'time',
+        nativeValue: 'time'
     },
 
 ]
