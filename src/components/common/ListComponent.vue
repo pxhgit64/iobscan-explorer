@@ -31,11 +31,18 @@
 						
 						<el-tooltip :manual="setManual(!item.isNeedFormat,scope.row[item.displayValue])"
 									:content="formatStr(scope.row[item.nativeValue])">
-							<router-link class="link_style" v-if="item.isLink &&  scope.row[item.displayValue] && scope.row[item.displayValue] !== '--'"
+							<router-link class="link_style"
+										 v-if="item.isLink &&  scope.row[item.displayValue] && scope.row[item.displayValue] !== '--'"
 										 :to="!item.isNft ? `${item.linkRoute}/${scope.row[item.nativeValue]}` : `${item.linkRoute}${scope.row[item.nftRouterParamsValue]}${item.denomRouter}${scope.row[item.nativeValue]}`">
-								<span v-if="item.isNeedFormatHash">{{formatTxHash(scope.row[item.displayValue]) }} </span>
-								<span v-else-if="item.isFormatAddress">{{ formatAddress(scope.row[item.displayValue]) }}</span>
-								<span v-else-if="item.isFormatMoniker">{{ formatTableMoniker(scope.row[item.displayValue]) }}</span>
+								<span v-if="item.isNeedFormatHash">{{
+										formatTxHash(scope.row[item.displayValue])
+									}} </span>
+								<span v-else-if="item.isFormatAddress">{{
+										formatAddress(scope.row[item.displayValue])
+									}}</span>
+								<span v-else-if="item.isFormatMoniker">{{
+										formatTableMoniker(scope.row[item.displayValue])
+									}}</span>
 								<span v-else>{{ scope.row[item.displayValue] }}</span>
 							</router-link>
 							<span v-else-if="item.isShowTag">
@@ -43,25 +50,35 @@
 									class="tag_style">{{ formatTypeNotString(scope.row[item.displayValue]) }}</el-tag>
 								<span class="tag_num">{{ setTagNum(scope.row[item.displayValue]) }}</span>
 							</span>
-							<span v-else-if="item.isFormatAddress && !item.isHref">{{ formatAddress(scope.row[item.displayValue]) }}</span>
+							<span v-else-if="item.isFormatAddress && !item.isHref">{{
+									formatAddress(scope.row[item.displayValue])
+								}}</span>
 							<span v-else-if="item.isHref">
 								<a v-show="isShowHref(scope.row[item.displayValue])"
-								   class="route_link_style" :href="`${item.href}/#/address/${scope.row[item.nativeValue]}`"
+								   class="route_link_style"
+								   :href="`${item.href}/#/address/${scope.row[item.nativeValue]}`"
 								   target="_blank"
 								   rel="noreferrer noopener">
 									{{ formatAddress(scope.row[item.displayValue]) }}
 								</a>
-								<span v-show="!isShowHref(scope.row[item.displayValue])" >
+								<span v-show="!isShowHref(scope.row[item.displayValue])">
 									{{ formatAddress(scope.row[item.displayValue]) }}
 								</span>
 							</span>
+							<span v-else-if="item.isNftHref">
+								<a v-if="testUrl(scope.row[item.displayValue])" :href="scope.row[item.displayValue]" target="_blank">{{ scope.row[item.displayValue] }}</a>
+                				<a v-else-if="startStr(scope.row[item.displayValue])" :href="'http://' + scope.row[item.displayValue]"
+								   target="_blank">{{ scope.row[item.displayValue] }}</a>
+                				<span v-else>{{ scope.row[item.displayValue] }}</span>
+							</span>
 							<span v-else-if="item.isShowDenomTip">
 								<span>
-									{{getAmount(scope.row[item.displayValue])}}
+									{{ getAmount(scope.row[item.displayValue]) }}
 								</span>
 								<el-tooltip :manual="isShowDenomTip(scope.row.denomTheme.tooltipContent)"
 											:content="scope.row.denomTheme.tooltipContent" placement="top">
-									<span :style="{ color: scope.row.denomTheme.denomColor }">{{ getAmountUnit(scope.row[item.displayValue] )}}</span>
+									<span
+										:style="{ color: scope.row.denomTheme.denomColor }">{{ getAmountUnit(scope.row[item.displayValue]) }}</span>
 								</el-tooltip>
 							</span>
 							<span v-else>{{ scope.row[item.displayValue] || '--' }}</span>
@@ -163,19 +180,24 @@ export default {
 				if (data?.length <= 1) {
 					return true
 				}
-				if(!data || data === '--'){
-					return  true
+				if (!data || data === '--') {
+					return true
 				}
 				return false
 			}
 			return true
-			
 		},
-		isShowDenomTip(denom){
-			if(denom){
+		testUrl(url){
+			return Tools.testUrl(url)
+		},
+		startStr(url) {
+			return url.startsWith('www.')
+		},
+		isShowDenomTip(denom) {
+			if (denom) {
 				return false
 			}
-			return  true
+			return true
 		},
 		pageChange(pageNum) {
 			this.$emit('pageChange', pageNum)
@@ -184,7 +206,7 @@ export default {
 			if (!amount) {
 				return "";
 			}
-			if(amount === '--'){
+			if (amount === '--') {
 				return '--'
 			}
 			let denomRule = /[0-9.]+/
@@ -194,48 +216,46 @@ export default {
 			if (!amount) {
 				return "";
 			}
-			if(amount === '--'){
+			if (amount === '--') {
 				return ''
 			}
 			let denomRule = /[A-Za-z\/]+/
 			return amount.match(denomRule)[0];
 		},
-		isShowHref(address){
-			
+		isShowHref(address) {
 			let storageAddressPrefix = JSON.parse(this.sessionStorage) || null
 			let addressPrefix = null
-			if(storageAddressPrefix){
+			if (storageAddressPrefix) {
 				addressPrefix = storageAddressPrefix.addressPrefix
-			}else {
+			} else {
 				getConfig().then(res => {
 					addressPrefix = res.addressPrefix
 				});
-				
 			}
 			if (addressPrefix.iva) {
 				let length = addressPrefix.iva.length
-				if(address) {
+				if (address) {
 					let isIris = addressPrefix.iaa === IRIS_ADDRESS_PREFIX,
 						isCosmos = addressPrefix.iaa === COSMOS_ADDRESS_PREFIX;
 					if (address.substring(0, length) === addressPrefix.iva) {
 						return 'false'
 					} else if (isIris && address.startsWith(COSMOS_ADDRESS_PREFIX)) {
 						return 'true'
-					}  else if (isCosmos && address.startsWith(IRIS_ADDRESS_PREFIX)) {
+					} else if (isCosmos && address.startsWith(IRIS_ADDRESS_PREFIX)) {
 						return 'false'
-					}  else if (address.startsWith(IRIS_ADDRESS_PREFIX) || address.startsWith(COSMOS_ADDRESS_PREFIX)) {
+					} else if (address.startsWith(IRIS_ADDRESS_PREFIX) || address.startsWith(COSMOS_ADDRESS_PREFIX)) {
 						return 'false'
 					}
-				}else {
-					return  'false'
+				} else {
+					return 'false'
 				}
 			}
 		},
 		formatTableMoniker(moniker) {
-			if(moniker){
-				return formatMoniker(moniker,monikerNum.validatorList)
+			if (moniker) {
+				return formatMoniker(moniker, monikerNum.validatorList)
 			}
-			return  '--'
+			return '--'
 		},
 		formatTxHash(TxHash) {
 			if (TxHash) {
@@ -244,7 +264,7 @@ export default {
 			return '--'
 		},
 		formatAddress(address) {
-			if(address){
+			if (address) {
 				return Tools.formatValidatorAddress(address)
 			}
 			return '--'
@@ -252,13 +272,13 @@ export default {
 		formatStr(str) {
 			if (str && Array.isArray(str)) {
 				const {txType} = Tools.urlParser();
-				let msgTxTypeIndex = 0,tmp =str[0]
-				str.forEach((item,index) => {
-					if(txType && item === txType){
+				let msgTxTypeIndex = 0, tmp = str[0]
+				str.forEach((item, index) => {
+					if (txType && item === txType) {
 						msgTxTypeIndex = index
 					}
 				})
-				if(msgTxTypeIndex !== 0){
+				if (msgTxTypeIndex !== 0) {
 					str[0] = txType
 					str[msgTxTypeIndex] = tmp
 				}
@@ -273,7 +293,7 @@ export default {
 				}
 				return formatStr.substring(0, formatStr.length - 1)
 			} else {
-				return TX_TYPE_DISPLAY[str?.toString()]  || TX_TYPE_DISPLAY[str] || str?.toString() || str
+				return TX_TYPE_DISPLAY[str?.toString()] || TX_TYPE_DISPLAY[str] || str?.toString() || str
 			}
 		},
 		setTagNum(value) {
@@ -354,9 +374,11 @@ export default {
 		.yiwen_icon {
 			cursor: pointer;
 		}
-		.route_link_style{
+		
+		.route_link_style {
 			color: $theme_c !important;
 		}
+		
 		.tag_num {
 			color: $theme_c !important;
 			margin-left: 0.06rem;
