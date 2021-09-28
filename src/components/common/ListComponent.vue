@@ -7,7 +7,7 @@
 			</div>
 			<slot name="msgType"></slot>
 			<loading v-if="isLoading"></loading>
-			<el-table v-if="!isLoading" :data="tableList" stripe ref="listTable">
+			<el-table v-if="!isLoading" :data="listData" stripe ref="listTable">
 				<el-table-column
 					v-for="(item,index) in columns"
 					:key="item.label"
