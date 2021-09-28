@@ -1,7 +1,7 @@
 <template>
 	<div class="tx_count_content">
 		<span :class="`iconfont ${icon}` "></span>
-		<span class="tx_count_label"> {{$t('ExplorerLang.transactions.txs')}}</span>
+		<span class="tx_count_label"> {{title}}</span>
 		<span class="tx_count_number">{{txCount}}</span>
 	</div>
 </template>
@@ -17,6 +17,10 @@ export default {
 		icon:{
 			type:String,
 			default: ''
+		},
+		title:{
+			type:String,
+			default:''
 		}
 	}
 }
