@@ -12,33 +12,27 @@ export default [
         isShowTxStatusIcon:true
     },
     {
-        label:'Owner',
-        displayValue: 'owner',
-        nativeValue: 'owner',
-        isLink:true,
-        linkRoute:'/address',
-        isNeedFormat:true,
-        isNeedFormatHash:true,
+        label: 'Amount',
+        displayValue: 'amount',
+        nativeValue: 'amount'
+    },
+    {
+        label: 'Token',
+        displayValue: 'token',
+        nativeValue: 'token',
+        isLink: true,
+        linkRoute: '/assets'
+    },
+    {
+        label: 'Sender',
+        displayValue: 'sender',
+        nativeValue: 'sender',
+        isNeedFormat: 'sender',
+        isNeedFormatHash: 'sender',
+        isLink: true,
+        linkRoute: '/address'
+    },
 
-    },
-    {
-        label: 'Symbol',
-        displayValue: 'symbol',
-        nativeValue: 'symbol',
-        isLink:true,
-        linkRoute:'/assets'
-
-    },
-    {
-        label: 'InitialSupply',
-        displayValue: 'initialSupply',
-        nativeValue: 'initialSupply'
-    },
-    {
-        label: 'MinTable',
-        displayValue: 'mintable',
-        nativeValue: 'mintable'
-    },
     {
         label: 'Block',
         displayValue: 'block',
@@ -51,7 +45,6 @@ export default [
         displayValue: 'fee',
         nativeValue: 'fee',
         isShowTokenSymbol:true,
-
     },
     {
         label:'Time',
@@ -62,6 +55,8 @@ export default [
         isShowMoniker:false,
         width: 150
     },
+
+
 
 
 ]
