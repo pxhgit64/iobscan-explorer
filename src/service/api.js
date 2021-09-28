@@ -623,7 +623,9 @@ export function fetchTokenRichList () {
     let url = `/statistics/accounts`;
     return get(url);
 }
-
-
+export function fetchAllTokens() {
+    const url=`/cosmos/bank/v1beta1/supply`
+    return getFromLcd(url);
+}
 
 

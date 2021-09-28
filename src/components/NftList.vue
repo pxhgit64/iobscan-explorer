@@ -2,19 +2,20 @@
   <div class="nft_list_container">
     <div class="nft_list_content_wrap">
       <div class="nft_list_header_content">
-        <h3 class="nft_list_header_title">{{allCount}} {{$t('ExplorerLang.nftAsset.assets')}}{{allCount>1 && isShowPlurality ? 's' : ''}}</h3>
-        <el-input v-model="input" @change="handleSearchClick" :placeholder="$t('ExplorerLang.nftAsset.placeHolder')"></el-input>
+        <h3 class="nft_list_header_title">{{$t('ExplorerLang.nftAsset.assets')}}</h3>
+<!--        <el-input v-model="input" @change="handleSearchClick" :placeholder="$t('ExplorerLang.nftAsset.placeHolder')"></el-input>
         <div class="tx_type_mobile_content">
           <div class="search_btn" @click="handleSearchClick">{{$t('ExplorerLang.nftAsset.search')}}</div>
           <div class="reset_btn" @click="resetFilterCondition"><i class="iconfont iconzhongzhi"></i></div>
-        </div>
+        </div>-->
       </div>
       <div class="nef_list_table_container">
 		  <list-component
 		  	:is-loading="isNftListLoading"
 			:list-data="denomArray"
 			:column-list="nftListColumn"
-			:pagination="{}"
+			:pagination="{pageSize:Number(pageSize),dataCount:allCount,pageNum:Number(currentPageNum)}"
+			@pageChange="pageChange"
 		  >
 			  <template v-slot:txCount>
 				  <tx-count-component :title="$t('ExplorerLang.nftAsset.assets')" :icon="'iconNFT'" :tx-count="allCount"></tx-count-component>
@@ -113,7 +114,6 @@ export default {
 		isNftListLoading:false,
 		nftListColumn: [],
       ColumnMinWidth,
-      Tools,
       denomArray: [],
       denom,
       currentPageNum: 1,

@@ -6,13 +6,8 @@
 					<div class="block_list_herder_top_content">
 						<div class="block_list_current_height_content">
               <span class="block_list_current_height_title">{{
-					  $t("ExplorerLang.block.currentHeight")
+					  $t("ExplorerLang.block.title")
 				  }}</span>
-							<span class="block_list_current_height_number">
-                <router-link :to="`/block/${latestBlockHeight}`">{{
-						latestBlockHeight
-					}}</router-link>
-              </span>
 						</div>
 						<!-- <div class="pagination_content">
 										<m-pagination :page-size="pageSize" :total="dataCount" :page="pageNumber" :page-change="pageChange"></m-pagination>
@@ -62,7 +57,17 @@
 										:list-data="blockList"
 										:column-list="blockChainColumnArr"
 										:pagination="{pageSize,dataCount,pageNumber}"
-										@pageChange="pageChange"></list-component>
+										@pageChange="pageChange"
+										:empty-text="$t('ExplorerLang.table.emptyDescription')"
+						>
+							<template v-slot:txCount>
+								<tx-count-component :icon="'iconBlockchain'"
+													:title="$t('ExplorerLang.block.currentHeight')"
+													:isLink="true"
+													:linkRoute="'/block'"
+													:tx-count="latestBlockHeight"></tx-count-component>
+							</template>
+						</list-component>
 					</div>
 <!--					<div class="pagination_content">
 						<m-pagination :page-size="pageSize" :total="dataCount" :page="pageNumber"
@@ -83,10 +88,11 @@ import productionConfig from '@/productionConfig.js'
 import {validatePositiveInteger} from '../helper/IritaHelper'
 import ListComponent from "./common/ListComponent";
 import blockChainColumnList from "./tableListColumnConfig/blockChainTableList"
+import TxCountComponent from "./TxCountComponent";
 
 export default {
 	name: 'BlockList',
-	components: {ListComponent, MPagination},
+	components: {TxCountComponent, ListComponent, MPagination},
 	data() {
 		return {
 			ColumnMinWidth,
@@ -108,12 +114,12 @@ export default {
 	},
 	methods: {
 		async queryBlockList() {
+			this.isLoading = true
 			this.getBlocksCount()
 			await this.latestBlock()
 			this.getBlocks()
 		},
 		async getBlocks() {
-			this.isLoading = true
 			let start = this.dbHeight - (this.pageNumber - 1) * this.pageSize
 			let end = start - this.pageSize
 			try {
@@ -122,7 +128,6 @@ export default {
 					validatePositiveInteger(end)
 				)
 				if (blockList?.data && blockList?.data.length > 0) {
-					this.isLoading = false
 					if (blockList.data.length > this.pageSize) {
 						blockList.data = blockList.data.slice(0, this.pageSize)
 					}
@@ -147,6 +152,7 @@ export default {
 					})
 				}
 				clearInterval(this.blockListTimer)
+				this.isLoading = false
 				this.blockListTimer = setInterval(() => {
 					this.blockList.map((item) => {
 						item.ageTime = Tools.formatAge(
@@ -285,15 +291,15 @@ a {
 				}
 				
 				.block_list_current_height_content {
-					padding: 0.3rem 0 0.16rem 0;
+					padding: 0.4rem 0 0 0;
 					text-align: left;
 					display: flex;
 					align-items: center;
-					
+					margin-bottom: 0.1rem;
 					.block_list_current_height_title {
 						color: $t_first_c;
-						font-size: $s18;
-						line-height: 0.21rem;
+						font-size: $s22;
+						line-height: 0.26rem;
 						font-weight: bold;
 						margin-right: 0.1rem;
 					}

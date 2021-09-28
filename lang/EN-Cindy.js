@@ -174,6 +174,7 @@ export const ExplorerLang = {
         votingPower: 'Voting Power',
     },
     block:{
+        title:'Blockchain',
         currentHeight: 'Current Height',
     },
     blockDetail:{

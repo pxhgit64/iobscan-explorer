@@ -4,74 +4,8 @@
 			<div class="tx_content_header_title">
 				<p class="tc_content_header">Transactions</p>
 			</div>
-<!--			<div class="tx_content_header_wrap">
-				<div class="total_tx_content">{{ txCount }} {{ $t('ExplorerLang.transactions.txs') }}</div>
-				<div class="tx_type_mobile_content">
-					&lt;!&ndash;<el-select popper-class="tooltip" v-model="value" filterable :change="filterTxByTxType(value)">
-						<el-option v-for="(item, index) in txTypeOption"
-								   :key="index"
-								   :label="item.label"
-								   :value="item.value"></el-option>
-					</el-select>&ndash;&gt;
-					
-					<el-cascader
-						class="tx_type_transactions"
-						popper-class="tooltip"
-						:placeholder="$t('ExplorerLang.common.allTxType')"
-						v-model="txTypeArray"
-						:options="txTypeOption"
-						:props="{ expandTrigger: 'hover' }"
-						:show-all-levels="false"
-						:filterable="true"
-						@change="handleChange"></el-cascader>
-					
-					&lt;!&ndash;<el-select  popper-class="tooltip" v-model="statusValue" :change="filterTxByStatus(statusValue)">
-						<el-option v-for="(item, index) in statusOpt"
-								   :key="index"
-								   :label="item.label"
-								   :value="item.value"></el-option>
-					</el-select>&ndash;&gt;
-					<el-select popper-class="tooltip" v-model="statusValue">
-						<el-option v-for="(item) in statusOpt"
-								   :key="item.value"
-								   :label="item.label"
-								   :value="item.value"></el-option>
-					</el-select>
-				
-				</div>
-				<div class="tx_type_mobile_content">
-					<el-date-picker type="date"
-									popper-class="tooltip"
-									v-model="beginTime"
-									@change="getStartTime(beginTime)"
-									:picker-options="PickerOptions"
-									:editable="false"
-									value-format="yyyy-MM-dd"
-									:placeholder="$t('ExplorerLang.common.selectDate')">
-					</el-date-picker>
-					<span class="joint_mark">~</span>
-					<el-date-picker type="date"
-									popper-class="tooltip"
-									v-model="endTime"
-									value-format="yyyy-MM-dd"
-									@change="getEndTime(endTime)"
-									:picker-options="PickerOptions"
-									:editable="false"
-									:placeholder="$t('ExplorerLang.common.selectDate')">
-					</el-date-picker>
-					<div class="tooltip_content">
-						<el-tooltip popper-class="tooltip" :content="$t('ExplorerLang.transactions.tooltip')">
-							<i class="iconfont iconyiwen"></i>
-						</el-tooltip>
-					</div>
-				</div>
-				<div class="tx_type_mobile_content">
-					<div class="search_btn" @click="getFilterTxs">{{ $t('ExplorerLang.transactions.search') }}</div>
-					<div class="reset_btn" @click="resetFilterCondition"><i class="iconfont iconzhongzhi"></i></div>
-				</div>
-			</div>-->
-			<!--            <TxListComponent :txData="transactionArray"></TxListComponent>-->
 			<list-component
+				:is-show-token-type="true"
 				:is-loading="isLoading"
 				:token-symbol="mainTokenSymbol"
 				:list-data="transactionArray"
@@ -90,25 +24,9 @@
 						@resetParams="resetFilterCondition"></tx-status-tabs-components>
 				</template>
 				<template v-slot:txCount>
-					<tx-count-component :icon="'iconTrainsaction'" :tx-count="txCount"></tx-count-component>
+					<tx-count-component :title="$t('ExplorerLang.transactions.txs')" :icon="'iconTrainsaction'" :tx-count="txCount"></tx-count-component>
 				</template>
 			</list-component>
-			<div class="pagination_content">
-				<div class="tooltip_box">
-					<span class="tooltip_title">Cross-chain TokenType:</span>
-					<span class="tooltip_title_box">
-                    <span class="tooltip_title_IBC" v-show="isShowIbc">{{ IBC }}</span>
-                    <span class="tooltip_title_HTLT" v-show="isShowHashLock">{{ HashLock }}</span>
-                  </span>
-				</div>
-				<keep-alive>
-					<m-pagination :page-size="Number(pageSize)"
-								  :total="txCount"
-								  :page="Number(pageNum)"
-								  :page-change="pageChange">
-					</m-pagination>
-				</keep-alive>
-			</div>
 		</div>
 	</div>
 </template>
@@ -217,7 +135,7 @@ export default {
 		this.formatTxData(txType)
 	},
 	mounted() {
-		const {txType, status, beginTime, endTime} = Tools.urlParser();
+		const {txType} = Tools.urlParser();
 		this.txColumnList = txCommonTable.concat(txCommonLatestTable)
 		if(txType && needAddColumn[txType]){
 			this.txColumnList = txCommonTable.concat(needAddColumn[txType],txCommonLatestTable)
@@ -291,7 +209,7 @@ export default {
 		getFilterTxs(param) {
 			if (param?.value) {
 				this.txType = param.value
-			}else {
+			}else if(param?.value === '') {
 				//处理点击all的情况
 				this.txType = ''
 			}
@@ -423,6 +341,8 @@ export default {
 			sessionStorage.setItem('lastChoiceMsgModelIndex',0)
 			sessionStorage.setItem('txTimeRange',[])
 			this.txTypeArray = ['']
+			this.txColumnList = txCommonTable.concat(txCommonLatestTable)
+			
 		},
 		async getTxTypeData() {
 			try {
@@ -724,6 +644,8 @@ export default {
 					if (amounts && amounts.length > 0) {
 						let amount = await Promise.all(amounts)
 						this.denomMap = await getDenomMap()
+						console.log(this.transactionArray,'交易的数据是啥')
+						console.log(this.denomMap,'啥~~~~~~~~~~~~~~~~~')
 						this.transactionArray.forEach((item, index) => {
 							this.transactionArray[index].denomTheme = getDenomTheme(amount[index], this.denomMap)
 							this.transactionArray[index].amount = amount[index]

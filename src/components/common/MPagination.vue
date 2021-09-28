@@ -154,7 +154,6 @@ export default {
     margin-right: 0.1rem;
 }
 .common_pagination_content{
-	margin: 0.2rem 0;
 	display: flex;
 	justify-content: flex-end;
     //border: 0.01rem solid $bd_second_c;

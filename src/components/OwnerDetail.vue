@@ -674,12 +674,14 @@
 					</div>
 				</div>-->
 <!--				<TxListComponent v-if="address" :txData="txList" :address="address"></TxListComponent>-->
-				<list-component :is-loading="isLoading"
-								:token-symbol="mainTokenSymbol"
-								:list-data="transactionArray"
-								:column-list="txColumnList"
-								:pagination="{pageSize:Number(pageSize),dataCount:totalTxNumber,pageNum:Number(pageNum)}"
-								@pageChange="pageChange">
+				<list-component
+					:is-show-token-type="true"
+					:is-loading="isLoading"
+					:token-symbol="mainTokenSymbol"
+					:list-data="transactionArray"
+					:column-list="txColumnList"
+					:pagination="{pageSize:Number(pageSize),dataCount:totalTxNumber,pageNum:Number(pageNum)}"
+					@pageChange="pageChange">
 					<template v-slot:msgType>
 						<tabs-component :tab-list="txTypeOption"
 										@onSelectMagType="getFilterTxs"></tabs-component>
@@ -691,21 +693,9 @@
 							@resetParams="resetFilterCondition"></tx-status-tabs-components>
 					</template>
 					<template v-slot:txCount>
-						<tx-count-component :icon="'iconTrainsaction'" :tx-count="totalTxNumber"></tx-count-component>
+						<tx-count-component :title="$t('ExplorerLang.transactions.txs')" :icon="'iconTrainsaction'" :tx-count="totalTxNumber"></tx-count-component>
 					</template>
 				</list-component>
-				<div class="pagination_content" v-show="totalTxNumber > pageSize">
-					<div class="tooltip_box">
-						<span class="tooltip_title">Cross-chain TokenType:</span>
-						<span class="tooltip_title_box">
-              <span class="tooltip_title_IBC">{{ IBC }}</span>
-              <span class="tooltip_title_HTLT">{{ HashLock }}</span>
-            </span>
-					</div>
-					<m-pagination :page-size="pageSize" :total="totalTxNumber" :page="pageNum"
-								  :page-change="pageChange">
-					</m-pagination>
-				</div>
 			</div>
 		</div>
 	</div>

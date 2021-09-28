@@ -170,6 +170,7 @@ export const ExplorerLang = {
         votingPower: '在线投票权',
     },
     block:{
+        title:'区块',
         currentHeight: '当前区块',
     },
     blockDetail:{

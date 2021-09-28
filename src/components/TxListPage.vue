@@ -80,7 +80,7 @@
 								@resetParams="resetFilterCondition"></tx-status-tabs-components>
 						</template>
 						<template v-slot:txCount>
-							<tx-count-component :icon="'iconTrainsaction'" :tx-count="count"></tx-count-component>
+							<tx-count-component :title="$t('ExplorerLang.transactions.txs')" :icon="'iconTrainsaction'" :tx-count="count"></tx-count-component>
 						</template>
 					</list-component>
                     <!-- Validation Txs -->

@@ -5,6 +5,7 @@ export const needAddColumn = {
         {
             label: 'Amount',
             displayValue: 'amount',
+            isShowDenomTip: true
         },
         {
             label: 'From',
