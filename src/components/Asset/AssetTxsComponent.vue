@@ -109,7 +109,15 @@
 <!--        <div class="pagination_content">
           <m-pagination :total="editTokenTotalPageNum" :page-size="pageSize" :page="editTokenCurrentPageNum" :page-change="editTokenPageChange"></m-pagination>
         </div>-->
-
+        <list-component
+            :token-symbol="mainTokenSymbol"
+            :is-loading="isEditTokenLoading"
+            :list-data="editToken"
+            :column-list="editTokenColumn"
+            :pagination="{pageSize:Number(pageSize),dataCount:editTokenCurrentPageNum,pageNum:Number(transferTokenCurrentPageNum)}"
+            @pageChange="transferTokenPageChange"
+        >
+        </list-component>
       </div>
     </div>
     <div class="native_asset_list_table_container" v-if="mintToken.length !== 0">
@@ -303,7 +311,7 @@ import parseTimeMixin from '../../mixins/parseTime'
 import ListComponent from "../common/ListComponent";
 import nativeAsseTxcolumnConfig from  "../tableListColumnConfig/nativeAsseTxColumnConfig"
 import nativeAssTxBurnColumnConfig from "../tableListColumnConfig/nativeAssTxBurnColumnConfig";
-
+import nativeAssTxEditTokenColumnConfig from "../tableListColumnConfig/nativeAssTxEditTokenColumnConfig";
 
 export default {
   name: 'AssetTxsComponent',
@@ -342,6 +350,9 @@ export default {
       isissueTokenLoading:false,//新增
       isburnTokenLoading:false,//新增
       burnTokenColumn:[],//新增
+      isEditTokenLoading:false,//新增
+      editTokenColumn:[],//新增
+
     }
   },
   computed: {},
@@ -350,6 +361,7 @@ export default {
   mounted() {
     this.issueTokenColumn = nativeAsseTxcolumnConfig
     this.burnTokenColumn  = nativeAssTxBurnColumnConfig
+    this.editTokenColumn  = nativeAssTxEditTokenColumnConfig
     this.setMainToken()
     Promise.all([
       this.getIssueToken(),
@@ -430,7 +442,7 @@ export default {
                 fee: fee ? `${Tools.toDecimal(fee.amount, decimals.fee)}` : '--',
                 time: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
                 // record origin time
-                Time: item.time,
+                Time: Tools.formatLocalTime(item.time),
                 status: item.status,
               }
             })
