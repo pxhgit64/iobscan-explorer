@@ -644,8 +644,6 @@ export default {
 					if (amounts && amounts.length > 0) {
 						let amount = await Promise.all(amounts)
 						this.denomMap = await getDenomMap()
-						console.log(this.transactionArray,'交易的数据是啥')
-						console.log(this.denomMap,'啥~~~~~~~~~~~~~~~~~')
 						this.transactionArray.forEach((item, index) => {
 							this.transactionArray[index].denomTheme = getDenomTheme(amount[index], this.denomMap)
 							this.transactionArray[index].amount = amount[index]
