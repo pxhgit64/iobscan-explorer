@@ -156,10 +156,10 @@ export default {
 			isShowHashLock: false,
 			opsConfig:{
 				rail: {
-					opacity: '1',
+					opacity:1,
 					background: '#E6E6E6',
 					// border: '1px solid #cecece',
-					size: '10px'
+					size: '10px',
 				},
 				bar:{
 					keepShow:true,
@@ -543,7 +543,6 @@ export default {
 		.el-table td, .el-table th.is-leaf {
 			border-bottom: 0.01rem solid rgba(248, 248, 248, 1);
 		}
-		
 		::v-deep.__panel{
 			overflow: hidden !important;
 		}

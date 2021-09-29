@@ -88,11 +88,11 @@
 					<!-- Gov Txs -->
 <!--					<GovTxsList :dataList="txList" :isShowFee="isShowFee" v-if="this.$route.params.txType === 'governance'" />-->
                 </div>
-                <div class="pagination_nav_footer_content">
+<!--                <div class="pagination_nav_footer_content">
                     <keep-alive>
                         <m-pagination :total="count" :page="currentPageNum" :page-size="pageSize" :page-change="pageChange"></m-pagination>
                     </keep-alive>
-                </div>
+                </div>-->
             </div>
         </div>
     </div>
@@ -341,6 +341,9 @@
 				this.resetUrl()
                 this.getTxListByFilterCondition(null, null, true)
                 this.getTxListByFilterCondition(this.currentPageNum, this.pageSize)
+				this.$store.commit('currentTxModelIndex', 0)
+				sessionStorage.setItem('lastChoiceMsgModelIndex',0)
+				sessionStorage.setItem('txTimeRange',[])
 			},
 			getType () {
 				switch (this.$route.params.txType) {

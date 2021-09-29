@@ -5,6 +5,7 @@
 				<p class="tc_content_header">Transactions</p>
 			</div>
 			<list-component
+				:tableWidth="'11.5rem'"
 				:is-show-token-type="true"
 				:is-loading="isLoading"
 				:token-symbol="mainTokenSymbol"
