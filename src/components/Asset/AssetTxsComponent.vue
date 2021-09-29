@@ -52,7 +52,7 @@
 
         <list-component
           :token-symbol="mainTokenSymbol"
-          :is-loading="isissueTokenLoading"
+          :is-loading="isIssueTokenLoading"
           :list-data="issueToken"
           :column-list="issueTokenColumn"
           :pagination="{pageSize:Number(pageSize),dataCount:issueTokenTotalPageNum,pageNum:Number(transferTokenCurrentPageNum)}"
@@ -123,7 +123,7 @@
     <div class="native_asset_list_table_container" v-if="mintToken.length !== 0">
       <div class="txs_title">{{ $t('ExplorerLang.asset.mintTokenTxs') }}</div>
       <div class="native_asset_list_table_content">
-        <el-table class="table" :empty-text="$t('ExplorerLang.table.emptyDescription')" :data="mintToken">
+       <!-- <el-table class="table" :empty-text="$t('ExplorerLang.table.emptyDescription')" :data="mintToken">
           <el-table-column class-name="hash_status" :label="$t('ExplorerLang.table.txHash')" prop="txHash" :min-width="ColumnMinWidth.txHash">
             <template v-slot:default="{ row }">
               <img class="status_icon" :src="require(`../../assets/${row.status === 1 ? 'success.png' : 'failed.png'}`)" />
@@ -179,6 +179,17 @@
         <div class="pagination_content">
           <m-pagination :total="mintTokenTotalPageNum" :page-size="pageSize" :page="mintTokenCurrentPageNum" :page-change="mintTokenPageChange"></m-pagination>
         </div>
+       -->
+        <list-component
+            :token-symbol="mainTokenSymbol"
+            :is-loading="isMintTokenLoading"
+            :list-data="mintToken"
+            :column-list="mintTokenColumn"
+            :pagination="{pageSize:Number(pageSize),dataCount:mintTokenCurrentPageNum,pageNum:Number(transferTokenCurrentPageNum)}"
+            @pageChange="transferTokenPageChange"
+        >
+        </list-component>
+
       </div>
     </div>
     <div class="native_asset_list_table_container" v-if="burnToken.length !== 0">
@@ -231,7 +242,7 @@
         -->
         <list-component
             :token-symbol="mainTokenSymbol"
-            :is-loading="isburnTokenLoading"
+            :is-loading="isBurnTokenLoading"
             :list-data="burnToken"
             :column-list="burnTokenColumn"
             :pagination="{pageSize:Number(pageSize),dataCount:burnTokenCurrentPageNum,pageNum:Number(transferTokenCurrentPageNum)}"
@@ -244,7 +255,7 @@
     <div class="native_asset_list_table_container" v-if="transferToken.length !== 0">
       <div class="txs_title">{{ $t('ExplorerLang.asset.transferOwnerTxs') }}</div>
       <div class="native_asset_list_table_content" >
-        <el-table class="table" :empty-text="$t('ExplorerLang.table.emptyDescription')" :data="transferToken">
+        <!--<el-table class="table" :empty-text="$t('ExplorerLang.table.emptyDescription')" :data="transferToken">
           <el-table-column class-name="hash_status" :label="$t('ExplorerLang.table.txHash')" prop="txHash" :min-width="ColumnMinWidth.txHash">
             <template v-slot:default="{ row }">
               <img class="status_icon" :src="require(`../../assets/${row.status === 1 ? 'success.png' : 'failed.png'}`)" />
@@ -295,9 +306,22 @@
         <div class="pagination_content">
           <m-pagination :total="transferTokenTotalPageNum" :page-size="pageSize" :page="transferTokenCurrentPageNum" :page-change="transferTokenPageChange"></m-pagination>
         </div>
+
+      -->
+
+        <list-component
+            :token-symbol="mainTokenSymbol"
+            :is-loading="isTransferTokenLoading"
+            :list-data="transferToken"
+            :column-list="transferTokenColumn"
+            :pagination="{pageSize:Number(pageSize),dataCount:transferTokenCurrentPageNum,pageNum:Number(transferTokenCurrentPageNum)}"
+            @pageChange="transferTokenPageChange"
+        >
+          </list-component>
       </div>
     </div>
   </div>
+
 </template>
 
 <script>
@@ -309,10 +333,11 @@ import { converCoin, addressRoute, getMainToken } from '../../helper/IritaHelper
 import prodConfig from '../../productionConfig'
 import parseTimeMixin from '../../mixins/parseTime'
 import ListComponent from "../common/ListComponent";
-import nativeAsseTxcolumnConfig from  "../tableListColumnConfig/nativeAsseTxColumnConfig"
-import nativeAssTxBurnColumnConfig from "../tableListColumnConfig/nativeAssTxBurnColumnConfig";
+import nativeAssTxColumnConfig from "../tableListColumnConfig/nativeAssTxColumnConfig"
 import nativeAssTxEditTokenColumnConfig from "../tableListColumnConfig/nativeAssTxEditTokenColumnConfig";
-
+import nativeAssTxMintColumnConfig from "../tableListColumnConfig/nativeAssTxMintColumnConfig";
+import nativeAssTxBurnColumnConfig from "../tableListColumnConfig/nativeAssTxBurnColumnConfig";
+import nativeAssTxTransferTokenColumnConfig from "../tableListColumnConfig/nativeAssTxTransferTokenColumnConfig";
 export default {
   name: 'AssetTxsComponent',
   components: {ListComponent, MPagination },
@@ -346,12 +371,16 @@ export default {
       transferTokenCurrentPageNum: 1,
       pageSize: 5,
         mainTokenSymbol:'',
-      issueTokenColumn:[],//新增
-      isissueTokenLoading:false,//新增
-      isburnTokenLoading:false,//新增
-      burnTokenColumn:[],//新增
+      isIssueTokenLoading:false,//新增
       isEditTokenLoading:false,//新增
+      isMintTokenLoading:false,//新增
+      isBurnTokenLoading:false,//新增
+      isTransferTokenLoading:false,
+      issueTokenColumn:[],//新增
       editTokenColumn:[],//新增
+      mintTokenColumn:[],//新增
+      burnTokenColumn:[],//新增
+      transferTokenColumn:[],//新增
 
     }
   },
@@ -359,9 +388,11 @@ export default {
   watch: {},
   created() {},
   mounted() {
-    this.issueTokenColumn = nativeAsseTxcolumnConfig
-    this.burnTokenColumn  = nativeAssTxBurnColumnConfig
+    this.issueTokenColumn = nativeAssTxColumnConfig
     this.editTokenColumn  = nativeAssTxEditTokenColumnConfig
+    this.mintTokenColumn  = nativeAssTxMintColumnConfig
+    this.burnTokenColumn  = nativeAssTxBurnColumnConfig
+    this.transferTokenColumn = nativeAssTxTransferTokenColumnConfig
     this.setMainToken()
     Promise.all([
       this.getIssueToken(),
@@ -478,7 +509,7 @@ export default {
                 fee: fee ? `${Tools.toDecimal(fee.amount, decimals.fee)}` : '--',
                 time: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
                 // record origin time
-                Time: item.time,
+                Time: Tools.formatLocalTime(item.time),
                 status: item.status,
               }
             })
@@ -548,7 +579,7 @@ export default {
                 fee: fee ? `${Tools.toDecimal(fee.amount, decimals.fee)}` : '--',
                 time: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
                 // record origin time
-                Time: item.time,
+                Time: Tools.formatLocalTime(item.time),
                 status: item.status,
               }
             })
