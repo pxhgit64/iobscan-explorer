@@ -23,14 +23,26 @@ export default [
         isLink: true,
         linkRoute: '/assets'
     },
+
     {
-        label: 'Sender',
-        displayValue: 'sender',
-        nativeValue: 'sender',
-        isNeedFormat: true,
+        label: 'Owner',
+        displayValue: 'owner',
+        nativeValue: 'owner',
+        isLink: true,
+        isNeedFormat:true,
+        isFormatAddress: true,
+        linkRoute: '/address',
+    },
+
+    {
+        label: "MintTo",
+        displayValue: "mintTo",
+        nativeValue: "mintTo",
+        isNeedFormat:true,
         isFormatAddress: true,
         isLink: true,
-        linkRoute: '/address'
+        linkRoute: '/address',
+
     },
 
     {
@@ -40,6 +52,8 @@ export default [
         isLink:true,
         linkRoute:'/block'
     },
+
+
     {
         label: 'Fee',
         displayValue: 'fee',
@@ -55,8 +69,5 @@ export default [
         isShowMoniker:false,
         width: 150
     },
-
-
-
 
 ]
