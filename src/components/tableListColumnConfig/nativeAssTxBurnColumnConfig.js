@@ -27,8 +27,8 @@ export default [
         label: 'Sender',
         displayValue: 'sender',
         nativeValue: 'sender',
-        isNeedFormat: 'sender',
-        isNeedFormatHash: 'sender',
+        isNeedFormat: true,
+        isFormatAddress: true,
         isLink: true,
         linkRoute: '/address'
     },

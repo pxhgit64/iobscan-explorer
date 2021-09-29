@@ -18,7 +18,7 @@ export default [
         isLink:true,
         linkRoute:'/address',
         isNeedFormat:true,
-        isNeedFormatHash:true,
+        isFormatAddress: true,
 
     },
     {

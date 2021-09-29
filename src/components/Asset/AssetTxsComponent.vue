@@ -55,7 +55,7 @@
           :is-loading="isIssueTokenLoading"
           :list-data="issueToken"
           :column-list="issueTokenColumn"
-          :pagination="{pageSize:Number(pageSize),dataCount:issueTokenTotalPageNum,pageNum:Number(transferTokenCurrentPageNum)}"
+          :pagination="{pageSize:Number(pageSize),dataCount:issueTokenTotalPageNum,pageNum:Number(issueTokenCurrentPageNum)}"
           @pageChange="issueTokenPageChange"
         >
         </list-component>
@@ -114,7 +114,7 @@
             :is-loading="isEditTokenLoading"
             :list-data="editToken"
             :column-list="editTokenColumn"
-            :pagination="{pageSize:Number(pageSize),dataCount:editTokenCurrentPageNum,pageNum:Number(transferTokenCurrentPageNum)}"
+            :pagination="{pageSize:Number(pageSize),dataCount:editTokenTotalPageNum,pageNum:Number(editTokenCurrentPageNum)}"
             @pageChange="editTokenPageChange"
         >
         </list-component>
@@ -185,7 +185,7 @@
             :is-loading="isMintTokenLoading"
             :list-data="mintToken"
             :column-list="mintTokenColumn"
-            :pagination="{pageSize:Number(pageSize),dataCount:mintTokenCurrentPageNum,pageNum:Number(transferTokenCurrentPageNum)}"
+            :pagination="{pageSize:Number(pageSize),dataCount:mintTokenTotalPageNum,pageNum:Number(mintTokenCurrentPageNum)}"
             @pageChange="mintTokenPageChange"
         >
         </list-component>
@@ -245,11 +245,10 @@
             :is-loading="isBurnTokenLoading"
             :list-data="burnToken"
             :column-list="burnTokenColumn"
-            :pagination="{pageSize:Number(pageSize),dataCount:burnTokenCurrentPageNum,pageNum:Number(transferTokenCurrentPageNum)}"
+            :pagination="{pageSize:Number(pageSize),dataCount:burnTokenTotalPageNum,pageNum:Number(burnTokenCurrentPageNum)}"
             @pageChange="burnTokenPageChange"
         >
         </list-component>
-
       </div>
     </div>
     <div class="native_asset_list_table_container" v-if="transferToken.length !== 0">
@@ -314,10 +313,11 @@
             :is-loading="isTransferTokenLoading"
             :list-data="transferToken"
             :column-list="transferTokenColumn"
-            :pagination="{pageSize:Number(pageSize),dataCount:transferTokenCurrentPageNum,pageNum:Number(transferTokenCurrentPageNum)}"
+            :pagination="{pageSize:Number(pageSize),dataCount:transferTokenTotalPageNum,pageNum:Number(transferTokenCurrentPageNum)}"
             @pageChange="transferTokenPageChange"
         >
           </list-component>
+
       </div>
     </div>
   </div>
@@ -363,6 +363,7 @@ export default {
       issueTokenTotalPageNum: 0,
       editTokenTotalPageNum: 0,
       mintTokenTotalPageNum: 0,
+      burnTokenTotalPageNum:0,
       transferTokenTotalPageNum: 0,
       issueTokenCurrentPageNum: 1,
       editTokenCurrentPageNum: 1,

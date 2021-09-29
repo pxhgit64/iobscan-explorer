@@ -1,5 +1,16 @@
 export default [
-
+    {
+        label:'TxHash',
+        displayValue:'txHash',
+        nativeValue:'txHash',
+        isLink:true,
+        isNeedFormat:true,
+        isNeedFormatHash:true,
+        isNeedShowTxStatus:true,
+        linkRoute:'/tx?txHash=',
+        isShowMoniker:false,
+        isShowTxStatusIcon:true
+    },
     {
         label: 'Token',
         displayValue: 'token',
@@ -8,7 +19,7 @@ export default [
         linkRoute: '/assets'
     },
     {
-        label: 'Original Owner',
+        label: 'SrcOwner',
         displayValue: 'srcOwner',
         nativeValue: 'srcOwner',
         isLink: true,
@@ -18,7 +29,7 @@ export default [
     },
 
     {
-        label: 'New Owner',
+        label: 'DstOwner',
         displayValue: 'dstOwner',
         nativeValue: 'dstOwner',
         isLink: true,
@@ -34,18 +45,7 @@ export default [
         isLink:true,
         linkRoute:'/block'
     },
-    {
-        label:'TxHash',
-        displayValue:'txHash',
-        nativeValue:'txHash',
-        isLink:true,
-        isNeedFormat:true,
-        isNeedFormatHash:true,
-        isNeedShowTxStatus:true,
-        linkRoute:'/tx?txHash=',
-        isShowMoniker:false,
-        isShowTxStatusIcon:true
-    },
+
 
     {
         label: 'Fee',
