@@ -56,7 +56,7 @@
           :list-data="issueToken"
           :column-list="issueTokenColumn"
           :pagination="{pageSize:Number(pageSize),dataCount:issueTokenTotalPageNum,pageNum:Number(transferTokenCurrentPageNum)}"
-          @pageChange="transferTokenPageChange"
+          @pageChange="issueTokenPageChange"
         >
         </list-component>
       </div>
@@ -115,7 +115,7 @@
             :list-data="editToken"
             :column-list="editTokenColumn"
             :pagination="{pageSize:Number(pageSize),dataCount:editTokenCurrentPageNum,pageNum:Number(transferTokenCurrentPageNum)}"
-            @pageChange="transferTokenPageChange"
+            @pageChange="editTokenPageChange"
         >
         </list-component>
       </div>
@@ -186,7 +186,7 @@
             :list-data="mintToken"
             :column-list="mintTokenColumn"
             :pagination="{pageSize:Number(pageSize),dataCount:mintTokenCurrentPageNum,pageNum:Number(transferTokenCurrentPageNum)}"
-            @pageChange="transferTokenPageChange"
+            @pageChange="mintTokenPageChange"
         >
         </list-component>
 
@@ -246,7 +246,7 @@
             :list-data="burnToken"
             :column-list="burnTokenColumn"
             :pagination="{pageSize:Number(pageSize),dataCount:burnTokenCurrentPageNum,pageNum:Number(transferTokenCurrentPageNum)}"
-            @pageChange="transferTokenPageChange"
+            @pageChange="burnTokenPageChange"
         >
         </list-component>
 
