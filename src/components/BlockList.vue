@@ -5,61 +5,16 @@
 				<div class="block_list_header_content">
 					<div class="block_list_herder_top_content">
 						<div class="block_list_current_height_content">
-              <span class="block_list_current_height_title">{{
-					  $t("ExplorerLang.block.title")
-				  }}</span>
+              				<span class="block_list_current_height_title">{{$t("ExplorerLang.block.title") }}</span>
 						</div>
-						<!-- <div class="pagination_content">
-										<m-pagination :page-size="pageSize" :total="dataCount" :page="pageNumber" :page-change="pageChange"></m-pagination>
-									</div> -->
 					</div>
 					<div class="block_list_pagination_content">
-						<!--						<el-table class="table" :data="blockList"-->
-						<!--								  :empty-text="$t('ExplorerLang.table.emptyDescription')">-->
-						<!--							<el-table-column :min-width="ColumnMinWidth.blockListHeight"-->
-						<!--											 :label="$t('ExplorerLang.table.block')">-->
-						<!--								<template slot-scope="scope">-->
-						<!--									<router-link :to="`/block/${scope.row.height}`">{{-->
-						<!--											scope.row.height-->
-						<!--										}}-->
-						<!--									</router-link>-->
-						<!--								</template>-->
-						<!--							</el-table-column>-->
-						<!--							<el-table-column class-name="address" v-if="productionConfig.blockList.proposer"-->
-						<!--											 :min-width="ColumnMinWidth.proposer"-->
-						<!--											 :label="$t('ExplorerLang.table.proposer')">-->
-						<!--								<template slot-scope="scope">-->
-						<!--                  <span v-if="-->
-						<!--                      scope.row.proposerAddress !== '' &&-->
-						<!--                      scope.row.proposerAddress !== '&#45;&#45;'-->
-						<!--                    ">-->
-						<!--                    <router-link class="common_link_style" :to="`/staking/${scope.row.proposerAddress}`">{{-->
-						<!--							scope.row.proposerValue-->
-						<!--						}}</router-link>-->
-						<!--                  </span>-->
-						<!--									<span v-if="-->
-						<!--                      scope.row.proposerAddress === '' &&-->
-						<!--                      scope.row.proposerValue-->
-						<!--                    ">{{ scope.row.proposerValue }}</span>-->
-						<!--									<span v-if="scope.row.proposerAddress === '&#45;&#45;'">&#45;&#45;</span>-->
-						<!--								</template>-->
-						<!--							</el-table-column>-->
-						<!--							<el-table-column :min-width="ColumnMinWidth.txn" prop="numTxs"-->
-						<!--											 :label="$t('ExplorerLang.table.transactions')"></el-table-column>-->
-						<!--							&lt;!&ndash; <el-table-column v-if="productionConfig.blockList.validtors" :min-width="ColumnMinWidth.validatorValue" prop="validatorValue" :label="$t('ExplorerLang.table.validators')"></el-table-column> &ndash;&gt;-->
-						<!--							&lt;!&ndash; <el-table-column v-if="productionConfig.blockList.votingPower" :min-width="ColumnMinWidth.votingPowerValue" prop="votingPowerValue" :label="$t('ExplorerLang.table.votingPower')"></el-table-column> &ndash;&gt;-->
-						<!--							<el-table-column :min-width="ColumnMinWidth.time" prop="time"-->
-						<!--											 :label="$t('ExplorerLang.table.createTime')"></el-table-column>-->
-						<!--							<el-table-column :min-width="ColumnMinWidth.blockAge" prop="ageTime"-->
-						<!--											 :label="$t('ExplorerLang.table.age')"></el-table-column>-->
-						<!--						</el-table>-->
 						<list-component :is-loading="isLoading"
 										:list-data="blockList"
 										:column-list="blockChainColumnArr"
 										:pagination="{pageSize,dataCount,pageNumber}"
 										@pageChange="pageChange"
-										:empty-text="$t('ExplorerLang.table.emptyDescription')"
-						>
+										:empty-text="$t('ExplorerLang.table.emptyDescription')">
 							<template v-slot:txCount>
 								<tx-count-component :icon="'iconBlockchain'"
 													:title="$t('ExplorerLang.block.currentHeight')"
@@ -69,10 +24,6 @@
 							</template>
 						</list-component>
 					</div>
-<!--					<div class="pagination_content">
-						<m-pagination :page-size="pageSize" :total="dataCount" :page="pageNumber"
-									  :page-change="pageChange"></m-pagination>
-					</div>-->
 				</div>
 			</div>
 		</div>

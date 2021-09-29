@@ -142,7 +142,8 @@ export default {
 	components: {MPagination, Loading},
 	data() {
 		return {
-			isShowFee : prodConfig.fee.isShowFee,
+			isShowFee : prodConfig.fee.isShowFee || false,
+			isShowProposer: prodConfig.blockList.proposer || false,
 			tableList: [],
 			columns: [],
 			TX_STATUS,
@@ -217,6 +218,9 @@ export default {
 				this.columns = newValue
 				if(!this.isShowFee){
 					this.deleteColumnFee()
+				}
+				if(!this.isShowProposer){
+					this.deleteProposer()
 				}
 			},
 			deep: true
@@ -398,6 +402,11 @@ export default {
 				return item?.label !== this.$t('ExplorerLang.transactionInformation.fee')
 			})
 		},
+		deleteProposer() {
+			this.columns = this.columns.filter(item => {
+				return item?.label !== this.$t('ExplorerLang.table.proposer')
+			})
+		},
 		async getAllTokens(){
 			let allTokens = await fetchAllTokens()
 			if(allTokens?.supply?.length){
@@ -426,6 +435,9 @@ export default {
 		this.columns = this.columnList
 		if(!this.isShowFee){
 			this.deleteColumnFee()
+		}
+		if(!this.isShowProposer){
+			this.deleteProposer()
 		}
 		this.tableList = this.listData
 		this.getAllTokens()
