@@ -1,28 +1,5 @@
 export default [
     {
-        label: 'Owner',
-        displayValue: 'owner',
-        nativeValue: 'owner',
-        isLink: true,
-        isNeedFormat: true,
-        isFormatAddress: true,
-        linkRoute: '/address',
-    },
-    {
-        label: 'Token',
-        displayValue: 'token',
-        nativeValue: 'token',
-        isLink: true,
-        linkRoute: '/assets'
-    },
-    {
-        label: 'Block',
-        displayValue: 'block',
-        nativeValue: 'block',
-        isLink:true,
-        linkRoute:'/block'
-    },
-    {
         label:'TxHash',
         displayValue:'txHash',
         nativeValue:'txHash',
@@ -34,6 +11,31 @@ export default [
         isShowMoniker:false,
         isShowTxStatusIcon:true
     },
+    {
+        label: 'Token',
+        displayValue: 'token',
+        nativeValue: 'token',
+        isLink: true,
+        linkRoute: '/assets'
+    },
+    {
+        label: 'Owner',
+        displayValue: 'owner',
+        nativeValue: 'owner',
+        isLink: true,
+        isNeedFormat: true,
+        isFormatAddress: true,
+        linkRoute: '/address',
+    },
+
+    {
+        label: 'Block',
+        displayValue: 'block',
+        nativeValue: 'block',
+        isLink:true,
+        linkRoute:'/block'
+    },
+
     {
         label: 'Fee',
         displayValue: 'fee',

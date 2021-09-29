@@ -12,11 +12,6 @@ export default [
         isShowTxStatusIcon:true
     },
     {
-        label: 'Amount',
-        displayValue: 'amount',
-        nativeValue: 'amount'
-    },
-    {
         label: 'Token',
         displayValue: 'token',
         nativeValue: 'token',
@@ -24,13 +19,23 @@ export default [
         linkRoute: '/assets'
     },
     {
-        label: 'Sender',
-        displayValue: 'sender',
-        nativeValue: 'sender',
+        label: 'SrcOwner',
+        displayValue: 'srcOwner',
+        nativeValue: 'srcOwner',
+        isLink: true,
         isNeedFormat: true,
         isFormatAddress: true,
+        linkRoute: '/address',
+    },
+
+    {
+        label: 'DstOwner',
+        displayValue: 'dstOwner',
+        nativeValue: 'dstOwner',
         isLink: true,
-        linkRoute: '/address'
+        isNeedFormat: true,
+        isFormatAddress: true,
+        linkRoute: '/address',
     },
 
     {
@@ -40,6 +45,8 @@ export default [
         isLink:true,
         linkRoute:'/block'
     },
+
+
     {
         label: 'Fee',
         displayValue: 'fee',
@@ -55,8 +62,5 @@ export default [
         isShowMoniker:false,
         width: 150
     },
-
-
-
 
 ]
