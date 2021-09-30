@@ -70,6 +70,11 @@ export async function getAmountByTx (message, events, isShowDenom) {
 					const sendAmount = msg && msg.amount.length > 0 ? await converCoin(msg.amount[0]) : null
 					// formatPriceToFixed 四舍五入 toDecimal 截取
 					amount = sendAmount && sendAmount.amount && sendAmount.denom ?  isShowDenom ? `${Tools.toDecimal(sendAmount.amount,amountDecimals) } ${sendAmount.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(sendAmount.amount,amountDecimals) }` : '--';
+					if(sendAmount?.denom && sendAmount.denom.startsWith('SWAP') || sendAmount.denom.startsWith('LPT') || sendAmount.denom.startsWith('swap') || sendAmount.denom.startsWith('lpt')){
+						amount = ''
+					}
+				}else {
+					amount = ''
 				}
 				break;
 			case TX_TYPE.multisend:

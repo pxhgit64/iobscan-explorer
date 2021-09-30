@@ -6,6 +6,34 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "24661443",
+      "name": "第一页",
+      "font_class": "diyiye",
+      "unicode": "e664",
+      "unicode_decimal": 58980
+    },
+    {
+      "icon_id": "24661436",
+      "name": "向前一页",
+      "font_class": "xiangqianyiye",
+      "unicode": "e663",
+      "unicode_decimal": 58979
+    },
+    {
+      "icon_id": "24661426",
+      "name": "向后一页",
+      "font_class": "xianghouyiye",
+      "unicode": "e662",
+      "unicode_decimal": 58978
+    },
+    {
+      "icon_id": "24661412",
+      "name": "最后一页",
+      "font_class": "zuihouyiye",
+      "unicode": "e661",
+      "unicode_decimal": 58977
+    },
+    {
       "icon_id": "24363474",
       "name": "Blockchain",
       "font_class": "Blockchain",

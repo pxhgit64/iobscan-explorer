@@ -2,82 +2,18 @@
 	<div class="tx_content_container">
 		<div class="tx_content_wrap">
 			<div class="tx_content_header_title">
-				<p class="tc_content_header">Transactions</p>
+				<p class="tc_content_header">{{$t('ExplorerLang.transactions.txs')}}</p>
 			</div>
-<!--			<div class="tx_content_header_wrap">
-				<div class="total_tx_content">{{ txCount }} {{ $t('ExplorerLang.transactions.txs') }}</div>
-				<div class="tx_type_mobile_content">
-					&lt;!&ndash;<el-select popper-class="tooltip" v-model="value" filterable :change="filterTxByTxType(value)">
-						<el-option v-for="(item, index) in txTypeOption"
-								   :key="index"
-								   :label="item.label"
-								   :value="item.value"></el-option>
-					</el-select>&ndash;&gt;
-					
-					<el-cascader
-						class="tx_type_transactions"
-						popper-class="tooltip"
-						:placeholder="$t('ExplorerLang.common.allTxType')"
-						v-model="txTypeArray"
-						:options="txTypeOption"
-						:props="{ expandTrigger: 'hover' }"
-						:show-all-levels="false"
-						:filterable="true"
-						@change="handleChange"></el-cascader>
-					
-					&lt;!&ndash;<el-select  popper-class="tooltip" v-model="statusValue" :change="filterTxByStatus(statusValue)">
-						<el-option v-for="(item, index) in statusOpt"
-								   :key="index"
-								   :label="item.label"
-								   :value="item.value"></el-option>
-					</el-select>&ndash;&gt;
-					<el-select popper-class="tooltip" v-model="statusValue">
-						<el-option v-for="(item) in statusOpt"
-								   :key="item.value"
-								   :label="item.label"
-								   :value="item.value"></el-option>
-					</el-select>
-				
-				</div>
-				<div class="tx_type_mobile_content">
-					<el-date-picker type="date"
-									popper-class="tooltip"
-									v-model="beginTime"
-									@change="getStartTime(beginTime)"
-									:picker-options="PickerOptions"
-									:editable="false"
-									value-format="yyyy-MM-dd"
-									:placeholder="$t('ExplorerLang.common.selectDate')">
-					</el-date-picker>
-					<span class="joint_mark">~</span>
-					<el-date-picker type="date"
-									popper-class="tooltip"
-									v-model="endTime"
-									value-format="yyyy-MM-dd"
-									@change="getEndTime(endTime)"
-									:picker-options="PickerOptions"
-									:editable="false"
-									:placeholder="$t('ExplorerLang.common.selectDate')">
-					</el-date-picker>
-					<div class="tooltip_content">
-						<el-tooltip popper-class="tooltip" :content="$t('ExplorerLang.transactions.tooltip')">
-							<i class="iconfont iconyiwen"></i>
-						</el-tooltip>
-					</div>
-				</div>
-				<div class="tx_type_mobile_content">
-					<div class="search_btn" @click="getFilterTxs">{{ $t('ExplorerLang.transactions.search') }}</div>
-					<div class="reset_btn" @click="resetFilterCondition"><i class="iconfont iconzhongzhi"></i></div>
-				</div>
-			</div>-->
-			<!--            <TxListComponent :txData="transactionArray"></TxListComponent>-->
 			<list-component
+				:tableWidth="'11.5rem'"
+				:is-show-token-type="true"
 				:is-loading="isLoading"
 				:token-symbol="mainTokenSymbol"
 				:list-data="transactionArray"
 				:column-list="txColumnList"
 				:pagination="{pageSize:Number(pageSize),dataCount:txCount,pageNum:Number(pageNum)}"
-				@pageChange="pageChange">
+				@pageChange="pageChange"
+				:empty-text="$t('ExplorerLang.table.emptyDescription')">
 				<template v-slot:msgType>
 					<tabs-component :tab-list="txTypeOption"
 									@onSelectMagType="getFilterTxs"></tabs-component>
@@ -90,25 +26,9 @@
 						@resetParams="resetFilterCondition"></tx-status-tabs-components>
 				</template>
 				<template v-slot:txCount>
-					<tx-count-component :icon="'iconTrainsaction'" :tx-count="txCount"></tx-count-component>
+					<tx-count-component :title="$t('ExplorerLang.transactions.txs')" :icon="'iconTrainsaction'" :tx-count="txCount"></tx-count-component>
 				</template>
 			</list-component>
-			<div class="pagination_content">
-				<div class="tooltip_box">
-					<span class="tooltip_title">Cross-chain TokenType:</span>
-					<span class="tooltip_title_box">
-                    <span class="tooltip_title_IBC" v-show="isShowIbc">{{ IBC }}</span>
-                    <span class="tooltip_title_HTLT" v-show="isShowHashLock">{{ HashLock }}</span>
-                  </span>
-				</div>
-				<keep-alive>
-					<m-pagination :page-size="Number(pageSize)"
-								  :total="txCount"
-								  :page="Number(pageNum)"
-								  :page-change="pageChange">
-					</m-pagination>
-				</keep-alive>
-			</div>
 		</div>
 	</div>
 </template>
@@ -217,7 +137,7 @@ export default {
 		this.formatTxData(txType)
 	},
 	mounted() {
-		const {txType, status, beginTime, endTime} = Tools.urlParser();
+		const {txType} = Tools.urlParser();
 		this.txColumnList = txCommonTable.concat(txCommonLatestTable)
 		if(txType && needAddColumn[txType]){
 			this.txColumnList = txCommonTable.concat(needAddColumn[txType],txCommonLatestTable)
@@ -291,7 +211,7 @@ export default {
 		getFilterTxs(param) {
 			if (param?.value) {
 				this.txType = param.value
-			}else {
+			}else if(param?.value === '') {
 				//处理点击all的情况
 				this.txType = ''
 			}
@@ -423,6 +343,8 @@ export default {
 			sessionStorage.setItem('lastChoiceMsgModelIndex',0)
 			sessionStorage.setItem('txTimeRange',[])
 			this.txTypeArray = ['']
+			this.txColumnList = txCommonTable.concat(txCommonLatestTable)
+			
 		},
 		async getTxTypeData() {
 			try {
@@ -558,8 +480,9 @@ export default {
 						option='--',
 						voter='--',
 						depositor='--',
-						title='--'
-					;
+						title='--',
+						author = '--',
+						provider = '--';
 					for (const tx of this.txData) {
 						let msg;
 						if (tx.msgs.length > 0) {
@@ -635,6 +558,27 @@ export default {
 						if(msg?.type === TX_TYPE.submit_proposal && msg?.msg?.content?.title ){
 							title = msg.msg.content.title
 						}
+						if(msg?.type === TX_TYPE.pause_request_context
+							|| msg?.type === TX_TYPE.start_request_context
+							|| msg?.type === TX_TYPE.update_request_context
+							|| msg?.type === TX_TYPE.kill_request_context
+							&& msg?.msg?.consumer){
+							consumer = msg.msg.consumer
+						}
+						if(msg?.type === TX_TYPE.define_service && msg?.msg?.author){
+							author = msg.msg.author
+						}
+						if(msg?.type === TX_TYPE.bind_service
+							|| msg?.type === TX_TYPE.refund_service_deposit
+							|| msg?.type === TX_TYPE.disable_service_binding
+							|| msg?.type === TX_TYPE.enable_service_binding
+							|| msg?.type === TX_TYPE.update_service_binding
+							
+							&& msg?.msg?.owner && msg?.msg?.provider){
+							owner = msg.msg.owner
+							provider = msg.msg.provider
+						}
+						
 						let addrObj = TxHelper.getFromAndToAddressFromMsg(msg);
 						amounts.push(msg ? getAmountByTx(msg, tx.events, true) : '--');
 						let from = addrObj.from || '--',
@@ -669,6 +613,9 @@ export default {
 							blockHeight: tx.height,
 							txType: (tx.msgs || []).map(item => this.TX_TYPE_DISPLAY[item.type] || item.type),
 							from,
+							author,
+							provider,
+							consumer,
 							fromMonikers,
 							toMonikers,
 							to,

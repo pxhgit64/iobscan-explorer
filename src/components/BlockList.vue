@@ -5,69 +5,25 @@
 				<div class="block_list_header_content">
 					<div class="block_list_herder_top_content">
 						<div class="block_list_current_height_content">
-              <span class="block_list_current_height_title">{{
-					  $t("ExplorerLang.block.currentHeight")
-				  }}</span>
-							<span class="block_list_current_height_number">
-                <router-link :to="`/block/${latestBlockHeight}`">{{
-						latestBlockHeight
-					}}</router-link>
-              </span>
+              				<span class="block_list_current_height_title">{{$t("ExplorerLang.block.title") }}</span>
 						</div>
-						<!-- <div class="pagination_content">
-										<m-pagination :page-size="pageSize" :total="dataCount" :page="pageNumber" :page-change="pageChange"></m-pagination>
-									</div> -->
 					</div>
 					<div class="block_list_pagination_content">
-						<!--						<el-table class="table" :data="blockList"-->
-						<!--								  :empty-text="$t('ExplorerLang.table.emptyDescription')">-->
-						<!--							<el-table-column :min-width="ColumnMinWidth.blockListHeight"-->
-						<!--											 :label="$t('ExplorerLang.table.block')">-->
-						<!--								<template slot-scope="scope">-->
-						<!--									<router-link :to="`/block/${scope.row.height}`">{{-->
-						<!--											scope.row.height-->
-						<!--										}}-->
-						<!--									</router-link>-->
-						<!--								</template>-->
-						<!--							</el-table-column>-->
-						<!--							<el-table-column class-name="address" v-if="productionConfig.blockList.proposer"-->
-						<!--											 :min-width="ColumnMinWidth.proposer"-->
-						<!--											 :label="$t('ExplorerLang.table.proposer')">-->
-						<!--								<template slot-scope="scope">-->
-						<!--                  <span v-if="-->
-						<!--                      scope.row.proposerAddress !== '' &&-->
-						<!--                      scope.row.proposerAddress !== '&#45;&#45;'-->
-						<!--                    ">-->
-						<!--                    <router-link class="common_link_style" :to="`/staking/${scope.row.proposerAddress}`">{{-->
-						<!--							scope.row.proposerValue-->
-						<!--						}}</router-link>-->
-						<!--                  </span>-->
-						<!--									<span v-if="-->
-						<!--                      scope.row.proposerAddress === '' &&-->
-						<!--                      scope.row.proposerValue-->
-						<!--                    ">{{ scope.row.proposerValue }}</span>-->
-						<!--									<span v-if="scope.row.proposerAddress === '&#45;&#45;'">&#45;&#45;</span>-->
-						<!--								</template>-->
-						<!--							</el-table-column>-->
-						<!--							<el-table-column :min-width="ColumnMinWidth.txn" prop="numTxs"-->
-						<!--											 :label="$t('ExplorerLang.table.transactions')"></el-table-column>-->
-						<!--							&lt;!&ndash; <el-table-column v-if="productionConfig.blockList.validtors" :min-width="ColumnMinWidth.validatorValue" prop="validatorValue" :label="$t('ExplorerLang.table.validators')"></el-table-column> &ndash;&gt;-->
-						<!--							&lt;!&ndash; <el-table-column v-if="productionConfig.blockList.votingPower" :min-width="ColumnMinWidth.votingPowerValue" prop="votingPowerValue" :label="$t('ExplorerLang.table.votingPower')"></el-table-column> &ndash;&gt;-->
-						<!--							<el-table-column :min-width="ColumnMinWidth.time" prop="time"-->
-						<!--											 :label="$t('ExplorerLang.table.createTime')"></el-table-column>-->
-						<!--							<el-table-column :min-width="ColumnMinWidth.blockAge" prop="ageTime"-->
-						<!--											 :label="$t('ExplorerLang.table.age')"></el-table-column>-->
-						<!--						</el-table>-->
 						<list-component :is-loading="isLoading"
 										:list-data="blockList"
 										:column-list="blockChainColumnArr"
 										:pagination="{pageSize,dataCount,pageNumber}"
-										@pageChange="pageChange"></list-component>
+										@pageChange="pageChange"
+										:empty-text="$t('ExplorerLang.table.emptyDescription')">
+							<template v-slot:txCount>
+								<tx-count-component :icon="'iconBlockchain'"
+													:title="$t('ExplorerLang.block.currentHeight')"
+													:isLink="true"
+													:linkRoute="'/block'"
+													:tx-count="latestBlockHeight"></tx-count-component>
+							</template>
+						</list-component>
 					</div>
-<!--					<div class="pagination_content">
-						<m-pagination :page-size="pageSize" :total="dataCount" :page="pageNumber"
-									  :page-change="pageChange"></m-pagination>
-					</div>-->
 				</div>
 			</div>
 		</div>
@@ -83,10 +39,11 @@ import productionConfig from '@/productionConfig.js'
 import {validatePositiveInteger} from '../helper/IritaHelper'
 import ListComponent from "./common/ListComponent";
 import blockChainColumnList from "./tableListColumnConfig/blockChainTableList"
+import TxCountComponent from "./TxCountComponent";
 
 export default {
 	name: 'BlockList',
-	components: {ListComponent, MPagination},
+	components: {TxCountComponent, ListComponent, MPagination},
 	data() {
 		return {
 			ColumnMinWidth,
@@ -108,12 +65,12 @@ export default {
 	},
 	methods: {
 		async queryBlockList() {
+			this.isLoading = true
 			this.getBlocksCount()
 			await this.latestBlock()
 			this.getBlocks()
 		},
 		async getBlocks() {
-			this.isLoading = true
 			let start = this.dbHeight - (this.pageNumber - 1) * this.pageSize
 			let end = start - this.pageSize
 			try {
@@ -122,7 +79,6 @@ export default {
 					validatePositiveInteger(end)
 				)
 				if (blockList?.data && blockList?.data.length > 0) {
-					this.isLoading = false
 					if (blockList.data.length > this.pageSize) {
 						blockList.data = blockList.data.slice(0, this.pageSize)
 					}
@@ -147,6 +103,7 @@ export default {
 					})
 				}
 				clearInterval(this.blockListTimer)
+				this.isLoading = false
 				this.blockListTimer = setInterval(() => {
 					this.blockList.map((item) => {
 						item.ageTime = Tools.formatAge(
@@ -285,15 +242,15 @@ a {
 				}
 				
 				.block_list_current_height_content {
-					padding: 0.3rem 0 0.16rem 0;
+					padding: 0.4rem 0 0 0;
 					text-align: left;
 					display: flex;
 					align-items: center;
-					
+					margin-bottom: 0.1rem;
 					.block_list_current_height_title {
 						color: $t_first_c;
-						font-size: $s18;
-						line-height: 0.21rem;
+						font-size: $s22;
+						line-height: 0.26rem;
 						font-weight: bold;
 						margin-right: 0.1rem;
 					}

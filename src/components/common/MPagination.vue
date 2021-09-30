@@ -5,16 +5,17 @@
             v-if="showToFristEnd"
             @click="toFrist"
             :class="[currentPage === 1 || total === 0 ? 'no_disable' : '']"
-        >«</button>
-        <button class="prev_button" v-debounce="[prev,`click`,300]" :class="[currentPage === 1 || total === 0 ? 'no_disable' : '']">‹</button>
+        ><span class="iconfont icondiyiye"></span></button>
+        <button class="prev_button" v-debounce="[prev,`click`,300]" :class="[currentPage === 1 || total === 0 ? 'no_disable' : '']"><span class="iconfont iconxiangqianyiye
+"></span></button>
         <span class="page_number_content">{{currentPage}}/{{Math.ceil(total/pageSize) === 0 ? 1 : Math.ceil(total/pageSize)}}</span>
-        <button class="next_button" v-debounce="[after,`click`,300]" :class="[forMaxRange() || total === 0 ? 'no_disable' : '']">›</button>
+        <button class="next_button" v-debounce="[after,`click`,300]" :class="[forMaxRange() || total === 0 ? 'no_disable' : '']"><span class="iconfont iconxianghouyiye"></span></button>
         <button
 			class="latest_button"
             v-if="showToFristEnd"
             @click="toEnd"
             :class="[currentPage === totalPages || total === 0 ? 'no_disable' : '']"
-        >»</button>
+        ><span class="iconfont iconzuihouyiye"></span></button>
     </div>
 </template>
 
@@ -154,7 +155,6 @@ export default {
     margin-right: 0.1rem;
 }
 .common_pagination_content{
-	margin: 0.2rem 0;
 	display: flex;
 	justify-content: flex-end;
     //border: 0.01rem solid $bd_second_c;
@@ -162,19 +162,31 @@ export default {
 		border: 0.01rem solid $bd_second_c;
 		border-radius: 0.08rem;
 		margin-right: 0.06rem;
+		.iconfont{
+			font-size: 0.12rem;
+		}
 	}
 	.latest_button{
 		border: 0.01rem solid $bd_second_c;
 		border-radius: 0.08rem;
 		margin-left: 0.06rem;
+		.iconfont{
+			font-size: 0.12rem;
+		}
 	}
 	.prev_button{
 		border: 0.01rem solid $bd_second_c;
 		border-radius: 0.08rem 0 0 0.08rem;
+		.iconfont{
+			font-size: 0.12rem;
+		}
 	}
 	.next_button{
 		border: 0.01rem solid $bd_second_c;
 		border-radius: 0 0.08rem 0.08rem 0;
+		.iconfont{
+			font-size: 0.12rem;
+		}
 	}
 }
 .page_number_content{

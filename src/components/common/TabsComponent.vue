@@ -94,7 +94,10 @@ export default {
 			}
 			if (!value.value) {
 				sessionStorage.setItem('currentChoiceMsgType', '')
-				this.$emit('onSelectMagType', '')
+				this.$emit('onSelectMagType', {
+					label:'all',
+					value:''
+				})
 			}
 			value.index = index
 			this.$emit('onSelectMagModel', value)
@@ -171,11 +174,9 @@ export default {
 			animation: fadeInDown 0.2s linear;
 			
 			::v-deep .el-card {
-				
 				padding: 0.18rem 0.18rem 0 0.18rem;
-				
 				.el-card__body {
-					padding-bottom: 0;
+					padding: 0;
 					display: flex;
 					justify-content: flex-start;
 					flex-wrap: wrap;
