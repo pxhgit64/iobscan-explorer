@@ -2,7 +2,7 @@
 	<div class="tx_content_container">
 		<div class="tx_content_wrap">
 			<div class="tx_content_header_title">
-				<p class="tc_content_header">Transactions</p>
+				<p class="tc_content_header">{{$t('ExplorerLang.transactions.txs')}}</p>
 			</div>
 			<list-component
 				:tableWidth="'11.5rem'"
@@ -12,7 +12,8 @@
 				:list-data="transactionArray"
 				:column-list="txColumnList"
 				:pagination="{pageSize:Number(pageSize),dataCount:txCount,pageNum:Number(pageNum)}"
-				@pageChange="pageChange">
+				@pageChange="pageChange"
+				:empty-text="$t('ExplorerLang.table.emptyDescription')">
 				<template v-slot:msgType>
 					<tabs-component :tab-list="txTypeOption"
 									@onSelectMagType="getFilterTxs"></tabs-component>
@@ -479,8 +480,9 @@ export default {
 						option='--',
 						voter='--',
 						depositor='--',
-						title='--'
-					;
+						title='--',
+						author = '--',
+						provider = '--';
 					for (const tx of this.txData) {
 						let msg;
 						if (tx.msgs.length > 0) {
@@ -556,6 +558,27 @@ export default {
 						if(msg?.type === TX_TYPE.submit_proposal && msg?.msg?.content?.title ){
 							title = msg.msg.content.title
 						}
+						if(msg?.type === TX_TYPE.pause_request_context
+							|| msg?.type === TX_TYPE.start_request_context
+							|| msg?.type === TX_TYPE.update_request_context
+							|| msg?.type === TX_TYPE.kill_request_context
+							&& msg?.msg?.consumer){
+							consumer = msg.msg.consumer
+						}
+						if(msg?.type === TX_TYPE.define_service && msg?.msg?.author){
+							author = msg.msg.author
+						}
+						if(msg?.type === TX_TYPE.bind_service
+							|| msg?.type === TX_TYPE.refund_service_deposit
+							|| msg?.type === TX_TYPE.disable_service_binding
+							|| msg?.type === TX_TYPE.enable_service_binding
+							|| msg?.type === TX_TYPE.update_service_binding
+							
+							&& msg?.msg?.owner && msg?.msg?.provider){
+							owner = msg.msg.owner
+							provider = msg.msg.provider
+						}
+						
 						let addrObj = TxHelper.getFromAndToAddressFromMsg(msg);
 						amounts.push(msg ? getAmountByTx(msg, tx.events, true) : '--');
 						let from = addrObj.from || '--',
@@ -590,6 +613,9 @@ export default {
 							blockHeight: tx.height,
 							txType: (tx.msgs || []).map(item => this.TX_TYPE_DISPLAY[item.type] || item.type),
 							from,
+							author,
+							provider,
+							consumer,
 							fromMonikers,
 							toMonikers,
 							to,

@@ -1,8 +1,16 @@
 //通用信息的后半部分
-
+import VueI18n from 'vue-i18n';
+import prodConfig from "../../productionConfig";
+const i18n = new VueI18n({
+    locale:prodConfig.lang == 'EN' ? 'EN' : 'CN',
+    messages: {
+        "CN" : require('../../../lang/CN-Cindy'),
+        "EN" : require('../../../lang/EN-Cindy')
+    }
+})
 export default [
     {
-        label:'Block',
+        label:i18n.t('ExplorerLang.table.block'),
         displayValue:'blockHeight',
         nativeValue:'blockHeight',
         isLink:true,
@@ -11,7 +19,7 @@ export default [
         isShowMoniker:false
     },
     {
-        label:'Fee',
+        label:i18n.t('ExplorerLang.table.fee'),
         displayValue:'Tx_Fee',
         nativeValue:'Tx_Fee',
         isLink:false,
@@ -20,7 +28,7 @@ export default [
         isShowTokenSymbol:true
     },
     {
-        label:'Time',
+        label:i18n.t('ExplorerLang.table.time'),
         displayValue:'Time',
         nativeValue:'Time',
         isLink:false,
