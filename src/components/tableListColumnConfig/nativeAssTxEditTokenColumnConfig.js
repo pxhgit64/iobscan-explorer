@@ -1,6 +1,40 @@
+import VueI18n from 'vue-i18n';
+import prodConfig from "../../productionConfig";
+const i18n = new VueI18n({
+    locale:prodConfig.lang == 'EN' ? 'EN' : 'CN',
+    messages: {
+        "CN" : require('../../../lang/CN-Cindy'),
+        "EN" : require('../../../lang/EN-Cindy')
+    }
+})
+
+
 export default [
     {
-        label:'TxHash',
+        label: i18n.t('ExplorerLang.table.owner'),
+        displayValue: 'owner',
+        nativeValue: 'owner',
+        isLink: true,
+        isNeedFormat: true,
+        isFormatAddress: true,
+        linkRoute: '/address',
+    },
+    {
+        label: i18n.t('ExplorerLang.table.token'),
+        displayValue: 'token',
+        nativeValue: 'token',
+        isLink: true,
+        linkRoute: '/assets'
+    },
+    {
+        label: i18n.t('ExplorerLang.table.block'),
+        displayValue: 'block',
+        nativeValue: 'block',
+        isLink:true,
+        linkRoute:'/block'
+    },
+    {
+        label:i18n.t('ExplorerLang.table.txHash'),
         displayValue:'txHash',
         nativeValue:'txHash',
         isLink:true,
@@ -12,38 +46,13 @@ export default [
         isShowTxStatusIcon:true
     },
     {
-        label: 'Token',
-        displayValue: 'token',
-        nativeValue: 'token',
-        isLink: true,
-        linkRoute: '/assets'
-    },
-    {
-        label: 'Owner',
-        displayValue: 'owner',
-        nativeValue: 'owner',
-        isLink: true,
-        isNeedFormat: true,
-        isFormatAddress: true,
-        linkRoute: '/address',
-    },
-
-    {
-        label: 'Block',
-        displayValue: 'block',
-        nativeValue: 'block',
-        isLink:true,
-        linkRoute:'/block'
-    },
-
-    {
-        label: 'Fee',
+        label: i18n.t('ExplorerLang.table.fee'),
         displayValue: 'fee',
         nativeValue: 'fee',
         isShowTokenSymbol:true,
     },
     {
-        label:'Time',
+        label: i18n.t('ExplorerLang.table.time'),
         displayValue:'Time',
         nativeValue:'Time',
         isLink:false,

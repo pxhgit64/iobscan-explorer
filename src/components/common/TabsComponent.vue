@@ -50,7 +50,6 @@ export default {
 	watch: {
 		tabList: {
 			handler(newValue, oldValue) {
-				console.log(newValue,"交易类型")
 			},
 			deep: true
 		},

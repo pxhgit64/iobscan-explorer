@@ -155,6 +155,7 @@ export default {
 			sessionStorage: sessionStorage.getItem('config') || null,
 			isShowIbc: false,
 			isShowHashLock: false,
+			tableListWidth: [],
 			opsConfig:{
 				rail: {
 					opacity:1,
@@ -222,6 +223,7 @@ export default {
 				if(!this.isShowProposer){
 					this.deleteProposer()
 				}
+				this.getTableWidth()
 			},
 			deep: true
 		},
@@ -357,7 +359,7 @@ export default {
 				}, {});
 				let formatStr = ''
 				for (let dataKey in data) {
-					formatStr += `${TX_TYPE_DISPLAY[dataKey]} *${data[dataKey]},`
+					formatStr += `${TX_TYPE_DISPLAY[dataKey] || dataKey} *${data[dataKey] || dataKey},`
 				}
 				return formatStr.substring(0, formatStr.length - 1)
 			} else {
@@ -428,6 +430,24 @@ export default {
 					this.isShowHashLock = true
 				}
 			}
+		},
+		getTableWidth () {
+			this.tableListWidth = []
+			this.$nextTick(() => {
+				setTimeout(() => {
+					if(this.$refs['listTable'].$el){
+						this.tableListWidth = this.$adjustColumnWidth(this.$refs['listTable'].$el);
+					}
+				},200);
+			});
+			if(this.columns?.length){
+				// this.columns[1].width =  this.tableListWidth[1]
+				// this.columns[this.columns.length].width =  this.tableListWidth[this.tableListWidth.length]
+				// this.columns[this.columns.length-1].width =  this.tableListWidth[this.tableListWidth.length-1]
+				/*this.columns.forEach( (item,index) => {
+					item.width = this.tableListWidth[index] || 'auto'
+				})*/
+			}
 		}
 	},
 	mounted() {
@@ -441,6 +461,7 @@ export default {
 		}
 		this.tableList = this.listData
 		this.getAllTokens()
+		this.getTableWidth()
 	}
 }
 </script>

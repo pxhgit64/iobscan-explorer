@@ -16,7 +16,7 @@ export default [
         isLink:true,
         isNeedFormatHash:false,
         linkRoute:'/block',
-        isShowMoniker:false
+        isShowMoniker:false,
     },
     {
         label:i18n.t('ExplorerLang.table.fee'),
@@ -25,7 +25,7 @@ export default [
         isLink:false,
         linkRoute:'',
         isShowMoniker:false,
-        isShowTokenSymbol:true
+        isShowTokenSymbol:true,
     },
     {
         label:i18n.t('ExplorerLang.table.time'),

@@ -208,7 +208,6 @@
 					this.txColumnList = txCommonTable.concat(needAddColumn[param.value],txCommonLatestTable)
 				}
 				this.TxType = param?.value === 'allTxType' ?  '' : param.value
-				console.log(param,'参数')
 				if(param?.index){
 					sessionStorage.setItem('lastChoiceMsgModelIndex',param.index)
 				}
@@ -635,7 +634,6 @@
                                         proposalLink: item.ex && item.ex.proposal_link,
 										Time: Tools.formatLocalTime(item.time)
                                     })
-									console.log(this.txList,'结果')
                                 }
                             }
 							this.isLoading = false;

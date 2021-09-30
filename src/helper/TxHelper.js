@@ -9,8 +9,9 @@ export class TxHelper {
             let { source_port, source_channel, destination_port, destination_channel, data } = ibc_package;
             let prefix_sc = `${source_port}/${source_channel}/`;
             let prefix_dc = `${destination_port}/${destination_channel}/`;
+
             let denom = data.denom;
-            if (type && type == TX_TYPE.timeout_packet) {
+            if (type && type == TX_TYPE.timeout_packet || type && type == TX_TYPE.acknowledge_packet ) {
                 if (denom.startsWith(prefix_sc)) {
                     denom_result = `ibc/${Tools.sha256(denom).toUpperCase()}`;
                 }else{
