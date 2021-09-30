@@ -58,8 +58,8 @@ export const ExplorerLang = {
         govOption: 'Option',
         clientID:'Client ID',
         portId: 'PortId',
-        channelId: 'ChannelId',
-        connectionId: 'ConnectionId',
+        channelId: 'Channel ID',
+        connectionId: 'Connection ID',
 
 
         emptyDescription:'- 暂时没有内容 -',

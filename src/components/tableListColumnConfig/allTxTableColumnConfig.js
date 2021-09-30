@@ -258,16 +258,20 @@ export const needAddColumn = {
     respond_service: [
         {
             label: i18n.t('ExplorerLang.table.serviceName'),
-            value: '',
+            displayValue: 'serviceName',
+            nativeValue: 'serviceName',
+            isLink: true,
+            linkRoute: '/service?serviceName='
         },
         {
-            label: i18n.t('ExplorerLang.table.serviceName'),
+            label: i18n.t('ExplorerLang.table.requestContentId'),
             displayValue: 'requestId',
             nativeValue: 'requestId',
             isHref: true,
             href: '',
             isNeedFormat: true,
             isFormatAddress: true,
+            width: 150
         },
         {
             label: i18n.t('ExplorerLang.table.provider'),
@@ -317,7 +321,10 @@ export const needAddColumn = {
     define_service: [
         {
             label: i18n.t('ExplorerLang.table.serviceName'),
-            value: '',
+            displayValue: 'serviceName',
+            nativeValue: 'serviceName',
+            isLink: true,
+            linkRoute: '/service?serviceName='
         },
         {
             label: i18n.t('ExplorerLang.table.author'),
@@ -332,7 +339,10 @@ export const needAddColumn = {
     disable_service_binding: [
         {
             label: i18n.t('ExplorerLang.table.serviceName'),
-            value: '',
+            displayValue: 'serviceName',
+            nativeValue: 'serviceName',
+            isLink: true,
+            linkRoute: '/service?serviceName='
         },
         {
             label: i18n.t('ExplorerLang.table.owner'),
@@ -356,7 +366,10 @@ export const needAddColumn = {
     refund_service_deposit: [
         {
             label: i18n.t('ExplorerLang.table.serviceName'),
-            value: '',
+            displayValue: 'serviceName',
+            nativeValue: 'serviceName',
+            isLink: true,
+            linkRoute: '/service?serviceName='
         },
         {
             label: i18n.t('ExplorerLang.table.owner'),
@@ -380,7 +393,10 @@ export const needAddColumn = {
     bind_service: [
         {
             label: i18n.t('ExplorerLang.table.serviceName'),
-            value: '',
+            displayValue: 'serviceName',
+            nativeValue: 'serviceName',
+            isLink: true,
+            linkRoute: '/service?serviceName='
         },
         {
             label: i18n.t('ExplorerLang.table.owner'),
@@ -404,7 +420,10 @@ export const needAddColumn = {
     enable_service_binding: [
         {
             label: i18n.t('ExplorerLang.table.serviceName'),
-            value: '',
+            displayValue: 'serviceName',
+            nativeValue: 'serviceName',
+            isLink: true,
+            linkRoute: '/service?serviceName='
         },
         {
             label: i18n.t('ExplorerLang.table.owner'),
@@ -428,7 +447,10 @@ export const needAddColumn = {
     update_service_binding: [
         {
             label: i18n.t('ExplorerLang.table.serviceName'),
-            value: '',
+            displayValue: 'serviceName',
+            nativeValue: 'serviceName',
+            isLink: true,
+            linkRoute: '/service?serviceName='
         },
         {
             label: i18n.t('ExplorerLang.table.owner'),
@@ -452,11 +474,18 @@ export const needAddColumn = {
     call_service: [
         {
             label: i18n.t('ExplorerLang.table.serviceName'),
-            value: '',
+            displayValue: 'serviceName',
+            nativeValue: 'serviceName',
+            isLink: true,
+            linkRoute: '/service?serviceName='
         },
         {
             label: i18n.t('ExplorerLang.table.requestContentId'),
-            value: '',
+            displayValue: 'requestContextId',
+            nativeValue: 'requestContextId',
+            isNeedFormat: true,
+            isFormatAddress: true,
+            width: 150
         },
         {
             label: i18n.t('ExplorerLang.table.consumer'),
@@ -471,11 +500,18 @@ export const needAddColumn = {
     start_request_context: [
         {
             label: i18n.t('ExplorerLang.table.serviceName'),
-            value: '',
+            displayValue: 'serviceName',
+            nativeValue: 'serviceName',
+            isLink: true,
+            linkRoute: '/service?serviceName='
         },
         {
             label: i18n.t('ExplorerLang.table.requestContentId'),
-            value: '',
+            displayValue: 'requestContextId',
+            nativeValue: 'requestContextId',
+            isNeedFormat: true,
+            isFormatAddress: true,
+            width: 150
         },
         {
             label: i18n.t('ExplorerLang.table.consumer'),
@@ -490,11 +526,18 @@ export const needAddColumn = {
     pause_request_context: [
         {
             label: i18n.t('ExplorerLang.table.serviceName'),
-            value: '',
+            displayValue: 'serviceName',
+            nativeValue: 'serviceName',
+            isLink: true,
+            linkRoute: '/service?serviceName='
         },
         {
             label: i18n.t('ExplorerLang.table.requestContentId'),
-            value: '',
+            displayValue: 'requestContextId',
+            nativeValue: 'requestContextId',
+            isNeedFormat: true,
+            isFormatAddress: true,
+            width: 150
         },
         {
             label: i18n.t('ExplorerLang.table.consumer'),
@@ -509,11 +552,18 @@ export const needAddColumn = {
     update_request_context: [
         {
             label: i18n.t('ExplorerLang.table.serviceName'),
-            value: '',
+            displayValue: 'serviceName',
+            nativeValue: 'serviceName',
+            isLink: true,
+            linkRoute: '/service?serviceName='
         },
         {
             label: i18n.t('ExplorerLang.table.requestContentId'),
-            value: '',
+            displayValue: 'requestContextId',
+            nativeValue: 'requestContextId',
+            isNeedFormat: true,
+            isFormatAddress: true,
+            width: 150
         },
         {
             label: i18n.t('ExplorerLang.table.consumer'),
@@ -528,11 +578,18 @@ export const needAddColumn = {
     kill_request_context: [
         {
             label: i18n.t('ExplorerLang.table.serviceName'),
-            value: '',
+            displayValue: 'serviceName',
+            nativeValue: 'serviceName',
+            isLink: true,
+            linkRoute: '/service?serviceName='
         },
         {
             label: i18n.t('ExplorerLang.table.requestContentId'),
-            value: '',
+            displayValue: 'requestContextId',
+            nativeValue: 'requestContextId',
+            isNeedFormat: true,
+            isFormatAddress: true,
+            width: 150
         },
         {
             label: i18n.t('ExplorerLang.table.consumer'),
@@ -669,11 +726,17 @@ export const needAddColumn = {
         },
         {
             label: i18n.t('ExplorerLang.table.denomName'),
-            value: '',
+            displayValue: 'denomName',
+            nativeValue: 'denomName',
         },
         {
             label: i18n.t('ExplorerLang.table.sender'),
-            value: '',
+            displayValue: 'sender',
+            nativeValue: 'sender',
+            isLink: true,
+            isNeedFormat: true,
+            isFormatAddress: true,
+            linkRoute: '/address',
         },
     ],
     transfer_denom: [
@@ -1140,7 +1203,7 @@ export const needAddColumn = {
     create_client: [
         {
             label: i18n.t('ExplorerLang.table.clientID'),
-            value: '',
+            displayValue: 'clientId',
         },
         {
             label: i18n.t('ExplorerLang.table.signer'),
@@ -1155,7 +1218,7 @@ export const needAddColumn = {
     update_client: [
         {
             label: i18n.t('ExplorerLang.table.clientID'),
-            value: '',
+            displayValue: 'clientId',
         },
         {
             label: i18n.t('ExplorerLang.table.signer'),
@@ -1170,11 +1233,11 @@ export const needAddColumn = {
     channel_open_confirm: [
         {
             label: i18n.t('ExplorerLang.table.portId'),
-            value: '',
+            displayValue: 'portId',
         },
         {
             label: i18n.t('ExplorerLang.table.channelId'),
-            value: '',
+            displayValue: 'channelId',
         },
         {
             label: i18n.t('ExplorerLang.table.signer'),
@@ -1189,11 +1252,11 @@ export const needAddColumn = {
     channel_open_try: [
         {
             label: i18n.t('ExplorerLang.table.portId'),
-            value: '',
+            displayValue: 'portId',
         },
         {
             label: i18n.t('ExplorerLang.table.channelId'),
-            value: '',
+            displayValue: 'channelId',
         },
         {
             label: i18n.t('ExplorerLang.table.signer'),
@@ -1208,11 +1271,11 @@ export const needAddColumn = {
     channel_open_ack: [
         {
             label: i18n.t('ExplorerLang.table.portId'),
-            value: '',
+            displayValue: 'portId',
         },
         {
             label: i18n.t('ExplorerLang.table.channelId'),
-            value: '',
+            displayValue: 'channelId',
         },
         {
             label: i18n.t('ExplorerLang.table.signer'),
@@ -1227,11 +1290,12 @@ export const needAddColumn = {
     channel_open_init: [
         {
             label: i18n.t('ExplorerLang.table.portId'),
-            value: '',
+            displayValue: 'portId',
+
         },
         {
             label: i18n.t('ExplorerLang.table.channelId'),
-            value: '',
+            displayValue: 'channelId',
         },
         {
             label: i18n.t('ExplorerLang.table.signer'),
@@ -1246,11 +1310,11 @@ export const needAddColumn = {
     connection_open_confirm: [
         {
             label: i18n.t('ExplorerLang.table.clientID'),
-            value: '',
+            displayValue: 'clientId',
         },
         {
             label: i18n.t('ExplorerLang.table.connectionId'),
-            value: '',
+            displayValue: 'connectionId',
         },
         {
             label: i18n.t('ExplorerLang.table.signer'),
@@ -1265,11 +1329,11 @@ export const needAddColumn = {
     connection_open_init: [
         {
             label: i18n.t('ExplorerLang.table.clientID'),
-            value: '',
+            displayValue: 'clientId',
         },
         {
             label: i18n.t('ExplorerLang.table.connectionId'),
-            value: '',
+            displayValue: 'connectionId',
         },
         {
             label: i18n.t('ExplorerLang.table.signer'),
@@ -1284,11 +1348,11 @@ export const needAddColumn = {
     connection_open_try: [
         {
             label: i18n.t('ExplorerLang.table.clientID'),
-            value: '',
+            displayValue: 'clientId',
         },
         {
             label: i18n.t('ExplorerLang.table.connectionId'),
-            value: '',
+            displayValue: 'connectionId',
         },
         {
             label: i18n.t('ExplorerLang.table.signer'),
@@ -1303,11 +1367,11 @@ export const needAddColumn = {
     connection_open_ack: [
         {
             label: i18n.t('ExplorerLang.table.clientID'),
-            value: '',
+            displayValue: 'clientId',
         },
         {
             label: i18n.t('ExplorerLang.table.connectionId'),
-            value: '',
+            displayValue: 'connectionId',
         },
         {
             label: i18n.t('ExplorerLang.table.signer'),
@@ -1322,7 +1386,7 @@ export const needAddColumn = {
     acknowledge_packet: [
         {
             label: i18n.t('ExplorerLang.table.amount'),
-            value: '',
+            displayValue: 'amount',
         },
         {
             label: i18n.t('ExplorerLang.table.sender'),
@@ -1335,7 +1399,12 @@ export const needAddColumn = {
         },
         {
             label: i18n.t('ExplorerLang.table.receiver'),
-            value: '',
+            displayValue: 'receiver',
+            nativeValue: 'receiver',
+            isHref: true,
+            href: cfg.cosmosXpAddress,
+            isNeedFormat: true,
+            isFormatAddress: true,
         },
     ]
 

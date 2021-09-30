@@ -274,6 +274,14 @@ export async function getAmountByTx (message, events, isShowDenom) {
 			case TX_TYPE.timeout_on_close_packet:
 				break;
 			case TX_TYPE.acknowledge_packet:
+				if(msg?.packet && msg?.packet?.data) {
+					let originalDenom = TxHelper.getOriginalDenomFromPacket(msg.packet,txType);
+					let amountMaxUnit = await converCoin({
+						amount:msg.packet.data.amount,
+						denom:originalDenom || msg.packet.data.denom,
+					});
+					amount = isShowDenom ? `${Tools.toDecimal(amountMaxUnit.amount,amountDecimals)} ${amountMaxUnit.denom.toUpperCase()}` : `${Tools.toDecimal(amountMaxUnit.amount,amountDecimals)}`;
+				}
 				break;
 			case TX_TYPE.request_rand:
 				if(msg?.service_fee_cap?.length  === 1) {

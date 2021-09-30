@@ -1,8 +1,16 @@
 import {cfg} from "../../config";
-
+import prodConfig from "../../productionConfig";
+import VueI18n from 'vue-i18n';
+const i18n = new VueI18n({
+    locale:prodConfig.lang == 'EN' ? 'EN' : 'CN',
+    messages: {
+        "CN" : require('../../../lang/CN-Cindy'),
+        "EN" : require('../../../lang/EN-Cindy')
+    }
+})
 export default [
     {
-        label:'NFT ID',
+        label: i18n.t('ExplorerLang.table.nftId'),
         displayValue:'nft_id',
         nativeValue: 'nft_id',
         nftRouterParamsValue: 'denom_id',
@@ -14,7 +22,7 @@ export default [
         denomRouter: '&tokenId='
     },
     {
-        label: 'NFT Name',
+        label:i18n.t('ExplorerLang.table.tokenName'),
         displayValue:'nft_name',
         nativeValue: 'nft_id',
         nftRouterParamsValue: 'denom_id',
@@ -26,11 +34,11 @@ export default [
         denomRouter: '&tokenId='
     },
     {
-        label: 'Denom',
+        label: i18n.t('ExplorerLang.table.denom'),
         displayValue: 'denom_id'
     },
     {
-        label: 'Owner',
+        label: i18n.t('ExplorerLang.table.owner'),
         displayValue: 'owner',
         nativeValue: 'owner',
         isLink: true,
@@ -39,14 +47,15 @@ export default [
         linkRoute: '/address',
     },
     {
-        label: 'Uri',
+        label: i18n.t('ExplorerLang.table.uri'),
         displayValue: 'tokenUri',
         nativeValue: 'tokenUri',
         isNftHref: true,
     },
     {
-        label: 'Time',
+        label: i18n.t('ExplorerLang.table.time'),
         displayValue: 'last_block_time',
+        width: 150
 
     }
 ]

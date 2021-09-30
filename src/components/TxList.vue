@@ -464,6 +464,7 @@ export default {
 						numberOfTo = '--',
 						requestId= '--',
 						denomId = '--',
+						denomName = '--',
 						nftId='--',
 						feedName='--',
 						oracleCreator = '--',
@@ -482,7 +483,14 @@ export default {
 						depositor='--',
 						title='--',
 						author = '--',
-						provider = '--';
+						provider = '--',
+						requestContextId='--',
+						serviceName='--',
+						clientId = '--',
+						portId = '--',
+						channelId='--',
+						connectionId='--',
+						receiver='--';
 					for (const tx of this.txData) {
 						let msg;
 						if (tx.msgs.length > 0) {
@@ -508,7 +516,11 @@ export default {
 						if(msg?.type === TX_TYPE.respond_service && msg?.msg?.request_id){
 							requestId = msg.msg.request_id
 						}
-						if(msg?.type === TX_TYPE.burn_nft || msg?.type === TX_TYPE.edit_nft || msg?.type === TX_TYPE.mint_nft && msg?.msg?.denom && msg?.msg?.id){
+						if(msg?.type === TX_TYPE.burn_nft
+							|| msg?.type === TX_TYPE.edit_nft
+							|| msg?.type === TX_TYPE.mint_nft
+							||  msg?.type === TX_TYPE.transfer_nft
+							&& msg?.msg?.denom && msg?.msg?.id){
 							denomId = msg.msg.denom
 							nftId = msg.msg.id
 						}
@@ -520,6 +532,41 @@ export default {
 						if(msg?.type=== TX_TYPE.request_rand && msg?.msg?.consumer){
 							consumer = msg.msg.consumer
 						}
+						if(msg?.type=== TX_TYPE.create_client
+							|| msg?.type=== TX_TYPE.update_client
+							&& msg?.msg?.client_id){
+							clientId = msg.msg.client_id
+						}
+						if(msg?.type=== TX_TYPE.call_service
+							|| msg?.type=== TX_TYPE.respond_service
+							|| msg?.msg?.consumer && msg?.msg?.request_context_id && msg?.msg?.service_name){
+							consumer = msg.msg.consumer
+							requestContextId = msg.msg.request_context_id
+							serviceName = msg.msg.service_name
+							
+						}
+						if(msg?.type === TX_TYPE.issue_denom && msg?.msg?.id && msg?.msg?.name &&  msg?.msg?.sender){
+							sender = msg.msg.sender
+							denomId = msg.msg.id
+							denomName = msg.msg.name
+						}
+						if(msg?.type === TX_TYPE.channel_open_init
+							|| msg?.type === TX_TYPE.channel_open_confirm
+							|| msg?.type === TX_TYPE.channel_open_try
+							|| msg?.type === TX_TYPE.channel_open_ack
+							&& msg?.msg?.channel_id && msg?.msg?.port_id){
+							portId = msg.msg.port_id
+							channelId = msg.msg.channel_id
+						}
+						if(msg?.type === TX_TYPE.connection_open_init
+							|| msg?.type === TX_TYPE.connection_open_confirm
+							|| msg?.type === TX_TYPE.connection_open_try
+							|| msg?.type === TX_TYPE.connection_open_ack
+							&& msg?.msg?.connection_id && msg?.msg?.client_id){
+							clientId = msg.msg.client_id
+							connectionId = msg.msg.connection_id
+						}
+						
 						if(msg?.type === TX_TYPE.create_record && msg?.msg?.contents?.length && msg?.msg?.contents[0]?.digest  && msg?.msg?.contents[0]?.digest_algo){
 							digest = msg.msg.contents[0].digest
 							digest_algo = msg.msg.contents[0].digest_algo
@@ -528,6 +575,9 @@ export default {
 							symbol = msg.msg.symbol
 							minUnit = msg.msg.min_unit
 							owner = msg.msg.owner
+						}
+						if(msg?.type === TX_TYPE.acknowledge_packet && msg?.msg?.packet?.data?.receiver){
+							receiver =  msg.msg.packet.data.receiver
 						}
 						if(msg?.type === TX_TYPE.edit_token && msg?.msg?.symbol  && msg?.msg?.owner){
 							symbol = msg.msg.symbol
@@ -562,11 +612,13 @@ export default {
 							|| msg?.type === TX_TYPE.start_request_context
 							|| msg?.type === TX_TYPE.update_request_context
 							|| msg?.type === TX_TYPE.kill_request_context
-							&& msg?.msg?.consumer){
+							&& msg?.msg?.consumer && msg?.msg?.request_context_id){
 							consumer = msg.msg.consumer
+							requestContextId = msg.msg.request_context_id
 						}
-						if(msg?.type === TX_TYPE.define_service && msg?.msg?.author){
+						if(msg?.type === TX_TYPE.define_service && msg?.msg?.author && msg?.msg?.name){
 							author = msg.msg.author
+							serviceName = msg.msg.name
 						}
 						if(msg?.type === TX_TYPE.bind_service
 							|| msg?.type === TX_TYPE.refund_service_deposit
@@ -574,9 +626,10 @@ export default {
 							|| msg?.type === TX_TYPE.enable_service_binding
 							|| msg?.type === TX_TYPE.update_service_binding
 							
-							&& msg?.msg?.owner && msg?.msg?.provider){
+							&& msg?.msg?.owner && msg?.msg?.provider && msg?.msg?.service_name){
 							owner = msg.msg.owner
 							provider = msg.msg.provider
+							serviceName = msg.msg.service_name
 						}
 						
 						let addrObj = TxHelper.getFromAndToAddressFromMsg(msg);
@@ -615,19 +668,26 @@ export default {
 							from,
 							author,
 							provider,
-							consumer,
+							requestContextId,
 							fromMonikers,
 							toMonikers,
+							receiver,
 							to,
+							portId,
+							channelId,
+							connectionId,
 							validatorMoniker,
 							validatorAddress,
 							numberOfTo,
 							requestId,
 							denomId,
+							denomName,
 							nftId,
+							clientId,
 							feedName,
 							oracleCreator,
 							consumer,
+							serviceName,
 							digest,
 							digest_algo,
 							symbol,

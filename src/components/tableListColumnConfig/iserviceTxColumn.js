@@ -1,6 +1,16 @@
+import VueI18n from 'vue-i18n';
+import prodConfig from "../../productionConfig";
+const i18n = new VueI18n({
+    locale:prodConfig.lang == 'EN' ? 'EN' : 'CN',
+    messages: {
+        "CN" : require('../../../lang/CN-Cindy'),
+        "EN" : require('../../../lang/EN-Cindy')
+    }
+})
+
 export default [
     {
-        label:'TxHash',
+        label:i18n.t('ExplorerLang.table.txHash'),
         displayValue:'txHash',
         nativeValue:'txHash',
         isLink:true,
@@ -12,7 +22,7 @@ export default [
         isShowTxStatusIcon:true
     },
     {
-        label: 'MsgType',
+        label: i18n.t('ExplorerLang.table.txType'),
         displayValue:'type',
         nativeValue:'type',
         isNeedFormat:true,
@@ -21,14 +31,14 @@ export default [
         isShowMoniker:false
     },
     {
-        label: 'Request Context Id',
+        label: i18n.t('ExplorerLang.table.requestContentId'),
         displayValue: 'id',
         nativeValue: 'id',
         isNeedFormat: true,
         isFormatAddress: true,
     },
     {
-        label: 'From',
+        label: i18n.t('ExplorerLang.table.from'),
         displayValue: 'from',
         nativeValue: 'from',
         isFormatAddress: true,
@@ -37,7 +47,7 @@ export default [
         linkRoute: '/address',
     },
     {
-        label: 'To',
+        label:  i18n.t('ExplorerLang.table.to'),
         displayValue: 'to',
         nativeValue: 'to',
         isNeedFormat: true,
@@ -46,12 +56,12 @@ export default [
         linkRoute: '/address',
     },
     {
-        label: 'Fee',
+        label: i18n.t('ExplorerLang.table.fee'),
         displayValue: 'fee',
         isShowTokenSymbol:true
     },
     {
-        label: 'Block',
+        label: i18n.t('ExplorerLang.table.block'),
         displayValue:'height',
         nativeValue:'height',
         isLink:true,
@@ -60,7 +70,7 @@ export default [
         isShowMoniker:false
     },
     {
-        label: 'Time',
+        label: i18n.t('ExplorerLang.table.time'),
         displayValue:'timestamp',
         nativeValue:'timestamp',
         isLink:false,

@@ -128,7 +128,7 @@
                 <h3 class="service_information_transaction_title">
                     {{$t('ExplorerLang.serviceDetail.serviceTransactions')}}
                 </h3>
-                <div class="service_information_transaction_condition_container">
+<!--                <div class="service_information_transaction_condition_container">
                     <span class="service_information_transaction_condition_count">
                         {{`${txCount} ${$t('ExplorerLang.unit.Txs')}`}}
                     </span>
@@ -152,7 +152,7 @@
                             <i class="iconfont iconzhongzhi"></i>
                         </div>
                     </div>
-                </div>
+                </div>-->
 
                 <div class="service_information_transaction_table_content">
 					<list-component
@@ -175,7 +175,7 @@
 								@resetParams="resetFilterCondition"></tx-status-tabs-components>
 						</template>
 						<template v-slot:txCount>
-							<tx-count-component :icon="'iconTrainsaction'" :tx-count="txCount"></tx-count-component>
+							<tx-count-component :title="$t('ExplorerLang.transactions.txs')" :icon="'iconTrainsaction'" :tx-count="txCount"></tx-count-component>
 						</template>
 						
 					</list-component>
