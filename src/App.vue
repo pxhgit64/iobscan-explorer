@@ -45,8 +45,12 @@ export default {
 
 <style lang="scss">
 @import "style/index.css";
+@font-face {
+	font-family: PlblicScas;
+	src: url("./font/PublicSans-Regular-14.otf");
+}
 #app {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: PlblicScas, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

@@ -151,6 +151,18 @@ export async function getAmountByTx (message, events, isShowDenom) {
 				}
 				break;
 			case TX_TYPE.add_liquidity:
+				let amountArray = []
+				if(msg?.swap_amount?.length === 2){
+					const addliquidityAmount = msg.swap_amount[0]
+					if(addliquidityAmount.includes(',')){
+						const tokenAmount1 =  await converCoin(formatAccountCoinsAmount(addliquidityAmount.split(',')[0]))
+						const tokenAmount2 =  await converCoin(formatAccountCoinsAmount(addliquidityAmount.split(',')[1]))
+						const addLiquidityAmount1 = `${Tools.toDecimal(tokenAmount1.amount,amountDecimals)} ${tokenAmount1.denom.toUpperCase()}`
+						const addLiquidityAmount2 = `${Tools.toDecimal(tokenAmount2.amount,amountDecimals)} ${tokenAmount2.denom.toUpperCase()}`
+						amountArray.push(addLiquidityAmount1, addLiquidityAmount2)
+						amount = amountArray
+					}
+				}
 				// events display eg: 18dog,1000000ubif
 				// (events || []).forEach(event => {
 				// 	if(event.type === 'transfer') {
@@ -165,6 +177,38 @@ export async function getAmountByTx (message, events, isShowDenom) {
 				// })
 				break;
 			case TX_TYPE.remove_liquidity:
+				let removeAmountArray = []
+				if(msg?.swap_amount?.length === 2){
+					let removeLiquidityAmount = msg.swap_amount[1]
+					let tokenAmount1,tokenAmount2;
+					if(removeLiquidityAmount.includes(',')){
+						tokenAmount1 =  await converCoin(formatAccountCoinsAmount(removeLiquidityAmount.split(',')[0]))
+						tokenAmount2 =  await converCoin(formatAccountCoinsAmount(removeLiquidityAmount.split(',')[1]))
+						const removeLiquidityAmount1 = `${Tools.toDecimal(tokenAmount1.amount,amountDecimals)} ${tokenAmount1.denom.toUpperCase()}`
+						const removeLiquidityAmount2 = `${Tools.toDecimal(tokenAmount2.amount,amountDecimals)} ${tokenAmount2.denom.toUpperCase()}`
+						removeAmountArray.push(removeLiquidityAmount1, removeLiquidityAmount2)
+						amount = removeAmountArray
+					}else{
+						tokenAmount1 =  await converCoin(formatAccountCoinsAmount(removeLiquidityAmount))
+						const removeLiquidityAmount1 = `${Tools.toDecimal(tokenAmount1.amount,amountDecimals)} ${tokenAmount1.denom.toUpperCase()}`
+						const removeLiquidityAmount2 = '--'
+						removeAmountArray.push(removeLiquidityAmount1, removeLiquidityAmount2)
+						amount = removeAmountArray
+					}
+				}
+				/*let amountArray = []
+				if(msg?.swap_amount?.length === 2){
+					const addliquidityAmount = msg.swap_amount[0]
+					if(addliquidityAmount.includes(',')){
+						const tokenAmount1 =  await converCoin(formatAccountCoinsAmount(addliquidityAmount.split(',')[0]))
+						const tokenAmount2 =  await converCoin(formatAccountCoinsAmount(addliquidityAmount.split(',')[1]))
+						const addLiquidityAmount1 = `${Tools.toDecimal(tokenAmount1.amount,amountDecimals)} ${tokenAmount1.denom.toUpperCase()}`
+						const addLiquidityAmount2 = `${Tools.toDecimal(tokenAmount2.amount,amountDecimals)} ${tokenAmount2.denom.toUpperCase()}`
+						amountArray.push(addLiquidityAmount1, addLiquidityAmount2)
+						amount = amountArray
+					}
+				}
+*/
 				// events display eg: 4dog,252824ubif
 				// (events || []).forEach(event => {
 				// 	if(event.type === 'transfer') {
@@ -179,6 +223,18 @@ export async function getAmountByTx (message, events, isShowDenom) {
 				// })
 				break;
 			case TX_TYPE.swap_order:
+				let swapOrderAmount = []
+				if(msg?.input?.coin && JSON.stringify(msg.input.coin) !== '{}'){
+					const swapOrderAmount1 = await converCoin(msg.input.coin)
+					const swapOrderAmountStr1 = `${swapOrderAmount1.amount} ${swapOrderAmount1.denom.toUpperCase()}`
+					swapOrderAmount.push(swapOrderAmountStr1)
+				}
+				if(msg?.output?.coin && JSON.stringify(msg.output.coin) !== '{}'){
+					const swapOrderAmount2 = await converCoin(msg.output.coin)
+					const swapOrderAmountStr2 = `${swapOrderAmount2.amount} ${swapOrderAmount2.denom.toUpperCase()}`
+					swapOrderAmount.push(swapOrderAmountStr2)
+				}
+				amount = swapOrderAmount
 				break;
 			case TX_TYPE.create_htlc:
 				if(msg.amount && msg.amount[0]) {
@@ -292,6 +348,15 @@ export async function getAmountByTx (message, events, isShowDenom) {
 		}
 		return amount
 	}
+}
+function formatAccountCoinsAmount(coinsAmount) {
+	const token = {
+		denom: '',
+		amount: '0'
+	}
+	token.denom = coinsAmount.includes('ibc') ? `ibc${coinsAmount.split('ibc')[1]}` :/[A-Za-z\-]{2,15}/.exec(coinsAmount)[0]
+	token.amount = /[0-9]+[.]?[0-9]*/.exec(coinsAmount)[0]
+	return token
 }
 
 export async function getDenomMap() {

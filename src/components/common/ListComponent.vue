@@ -22,7 +22,6 @@
 							:prop="item.displayValue"
 							:label="item.label"
 							:width="item.width ? item.width : 'auto'">
-							
 							<template slot="header" slot-scope="scope">
 								<span>{{ item.label }}</span>
 								<el-tooltip v-show="item.isShowTokenSymbol" :content="tokenSymbol"
@@ -223,7 +222,7 @@ export default {
 				if(!this.isShowProposer){
 					this.deleteProposer()
 				}
-				this.getTableWidth()
+				// this.getTableWidth()
 			},
 			deep: true
 		},
@@ -359,6 +358,7 @@ export default {
 				}, {});
 				let formatStr = ''
 				for (let dataKey in data) {
+					dataKey = dataKey.toLowerCase()
 					formatStr += `${TX_TYPE_DISPLAY[dataKey] || dataKey} *${data[dataKey] || dataKey},`
 				}
 				return formatStr.substring(0, formatStr.length - 1)
@@ -431,7 +431,7 @@ export default {
 				}
 			}
 		},
-		getTableWidth () {
+		/*getTableWidth () {
 			this.tableListWidth = []
 			this.$nextTick(() => {
 				setTimeout(() => {
@@ -444,11 +444,11 @@ export default {
 				// this.columns[1].width =  this.tableListWidth[1]
 				// this.columns[this.columns.length].width =  this.tableListWidth[this.tableListWidth.length]
 				// this.columns[this.columns.length-1].width =  this.tableListWidth[this.tableListWidth.length-1]
-				/*this.columns.forEach( (item,index) => {
+				/!*this.columns.forEach( (item,index) => {
 					item.width = this.tableListWidth[index] || 'auto'
-				})*/
+				})*!/
 			}
-		}
+		}*/
 	},
 	mounted() {
 		this.columns = []
@@ -461,7 +461,7 @@ export default {
 		}
 		this.tableList = this.listData
 		this.getAllTokens()
-		this.getTableWidth()
+		// this.getTableWidth()
 	}
 }
 </script>

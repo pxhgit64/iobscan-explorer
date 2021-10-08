@@ -3,56 +3,9 @@
     <div class="native_asset_list_table_container" v-if="issueToken.length !== 0">
       <div class="txs_title">{{ $t('ExplorerLang.asset.issueTokenTxs') }}</div>
       <div class="native_asset_list_table_content" >
-        <!--<el-table class="table" :empty-text="$t('ExplorerLang.table.emptyDescription')" :data="issueToken">
-          <el-table-column :label="$t('ExplorerLang.table.txHash')" class-name="hash_status" prop="txHash" :min-width="ColumnMinWidth.txHash">
-            <template v-slot:default="{ row }">
-              <img class="status_icon" :src="require(`../../assets/${row.status === 1 ? 'success.png' : 'failed.png'}`)" />
-              <el-tooltip :content="`${row.txHash}`">
-                <router-link :to="`/tx?txHash=${row.txHash}`">{{ Tools.formatTxHash(row.txHash) }} </router-link>
-              </el-tooltip>
-            </template>
-          </el-table-column>
-          <el-table-column class-name="address" :label="$t('ExplorerLang.table.owner')" prop="owner" :min-width="ColumnMinWidth.address">
-            <template v-slot:default="{ row }">
-              <span class="remove_default_style">
-                <el-tooltip popper-class="tooltip" :content="row.owner" placement="top">
-                  <span class="address_link" @click="addressRoute(row.owner)">
-                    {{ Tools.formatValidatorAddress(row.owner) }}
-                  </span>
-                </el-tooltip>
-              </span>
-            </template>
-          </el-table-column>
-          <el-table-column class-name="symbol" :label="$t('ExplorerLang.table.symbol')" prop="symbol" :min-width="ColumnMinWidth.symbol">
-            <template v-slot:default="{ row }">
-              <router-link :to="'/assets/' + row.symbol"> {{ row.symbol }}</router-link>
-            </template>
-          </el-table-column>
-          <el-table-column :label="$t('ExplorerLang.table.initialSupply')" prop="initialSupply" :min-width="ColumnMinWidth.totalSupply"></el-table-column>
-          <el-table-column :label="$t('ExplorerLang.table.mintable')" prop="mintable" :min-width="ColumnMinWidth.mintable"></el-table-column>
-          <el-table-column :label="$t('ExplorerLang.table.block')" prop="block" :min-width="ColumnMinWidth.block">
-            <template v-slot:default="{ row }">
-              <router-link :to="'/block/' + row.block">{{ row.block }}</router-link>
-            </template>
-          </el-table-column>
-          <el-table-column :label="$t('ExplorerLang.table.fee')" align="right" v-if="isShowFee" prop="fee" :width="ColumnMinWidth.fee">
-              <template slot="header" slot-scope="scope">
-                  <span>{{ $t('ExplorerLang.table.fee')}}</span>
-                  <el-tooltip :content="mainTokenSymbol"
-                              placement="top">
-                      <i class="iconfont iconyiwen yiwen_icon" />
-                  </el-tooltip>
-              </template>
-          </el-table-column>
-          <el-table-column :label="$t('ExplorerLang.table.timestamp')" prop="time" :width="ColumnMinWidth.time"></el-table-column>
-        </el-table>
-        <div class="pagination_content">
-          <m-pagination :total="issueTokenTotalPageNum" :page-size="pageSize" :page="issueTokenCurrentPageNum" :page-change="issueTokenPageChange"></m-pagination>
-        </div>-->
-
         <list-component
           :token-symbol="mainTokenSymbol"
-          :is-loading="isIssueTokenLoading"
+          :is-loading="isLoading"
           :list-data="issueToken"
           :column-list="issueTokenColumn"
           :pagination="{pageSize:Number(pageSize),dataCount:issueTokenTotalPageNum,pageNum:Number(issueTokenCurrentPageNum)}"
@@ -111,7 +64,7 @@
         </div>-->
         <list-component
             :token-symbol="mainTokenSymbol"
-            :is-loading="isEditTokenLoading"
+            :is-loading="isLoading"
             :list-data="editToken"
             :column-list="editTokenColumn"
             :pagination="{pageSize:Number(pageSize),dataCount:editTokenTotalPageNum,pageNum:Number(editTokenCurrentPageNum)}"
@@ -182,7 +135,7 @@
        -->
         <list-component
             :token-symbol="mainTokenSymbol"
-            :is-loading="isMintTokenLoading"
+            :is-loading="isLoading"
             :list-data="mintToken"
             :column-list="mintTokenColumn"
             :pagination="{pageSize:Number(pageSize),dataCount:mintTokenTotalPageNum,pageNum:Number(mintTokenCurrentPageNum)}"
@@ -242,7 +195,7 @@
         -->
         <list-component
             :token-symbol="mainTokenSymbol"
-            :is-loading="isBurnTokenLoading"
+            :is-loading="isLoading"
             :list-data="burnToken"
             :column-list="burnTokenColumn"
             :pagination="{pageSize:Number(pageSize),dataCount:burnTokenTotalPageNum,pageNum:Number(burnTokenCurrentPageNum)}"
@@ -310,7 +263,7 @@
 
         <list-component
             :token-symbol="mainTokenSymbol"
-            :is-loading="isTransferTokenLoading"
+            :is-loading="isLoading"
             :list-data="transferToken"
             :column-list="transferTokenColumn"
             :pagination="{pageSize:Number(pageSize),dataCount:transferTokenTotalPageNum,pageNum:Number(transferTokenCurrentPageNum)}"
@@ -372,6 +325,7 @@ export default {
       transferTokenCurrentPageNum: 1,
       pageSize: 5,
         mainTokenSymbol:'',
+		isLoading:false,
       isIssueTokenLoading:false,//新增
       isEditTokenLoading:false,//新增
       isMintTokenLoading:false,//新增
@@ -395,6 +349,7 @@ export default {
     this.burnTokenColumn  = nativeAssTxBurnColumnConfig
     this.transferTokenColumn = nativeAssTxTransferTokenColumnConfig
     this.setMainToken()
+	  this.isLoading = true
     Promise.all([
       this.getIssueToken(),
       this.getEditToken(),
@@ -403,6 +358,7 @@ export default {
       this.getTransferToken()
     ])
       .then(() => {
+		  this.isLoading = false
          /**
          * @description: from parseTimeMixin
          */

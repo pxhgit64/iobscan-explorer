@@ -764,12 +764,12 @@ export const needAddColumn = {
             linkRoute: '/address',
         },
         {
-            label: i18n.t('ExplorerLang.table.amount'),
-            value: '',
+            label: i18n.t('ExplorerLang.table.swapAmount1'),
+            displayValue: 'swapAmount1',
         },
         {
-            label: i18n.t('ExplorerLang.table.amount'),
-            value: '',
+            label: i18n.t('ExplorerLang.table.swapAmount2'),
+            displayValue: 'swapAmount2',
         },
     ],
     add_liquidity: [
@@ -783,12 +783,12 @@ export const needAddColumn = {
             linkRoute: '/address',
         },
         {
-            label: i18n.t('ExplorerLang.table.amount'),
-            value: '',
+            label: i18n.t('ExplorerLang.table.swapAmount1'),
+            displayValue: 'swapAmount1',
         },
         {
-            label: i18n.t('ExplorerLang.table.amount'),
-            value: '',
+            label: i18n.t('ExplorerLang.table.swapAmount2'),
+            displayValue: 'swapAmount2',
         },
     ],
     remove_liquidity: [
@@ -802,12 +802,12 @@ export const needAddColumn = {
             linkRoute: '/address',
         },
         {
-            label: i18n.t('ExplorerLang.table.amount'),
-            value: '',
+            label: i18n.t('ExplorerLang.table.swapAmount1'),
+            displayValue: 'swapAmount1',
         },
         {
-            label: i18n.t('ExplorerLang.table.amount'),
-            value: '',
+            label: i18n.t('ExplorerLang.table.swapAmount2'),
+            displayValue: 'swapAmount2',
         },
     ],
     transfer: [

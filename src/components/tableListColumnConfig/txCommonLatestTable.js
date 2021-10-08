@@ -34,6 +34,6 @@ export default [
         isLink:false,
         linkRoute:'',
         isShowMoniker:false,
-        width: 150
+        width: 160
     },
 ]
