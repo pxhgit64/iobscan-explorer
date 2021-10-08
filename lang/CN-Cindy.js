@@ -119,6 +119,8 @@ export const ExplorerLang = {
         unbondingHeight: 'Unbonding_Height',
         address: 'Address',
         amount: '数量',
+        swapAmount1: '数量1',
+        swapAmount2: '数量2',
         shares: 'Shares',
         endTime: 'End Time',
         fee: 'Fee',

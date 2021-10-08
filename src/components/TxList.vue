@@ -664,7 +664,7 @@ export default {
 						this.transactionArray.push({
 							txHash: tx.tx_hash,
 							blockHeight: tx.height,
-							txType: (tx.msgs || []).map(item => this.TX_TYPE_DISPLAY[item.type] || item.type),
+							txType: (tx.msgs || []).map(item => item.type ),
 							from,
 							author,
 							provider,
@@ -708,6 +708,10 @@ export default {
 							Tx_Fee: '',
 							Time: Tools.formatLocalTime(tx.time),
 							amount: '',
+							swapAmount1:'',
+							swapDenomTheme1:'',
+							swapAmount2:'',
+							swapDenomTheme2:'',
 							ageTime: Tools.formatAge(Tools.getTimestamp(), tx.time * 1000, this.$t('ExplorerLang.table.suffix')),
 							isShowMore,
 							denomTheme: {
@@ -732,8 +736,15 @@ export default {
 						let amount = await Promise.all(amounts)
 						this.denomMap = await getDenomMap()
 						this.transactionArray.forEach((item, index) => {
-							this.transactionArray[index].denomTheme = getDenomTheme(amount[index], this.denomMap)
-							this.transactionArray[index].amount = amount[index]
+							if(amount[index]?.length === 2 ){
+								this.transactionArray[index].swapDenomTheme1 = getDenomTheme(amount[index][0], this.denomMap)
+								this.transactionArray[index].swapDenomTheme2 = getDenomTheme(amount[index][1], this.denomMap)
+								this.transactionArray[index].swapAmount1 =  amount[index][0]
+								this.transactionArray[index].swapAmount2 =  amount[index][1]
+							}else {
+								this.transactionArray[index].denomTheme = getDenomTheme(amount[index], this.denomMap)
+								this.transactionArray[index].amount = amount[index]
+							}
 						})
 					}
 					/*this.$nextTick(() => {

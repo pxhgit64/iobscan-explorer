@@ -140,7 +140,7 @@ export default {
 			color: rgba(23, 29, 68, 1);
 			border-radius: 0.08rem;
 			outline: none !important;
-			
+			font-size: $s14;
 			&:hover {
 				background: rgba(90, 93, 99, 0.1);
 			}

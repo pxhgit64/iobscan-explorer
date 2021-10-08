@@ -170,12 +170,14 @@ export default {
       this.getNftsByFilter()
     },
     async getNftsByFilter() {
+    	
       if (Tools.isBech32(this.input)) {
         this.owner = this.input
       }
       if (!this.owner) {
         this.tokenId = this.input
       }
+		this.isNftListLoading = true
       try {
         let nftData = await getNfts(
           this.currentPageNum,
@@ -208,7 +210,9 @@ export default {
         } else {
           this.denomArray = []
         }
+		  this.isNftListLoading = false
       } catch (e) {
+		  this.isNftListLoading = false
         console.error(e)
       }
     },
