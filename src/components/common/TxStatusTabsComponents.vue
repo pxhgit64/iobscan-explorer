@@ -14,8 +14,8 @@
 							v-model="value"
 							range-separator="~"
 							type="daterange"
-							start-placeholder="开始日期"
-							end-placeholder="结束日期"
+							:start-placeholder="$t('ExplorerLang.common.startDate')"
+							:end-placeholder="$t('ExplorerLang.common.endDate')"
 							:picker-options="pickerOptions"
 							@change="selectTime"></el-date-picker>
 		</div>
@@ -148,7 +148,7 @@ export default {
 			color: #fff !important;
 		}
 	}
-	
+
 	.tx_date_picket_content {
 		::v-deep.el-date-editor {
 			border-radius: 0.08rem;
