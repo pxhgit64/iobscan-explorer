@@ -25,7 +25,9 @@ export const ExplorerLang = {
         false:'不可用',
         //新增
         block:'区块数',
-        s:'秒'
+        s:'秒',
+        startDate:'选择日期',
+        endDate:'选择日期',
 
     },
     table:{

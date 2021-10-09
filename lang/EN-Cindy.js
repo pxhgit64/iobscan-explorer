@@ -26,7 +26,10 @@ export const ExplorerLang = {
         false:'false',
         //新增
         blocks:'blocks',
-        s:'s'
+        s:'s',
+        startDate:'Select Date',
+        endDate:'Select Date',
+
 
 
     },
