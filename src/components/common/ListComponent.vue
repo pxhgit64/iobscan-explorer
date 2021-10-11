@@ -7,96 +7,96 @@
 			</div>
 			<slot name="msgType"></slot>
 			<loading v-if="isLoading"></loading>
-			<vue-scroll :ops="opsConfig">
-				<div style="margin-bottom: 0.1rem">
+			<div class="scroll_container" style="margin-bottom: 0.1rem">
+				<vue-scroll :ops="opsConfig">
 					<el-table
-						:style="{width: `${tableWidth}`}"
-						v-if="!isLoading"
-						:data="tableList"
-						stripe
-						:empty-text="emptyText"
-						ref="listTable">
-						<el-table-column
-							v-for="(item,index) in columns"
-							:key="item.label"
-							:prop="item.displayValue"
-							:label="item.label"
-							:width="item.width ? item.width : 'auto'">
-							<template slot="header" slot-scope="scope">
-								<span>{{ item.label }}</span>
-								<el-tooltip v-show="item.isShowTokenSymbol" :content="tokenSymbol"
-											placement="top">
-									<i class="iconfont iconyiwen yiwen_icon"/>
-								</el-tooltip>
-							</template>
-							<template slot-scope="scope">
-								<!--						blockChain-->
-								<div class="status" v-show="item.isShowTxStatusIcon">
-									<img class="status_icon"
-										 :src="require(`../../assets/${scope.row.status==TX_STATUS.success?'success.png':'failed.png'}`)"/>
-								</div>
-								
-								<el-tooltip :manual="setManual(!item.isNeedFormat,scope.row[item.displayValue])"
-											:content="formatStr(scope.row[item.nativeValue])">
-									<router-link class="link_style"
-												 v-if="item.isLink &&  scope.row[item.displayValue] && scope.row[item.displayValue] !== '--'"
-												 :to="!item.isNft ? `${item.linkRoute}/${scope.row[item.nativeValue]}` : `${item.linkRoute}${scope.row[item.nftRouterParamsValue]}${item.denomRouter}${scope.row[item.nativeValue]}`">
-							<span v-if="item.isNeedFormatHash">{{
-									formatTxHash(scope.row[item.displayValue])
-								}} </span>
-										<span v-else-if="item.isFormatAddress">{{
-												formatAddress(scope.row[item.displayValue])
-											}}</span>
-										<span v-else-if="item.isFormatMoniker">{{
-												formatTableMoniker(scope.row[item.displayValue])
-											}}</span>
-										<span v-else>{{ scope.row[item.displayValue] }}</span>
-									</router-link>
-									<span v-else-if="item.isShowTag">
-							<el-tag
-								class="tag_style">{{ formatTypeNotString(scope.row[item.displayValue]) }}</el-tag>
-							<span class="tag_num">{{ setTagNum(scope.row[item.displayValue]) }}</span>
-						</span>
-									<span v-else-if="item.isFormatAddress && !item.isHref">{{
+					:header-cell-style="{ background: '#fafafa' }"
+					:style="{width: `${tableWidth}`}"
+					v-if="!isLoading"
+					:data="tableList"
+					stripe
+					:empty-text="emptyText"
+					ref="listTable">
+					<el-table-column
+						v-for="(item,index) in columns"
+						:key="item.label"
+						:prop="item.displayValue"
+						:label="item.label"
+						:width="item.width ? item.width : 'auto'">
+						<template slot="header" slot-scope="scope">
+							<span>{{ item.label }}</span>
+							<el-tooltip v-show="item.isShowTokenSymbol" :content="tokenSymbol"
+										placement="top">
+								<i class="iconfont iconyiwen yiwen_icon"/>
+							</el-tooltip>
+						</template>
+						<template slot-scope="scope">
+							<!--						blockChain-->
+							<div class="status" v-show="item.isShowTxStatusIcon">
+								<img class="status_icon"
+									 :src="require(`../../assets/${scope.row.status==TX_STATUS.success?'success.png':'failed.png'}`)"/>
+							</div>
+							
+							<el-tooltip :manual="setManual(!item.isNeedFormat,scope.row[item.displayValue])"
+										:content="formatStr(scope.row[item.nativeValue])">
+								<router-link class="link_style"
+											 v-if="item.isLink &&  scope.row[item.displayValue] && scope.row[item.displayValue] !== '--'"
+											 :to="!item.isNft ? `${item.linkRoute}/${scope.row[item.nativeValue]}` : `${item.linkRoute}${scope.row[item.nftRouterParamsValue]}${item.denomRouter}${scope.row[item.nativeValue]}`">
+						<span v-if="item.isNeedFormatHash">{{
+								formatTxHash(scope.row[item.displayValue])
+							}} </span>
+									<span v-else-if="item.isFormatAddress">{{
 											formatAddress(scope.row[item.displayValue])
 										}}</span>
-									<span v-else-if="item.isHref">
-							<a v-show="isShowHref(scope.row[item.displayValue])"
-							   class="route_link_style"
-							   :href="`${item.href}/#/address/${scope.row[item.nativeValue]}`"
-							   target="_blank"
-							   rel="noreferrer noopener">
-								{{ formatAddress(scope.row[item.displayValue]) }}
-							</a>
-							<span v-show="!isShowHref(scope.row[item.displayValue])">
-								{{ formatAddress(scope.row[item.displayValue]) }}
-							</span>
+									<span v-else-if="item.isFormatMoniker">{{
+											formatTableMoniker(scope.row[item.displayValue])
+										}}</span>
+									<span v-else>{{ scope.row[item.displayValue] }}</span>
+								</router-link>
+								<span v-else-if="item.isShowTag">
+						<el-tag
+							class="tag_style">{{ formatTypeNotString(scope.row[item.displayValue]) }}</el-tag>
+						<span class="tag_num">{{ setTagNum(scope.row[item.displayValue]) }}</span>
+					</span>
+								<span v-else-if="item.isFormatAddress && !item.isHref">{{
+										formatAddress(scope.row[item.displayValue])
+									}}</span>
+								<span v-else-if="item.isHref">
+						<a v-show="isShowHref(scope.row[item.displayValue])"
+						   class="route_link_style"
+						   :href="`${item.href}/#/address/${scope.row[item.nativeValue]}`"
+						   target="_blank"
+						   rel="noreferrer noopener">
+							{{ formatAddress(scope.row[item.displayValue]) }}
+						</a>
+						<span v-show="!isShowHref(scope.row[item.displayValue])">
+							{{ formatAddress(scope.row[item.displayValue]) }}
 						</span>
-									<span v-else-if="item.isNftHref">
-							<a v-if="testUrl(scope.row[item.displayValue])" :href="scope.row[item.displayValue]" target="_blank">{{ scope.row[item.displayValue] }}</a>
-							<a v-else-if="startStr(scope.row[item.displayValue])" :href="'http://' + scope.row[item.displayValue]"
-							   target="_blank">{{ scope.row[item.displayValue] }}</a>
-							<span v-else>{{ scope.row[item.displayValue] }}</span>
+					</span>
+								<span v-else-if="item.isNftHref">
+						<a v-if="testUrl(scope.row[item.displayValue])" :href="scope.row[item.displayValue]" target="_blank">{{ scope.row[item.displayValue] }}</a>
+						<a v-else-if="startStr(scope.row[item.displayValue])" :href="'http://' + scope.row[item.displayValue]"
+						   target="_blank">{{ scope.row[item.displayValue] }}</a>
+						<span v-else>{{ scope.row[item.displayValue] }}</span>
+					</span>
+								<span v-else-if="item.isShowDenomTip">
+						<span>
+							{{ getAmount(scope.row[item.displayValue]) }}
 						</span>
-									<span v-else-if="item.isShowDenomTip">
-							<span>
-								{{ getAmount(scope.row[item.displayValue]) }}
-							</span>
-							<el-tooltip :manual="isShowDenomTip(scope.row.denomTheme.tooltipContent)"
-										:content="scope.row.denomTheme.tooltipContent" placement="top">
-								<span
-									:style="{ color: scope.row.denomTheme.denomColor }">{{ getAmountUnit(scope.row[item.displayValue]) }}</span>
+						<el-tooltip :manual="isShowDenomTip(scope.row.denomTheme.tooltipContent)"
+									:content="scope.row.denomTheme.tooltipContent" placement="top">
+							<span
+								:style="{ color: scope.row.denomTheme.denomColor }">{{ getAmountUnit(scope.row[item.displayValue]) }}</span>
+						</el-tooltip>
+					</span>
+								<span v-else>{{ scope.row[item.displayValue] || '--' }}</span>
 							</el-tooltip>
-						</span>
-									<span v-else>{{ scope.row[item.displayValue] || '--' }}</span>
-								</el-tooltip>
-							
-							</template>
-						</el-table-column>
-					</el-table>
-				</div>
-			</vue-scroll>
-			
+						
+						</template>
+					</el-table-column>
+				</el-table>
+				</vue-scroll>
+			</div>
 			<div class="list_component_footer" >
 				<div class="token_type_container">
 					<div class="tooltip_box"  v-if="isShowTokenType"  v-show="isShowIbc || isShowHashLock">
@@ -480,6 +480,9 @@ export default {
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
+			@media (max-width: 1150px) {
+				display: none;
+			}
 		}
 		.list_component_footer{
 			display: flex;
@@ -570,15 +573,23 @@ export default {
 			margin-left: 0.06rem;
 			font-size: 0.14rem;
 		}
-		/*.el-table{
-			width: 11.5rem !important;
-		}*/
 		.el-table td, .el-table th.is-leaf {
 			border-bottom: 0.01rem solid rgba(248, 248, 248, 1);
 		}
-		::v-deep.__panel{
-			overflow: hidden !important;
+		::v-deep.scroll_container{
+			.__vuescroll{
+				.__panel{
+					scrollbar-width: none;
+					-ms-overflow-style: none;
+					scrollbar-color: transparent transparent !important;
+					scrollbar-track-color: transparent !important;
+					-ms-scrollbar-track-color: transparent !important;
+					&::-webkit-scrollbar { width: 0 !important }
+				}
+			}
 		}
+		
+		
 		::v-deep.cell {
 			display: flex;
 			align-items: center;
@@ -597,5 +608,7 @@ export default {
 		
 	}
 }
-
+.table_content_container .box-card.scroll_container .__vuescroll .__panel{
+	scrollbar-color: transparent transparent !important;
+}
 </style>

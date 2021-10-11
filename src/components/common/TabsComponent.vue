@@ -141,6 +141,8 @@ export default {
 			border-radius: 0.08rem;
 			outline: none !important;
 			font-size: $s14;
+			padding-left: 0.08rem;
+			padding-right: 0.08rem;
 			&:hover {
 				background: rgba(90, 93, 99, 0.1);
 			}

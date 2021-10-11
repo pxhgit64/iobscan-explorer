@@ -7,6 +7,9 @@ import '../icon/iconfont.css';
 import ElementUI from "element-ui";
 import 'element-ui/lib/theme-chalk/index.css';
 import vuescroll from 'vuescroll';
+import Vuebar from 'vuebar';
+import 'vue-happy-scroll/docs/happy-scroll.css'
+Vue.use(Vuebar);
 //日期选择器
 import lang from 'element-ui/lib/locale/lang/en';
 import locale from 'element-ui/lib/locale';

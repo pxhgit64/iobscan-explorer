@@ -1,6 +1,15 @@
+import VueI18n from 'vue-i18n';
+import prodConfig from "../../../productionConfig";
+const i18n = new VueI18n({
+    locale:prodConfig.lang == 'EN' ? 'EN' : 'CN',
+    messages: {
+        "CN" : require('../../../../lang/CN-Cindy'),
+        "EN" : require('../../../../lang/EN-Cindy')
+    }
+})
 export default  [
     {
-        label:'Address',
+        label:i18n.t('ExplorerLang.table.address'),
         displayValue:'address',
         nativeValue:'address',
         isLink: true,
@@ -9,13 +18,13 @@ export default  [
         isFormatAddress: true,
     },
     {
-        label:'Amount',
+        label:i18n.t('ExplorerLang.table.amount'),
         displayValue:'amount',
         nativeValue:'amount',
         isShowTokenSymbol:true
     },
     {
-        label: 'Shares',
+        label: i18n.t('ExplorerLang.table.shares'),
         displayValue: 'shares',
         nativeValue: 'shares',
         width:251

@@ -1,6 +1,16 @@
+import VueI18n from 'vue-i18n';
+import prodConfig from "../../../productionConfig";
+const i18n = new VueI18n({
+    locale:prodConfig.lang == 'EN' ? 'EN' : 'CN',
+    messages: {
+        "CN" : require('../../../../lang/CN-Cindy'),
+        "EN" : require('../../../../lang/EN-Cindy')
+    }
+})
+
 export default [
     {
-        label:'TxHash',
+        label:i18n.t('ExplorerLang.table.txHash'),
         displayValue:'txHash',
         nativeValue:'txHash',
         isLink:true,
@@ -12,7 +22,7 @@ export default [
         isShowTxStatusIcon:true
     },
     {
-        label:'MsgType',
+        label:i18n.t('ExplorerLang.table.txType'),
         displayValue:'txType',
         nativeValue:'txType',
         isNeedFormat:true,
@@ -21,12 +31,12 @@ export default [
         isShowMoniker:false
     },
     {
-        label:'Amount',
+        label:i18n.t('ExplorerLang.table.amount'),
         displayValue: 'amount',
         isShowTokenSymbol:true
     },
     {
-        label:'Signer',
+        label:i18n.t('ExplorerLang.table.signer'),
         displayValue: 'signer',
         nativeValue: 'signer',
         isLink: true,
@@ -35,7 +45,7 @@ export default [
         linkRoute: '/address',
     },
     {
-        label:'Block',
+        label:i18n.t('ExplorerLang.table.block'),
         displayValue:'blockHeight',
         nativeValue:'blockHeight',
         isLink:true,
@@ -44,7 +54,7 @@ export default [
         isShowMoniker:false
     },
     {
-        label:'Fee',
+        label:i18n.t('ExplorerLang.table.fee'),
         displayValue:'Tx_Fee',
         nativeValue:'Tx_Fee',
         isLink:false,

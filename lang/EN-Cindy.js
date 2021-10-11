@@ -34,10 +34,8 @@ export const ExplorerLang = {
 
     },
     table:{
-        time: 'Time',
         validator:'Validator',
         operatorAddress:'Operator Address',
-        selfBonded:'Self-Bonded',
         ownerAddress:'Owner Address',
         delegatorAddress: 'Delegator Address',
         withdrawAddress: 'Withdraw Address',
@@ -45,7 +43,6 @@ export const ExplorerLang = {
         author: 'Author',
         requestContentId:'Request Context ID',
         nftId:'NFT ID',
-        denomId:'Denom ID',
         denomName:'Denom Name',
         recipient: 'Recipient',
         receiver: 'Receiver',
@@ -58,7 +55,6 @@ export const ExplorerLang = {
         originalOwner: 'Original Owner',
         newOwner: 'New Owner',
         initialDeposit: 'Initial Deposit',
-        proposalID: 'Proposal ID',
         depositor: 'Depositor',
         govOption: 'Option',
         clientID:'Client ID',

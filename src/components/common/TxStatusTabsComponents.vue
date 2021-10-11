@@ -59,8 +59,7 @@ export default {
 			pickerOptions:{
 				disabledDate(time){
 					let _now = Date.now(),
-						dayTimestamp = 7 * 24 * 60 * 60 * 1000,
-						startTime = Number(config.firstBlockTimestamp) - dayTimestamp;
+						startTime = Number(config.firstBlockTimestamp) - 24 * 60 * 60 * 1000;
 					return time.getTime() > _now || time.getTime() < startTime.toString();
 					//大于当前的禁止，小于7天前的禁止
 				}

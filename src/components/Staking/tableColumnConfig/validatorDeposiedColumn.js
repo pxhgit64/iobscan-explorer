@@ -1,13 +1,25 @@
+import VueI18n from 'vue-i18n';
+import prodConfig from "../../../productionConfig";
+const i18n = new VueI18n({
+    locale:prodConfig.lang == 'EN' ? 'EN' : 'CN',
+    messages: {
+        "CN" : require('../../../../lang/CN-Cindy'),
+        "EN" : require('../../../../lang/EN-Cindy')
+    }
+})
+
+
 export default [
     {
-        label:'ID',
+        //todo 这里的翻译有问题
+        label: i18n.t('ExplorerLang.table.proposalId') ,
         displayValue:'id',
         nativeValue:'id',
         isLink:true,
         linkRoute:'/ProposalsDetail'
     },
     {
-        label: 'Proposer',
+        label: i18n.t('ExplorerLang.table.proposer'),
         displayValue: 'proposer',
         nativeValue: 'proposer',
         isLink: true,
@@ -16,18 +28,18 @@ export default [
         linkRoute: '/address',
     },
     {
-        label: 'Deposit',
+        label: i18n.t('ExplorerLang.table.deposit'),
         displayValue: 'deposit',
         nativeValue: 'deposit',
         isShowTokenSymbol:true
     },
     {
-        label: 'Submited',
+        label: i18n.t('ExplorerLang.table.submited'),
         displayValue: 'submited',
         nativeValue: 'submited'
     },
     {
-        label:'TxHash',
+        label: i18n.t('ExplorerLang.table.txHash'),
         displayValue:'hash',
         nativeValue:'hash',
         isLink:true,

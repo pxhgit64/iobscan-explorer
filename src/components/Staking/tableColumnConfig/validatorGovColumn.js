@@ -1,6 +1,17 @@
+
+import VueI18n from 'vue-i18n';
+import prodConfig from "../../../productionConfig";
+const i18n = new VueI18n({
+    locale:prodConfig.lang == 'EN' ? 'EN' : 'CN',
+    messages: {
+        "CN" : require('../../../../lang/CN-Cindy'),
+        "EN" : require('../../../../lang/EN-Cindy')
+    }
+})
+
 export default [
     {
-        label:'TxHash',
+        label:i18n.t('ExplorerLang.table.txHash'),
         displayValue:'txHash',
         nativeValue:'txHash',
         isLink:true,
@@ -12,7 +23,7 @@ export default [
         isShowTxStatusIcon:true
     },
     {
-        label:'MsgType',
+        label:i18n.t('ExplorerLang.table.txType'),
         displayValue:'txType',
         nativeValue:'txType',
         isNeedFormat:true,
@@ -21,19 +32,19 @@ export default [
         isShowMoniker:false
     },
     {
-        label: 'Proposal ID',
+        label: i18n.t('ExplorerLang.table.proposalID'),
         displayValue:'proposalId',
         nativeValue:'proposalId',
         isLink: true,
         linkRoute: '/ProposalsDetail'
     },
     {
-        label:'Proposal Type',
+        label: i18n.t('ExplorerLang.table.proposalType'),
         displayValue: 'proposalType',
         nativeValue: 'proposalType'
     },
     {
-        label:'Signer',
+        label: i18n.t('ExplorerLang.table.signer'),
         displayValue: 'signer',
         nativeValue: 'signer',
         isLink: true,

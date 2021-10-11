@@ -191,7 +191,6 @@ export const needAddColumn = {
             isFormatAddress: true,
         },
     ],
-    //TODO zhangjinbiao 现在返回的列表中并没有下面这些数据，需要从msg中取
     create_validator: [
         {
             label: i18n.t('ExplorerLang.table.selfBonded'),
