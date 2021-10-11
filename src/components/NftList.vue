@@ -164,20 +164,21 @@ export default {
       this.getNftsByFilter()
     },
     handleSearchClick(input) {
+	
 		this.owner = input
       this.currentPageNum = 1
       this.getNftsByFilterCount()
       this.getNftsByFilter()
     },
     async getNftsByFilter() {
-    	
-      if (Tools.isBech32(this.input)) {
+		this.isNftListLoading = true
+	
+		if (Tools.isBech32(this.input)) {
         this.owner = this.input
       }
       if (!this.owner) {
         this.tokenId = this.input
       }
-		this.isNftListLoading = true
       try {
         let nftData = await getNfts(
           this.currentPageNum,

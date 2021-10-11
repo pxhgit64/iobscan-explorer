@@ -921,7 +921,7 @@ export class TxHelper {
 
 			}
         });
-		allTxType.push(tansferObj,stakingObj,iServiceObj,nftObj,coinswapObj,identityObj,ibcObj,htlcObj,crossChainObj,oracleObj,randomObj,recordObj,assetObj,govObj,othersObj);
+		allTxType.push(tansferObj, nftObj, identityObj, ibcObj, stakingObj, coinswapObj, htlcObj, assetObj, govObj, oracleObj, randomObj, recordObj, iServiceObj,crossChainObj,othersObj);
         allTxType = allTxType.filter(item => item.children.length)
         return allTxType
     }

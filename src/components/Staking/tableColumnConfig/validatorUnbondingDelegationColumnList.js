@@ -1,6 +1,16 @@
+import VueI18n from 'vue-i18n';
+import prodConfig from "../../../productionConfig";
+const i18n = new VueI18n({
+    locale:prodConfig.lang == 'EN' ? 'EN' : 'CN',
+    messages: {
+        "CN" : require('../../../../lang/CN-Cindy'),
+        "EN" : require('../../../../lang/EN-Cindy')
+    }
+})
+
 export default [
     {
-        label:'Address',
+        label:i18n.t('ExplorerLang.table.address'),
         displayValue:'address',
         nativeValue:'address',
         isLink:true,
@@ -9,13 +19,13 @@ export default [
         isFormatAddress: true,
     },
     {
-        label:'Amount',
+        label:i18n.t('ExplorerLang.table.amount'),
         displayValue:'amount',
         nativeValue:'amount',
         isShowTokenSymbol:true
     },
     {
-        label:'Block',
+        label:i18n.t('ExplorerLang.table.block'),
         displayValue:'block',
         nativeValue:'block',
         isLink:true,
@@ -24,7 +34,7 @@ export default [
         isShowMoniker:false
     },
     {
-        label:'End Time',
+        label:i18n.t('ExplorerLang.table.endTime'),
         displayValue:'end_time',
         width:150
     },

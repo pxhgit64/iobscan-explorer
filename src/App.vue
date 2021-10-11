@@ -59,7 +59,8 @@ export default {
   flex-direction: column;
   width: 100%;
   height: 100%;
-}
+	-webkit-tap-highlight-color:rgba(0,0,0,0);
+ }
   html {
     width: 100%;
     height: 100%;
