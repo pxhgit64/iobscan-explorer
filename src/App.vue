@@ -168,4 +168,15 @@ export default {
   .el-table__header-wrapper,.el-table__body-wrapper {
     overflow: visible !important;
   }
+.el-table__row.statistics-blue-row {
+	background-color: $tableTrColor !important;
+}
+.statistics-white-row{
+	&:hover{
+		background-color: $tableTrColor !important;
+	}
+}
+.el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell{
+	background: transparent !important;
+}
 </style>

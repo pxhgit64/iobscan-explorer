@@ -10,96 +10,140 @@
 			<div class="scroll_container" style="margin-bottom: 0.1rem">
 				<vue-scroll :ops="opsConfig">
 					<el-table
-					:header-cell-style="{ background: '#fafafa' }"
-					:style="{width: `${tableWidth}`}"
-					v-if="!isLoading"
-					:data="tableList"
-					stripe
-					:empty-text="emptyText"
-					ref="listTable">
-					<el-table-column
-						v-for="(item,index) in columns"
-						:key="item.label"
-						:prop="item.displayValue"
-						:label="item.label"
-						:width="item.width ? item.width : 'auto'">
-						<template slot="header" slot-scope="scope">
-							<span>{{ item.label }}</span>
-							<el-tooltip v-show="item.isShowTokenSymbol" :content="tokenSymbol"
-										placement="top">
-								<i class="iconfont iconyiwen yiwen_icon"/>
-							</el-tooltip>
-						</template>
-						<template slot-scope="scope">
-							<!--						blockChain-->
-							<div class="status" v-show="item.isShowTxStatusIcon">
-								<img class="status_icon"
-									 :src="require(`../../assets/${scope.row.status==TX_STATUS.success?'success.png':'failed.png'}`)"/>
-							</div>
-							
-							<el-tooltip :manual="setManual(!item.isNeedFormat,scope.row[item.displayValue])"
-										:content="formatStr(scope.row[item.nativeValue])">
-								<router-link class="link_style"
-											 v-if="item.isLink &&  scope.row[item.displayValue] && scope.row[item.displayValue] !== '--'"
-											 :to="!item.isNft ? `${item.linkRoute}/${scope.row[item.nativeValue]}` : `${item.linkRoute}${scope.row[item.nftRouterParamsValue]}${item.denomRouter}${scope.row[item.nativeValue]}`">
-						<span v-if="item.isNeedFormatHash">{{
-								formatTxHash(scope.row[item.displayValue])
-							}} </span>
-									<span v-else-if="item.isFormatAddress">{{
-											formatAddress(scope.row[item.displayValue])
-										}}</span>
-									<span v-else-if="item.isFormatMoniker">{{
-											formatTableMoniker(scope.row[item.displayValue])
-										}}</span>
-									<span v-else>{{ scope.row[item.displayValue] }}</span>
-								</router-link>
-								<span v-else-if="item.isShowTag">
-						<el-tag
-							class="tag_style">{{ formatTypeNotString(scope.row[item.displayValue]) }}</el-tag>
-						<span class="tag_num">{{ setTagNum(scope.row[item.displayValue]) }}</span>
-					</span>
-								<span v-else-if="item.isFormatAddress && !item.isHref">{{
-										formatAddress(scope.row[item.displayValue])
-									}}</span>
-								<span v-else-if="item.isHref">
-						<a v-show="isShowHref(scope.row[item.displayValue])"
-						   class="route_link_style"
-						   :href="`${item.href}/#/address/${scope.row[item.nativeValue]}`"
-						   target="_blank"
-						   rel="noreferrer noopener">
-							{{ formatAddress(scope.row[item.displayValue]) }}
-						</a>
-						<span v-show="!isShowHref(scope.row[item.displayValue])">
-							{{ formatAddress(scope.row[item.displayValue]) }}
-						</span>
-					</span>
-								<span v-else-if="item.isNftHref">
-						<a v-if="testUrl(scope.row[item.displayValue])" :href="scope.row[item.displayValue]" target="_blank">{{ scope.row[item.displayValue] }}</a>
-						<a v-else-if="startStr(scope.row[item.displayValue])" :href="'http://' + scope.row[item.displayValue]"
-						   target="_blank">{{ scope.row[item.displayValue] }}</a>
-						<span v-else>{{ scope.row[item.displayValue] }}</span>
-					</span>
-								<span v-else-if="item.isShowDenomTip">
-						<span>
-							{{ getAmount(scope.row[item.displayValue]) }}
-						</span>
-						<el-tooltip :manual="isShowDenomTip(scope.row.denomTheme.tooltipContent)"
-									:content="scope.row.denomTheme.tooltipContent" placement="top">
-							<span
-								:style="{ color: scope.row.denomTheme.denomColor }">{{ getAmountUnit(scope.row[item.displayValue]) }}</span>
-						</el-tooltip>
-					</span>
-								<span v-else>{{ scope.row[item.displayValue] || '--' }}</span>
-							</el-tooltip>
+						:row-class-name="listTableRowClassName"
+						:style="{width: `${tableWidth}`}"
+						v-if="!isLoading"
+						:data="tableList"
+						stripe
+						:empty-text="emptyText"
+						ref="listTable">
 						
-						</template>
-					</el-table-column>
-				</el-table>
+						<el-table-column
+							v-for="(item,index) in columns"
+							:key="item.label"
+							:prop="item.displayValue"
+							:label="item.label"
+							:sort-method="(a,b) => {return tableSort(item.sortName,a,b)}"
+							:width="item.width ? item.width : 'auto'"
+							:sort-orders="item.isNeedSort ? ['descending', 'ascending'] :[]"
+							:sortable="item.isNeedSort">
+							<template slot="header" slot-scope="scope">
+								<span>{{ item.label }}</span>
+								<el-tooltip v-show="item.isShowTokenSymbol"
+											:content="tokenSymbol"
+											placement="top">
+									<i class="iconfont iconyiwen yiwen_icon"/>
+								</el-tooltip>
+							</template>
+							<template slot-scope="scope">
+								<!--						blockChain-->
+								<div class="status" v-show="item.isShowTxStatusIcon">
+									<img class="status_icon"
+										 :src="require(`../../assets/${scope.row.status==TX_STATUS.success?'success.png':'failed.png'}`)"/>
+								</div>
+								
+								<el-tooltip :manual="setManual(!item.isNeedFormat,scope.row[item.displayValue])"
+											:content="formatStr(scope.row[item.nativeValue])">
+<!--									-->
+									<router-link class="link_style"
+												 v-if="item.isLink &&  scope.row[item.displayValue] && scope.row[item.displayValue] !== '--'"
+												 :to="!item.isNft ? `${item.linkRoute}/${scope.row[item.nativeValue]}` : `${item.linkRoute}${scope.row[item.nftRouterParamsValue]}${item.denomRouter}${scope.row[item.nativeValue]}`">
+										
+										<span v-if="item.isNeedFormatHash">{{formatTxHash(scope.row[item.displayValue]) }} </span>
+										
+										<span v-else-if="item.isFormatAddress">{{formatAddress(scope.row[item.displayValue]) }}</span>
+										
+										<span v-else-if="item.isFormatMoniker">{{formatTableMoniker(scope.row[item.displayValue]) }}</span>
+										
+										<span v-else>{{ scope.row[item.displayValue] }}</span>
+										
+									</router-link>
+<!--									-->
+									<span v-else-if="item.isShowTag">
+										
+										<el-tag class="tag_style">{{ formatTypeNotString(scope.row[item.displayValue]) }}</el-tag>
+										
+										<span class="tag_num">{{ setTagNum(scope.row[item.displayValue]) }}</span>
+										
+									</span>
+									
+<!--									-->
+									<span v-else-if="item.isFormatAddress && !item.isHref">{{formatAddress(scope.row[item.displayValue]) }}</span>
+<!--									-->
+									<span v-else-if="item.isHref">
+										
+										<a v-show="isShowHref(scope.row[item.displayValue])"
+										   class="route_link_style"
+										   :href="`${item.href}/#/address/${scope.row[item.nativeValue]}`"
+										   target="_blank"
+										   rel="noreferrer noopener">{{ formatAddress(scope.row[item.displayValue]) }}</a>
+										
+										<span v-show="!isShowHref(scope.row[item.displayValue])">{{ formatAddress(scope.row[item.displayValue]) }}</span>
+										
+									</span>
+<!--									-->
+									<span v-else-if="item.isNftHref">
+										
+										<a v-if="testUrl(scope.row[item.displayValue])" :href="scope.row[item.displayValue]"
+										   target="_blank">{{ scope.row[item.displayValue] }}</a>
+										
+										<a v-else-if="startStr(scope.row[item.displayValue])"
+										   :href="'http://' + scope.row[item.displayValue]"
+										   target="_blank">{{ scope.row[item.displayValue] }}</a>
+										
+										<span v-else>{{ scope.row[item.displayValue] }}</span>
+										
+									</span>
+<!--									-->
+									<span v-else-if="item.isShowDenomTip">
+										
+										<span>{{ getAmount(scope.row[item.displayValue]) }}</span>
+										
+										<el-tooltip :manual="isShowDenomTip(scope.row.denomTheme.tooltipContent)"
+													:content="scope.row.denomTheme.tooltipContent" placement="top">
+											
+											<span :style="{ color: scope.row.denomTheme.denomColor }">{{getAmountUnit(scope.row[item.displayValue]) }}</span>
+											
+										</el-tooltip>
+										
+									</span>
+<!--									-->
+									<span v-else-if="item.isShowIndex">{{scope.$index+1}}</span>
+<!--									-->
+									<div v-else-if="item.isShowMonikerImg" style="display: flex;
+										align-items: center;
+										position: relative">
+										<span v-show="scope.row[item.isDisplayIconValue]" class="avatar"
+											  style="width: 0.3rem;
+											  height: 0.3rem;
+											  border-radius: 0.3rem;
+											  overflow: hidden;
+											  display: flex;
+											  align-items: center;
+											  justify-content: center"
+										>{{scope.row[item.isDisplayIconValue] || '--'}}</span>
+										<img v-show="scope.row[item.imgUrlValue]"
+											 style="width: 0.3rem;height: 0.3rem;border-radius: 0.3rem;overflow: hidden;position: absolute"
+											 :src="scope.row[item.imgUrlValue] ? scope.row[item.imgUrlValue] : ''"/>
+										<el-tooltip popper-class="tooltip" :disabled="!scope.row.isTooltip"
+													:content="scope.row.monikerValue" placement="top">
+											<router-link style="margin-left: 0.2rem;" :to="'staking/' + scope.row.operatorAddress"
+														 class="link_style">{{ scope.row.moniker }}
+											</router-link>
+										</el-tooltip>
+									</div>
+<!--									-->
+									<span v-else>{{ scope.row[item.displayValue] == 0 ? 0 : scope.row[item.displayValue] || '--' }}</span>
+									
+								</el-tooltip>
+							</template>
+						</el-table-column>
+					</el-table>
 				</vue-scroll>
 			</div>
-			<div class="list_component_footer" >
+			<div class="list_component_footer">
 				<div class="token_type_container">
-					<div class="tooltip_box"  v-if="isShowTokenType"  v-show="isShowIbc || isShowHashLock">
+					<div class="tooltip_box" v-if="isShowTokenType" v-show="isShowIbc || isShowHashLock">
 						<span class="tooltip_title">Cross-chain TokenType:</span>
 						<span class="tooltip_title_box">
                     		<span class="tooltip_title_IBC" v-show="isShowIbc">IBC</span>
@@ -125,6 +169,7 @@ import MPagination from "./MPagination";
 import Tools from "../../util/Tools";
 import {formatMoniker, getConfig} from "../../helper/IritaHelper";
 import prodConfig from "../../productionConfig"
+import BigNumber from 'bignumber.js';
 import {
 	TX_TYPE,
 	TX_STATUS,
@@ -141,7 +186,7 @@ export default {
 	components: {MPagination, Loading},
 	data() {
 		return {
-			isShowFee : prodConfig.fee.isShowFee || false,
+			isShowFee: prodConfig.fee.isShowFee || false,
 			isShowProposer: prodConfig.blockList.proposer || false,
 			tableList: [],
 			columns: [],
@@ -155,18 +200,18 @@ export default {
 			isShowIbc: false,
 			isShowHashLock: false,
 			tableListWidth: [],
-			opsConfig:{
+			opsConfig: {
 				rail: {
-					opacity:1,
+					opacity: 1,
 					background: '#E6E6E6',
 					// border: '1px solid #cecece',
 					size: '10px',
 				},
-				bar:{
-					keepShow:true,
+				bar: {
+					keepShow: true,
 					size: '10px',
 					minSize: 0.1,
-					background:'#cdcdcd',
+					background: '#cdcdcd',
 				},
 				vuescroll: {
 					wheelScrollDuration: 0,
@@ -198,17 +243,17 @@ export default {
 			type: Array,
 			default: []
 		},
-		emptyText:{
-			type:String,
-			default:''
+		emptyText: {
+			type: String,
+			default: ''
 		},
-		isShowTokenType:{
-			type:Boolean,
-			default:false
+		isShowTokenType: {
+			type: Boolean,
+			default: false
 		},
-		tableWidth:{
-			type:String,
-			default:'auto'
+		tableWidth: {
+			type: String,
+			default: 'auto'
 		}
 	},
 	watch: {
@@ -216,10 +261,10 @@ export default {
 			handler(newValue, oldValue) {
 				this.columns = []
 				this.columns = newValue
-				if(!this.isShowFee){
+				if (!this.isShowFee) {
 					this.deleteColumnFee()
 				}
-				if(!this.isShowProposer){
+				if (!this.isShowProposer) {
 					this.deleteProposer()
 				}
 				// this.getTableWidth()
@@ -244,6 +289,53 @@ export default {
 		}
 	},
 	methods: {
+		percentSort(a, b, c) {
+			a = Number(a.substring(0, a.length - c))
+			b = Number(b.substring(0, b.length - c))
+			return a - b
+		},
+		bigNumberSort(a, b, c) {
+			// a = a.substring(0, a.length - c).replace(/,/g, '')
+			// b = b.substring(0, b.length - c).replace(/,/g, '')
+			a = new BigNumber(a || 0).toNumber()
+			b = new BigNumber(b || 0).toNumber()
+			return a - b
+		},
+		tableSort(name,a, b) {
+			/*由于组件的问题，排序逻辑写在了子组件里，目前这块逻辑只针对验证人列表*/
+			switch (name){
+				case 'commissionSort':
+					return this.percentSort(a.commission, b.commission, 2)
+				case 'bondedTokenSort':
+					return this.bigNumberSort(a.bondedToken, b.bondedToken, 5)
+				case 'votingPowerSort':
+					return this.percentSort(a.votingPower, b.votingPower, 1)
+				case 'uptimeSort':
+					return this.percentSort(a.uptime, b.uptime, 1)
+				case 'selfBondSort':
+					return this.bigNumberSort(a.selfBond, b.selfBond, 5)
+				case 'unbondingHeight':
+					return this.bigNumberSort(a.unbondingHeight, b.unbondingHeight, 0)
+				case 'moniker':
+					return this.strSort(a, b)
+			}
+		},
+		strSort(a,b){
+			if(a?.monikerValue && b.monikerValue){
+				if(a.monikerValue > b.monikerValue){
+					return 1
+				}else {
+					return -1
+				}
+			}
+		},
+		listTableRowClassName({row,rowIndex}){
+			if (rowIndex%2==0) {
+				return 'statistics-blue-row';
+			} else {
+				return 'statistics-white-row';
+			}
+		},
 		setManual(value, data) {
 			if (!value || Array.isArray(data)) {
 				if (data?.length <= 1) {
@@ -409,24 +501,24 @@ export default {
 				return item?.label !== this.$t('ExplorerLang.table.proposer')
 			})
 		},
-		async getAllTokens(){
+		async getAllTokens() {
 			let allTokens = await fetchAllTokens()
-			if(allTokens?.supply?.length){
-				let ibcTokens = [],htltTokens = []
-				ibcTokens = allTokens.supply.filter( item => {
-					if(item?.denom && item.denom.startsWith('ibc')){
+			if (allTokens?.supply?.length) {
+				let ibcTokens = [], htltTokens = []
+				ibcTokens = allTokens.supply.filter(item => {
+					if (item?.denom && item.denom.startsWith('ibc')) {
 						return item
 					}
 				})
-				htltTokens = allTokens.supply.filter( item => {
-					if(item?.denom && item.denom.startsWith('htlt')){
+				htltTokens = allTokens.supply.filter(item => {
+					if (item?.denom && item.denom.startsWith('htlt')) {
 						return item
 					}
 				})
-				if(ibcTokens?.length){
+				if (ibcTokens?.length) {
 					this.isShowIbc = true
 				}
-				if(htltTokens?.length){
+				if (htltTokens?.length) {
 					this.isShowHashLock = true
 				}
 			}
@@ -453,10 +545,10 @@ export default {
 	mounted() {
 		this.columns = []
 		this.columns = this.columnList
-		if(!this.isShowFee){
+		if (!this.isShowFee) {
 			this.deleteColumnFee()
 		}
-		if(!this.isShowProposer){
+		if (!this.isShowProposer) {
 			this.deleteProposer()
 		}
 		this.tableList = this.listData
@@ -467,6 +559,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
 .list_table_content_container {
 	.box-card {
 		box-sizing: border-box;
@@ -476,6 +569,10 @@ export default {
 		box-shadow: 0 0.03rem 0.06rem 0 #EDEDED;
 		margin-bottom: 0.2rem;
 		background: #fff;
+		.avatar {
+			background: $bg_avatar;
+		}
+		
 		.header_content {
 			display: flex;
 			align-items: center;
@@ -484,22 +581,26 @@ export default {
 				display: none;
 			}
 		}
-		.list_component_footer{
+		
+		.list_component_footer {
 			display: flex;
 			justify-content: space-between;
 			padding: 0.2rem 0;
-			.token_type_container{
+			
+			.token_type_container {
 				display: flex;
 				align-items: center;
-				.tooltip_box{
+				
+				.tooltip_box {
 					display: flex;
 					align-items: center;
 					background-color: white;
 					padding: 0.05rem 0.2rem;
 					font-size: $s12;
 					color: #8d8b8b;
-					border:0.01rem solid rgba(231, 234, 243, 1);
+					border: 0.01rem solid rgba(231, 234, 243, 1);
 					border-radius: 0.08rem;
+					
 					.tooltip_title {
 						margin-right: 0.24rem;
 					}
@@ -543,6 +644,7 @@ export default {
 				}
 			}
 		}
+	
 		.el-card__body {
 			width: 100%;
 			height: 100%;
@@ -573,18 +675,40 @@ export default {
 			margin-left: 0.06rem;
 			font-size: 0.14rem;
 		}
+		::v-deep.el-table{
+			.caret-wrapper{
+				box-sizing: border-box;
+				top:0.02rem;
+				display: inline-block !important;
+				.sort-caret{
+					.descending{
+						background: blue !important;
+					}
+				}
+			}
+		}
+		::v-deep.el-table .descending .sort-caret.descending {
+			border-top-color: $theme_c;
+		}
+		::v-deep.el-table .ascending .sort-caret.ascending {
+			border-bottom-color: $theme_c;
+		}
 		.el-table td, .el-table th.is-leaf {
 			border-bottom: 0.01rem solid rgba(248, 248, 248, 1);
 		}
-		::v-deep.scroll_container{
-			.__vuescroll{
-				.__panel{
+		
+		::v-deep.scroll_container {
+			.__vuescroll {
+				.__panel {
 					scrollbar-width: none;
 					-ms-overflow-style: none;
 					scrollbar-color: transparent transparent !important;
 					scrollbar-track-color: transparent !important;
 					-ms-scrollbar-track-color: transparent !important;
-					&::-webkit-scrollbar { width: 0 !important }
+					
+					&::-webkit-scrollbar {
+						width: 0 !important
+					}
 				}
 			}
 		}
@@ -593,6 +717,7 @@ export default {
 		::v-deep.cell {
 			display: flex;
 			align-items: center;
+			
 			.status {
 				display: flex;
 				align-items: center;
@@ -608,7 +733,8 @@ export default {
 		
 	}
 }
-.table_content_container .box-card.scroll_container .__vuescroll .__panel{
+
+.table_content_container .box-card.scroll_container .__vuescroll .__panel {
 	scrollbar-color: transparent transparent !important;
 }
 </style>

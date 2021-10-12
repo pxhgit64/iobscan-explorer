@@ -2210,15 +2210,19 @@ a {
 					font-size: 0.14rem;
 					background-color: $bg_white_c;
 				}
-				
+				.address_tab_item:first-child{
+					border-radius: 0.08rem 0 0 0.08rem;
+				}
 				.address_tab_item:last-child {
 					border-right: 0.01rem solid $bd_first_c;
+					border-radius:  0 0.08rem  0.08rem 0 ;
 				}
 			}
 			
 			.active_content {
 				background: $bg_button_c !important;
 				color: $t_white_c;
+				border: 0.01rem solid transparent !important;
 			}
 		}
 		

@@ -8,10 +8,18 @@
 			<div class="staking_tab_content">
 				<m-tabs class="staking_m_tabs" :data="stakingStatusTitleList" :chose="selectStakingStatus"></m-tabs>
 			</div>
-			<div class="staking_table_list_content">
-				<list-component
-					:is-loading="isValidatorListLoading"
-				></list-component>
+			<list-component
+				:tableWidth="'11.5rem'"
+				:empty-text="$t('ExplorerLang.table.emptyDescription')"
+				:token-symbol="mainTokenSymbol"
+				:is-loading="isValidatorListLoading"
+				:column-list="validatorColumnList"
+				:list-data="tableData"
+				:pagination="{pageSize:Number(pageSize),dataCount:count,pageNum:Number(pageNum)}"
+				@tableSort='sortTable'
+			></list-component>
+<!--			<div class="staking_table_list_content">
+				
 				<el-table class="sort_table table_overflow_x" :empty-text="$t('ExplorerLang.table.emptyDescription')"
 						  :data="tableData">
 					<el-table-column key="index" align="center" type="index" class="index"
@@ -89,8 +97,8 @@
 							</el-tooltip>
 						</template>
 					</el-table-column>
-					<!-- <el-table-column key="delegators" class-name="delegators" v-if="titleStatus !== 'Jailed'" min-width="ColumnMinWidth.delegators" align="center" prop="delegatorNum" width="117" :label="$t('ExplorerLang.table.delegators')" sortable :sort-orders="['descending', 'ascending']"> </el-table-column> -->
-					<!-- <el-table-column key="bondHeight" class-name="bondHeight" align="center" prop="bondHeight" :min-width="ColumnMinWidth.bondHeight" :label="$t('ExplorerLang.table.bondHeight')" sortable :sort-orders="['descending', 'ascending']"> </el-table-column> -->
+					&lt;!&ndash; <el-table-column key="delegators" class-name="delegators" v-if="titleStatus !== 'Jailed'" min-width="ColumnMinWidth.delegators" align="center" prop="delegatorNum" width="117" :label="$t('ExplorerLang.table.delegators')" sortable :sort-orders="['descending', 'ascending']"> </el-table-column> &ndash;&gt;
+					&lt;!&ndash; <el-table-column key="bondHeight" class-name="bondHeight" align="center" prop="bondHeight" :min-width="ColumnMinWidth.bondHeight" :label="$t('ExplorerLang.table.bondHeight')" sortable :sort-orders="['descending', 'ascending']"> </el-table-column> &ndash;&gt;
 					<el-table-column key="unbondingHeight" align="center" v-if="titleStatus !== 'Active'"
 									 prop="unbondingHeight" :min-width="ColumnMinWidth.unbondingHeight"
 									 :label="$t('ExplorerLang.table.unbondingHeight')" sortable
@@ -100,7 +108,7 @@
 					<m-pagination :page-size="pageSize" :total="count" :page="pageNum"
 								  :page-change="pageChange"></m-pagination>
 				</div>
-			</div>
+			</div>-->
 		</div>
 	</div>
 </template>
@@ -115,20 +123,21 @@ import productionConfig from '@/productionConfig.js';
 import {getMainToken, converCoin, formatMoniker} from '@/helper/IritaHelper';
 import {ColumnMinWidth, monikerNum} from '@/constant';
 import ListComponent from "../common/ListComponent";
-
+import validatorListColumn from "./tableColumnConfig/validatorListColumn";
 export default {
 	name: 'Staking',
 	components: {ListComponent, MTabs, MPagination},
 	props: {},
 	data() {
 		return {
+			validatorColumnList:[],
 			isValidatorListLoading: false,
 			productionConfig,
 			decimalNamber: 2,
 			percentum: 4,
 			ColumnMinWidth,
 			count: 0,
-			pageSize: 10,
+			pageSize: 500,
 			pageNum: 1,
 			titleStatus: this.$t('ExplorerLang.staking.status.active'),
 			stakingStatusTitleList: [
@@ -159,6 +168,12 @@ export default {
 		this.getValidatorsList(this.stakingStatusTitleList[0].name)
 	},
 	mounted() {
+		this.validatorColumnList = validatorListColumn[this.stakingStatusTitleList[0].name]
+		if(!productionConfig.table.votingPower){
+			this.validatorColumnList = this.validatorColumnList.filter( item => {
+				return item.displayValue !== "votingPower"
+			})
+		}
 		this.setMainToken();
 	},
 	methods: {
@@ -203,6 +218,12 @@ export default {
 			this.pageNum = 1
 			this.tableData = []
 			this.count = 0
+			this.validatorColumnList = validatorListColumn[v.name]
+			if(!productionConfig.table.votingPower){
+				this.validatorColumnList = this.validatorColumnList.filter( item => {
+					return item.displayValue !== "votingPower"
+				})
+			}
 			this.getValidatorsList(v.name)
 		},
 		pageChange(pageNum) {
@@ -213,6 +234,7 @@ export default {
 			this.getValidatorsList(this.type)
 		},
 		async getValidatorsList(type) {
+			this.isValidatorListLoading = true
 			let mainToken = await getMainToken();
 			try {
 				let res = await getValidatorsListApi(this.pageNum, this.pageSize, true, type)
@@ -256,7 +278,9 @@ export default {
 				} else {
 					this.tableData = []
 				}
+				this.isValidatorListLoading = false
 			} catch (err) {
+				this.isValidatorListLoading = false
 				console.error(err);
 			}
 		},

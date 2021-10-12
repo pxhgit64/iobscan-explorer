@@ -14,7 +14,8 @@ let title = prodConfig.title || '',
     button_color_common = ((prodConfig.button || {}).color || {}).common || 'white',
     button_bgColor_common = ((prodConfig.button || {}).bgColor || {}).common || '#3264FD';
     background_color_common = prodConfig.background || '#F8F8F8';
-    tag_color_common = prodConfig.tagBackground ||'rgba(239, 243, 255, 1)'
+    tag_color_common = prodConfig.tagBackground ||'rgba(239, 243, 255, 1)';
+    table_tr_color_common = prodConfig.tableTrColor ||'rgba(50, 100, 253, 0.3)';
 
 replaceEnv([
         "./public/index.html",
@@ -32,6 +33,7 @@ replaceEnv([
         button_bgColor_common : button_bgColor_common,
         background_color_common : background_color_common,
         tag_color_common : tag_color_common,
+        table_tr_color : table_tr_color_common,
     }
 );
 
