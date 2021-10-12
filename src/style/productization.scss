@@ -12,7 +12,7 @@ $bg_cancel_c: ${background_color_common};		    //通用背景色
 $tag_c:${tag_color_common};                                    //交易列表标签色
 // background-color
 $bg_button_c: #3264FD;
-
+$table_tr_c: ${table_tr_color}
 :root {
     --bgColor:  #{$theme_c};
 }
