@@ -104,6 +104,7 @@ export async function getAmountByTx (message, events, isShowDenom) {
 				break;
 			case TX_TYPE.delegate:
 				let delegateAmount = msg &&  msg.amount ? await converCoin(msg.amount) : null
+				console.log('不会是这里没有执行吧')
 				amount = delegateAmount && delegateAmount.amount  && delegateAmount.denom ? isShowDenom ? `${Tools.toDecimal(delegateAmount.amount,amountDecimals)} ${delegateAmount.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(delegateAmount.amount,amountDecimals)}` : '--'
 				break;
 			case TX_TYPE.begin_redelegate:

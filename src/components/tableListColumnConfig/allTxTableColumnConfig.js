@@ -172,7 +172,7 @@ export const needAddColumn = {
             displayValue: 'amount',
         },
         {
-            label: i18n.t('ExplorerLang.transactionInformation.staking.depositor'),
+            label: i18n.t('ExplorerLang.table.depositor'),
             displayValue: 'signer',
             nativeValue: 'signer',
             isLink: true,

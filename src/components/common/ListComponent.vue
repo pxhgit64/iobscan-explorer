@@ -133,6 +133,12 @@
 										</el-tooltip>
 									</div>
 <!--									-->
+									<div v-else-if="item.isProposalStatus">
+										<proposal-status-component
+											:status="scope.row[item.proposalStatus]"
+											:final-votes="scope.row[item.finalVotes]"></proposal-status-component>
+									</div>
+<!--									-->
 									<span v-else>{{ scope.row[item.displayValue] == 0 ? 0 : scope.row[item.displayValue] || '--' }}</span>
 									
 								</el-tooltip>
@@ -180,10 +186,11 @@ import {
 	COSMOS_ADDRESS_PREFIX, TX_TYPE_DISPLAY
 } from '../../constant';
 import {fetchAllTokens} from "../../service/api";
+import ProposalStatusComponent from "../Gov/ProposalStatusComponent";
 
 export default {
 	name: "ListComponent",
-	components: {MPagination, Loading},
+	components: {ProposalStatusComponent, MPagination, Loading},
 	data() {
 		return {
 			isShowFee: prodConfig.fee.isShowFee || false,
