@@ -118,7 +118,7 @@ const router = new Router({
 	]
 })
 router.beforeEach((to,from,next) => {
-	if(to){
+	if(to.path !== '/txs'){
 		sessionStorage.removeItem('lastChoiceMsgModelIndex')
 		sessionStorage.removeItem('lastChoiceMsgModelIndex')
 		sessionStorage.removeItem('txTimeRange')

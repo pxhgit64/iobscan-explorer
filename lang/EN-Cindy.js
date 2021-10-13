@@ -4,7 +4,7 @@ export const ExplorerLang = {
         allTxStatus:'All Status',
         success:'Success',
         failed:'Failed',
-        allTxType:'All Type',
+        allTxType:'All',
         selectDate:'Select Date',
         copied:'Copied',
         copyFailed:'Failed',
