@@ -34,8 +34,10 @@ export const ExplorerLang = {
 
     },
     table:{
+        time: 'Time',
         validator:'Validator',
         operatorAddress:'Operator Address',
+        selfBonded:'Self-Bonded',
         ownerAddress:'Owner Address',
         delegatorAddress: 'Delegator Address',
         withdrawAddress: 'Withdraw Address',
@@ -43,6 +45,7 @@ export const ExplorerLang = {
         author: 'Author',
         requestContentId:'Request Context ID',
         nftId:'NFT ID',
+        denomId:'Denom ID',
         denomName:'Denom Name',
         recipient: 'Recipient',
         receiver: 'Receiver',
@@ -82,7 +85,6 @@ export const ExplorerLang = {
         votingPower: 'Voting Power',
         pubKey: 'PubKey',
         denom: 'Denom',
-        denomId: 'Denom ID',
         owner: 'Owner',
         tokenName: 'NFT Name',
         tokenId: 'NFT ID',
@@ -115,7 +117,6 @@ export const ExplorerLang = {
         commission: 'Commission',
         bondedTokens: 'Bonded_Tokens',
         uptime: 'Uptime',
-        selfBonded: 'Self-Bonded',
         delegators: 'Delegators',
         bondHeight: 'Bond_Height',
         unbondingHeight: 'Unbonding_Height', // 新增
@@ -147,7 +148,6 @@ export const ExplorerLang = {
         votingEndTime: 'Voting Endtime',
         voter: 'Voter',
         voteOption: 'Vote Option',
-        time: 'Time',
         proposalType: 'Proposal_Type',
         proposalID: 'Proposal_ID',
         proposalTitle: 'Proposal_Title',
@@ -161,7 +161,8 @@ export const ExplorerLang = {
         suffix: 'ago',
         running: 'Running',
         paused: 'Paused',
-        completed: 'Completed'
+        completed: 'Completed',
+        creatorName:'Creator'
     },
     unit:{
         ellipsis:' ,...',
@@ -238,12 +239,16 @@ export const ExplorerLang = {
         unbonded:'Jailed',
     },
     nftAsset:{
-        assets: 'NFT',
+        mainTitle:'NFT List',
+        subTitle:'NFT',
+        subTitles:'NFTs',
         search: 'Search',
         placeHolder: 'Search by NFT Id or NFT Name',
     },
     denom:{
-        title: 'Denom',
+        mainTitle:'Denom List',
+        subTitle:'Denom',
+        subTitles:'Denoms',
         search: 'Search',
         placeHolder: 'Search by Denom Name or Denom ID',
     },
@@ -284,7 +289,6 @@ export const ExplorerLang = {
         relevanceTx:'Related Transaction',
         txType: 'Type',
         denomId: 'Denom Id',
-        denomName: 'Denom Name',
         from: 'From',
         to: 'To',
         consumer: 'Consumer',
