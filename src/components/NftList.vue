@@ -2,7 +2,7 @@
   <div class="nft_list_container">
     <div class="nft_list_content_wrap">
       <div class="nft_list_header_content">
-        <h3 class="nft_list_header_title">{{$t('ExplorerLang.nftAsset.assets')}}</h3>
+        <h3 class="nft_list_header_title">{{$t('ExplorerLang.nftAsset.mainTitle')}}</h3>
 <!--        <el-input v-model="input" @change="handleSearchClick" :placeholder="$t('ExplorerLang.nftAsset.placeHolder')"></el-input>
         <div class="tx_type_mobile_content">
           <div class="search_btn" @click="handleSearchClick">{{$t('ExplorerLang.nftAsset.search')}}</div>
@@ -18,10 +18,11 @@
 			@pageChange="pageChange"
 		  >
 			  <template v-slot:txCount>
-				  <tx-count-component :title="$t('ExplorerLang.nftAsset.assets')" :icon="'iconNFT'" :tx-count="allCount"></tx-count-component>
+				  <tx-count-component :title="allCount > 1 && isShowPlurality ? $t('ExplorerLang.nftAsset.subTitles') : $t('ExplorerLang.nftAsset.subTitle')" :icon="'iconNFT'" :tx-count="allCount"></tx-count-component>
 			  </template>
 			  <template v-slot:dataPicket>
 				  <nft-search-component
+					  :input-placeholder="$t('ExplorerLang.nftAsset.placeHolder')"
 					  @searchInput="handleSearchClick"
 					  @resetFilterCondition="resetFilterCondition"></nft-search-component>
 			  </template>
@@ -164,21 +165,20 @@ export default {
       this.getNftsByFilter()
     },
     handleSearchClick(input) {
-	
 		this.owner = input
       this.currentPageNum = 1
       this.getNftsByFilterCount()
       this.getNftsByFilter()
     },
     async getNftsByFilter() {
-		this.isNftListLoading = true
-	
-		if (Tools.isBech32(this.input)) {
+
+      if (Tools.isBech32(this.input)) {
         this.owner = this.input
       }
       if (!this.owner) {
         this.tokenId = this.input
       }
+		this.isNftListLoading = true
       try {
         let nftData = await getNfts(
           this.currentPageNum,
