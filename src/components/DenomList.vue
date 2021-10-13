@@ -3,21 +3,37 @@
     <div class="denom_list_content_wrap">
       <div class="denom_list_header_content">
         <h3 class="denom_list_header_title">
-          {{ count }} {{ $t("ExplorerLang.denom.title")
-          }}{{ count > 1 && isShowPlurality ? "s" : "" }}
+          {{ $t("ExplorerLang.denom.mainTitle") }}
         </h3>
-        <el-input v-model="input" @change="handleSearchClick" :placeholder="$t('ExplorerLang.denom.placeHolder')"></el-input>
-        <div class="tx_type_mobile_content">
+        <!--<el-input v-model="input" @change="handleSearchClick" :placeholder="$t('ExplorerLang.denom.placeHolder')"></el-input>-->
+        <!--<div class="tx_type_mobile_content">
           <div class="search_btn" @click="handleSearchClick">
             {{ $t("ExplorerLang.denom.search") }}
           </div>
           <div class="reset_btn" @click="reset">
             <i class="iconfont iconzhongzhi"></i>
           </div>
-        </div>
+        </div>-->
       </div>
       <div class="nef_list_table_container">
-        <el-table class="table table_overflow_x" :data="denomList" :empty-text="$t('ExplorerLang.table.emptyDescription')">
+        <list-component
+            :is-loading="isDenomListLoading"
+            :list-data="denomList"
+            :column-list="denomListColumn"
+            :pagination="{pageSize:Number(pageSize),dataCount:count,pageNum:Number(pageNum)}"
+            @pageChange="pageChange"
+        >
+          <template v-slot:txCount>
+            <tx-count-component :title="count > 1 && isShowPlurality ? $t('ExplorerLang.denom.subTitles') : $t('ExplorerLang.denom.subTitle')" :icon="'iconDenom'" :tx-count="count"></tx-count-component>
+          </template>
+          <template v-slot:dataPicket>
+              <nft-search-component
+                  :input-placeholder="$t('ExplorerLang.denom.placeHolder')"
+                  @searchInput="handleSearchClick"
+                  @resetFilterCondition="resetFilterCondition"></nft-search-component>
+          </template>
+        </list-component>
+       <!-- <el-table class="table table_overflow_x" :data="denomList" :empty-text="$t('ExplorerLang.table.emptyDescription')">
           <el-table-column :min-width="ColumnMinWidth.denom" :label="$t('ExplorerLang.table.denom')">
             <template slot-scope="scope">
               {{ scope.row.denomName }}
@@ -34,7 +50,7 @@
                 <router-link :to="`/tx?txHash=${scope.row.hash}`">
                   {{ formatTxHash(scope.row.hash) }}
                 </router-link>
-              </el-tooltip>
+              </el-tooltip>l
               <span v-if="scope.row.hash === ''">...</span>
             </template>
           </el-table-column>
@@ -61,7 +77,10 @@
         <keep-alive>
           <m-pagination :page-size="pageSize" :total="count" :page="pageNum" :page-change="pageChange">
           </m-pagination>
-        </keep-alive>
+        </keep-alive>-->
+
+
+
       </div>
     </div>
   </div>
@@ -74,13 +93,18 @@ import MPagination from "./common/MPagination";
 import { ColumnMinWidth } from "../constant";
 import productionConfig from "@/productionConfig.js";
 import parseTimeMixin from "../mixins/parseTime";
-
+import ListComponent from "./common/ListComponent";//新增
+import denomListColumnConfig from "./tableListColumnConfig/denomListColumnConfig";
+import TxCountComponent from "./TxCountComponent";
+import NftSearchComponent from "./common/NftSearchComponent";
 export default {
   name: "DenomList",
-  components: { MPagination },
+  components: {NftSearchComponent, MPagination,ListComponent,TxCountComponent },//新增
   mixins: [parseTimeMixin],
   data() {
     return {
+      isDenomListLoading:false,//新增
+      denomListColumn:[],//新增的
       ColumnMinWidth,
       denomList: [],
       value: "all",
@@ -92,6 +116,7 @@ export default {
     };
   },
   mounted() {
+    this.denomListColumn = denomListColumnConfig
     this.getDenoms();
     this.getDenomsCount();
   },
@@ -101,8 +126,9 @@ export default {
     }
   },
   methods: {
-    reset() {
+    resetFilterCondition() {
       this.input = "";
+      this.owner = ''//新增
       this.pageNum = 1;
       this.getDenomsCount();
       this.getDenoms();
@@ -115,12 +141,16 @@ export default {
       this.pageNum = pageNum;
       this.getDenoms();
     },
-    handleSearchClick() {
+    handleSearchClick(input) {
+      console.log(input,'这里是子组件输入框传递出来的值')
+      //下面传递参数的时候用的是this.input 你这里有owner 去接收  怎么会有效果呢
+      this.input = input
       this.pageNum = 1;
       this.getDenomsCount();
       this.getDenoms();
     },
     async getDenoms() {
+        this.isDenomListLoading = true
       try {
         const res = await getDenoms(
           this.pageNum,
@@ -142,7 +172,7 @@ export default {
                 denom.time * 1000,
                 this.$t("ExplorerLang.table.suffix")
               ),
-              Time: denom.time
+              Time: Tools.formatLocalTime(denom.time),
             };
           });
           /**
@@ -154,7 +184,9 @@ export default {
         } else {
             this.denomList = [];
         }
+        this.isDenomListLoading = false//新增
       } catch (e) {
+          this.isDenomListLoading = false//新增
         console.error(e);
       }
     },
@@ -164,7 +196,7 @@ export default {
         if (res?.count) {
           this.count = res.count;
         } else {
-          this.count = 0  
+          this.count = 0
         }
       } catch (error) {
         console.error(error);
