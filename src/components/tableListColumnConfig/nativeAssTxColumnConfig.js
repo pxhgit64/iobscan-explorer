@@ -16,7 +16,7 @@ export default [
         displayValue: 'owner',
         nativeValue: 'owner',
         isLink:true,
-        linkRoute:'/address',
+        linkRoute:'/address/',
         isNeedFormat:true,
         isFormatAddress: true,
 
@@ -26,7 +26,7 @@ export default [
         displayValue: 'symbol',
         nativeValue: 'symbol',
         isLink:true,
-        linkRoute:'/assets'
+        linkRoute:'/assets/'
 
     },
     {
@@ -44,7 +44,7 @@ export default [
         displayValue: 'block',
         nativeValue: 'block',
         isLink:true,
-        linkRoute:'/block'
+        linkRoute:'/block/'
     },
     {
         label: 'Fee',

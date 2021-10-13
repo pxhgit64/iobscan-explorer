@@ -47,7 +47,7 @@
 <!--									-->
 									<router-link class="link_style"
 												 v-if="item.isLink &&  scope.row[item.displayValue] && scope.row[item.displayValue] !== '--'"
-												 :to="!item.isNft ? `${item.linkRoute}/${scope.row[item.nativeValue]}` : `${item.linkRoute}${scope.row[item.nftRouterParamsValue]}${item.denomRouter}${scope.row[item.nativeValue]}`">
+												 :to="!item.isNft ? `${item.linkRoute}${scope.row[item.nativeValue]}` : `${item.linkRoute}${scope.row[item.nftRouterParamsValue]}${item.denomRouter}${scope.row[item.nativeValue]}`">
 										
 										<span v-if="item.isNeedFormatHash">{{formatTxHash(scope.row[item.displayValue]) }} </span>
 										
@@ -85,7 +85,7 @@
 									<span v-else-if="item.isNftHref">
 										
 										<a v-if="testUrl(scope.row[item.displayValue])" :href="scope.row[item.displayValue]"
-										   target="_blank">{{ scope.row[item.displayValue] }}</a>
+										   target="_blank" rel="noreferrer noopener" class="route_link_style">{{ scope.row[item.displayValue] }}</a>
 										
 										<a v-else-if="startStr(scope.row[item.displayValue])"
 										   :href="'http://' + scope.row[item.displayValue]"
@@ -676,7 +676,6 @@ export default {
 		.route_link_style {
 			color: $theme_c !important;
 		}
-		
 		.tag_num {
 			color: $theme_c !important;
 			margin-left: 0.06rem;

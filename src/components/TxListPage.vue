@@ -155,7 +155,7 @@
 				],
 				listTitleName: "",
 				count: sessionStorage.getItem("txTotal") ? Number(sessionStorage.getItem("txTotal")) : 0,
-				pageSize: 15,
+				pageSize: 10,
 				value: this.getParamsByUrlHash().txType ? this.getParamsByUrlHash().txType : 'allTxType',
 				txStatus: '',
 				statusValue: this.getParamsByUrlHash().txStatus ? this.getParamsByUrlHash().txStatus : 'allStatus',

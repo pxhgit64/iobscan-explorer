@@ -44,7 +44,7 @@ export default [
         isFormatAddress: true,
         isNeedFormat: true,
         isLink: true,
-        linkRoute: '/address',
+        linkRoute: '/address/',
     },
     {
         label:  i18n.t('ExplorerLang.table.to'),
@@ -53,7 +53,7 @@ export default [
         isNeedFormat: true,
         isFormatAddress: true,
         isLink: true,
-        linkRoute: '/address',
+        linkRoute: '/address/',
     },
     {
         label: i18n.t('ExplorerLang.table.fee'),
@@ -66,7 +66,7 @@ export default [
         nativeValue:'height',
         isLink:true,
         isNeedFormatHash:false,
-        linkRoute:'/block',
+        linkRoute:'/block/',
         isShowMoniker:false
     },
     {

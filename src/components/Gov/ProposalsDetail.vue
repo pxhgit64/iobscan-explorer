@@ -27,9 +27,10 @@
           <div class="information_props_wrap">
             <span class="information_props">{{ $t('ExplorerLang.gov.proposalDetail.proposer') }} :</span>
             <span v-show="proposer !== '--'" class="information_value information_show_trim">
-              <span style="font-family:Arial" class="address_link jump_route" @click="addressRoute(proposer)">
+<!--              <span style="font-family:Arial" class="address_link jump_route" @click="addressRoute(proposer)">
                 {{ proposer }}
-              </span>
+              </span>-->
+				<router-link :to="`/address/${proposer}`">{{ proposer }}</router-link>
             </span>
             <span v-show="proposer == '--'" class="information_value information_show_trim ">{{ proposer }}</span>
           </div>

@@ -15,7 +15,7 @@ export default [
         nativeValue:'blockHeight',
         isLink:true,
         isNeedFormatHash:false,
-        linkRoute:'/block',
+        linkRoute:'/block/',
         isShowMoniker:false,
     },
     {

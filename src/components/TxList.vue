@@ -631,6 +631,9 @@ export default {
 							provider = msg.msg.provider
 							serviceName = msg.msg.service_name
 						}
+						if(msg?.type=== TX_TYPE.update_request_context && msg?.msg?.ex && msg?.msg?.ex?.service_name){
+							serviceName = msg.msg.ex.service_name
+						}
 						
 						let addrObj = TxHelper.getFromAndToAddressFromMsg(msg);
 						amounts.push(msg ? getAmountByTx(msg, tx.events, true) : '--');

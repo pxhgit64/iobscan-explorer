@@ -22,7 +22,7 @@ export const needAddColumn = {
             isFormatAddress: true,
             isNeedFormat: true,
             isLink: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label:i18n.t('ExplorerLang.table.to'),
@@ -31,7 +31,7 @@ export const needAddColumn = {
             isNeedFormat: true,
             isFormatAddress: true,
             isLink: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         }
     ],
     multisend: [
@@ -46,7 +46,7 @@ export const needAddColumn = {
             isFormatAddress: true,
             isNeedFormat: true,
             isLink: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: 'Number of To',
@@ -68,7 +68,7 @@ export const needAddColumn = {
             isFormatMoniker: true,
             isNeedFormat: true,
             isLink: true,
-            linkRoute: '/staking',
+            linkRoute: '/staking/',
         },
         {
             label: i18n.t('ExplorerLang.table.to'),
@@ -77,7 +77,7 @@ export const needAddColumn = {
             isFormatMoniker: true,
             isNeedFormat: true,
             isLink: true,
-            linkRoute: '/staking',
+            linkRoute: '/staking/',
         }
     ],
     delegate: [
@@ -92,7 +92,7 @@ export const needAddColumn = {
             isNeedFormat: true,
             isFormatAddress: true,
             isLink: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: i18n.t('ExplorerLang.table.to'),
@@ -101,7 +101,7 @@ export const needAddColumn = {
             isFormatMoniker: true,
             isNeedFormat: true,
             isLink: true,
-            linkRoute: '/staking',
+            linkRoute: '/staking/',
         }
     ],
     begin_unbonding: [
@@ -117,7 +117,7 @@ export const needAddColumn = {
             isFormatMoniker: true,
             isFormatAddress: true,
             isLink: true,
-            linkRoute: '/staking',
+            linkRoute: '/staking/',
         },
         {
             label: i18n.t('ExplorerLang.table.to'),
@@ -126,7 +126,7 @@ export const needAddColumn = {
             isNeedFormat: true,
             isFormatAddress: true,
             isLink: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         }
     ],
     withdraw_delegator_reward: [
@@ -142,7 +142,7 @@ export const needAddColumn = {
             isNeedFormat: true,
             isFormatAddress: true,
             isLink: true,
-            linkRoute: '/staking',
+            linkRoute: '/staking/',
         },
         {
             label: i18n.t('ExplorerLang.table.to'),
@@ -151,7 +151,7 @@ export const needAddColumn = {
             isNeedFormat: true,
             isFormatAddress: true,
             isLink: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         }
     ],
     withdraw_validator_commission: [
@@ -162,7 +162,7 @@ export const needAddColumn = {
             isFormatMoniker: true,
             isLink: true,
             isNeedFormat: true,
-            linkRoute: '/staking'
+            linkRoute: '/staking/'
         },
 
     ],
@@ -178,7 +178,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     unjail: [
@@ -203,7 +203,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/staking',
+            linkRoute: '/staking/',
         },
         {
             label: i18n.t('ExplorerLang.table.ownerAddress'),
@@ -212,7 +212,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     edit_validator: [
@@ -222,7 +222,7 @@ export const needAddColumn = {
             nativeValue: 'validatorAddress',
             isLink: true,
             isFormatMoniker: true,
-            linkRoute: '/staking',
+            linkRoute: '/staking/',
         },
         {
             label: i18n.t('ExplorerLang.table.operatorAddress'),
@@ -231,7 +231,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/staking',
+            linkRoute: '/staking/',
         },
     ],
     set_withdraw_address: [
@@ -242,7 +242,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: i18n.t('ExplorerLang.table.withdrawAddress'),
@@ -251,7 +251,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         }
     ],
     respond_service: [
@@ -279,7 +279,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     'service/set_withdraw_address': [
@@ -290,7 +290,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: i18n.t('ExplorerLang.table.withdrawAddress'),
@@ -305,7 +305,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: i18n.t('ExplorerLang.table.owner'),
@@ -314,7 +314,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     define_service: [
@@ -332,7 +332,7 @@ export const needAddColumn = {
             isNeedFormat: true,
             isFormatAddress: true,
             isLink: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         }
     ],
     disable_service_binding: [
@@ -350,7 +350,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: i18n.t('ExplorerLang.table.provider'),
@@ -359,7 +359,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     refund_service_deposit: [
@@ -377,7 +377,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: i18n.t('ExplorerLang.table.provider'),
@@ -386,7 +386,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     bind_service: [
@@ -404,7 +404,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: i18n.t('ExplorerLang.table.provider'),
@@ -413,7 +413,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     enable_service_binding: [
@@ -431,7 +431,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: i18n.t('ExplorerLang.table.provider'),
@@ -440,7 +440,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     update_service_binding: [
@@ -458,7 +458,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: i18n.t('ExplorerLang.table.provider'),
@@ -467,7 +467,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     call_service: [
@@ -493,7 +493,7 @@ export const needAddColumn = {
             isLink:true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     start_request_context: [
@@ -519,7 +519,7 @@ export const needAddColumn = {
             isLink:true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     pause_request_context: [
@@ -545,7 +545,7 @@ export const needAddColumn = {
             isLink:true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     update_request_context: [
@@ -571,7 +571,7 @@ export const needAddColumn = {
             isLink:true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     kill_request_context: [
@@ -597,7 +597,7 @@ export const needAddColumn = {
             isLink:true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     burn_nft: [
@@ -628,7 +628,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     edit_nft: [
@@ -659,7 +659,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     mint_nft: [
@@ -680,7 +680,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: i18n.t('ExplorerLang.table.to'),
@@ -689,7 +689,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     transfer_nft: [
@@ -705,7 +705,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: i18n.t('ExplorerLang.table.to'),
@@ -714,7 +714,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     issue_denom: [
@@ -735,7 +735,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     transfer_denom: [
@@ -760,7 +760,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: i18n.t('ExplorerLang.table.swapAmount1'),
@@ -779,7 +779,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: i18n.t('ExplorerLang.table.swapAmount1'),
@@ -798,7 +798,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: i18n.t('ExplorerLang.table.swapAmount1'),
@@ -821,7 +821,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: i18n.t('ExplorerLang.table.receiver'),
@@ -893,7 +893,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: i18n.t('ExplorerLang.table.receiver'),
@@ -902,7 +902,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         }
     ],
     claim_htlc: [
@@ -918,7 +918,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: i18n.t('ExplorerLang.table.receiver'),
@@ -927,7 +927,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         }
     ],
     create_feed: [
@@ -943,7 +943,7 @@ export const needAddColumn = {
             isLink:true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     pause_feed: [
@@ -959,7 +959,7 @@ export const needAddColumn = {
             isLink:true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     start_feed: [
@@ -975,7 +975,7 @@ export const needAddColumn = {
             isLink:true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     edit_feed: [
@@ -991,7 +991,7 @@ export const needAddColumn = {
             isLink:true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     request_rand: [
@@ -1002,7 +1002,7 @@ export const needAddColumn = {
             isLink:true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: i18n.t('ExplorerLang.table.serviceFeeCap'),
@@ -1044,7 +1044,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     edit_token: [
@@ -1060,7 +1060,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     transfer_token_owner: [
@@ -1076,7 +1076,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: i18n.t('ExplorerLang.table.newOwner'),
@@ -1085,7 +1085,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         }
     ],
     mint_token: [
@@ -1106,7 +1106,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     burn_token: [
@@ -1127,7 +1127,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     submit_proposal: [
@@ -1138,7 +1138,7 @@ export const needAddColumn = {
             isFormatAddress: true,
             isNeedFormat: true,
             isLink: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: i18n.t('ExplorerLang.table.title'),
@@ -1168,7 +1168,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: i18n.t('ExplorerLang.table.deposit'),
@@ -1191,7 +1191,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: i18n.t('ExplorerLang.table.govOption'),
@@ -1211,7 +1211,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     update_client: [
@@ -1226,7 +1226,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     channel_open_confirm: [
@@ -1245,7 +1245,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     channel_open_try: [
@@ -1264,7 +1264,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     channel_open_ack: [
@@ -1283,7 +1283,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     channel_open_init: [
@@ -1303,7 +1303,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     connection_open_confirm: [
@@ -1322,7 +1322,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     connection_open_init: [
@@ -1341,7 +1341,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     connection_open_try: [
@@ -1360,7 +1360,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     connection_open_ack: [
@@ -1379,7 +1379,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
     ],
     acknowledge_packet: [
@@ -1394,7 +1394,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-            linkRoute: '/address',
+            linkRoute: '/address/',
         },
         {
             label: i18n.t('ExplorerLang.table.receiver'),

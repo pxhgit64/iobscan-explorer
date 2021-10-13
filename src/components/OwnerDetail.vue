@@ -5,7 +5,7 @@
 				<div class="address_content_title_first">
 					{{ `${$t("ExplorerLang.addressDetail.addressDetail")} |` }}
 				</div>
-				<div class="address_content_title_address">{{ address }}</div>
+				<div class="address_content_title_address">{{ address }}<m-clip v-if="address" :text="address" style="margin-left: 0.09rem"></m-clip></div>
 			</div>
 			<div class="address_tab_container">
 				<div class="address_tab_content">
@@ -746,10 +746,12 @@ import TabsComponent from "./common/TabsComponent";
 import {getAmountByTx, getDenomMap, getDenomTheme} from "../helper/txListAmoutHelper";
 import TxStatusTabsComponents from "./common/TxStatusTabsComponents";
 import TxCountComponent from "./TxCountComponent";
+import MClip from "./common/MClip";
 
 export default {
 	name: 'OwnerDetail',
 	components: {
+		MClip,
 		TxCountComponent,
 		TxStatusTabsComponents,
 		TabsComponent,

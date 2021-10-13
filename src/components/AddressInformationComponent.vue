@@ -11,7 +11,7 @@
 							<li class="address_information_item">
 								<span class="address_information_label">{{ $t('ExplorerLang.addressInformation.content.address') }}:</span>
 								<p>
-									<span>{{address}}<m-clip :text="address" style="margin-left: 0.09rem"></m-clip><span class="profiler_content" v-if="isProfiler">Profiler</span></span>
+									<span>{{address}}<span class="profiler_content" v-if="isProfiler">Profiler</span></span>
 								</p>
 							</li>
 							<li class="address_information_item">

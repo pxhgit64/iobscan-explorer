@@ -16,15 +16,16 @@
 				<span>{{$t('ExplorerLang.transactionInformation.defineService.description')}}：</span>
 				<span>{{description}}</span>
 			</p>
-			<p>
+<!--			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.defineService.schemas')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(schemas)" v-if="schemas" :text="schemas" :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
-			</p>
+			</p>-->
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.defineService.author')}}：</span>
 				<template>
 					<span v-if="author == '--'">{{author}}</span>
-					<span v-else class="address_link" @click="addressRoute(author)">{{author}}</span>
+<!--					<span v-else class="address_link" @click="addressRoute(author)">{{author}}</span>-->
+					<router-link v-else class="address_link" :to="`/address/${author}`">{{author}}</router-link>
 				</template>
 			</p>
 			<p>
@@ -62,7 +63,8 @@
 					<!-- <span v-for="(item,index) in provider" :key="index"
 				                   @click="addressRoute(item)" class="address_link">{{item}}
 					</span> -->
-					<span @click="addressRoute(provider)" class="address_link">{{provider}} </span>
+<!--					<span @click="addressRoute(provider)" class="address_link">{{provider}} </span>-->
+					<router-link class="address_link" :to="`/address/${provider}`">{{provider}}</router-link>
 				</span>
 			</p>
 			<p>
@@ -73,7 +75,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.owner')}}：</span>
 				<template>
 					<span v-if="owner === '--'">{{owner}}</span>
-					<span v-else @click="addressRoute(owner)" class="address_link">{{owner}}</span>
+<!--					<span v-else @click="addressRoute(owner)" class="address_link">{{owner}}</span>-->
+					<router-link v-else class="address_link" :to="`/address/${owner}`">{{owner}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -103,7 +106,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.from')}}：</span>
 				<template>
 					<span v-if="sender === '--'">{{sender}}</span>
-					<span v-else @click="addressRoute(sender)" class="address_link">{{sender}}</span>
+<!--					<span v-else @click="addressRoute(sender)" class="address_link">{{sender}}</span>-->
+					<router-link v-else class="address_link" :to="`/address/${sender}`">{{sender}}</router-link>
 				</template>
 			</p>
 			<p>
@@ -144,20 +148,22 @@
 				<span>{{$t('ExplorerLang.transactionInformation.to')}}：</span>
 				<template>
 					<span v-if="recipient === '--'">{{recipient}}</span>
-					<span v-else @click="addressRoute(recipient)" class="address_link">{{recipient}}</span>
+<!--					<span v-else @click="addressRoute(recipient)" class="address_link">{{recipient}}</span>-->
+					<router-link v-else class="address_link" :to="`/address/${recipient}`">{{recipient}}</router-link>
 				</template>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.from')}}：</span>
 				<template>
 					<span v-if="sender === '--'">{{sender}}</span>
-					<span v-else @click="addressRoute(sender)" class="address_link">{{sender}}</span>
+<!--					<span v-else @click="addressRoute(sender)" class="address_link">{{sender}}</span>-->
+					<router-link v-else class="address_link" :to="`/address/${sender}`">{{sender}}</router-link>
 				</template>
 			</p>
-			<p>
+<!--			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.data')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(tokenData)" v-if="tokenData" :text="tokenData" :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
-			</p>
+			</p>-->
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.uri')}}：</span>
 				<template>
@@ -192,17 +198,19 @@
 				<span>{{nftName}}</span>
 			</p>
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.to')}}：</span>
-				<template>
-					<span v-if="recipient === '--'">{{recipient}}</span>
-					<span v-else @click="addressRoute(recipient)" class="address_link">{{recipient}}</span>
-				</template>
-			</p>
-			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.from')}}：</span>
 				<template>
 					<span v-if="sender === '--'">{{sender}}</span>
-					<span v-else @click="addressRoute(sender)" class="address_link">{{sender}}</span>
+					<!--					<span v-else @click="addressRoute(sender)" class="address_link">{{sender}}</span>-->
+					<router-link v-else class="address_link" :to="`/address/${sender}`">{{sender}}</router-link>
+				</template>
+			</p>
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.to')}}：</span>
+				<template>
+					<span v-if="recipient === '--'">{{recipient}}</span>
+<!--					<span v-else @click="addressRoute(recipient)" class="address_link">{{recipient}}</span>-->
+					<router-link v-else class="address_link" :to="`/address/${recipient}`">{{recipient}}</router-link>
 				</template>
 			</p>
 			<p>
@@ -245,7 +253,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.from')}}：</span>
 				<template>
 					<span v-if="sender === '--'">{{sender}}</span>
-					<span v-else @click="addressRoute(sender)" class="address_link">{{sender}}</span>
+<!--					<span v-else @click="addressRoute(sender)" class="address_link">{{sender}}</span>-->
+					<router-link v-else class="address_link" :to="`/address/${sender}`">{{sender}}</router-link>
 				</template>
 			</p>
 			<p>
@@ -276,15 +285,16 @@
 				<span>{{$t('ExplorerLang.transactionInformation.denomName')}}：</span>
 				<span>{{denomName}}</span>
 			</p>
-			<p>
+<!--			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.issueDenom.schema')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(schema)" v-if="schema" :text="schema"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight" />
-			</p>
+			</p>-->
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.issueDenom.sender')}}：</span>
 				<template>
 					<span v-if="sender === '--'">{{sender}}</span>
-					<span v-else @click="addressRoute(sender)" class="address_link">{{sender}}</span>
+<!--					<span v-else @click="addressRoute(sender)" class="address_link">{{sender}}</span>-->
+					<router-link v-else class="address_link" :to="`/address/${sender}`">{{sender}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -299,14 +309,16 @@
 				<span>{{$t('ExplorerLang.transactionInformation.from')}}：</span>
 				<template>
 					<span v-if="from === '--'">{{from}}</span>
-					<span v-else @click="addressRoute(from)" class="address_link">{{from}}</span>
+<!--					<span v-else @click="addressRoute(from)" class="address_link">{{from}}</span>-->
+					<router-link v-else class="address_link" :to="`/address/${from}`">{{from}}</router-link>
 				</template>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.to')}}：</span>
 				<template>
 					<span v-if="to === '--'">{{to}}</span>
-					<span v-else @click="addressRoute(to)" class="address_link">{{to}}</span>
+<!--					<span v-else @click="addressRoute(to)" class="address_link">{{to}}</span>-->
+					<router-link v-else class="address_link" :to="`/address/${to}`">{{to}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -330,7 +342,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.provider')}}：</span>
 				<template>
 					<span v-if="provider === '--'">{{provider}}</span>
-					<span v-else @click="addressRoute(provider)" class="address_link">{{provider}}</span>
+<!--					<span v-else @click="addressRoute(provider)" class="address_link">{{provider}}</span>-->
+					<router-link v-else class="address_link" :to="`/address/${provider}`">{{provider}}</router-link>
 				</template>
 			</p>
 			<p>
@@ -358,7 +371,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.consumer')}}：</span>
 				<template>
 					<span v-if="consumer === '--'">{{consumer}}</span>
-					<span v-else @click="addressRoute(consumer)" class="address_link">{{consumer}}</span>
+<!--					<span v-else @click="addressRoute(consumer)" class="address_link">{{consumer}}</span>-->
+					<router-link v-else class="address_link" :to="`/address/${consumer}`">{{consumer}}</router-link>
 				</template>
 			</p>
 			<p>
@@ -367,9 +381,15 @@
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.provider')}}：</span>
-				<span style="display: flex;flex-direction: column"><span
+				<span style="display: flex;flex-direction: column">
+<!--					<span
 						v-for="(item,index) in provider" :key="index"
-						@click="addressRoute(item)" class="address_link">{{item}}</span></span>
+						@click="addressRoute(item)" class="address_link">{{item}}</span>-->
+				<router-link v-for="(item,index) in provider"
+							 :key="index"
+							 class="address_link" :to="`/address/${item}`">{{item}}</router-link>
+				</span>
+				
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.callService.repeated')}}：</span>
@@ -414,7 +434,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.consumer')}}：</span>
 				<template>
 					<span v-if="consumer === '--'">{{consumer}}</span>
-					<span v-else @click="addressRoute(consumer)" class="address_link">{{consumer}}</span>
+<!--					<span v-else @click="addressRoute(consumer)" class="address_link">{{consumer}}</span>-->
+					<router-link v-else  class="address_link" :to="`/address/${consumer}`">{{consumer}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -438,18 +459,22 @@
 				<span>{{$t('ExplorerLang.transactionInformation.consumer')}}：</span>
 				<template>
 					<span v-if="consumer === '--'">{{consumer}}</span>
-					<span v-else @click="addressRoute(consumer)" class="address_link">{{consumer}}</span>
+<!--					<span v-else @click="addressRoute(consumer)" class="address_link">{{consumer}}</span>-->
+					<router-link  v-else :to="`/address/${consumer}`" class="address_link">{{consumer}}</router-link>
 				</template>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.provider')}}：</span>
 				<span style="display: flex;flex-direction: column" v-if="provider.length > 0">
-                    <span
+<!--                    <span
 		                    v-for="(item,index) in provider"
 		                    :key="index"
 		                    @click="addressRoute(item)" class="address_link">
                         {{item}}
-                    </span>
+                    </span>-->
+					<router-link v-for="(item,index) in provider"
+								 :key="index"
+								 :to="`/address/${item}`" class="address_link">{{item}}</router-link>
                 </span>
 				<span v-else>--</span>
 			</p>
@@ -494,14 +519,16 @@
 				<span>{{$t('ExplorerLang.transactionInformation.provider')}}：</span>
 				<template>
 					<span v-if="provider === '--'">{{provider}}</span>
-					<span v-else @click="addressRoute(provider)" class="address_link">{{provider}}</span>
+<!--					<span v-else @click="addressRoute(provider)" class="address_link">{{provider}}</span>-->
+					<router-link v-else :to="`/address/${provider}`" class="address_link">{{provider}}</router-link>
 				</template>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.owner')}}：</span>
 				<template>
 					<span v-if="owner === '--'">{{owner}}</span>
-					<span v-else @click="addressRoute(owner)" class="address_link">{{owner}}</span>
+<!--					<span v-else @click="addressRoute(owner)" class="address_link">{{owner}}</span>-->
+					<router-link v-else :to="`/address/${owner}`" class="address_link">{{owner}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -517,14 +544,16 @@
 				<span>{{$t('ExplorerLang.transactionInformation.provider')}}：</span>
 				<template>
 					<span v-if="provider === '--'">{{provider}}</span>
-					<span v-else @click="addressRoute(provider)" class="address_link">{{provider}}</span>
+<!--					<span v-else @click="addressRoute(provider)" class="address_link">{{provider}}</span>-->
+					<router-link v-else :to="`/address/${provider}`" class="address_link">{{provider}}</router-link>
 				</template>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.owner')}}：</span>
 				<template>
 					<span v-if="owner === '--'">{{owner}}</span>
-					<span v-else @click="addressRoute(owner)" class="address_link">{{owner}}</span>
+<!--					<span v-else @click="addressRoute(owner)" class="address_link">{{owner}}</span>-->
+					<router-link v-else :to="`/address/${owner}`" class="address_link">{{owner}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -544,14 +573,16 @@
 				<span>{{$t('ExplorerLang.transactionInformation.provider')}}：</span>
 				<template>
 					<span v-if="provider === '--'">{{provider}}</span>
-					<span v-else @click="addressRoute(provider)" class="address_link">{{provider}}</span>
+<!--					<span v-else @click="addressRoute(provider)" class="address_link">{{provider}}</span>-->
+					<router-link v-else :to="`/address/${provider}`" class="address_link">{{provider}}</router-link>
 				</template>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.owner')}}：</span>
 				<template>
 					<span v-if="owner === '--'">{{owner}}</span>
-					<span v-else @click="addressRoute(owner)" class="address_link">{{owner}}</span>
+<!--					<span v-else @click="addressRoute(owner)" class="address_link">{{owner}}</span>-->
+					<router-link v-else :to="`/address/${owner}`" class="address_link">{{owner}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -588,7 +619,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.signer')}}：</span>
 				<template>
 					<span v-if="signer === '--'">{{signer}}</span>
-					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>
+<!--					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>-->
+					<router-link v-else :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -605,11 +637,13 @@
             </p>
             <p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.from')}}：</span>
-                <span @click="addressRoute(sender)" class="address_link">{{ sender }}</span>
+<!--                <span @click="addressRoute(sender)" class="address_link">{{ sender }}</span>-->
+				<router-link :to="`/address/${sender}`" class="address_link">{{sender}}</router-link>
 			</p>
             <p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.to')}}：</span>
-                <span @click="addressRoute(receiver)" class="address_link">{{ receiver }}</span>
+<!--                <span @click="addressRoute(receiver)" class="address_link">{{ receiver }}</span>-->
+				<router-link :to="`/address/${receiver}`" class="address_link">{{receiver}}</router-link>
 			</p>
 
 			<!-- <p>
@@ -624,7 +658,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.signer')}}：</span>
 				<template>
 					<span v-if="signer === '--'">{{signer}}</span>
-					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>
+<!--					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>-->
+					<router-link  v-else :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -698,7 +733,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.owner')}}：</span>
 				<template>
 					<span v-if="owner === '--'">{{owner}}</span>
-					<span v-else @click="addressRoute(owner)" class="address_link">{{owner}}</span>
+<!--					<span v-else @click="addressRoute(owner)" class="address_link">{{owner}}</span>-->
+					<router-link  v-else :to="`/address/${owner}`" class="address_link">{{owner}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -715,24 +751,26 @@
 				<span>{{$t('ExplorerLang.transactionInformation.signer')}}：</span>
 				<template>
 					<span v-if="signer === '--'">{{signer}}</span>
-					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>
+<!--					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>-->
+					<router-link  v-else :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
 				</template>
 			</p>
 		</div>
 		<div v-if="txType === TX_TYPE.create_client && !(prodConfig.txDetail && prodConfig.txDetail.ibc)">
-			<p>
+<!--			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.clientState')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(clientState)" v-if="clientState" :text="clientState"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
-			</p>
-			<p>
+			</p>-->
+<!--			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.consensusState')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(consensusState)" v-if="consensusState" :text="consensusState"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
-			</p>
+			</p>-->
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.signer')}}：</span>
 				<template>
 					<span v-if="signer === '--'">{{signer}}</span>
-					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>
+<!--					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>-->
+					<router-link  v-else :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -749,7 +787,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.signer')}}：</span>
 				<template>
 					<span v-if="signer === '--'">{{signer}}</span>
-					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>
+<!--					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>-->
+					<router-link  v-else :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -778,7 +817,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.signer')}}：</span>
 				<template>
 					<span v-if="signer === '--'">{{signer}}</span>
-					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>
+<!--					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>-->
+					<router-link  v-else :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -795,7 +835,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.signer')}}：</span>
 				<template>
 					<span v-if="signer === '--'">{{signer}}</span>
-					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>
+<!--					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>-->
+					<router-link  v-else :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -820,7 +861,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.signer')}}：</span>
 				<template>
 					<span v-if="signer === '--'">{{signer}}</span>
-					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>
+<!--					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>-->
+					<router-link  v-else :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -873,7 +915,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.signer')}}：</span>
 				<template>
 					<span v-if="signer === '--'">{{signer}}</span>
-					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>
+<!--					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>-->
+					<router-link  v-else :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -890,26 +933,26 @@
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.version')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(version)" v-if="version" :text="version"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
 			</p>
-			<p>
+<!--			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.clientState')}}：</span>
 				<span>{{clientState}}</span>
-			</p>
+			</p>-->
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.proofHeight')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(proofHeight)" v-if="proofHeight" :text="proofHeight"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
 			</p>
-			<p>
+<!--			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.proofTry')}}：</span>
 				<span>{{proofTry}}</span>
-			</p>
-			<p>
+			</p>-->
+<!--			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.proofClient')}}：</span>
 				<span>{{proofClient}}</span>
-			</p>
-			<p>
+			</p>-->
+<!--			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.proofConsensus')}}：</span>
 				<span>{{proofConsensus}}</span>
-			</p>
+			</p>-->
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.consensusHeight')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(consensusHeight)" v-if="consensusHeight" :text="consensusHeight"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
@@ -918,7 +961,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.signer')}}：</span>
 				<template>
 					<span v-if="signer === '--'">{{signer}}</span>
-					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>
+<!--					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>-->
+					<router-link  v-else :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -939,7 +983,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.signer')}}：</span>
 				<template>
 					<span v-if="signer === '--'">{{signer}}</span>
-					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>
+<!--					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>-->
+					<router-link  v-else :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -948,15 +993,16 @@
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.portId')}}：</span>
 				<span>{{portId}}</span>
 			</p>
-			<p>
+<!--			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.channel')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(channel)" v-if="channel" :text="channel"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
-			</p>
+			</p>-->
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.signer')}}：</span>
 				<template>
 					<span v-if="signer === '--'">{{signer}}</span>
-					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>
+<!--					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>-->
+					<router-link  v-else :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -989,7 +1035,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.signer')}}：</span>
 				<template>
 					<span v-if="signer === '--'">{{signer}}</span>
-					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>
+<!--					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>-->
+					<router-link  v-else :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -1014,10 +1061,10 @@
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.proofTry')}}：</span>
 				<span>{{proofTry}}</span>
 			</p> -->
-			<p>
+<!--			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.proofTry')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(proofTry)" v-if="proofTry" :text="proofTry"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
-			</p>
+			</p>-->
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.proofHeight')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(proofHeight)" v-if="proofHeight" :text="proofHeight"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
@@ -1026,7 +1073,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.signer')}}：</span>
 				<template>
 					<span v-if="signer === '--'">{{signer}}</span>
-					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>
+<!--					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>-->
+					<router-link  v-else :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -1051,7 +1099,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.signer')}}：</span>
 				<template>
 					<span v-if="signer === '--'">{{signer}}</span>
-					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>
+<!--					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>-->
+					<router-link  v-else :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -1068,7 +1117,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.signer')}}：</span>
 				<template>
 					<span v-if="signer === '--'">{{signer}}</span>
-					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>
+<!--					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>-->
+					<router-link  v-else :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -1093,7 +1143,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.signer')}}：</span>
 				<template>
 					<span v-if="signer === '--'">{{signer}}</span>
-					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>
+<!--					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>-->
+					<router-link  v-else :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -1108,11 +1159,13 @@
             </p>
             <p>
                 <span>{{$t('ExplorerLang.transactionInformation.ibc.from')}}：</span>
-                <span @click="addressRoute(sender)" class="address_link">{{ sender }}</span>
+<!--                <span @click="addressRoute(sender)" class="address_link">{{ sender }}</span>-->
+				<router-link  :to="`/address/${sender}`" class="address_link">{{sender}}</router-link>
             </p>
             <p>
                 <span>{{$t('ExplorerLang.transactionInformation.ibc.to')}}：</span>
-                <span @click="addressRoute(receiver)" class="address_link">{{ receiver }}</span>
+<!--                <span @click="addressRoute(receiver)" class="address_link">{{ receiver }}</span>-->
+				<router-link  :to="`/address/${receiver}`" class="address_link">{{receiver}}</router-link>
             </p>
 			<!-- <p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.proofUnreceived')}}：</span>
@@ -1130,7 +1183,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.signer')}}：</span>
 				<template>
 					<span v-if="signer === '--'">{{signer}}</span>
-					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>
+<!--					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>-->
+					<router-link v-else  :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -1159,23 +1213,24 @@
 				<span>{{$t('ExplorerLang.transactionInformation.signer')}}：</span>
 				<template>
 					<span v-if="signer === '--'">{{signer}}</span>
-					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>
+<!--					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>-->
+					<router-link v-else  :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
 				</template>
 			</p>
 		</div>
 		<div v-if="txType === TX_TYPE.acknowledge_packet">
-			<p>
+<!--			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.packet')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(packet)" v-if="packet" :text="packet"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
-			</p>
+			</p>-->
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.acknowledgement')}}：</span>
 				<span>{{acknowledgement}}</span>
 			</p>
-			<p>
+<!--			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.proofAcked')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(proofAcked)" v-if="proofAcked" :text="proofAcked"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
-			</p>
+			</p>-->
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.proofHeight')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(proofHeight)" v-if="proofHeight" :text="proofHeight"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
@@ -1184,7 +1239,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.signer')}}：</span>
 				<template>
 					<span v-if="signer === '--'">{{signer}}</span>
-					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>
+<!--					<span v-else @click="addressRoute(signer)" class="address_link">{{signer}}</span>-->
+					<router-link v-else  :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -1226,7 +1282,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.staking.operatorAddress')}}</span>
 				<template>
 					<span v-if="operatorAddress === '--'">{{operatorAddress}}</span>
-					<span v-else @click="addressRoute(operatorAddress)" class="address_link">{{operatorAddress}}</span>
+<!--					<span v-else @click="addressRoute(operatorAddress)" class="address_link">{{operatorAddress}}</span>-->
+					<router-link v-else  :to="`/address/${operatorAddress}`" class="address_link">{{operatorAddress}}</router-link>
 				</template>
 			</p>
 			<p>
@@ -1250,7 +1307,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.staking.ownerAddress')}}</span>
 				<template>
 					<span v-if="ownerAddress === '--'">{{ownerAddress}}</span>
-					<span v-else @click="addressRoute(ownerAddress)" class="address_link">{{ownerAddress}}</span>
+<!--					<span v-else @click="addressRoute(ownerAddress)" class="address_link">{{ownerAddress}}</span>-->
+					<router-link v-else  :to="`/address/${ownerAddress}`" class="address_link">{{ownerAddress}}</router-link>
 				</template>
 			</p>
 			<p>
@@ -1319,14 +1377,17 @@
 				<span>{{$t('ExplorerLang.transactionInformation.staking.delegatorAddress')}}</span>
 				<template>
 					<span v-if="delegatorAddress === '--'">{{delegatorAddress}}</span>
-					<span v-else @click="addressRoute(delegatorAddress)" class="address_link">{{delegatorAddress}}</span>
+<!--					<span v-else @click="addressRoute(delegatorAddress)" class="address_link">{{delegatorAddress}}</span>-->
+					<router-link v-else  :to="`/address/${delegatorAddress}`" class="address_link">{{delegatorAddress}}</router-link>
+					
 				</template>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.staking.withdrawAddress')}}</span>
 				<template>
 					<span v-if="withdrawAddress === '--'">{{withdrawAddress}}</span>
-					<span v-else @click="addressRoute(withdrawAddress)" class="address_link">{{withdrawAddress}}</span>
+<!--					<span v-else @click="addressRoute(withdrawAddress)" class="address_link">{{withdrawAddress}}</span>-->
+					<router-link v-else  :to="`/address/${withdrawAddress}`" class="address_link">{{withdrawAddress}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -1355,7 +1416,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.staking.operatorAddress')}}</span>
 				<template>
 					<span v-if="operatorAddress === '--'">{{operatorAddress}}</span>
-					<span v-else @click="addressRoute(operatorAddress)" class="address_link">{{operatorAddress}}</span>
+<!--					<span v-else @click="addressRoute(operatorAddress)" class="address_link">{{operatorAddress}}</span>-->
+					<router-link v-else  :to="`/address/${operatorAddress}`" class="address_link">{{operatorAddress}}</router-link>
 				</template>
 				<!-- <template>
 					<span v-if="operMoniker === '--' && operatorAddress === '--' ">{{ operMoniker || operatorAddress }}</span>
@@ -1426,6 +1488,7 @@
 				<template>
 					<span v-if="depositor === '--'">{{depositor}}</span>
 					<span @click="addressRoute(depositor)" class="address_link">{{depositor}}</span>
+					<router-link :to="`/address/${depositor}`" class="address_link">{{depositor}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -1438,7 +1501,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.coinswap.inputAddress')}}</span>
 				<template>
 					<span v-if="inputAddress === '--'">{{inputAddress}}</span>
-					<span v-else @click="addressRoute(inputAddress)" class="address_link">{{ inputAddress }}</span>
+<!--					<span v-else @click="addressRoute(inputAddress)" class="address_link">{{ inputAddress }}</span>-->
+					<router-link v-else :to="`/address/${inputAddress}`" class="address_link">{{inputAddress}}</router-link>
 				</template>
 			</p>
 			<p>
@@ -1449,7 +1513,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.coinswap.outputAddress')}}</span>
 				<template>
 					<span v-if="outputAddress === '--'">{{outputAddress}}</span>
-					<span v-else @click="addressRoute(outputAddress)" class="address_link">{{ outputAddress }}</span>
+<!--					<span v-else @click="addressRoute(outputAddress)" class="address_link">{{ outputAddress }}</span>-->
+					<router-link v-else :to="`/address/${outputAddress}`" class="address_link">{{outputAddress}}</router-link>
 				</template>
 			</p>
 			<p>
@@ -1470,7 +1535,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.coinswap.sender')}}</span>
 				<template>
 					<span v-if="sender === '--'">{{sender}}</span>
-					<span v-else @click="addressRoute(sender)" class="address_link">{{ sender }}</span>
+<!--					<span v-else @click="addressRoute(sender)" class="address_link">{{ sender }}</span>-->
+					<router-link v-else :to="`/address/${sender}`" class="address_link">{{sender}}</router-link>
 				</template>
 			</p>
 			<p>
@@ -1503,7 +1569,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.coinswap.sender')}}</span>
 				<template>
 					<span v-if="sender === '--'">{{sender}}</span>
-					<span v-else @click="addressRoute(sender)" class="address_link">{{ sender }}</span>
+<!--					<span v-else @click="addressRoute(sender)" class="address_link">{{ sender }}</span>-->
+					<router-link v-else :to="`/address/${sender}`" class="address_link">{{sender}}</router-link>
 				</template>
 			</p>
 			<p>
@@ -1536,7 +1603,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.staking.operatorAddress')}}</span>
 				<template>
 					<span v-if="operatorAddress === '--'">{{operatorAddress}}</span>
-					<span v-else @click="addressRoute(operatorAddress)" class="address_link">{{operatorAddress}}</span>
+<!--					<span v-else @click="addressRoute(operatorAddress)" class="address_link">{{operatorAddress}}</span>-->
+					<router-link v-else :to="`/address/${operatorAddress}`" class="address_link">{{operatorAddress}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -1566,25 +1634,28 @@
 				<span>{{$t('ExplorerLang.transactionInformation.oracle.creator')}}: </span>
 				<template>
 					<span v-if="creator === '--'">{{ creator }}</span>
-					<span  v-else @click="addressRoute(creator)" class="address_link">{{ creator }}</span>
+<!--					<span  v-else @click="addressRoute(creator)" class="address_link">{{ creator }}</span>-->
+					<router-link v-else :to="`/address/${creator}`" class="address_link">{{creator}}</router-link>
 				</template>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.oracle.providers')}}: </span>
 				<span style="display: flex;flex-direction: column" v-if="providers.length > 0">
-                    <span
+<!--                    <span
 		                    v-for="(item,index) in providers"
 		                    :key="index"
 		                    @click="addressRoute(item)" class="address_link">
                         {{item}}
-                    </span>
+                    </span>-->
+					<router-link v-for="(item,index) in providers"
+								 :key="index" :to="`/address/${item}`" class="address_link">{{item}}</router-link>
                 </span>
 				<span v-else>--</span>
 			</p>
-			<p>
+<!--			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.oracle.input')}}:</span>
 				<span>{{ input }}</span>
-			</p>
+			</p>-->
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.serviceFeeCap')}}: </span>
 				<span>{{ serviceFeeCap }}</span>
@@ -1620,6 +1691,7 @@
 				<template>
 					<span v-if="creator === '--'">{{ creator }}</span>
 					<span  v-else @click="addressRoute(creator)" class="address_link">{{ creator }}</span>
+					<router-link v-else :to="`/address/${creator}`" class="address_link">{{creator}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -1640,18 +1712,21 @@
 				<span>{{$t('ExplorerLang.transactionInformation.oracle.creator')}}: </span>
 				<template>
 					<span v-if="creator === '--'">{{ creator }}</span>
-					<span  v-else @click="addressRoute(creator)" class="address_link">{{ creator }}</span>
+<!--					<span  v-else @click="addressRoute(creator)" class="address_link">{{ creator }}</span>-->
+					<router-link v-else :to="`/address/${creator}`" class="address_link">{{creator}}</router-link>
 				</template>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.oracle.providers')}}: </span>
 				<span style="display: flex;flex-direction: column" v-if="providers.length > 0">
-                    <span
+<!--                    <span
 		                    v-for="(item,index) in providers"
 		                    :key="index"
 		                    @click="addressRoute(item)" class="address_link">
                         {{item}}
-                    </span>
+                    </span>-->
+					<router-link  v-for="(item,index) in providers"
+								  :key="index" :to="`/address/${item}`" class="address_link">{{item}}</router-link>
                 </span>
 				<span v-else>--</span>
 			</p>
@@ -1681,7 +1756,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.consumer')}}: </span>
 				<template>
 					<span v-if="consumer === '--'">{{consumer}}</span>
-					<span v-else @click="addressRoute(consumer)" class="address_link">{{consumer}}</span>
+<!--					<span v-else @click="addressRoute(consumer)" class="address_link">{{consumer}}</span>-->
+					<router-link  v-else :to="`/address/${consumer}`" class="address_link">{{consumer}}</router-link>
 				</template>
 			</p>
 			<p>
@@ -1698,14 +1774,16 @@
 				<span>{{$t('ExplorerLang.transactionInformation.owner')}}：</span>
 				<template>
 					<span v-if="owner === '--'">{{owner}}</span>
-					<span v-else @click="addressRoute(owner)" class="address_link">{{owner}}</span>
+<!--					<span v-else @click="addressRoute(owner)" class="address_link">{{owner}}</span>-->
+					<router-link  v-else :to="`/address/${owner}`" class="address_link">{{owner}}</router-link>
 				</template>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.staking.withdrawAddress')}}</span>
 				<template>
 					<span v-if="withdrawAddress === '--'">{{withdrawAddress}}</span>
-					<span @click="addressRoute(withdrawAddress)" class="address_link">{{withdrawAddress}}</span>
+<!--					<span @click="addressRoute(withdrawAddress)" class="address_link">{{withdrawAddress}}</span>-->
+					<router-link  v-else :to="`/address/${withdrawAddress}`" class="address_link">{{withdrawAddress}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -1714,14 +1792,16 @@
 				<span>{{$t('ExplorerLang.transactionInformation.provider')}}: </span>
 				<template>
 					<span v-if="provider === '--'">{{provider}}</span>
-					<span v-else @click="addressRoute(provider)" class="address_link">{{provider}}</span>
+<!--					<span v-else @click="addressRoute(provider)" class="address_link">{{provider}}</span>-->
+					<router-link  v-else :to="`/address/${provider}`" class="address_link">{{provider}}</router-link>
 				</template>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.owner')}}：</span>
 				<template>
 					<span v-if="owner === '--'">{{owner}}</span>
-					<span v-else @click="addressRoute(owner)" class="address_link">{{owner}}</span>
+<!--					<span v-else @click="addressRoute(owner)" class="address_link">{{owner}}</span>-->
+					<router-link  v-else :to="`/address/${owner}`" class="address_link">{{owner}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -1762,7 +1842,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.asset.owner')}}: </span>
 				<template>
 					<span v-if="owner === '--'">{{owner}}</span>
-					<span v-else @click="addressRoute(owner)" class="address_link">{{owner}}</span>
+<!--					<span v-else @click="addressRoute(owner)" class="address_link">{{owner}}</span>-->
+					<router-link  v-else :to="`/address/${owner}`" class="address_link">{{owner}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -1790,7 +1871,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.asset.owner')}}: </span>
 				<template>
 					<span v-if="owner === '--'">{{owner}}</span>
-					<span v-else @click="addressRoute(owner)" class="address_link">{{owner}}</span>
+<!--					<span v-else @click="addressRoute(owner)" class="address_link">{{owner}}</span>-->
+					<router-link  v-else :to="`/address/${owner}`" class="address_link">{{owner}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -1806,7 +1888,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.asset.owner')}}: </span>
 				<template>
 					<span v-if="owner === '--'">{{owner}}</span>
-					<span v-else @click="addressRoute(owner)" class="address_link">{{owner}}</span>
+<!--					<span v-else @click="addressRoute(owner)" class="address_link">{{owner}}</span>-->
+					<router-link  v-else :to="`/address/${owner}`" class="address_link">{{owner}}</router-link>
 				</template>
 			</p>
 			<p>
@@ -1817,7 +1900,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.asset.to')}}: </span>
 				<template>
 					<span v-if="to === '--'">{{to}}</span>
-					<span v-else @click="addressRoute(to)" class="address_link">{{to}}</span>
+<!--					<span v-else @click="addressRoute(to)" class="address_link">{{to}}</span>-->
+					<router-link  v-else :to="`/address/${to}`" class="address_link">{{to}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -1833,14 +1917,16 @@
 				<span>{{$t('ExplorerLang.transactionInformation.asset.originalOwner')}}: </span>
 				<template>
 					<span v-if="originalOwner === '--'">{{originalOwner}}</span>
-					<span v-else @click="addressRoute(originalOwner)" class="address_link">{{originalOwner}}</span>
+<!--					<span v-else @click="addressRoute(originalOwner)" class="address_link">{{originalOwner}}</span>-->
+					<router-link  v-else :to="`/address/${originalOwner}`" class="address_link">{{originalOwner}}</router-link>
 				</template>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.asset.newOwner')}}: </span>
 				<template>
 					<span v-if="newOwner === '--'">{{newOwner}}</span>
-					<span v-else @click="addressRoute(newOwner)" class="address_link">{{newOwner}}</span>
+<!--					<span v-else @click="addressRoute(newOwner)" class="address_link">{{newOwner}}</span>-->
+					<router-link  v-else :to="`/address/${newOwner}`" class="address_link">{{newOwner}}</router-link>
 				</template>
 			</p>
 		</div>
@@ -1856,7 +1942,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.asset.sender')}}: </span>
 				<template>
 					<span v-if="sender === '--'">{{sender}}</span>
-					<span v-else @click="addressRoute(sender)" class="address_link">{{sender}}</span>
+<!--					<span v-else @click="addressRoute(sender)" class="address_link">{{sender}}</span>-->
+					<router-link  v-else :to="`/address/${sender}`" class="address_link">{{sender}}</router-link>
 				</template>
 			</p>
 			<p>
@@ -1869,7 +1956,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.gov.depositor')}}: </span>
 				<template>
 					<span v-if="depositor === '--'">{{depositor}}</span>
-					<span v-else @click="addressRoute(depositor)" class="address_link">{{depositor}}</span>
+<!--					<span v-else @click="addressRoute(depositor)" class="address_link">{{depositor}}</span>-->
+					<router-link  v-else :to="`/address/${depositor}`" class="address_link">{{depositor}}</router-link>
 				</template>
 			</p>
 			<p>
@@ -1889,7 +1977,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.gov.voter')}}: </span>
 				<template>
 					<span v-if="voter === '--'">{{voter}}</span>
-					<span v-else @click="addressRoute(voter)" class="address_link">{{voter}}</span>
+<!--					<span v-else @click="addressRoute(voter)" class="address_link">{{voter}}</span>-->
+					<router-link  v-else :to="`/address/${voter}`" class="address_link">{{voter}}</router-link>
 				</template>
 			</p>
 			<p>
@@ -1909,7 +1998,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.gov.proposer')}} : </span>
 				<template>
 					<span v-if="proposer === '--'">{{proposer}}</span>
-					<span v-else @click="addressRoute(proposer)" class="address_link">{{proposer}}</span>
+<!--					<span v-else @click="addressRoute(proposer)" class="address_link">{{proposer}}</span>-->
+					<router-link  v-else :to="`/address/${proposer}`" class="address_link">{{proposer}}</router-link>
 				</template>
 			</p>
 			<p>
@@ -1962,7 +2052,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.multisend.inputs')}}: </span>
 				<span>
 					<p v-for="(input,index) in inputs" :key="index">
-						<span @click="addressRoute(input.address)" class="address_link">{{input.address}}</span>
+<!--						<span @click="addressRoute(input.address)" class="address_link">{{input.address}}</span>-->
+						<router-link :to="`/address/${input.address}`" class="address_link">{{input.address}}</router-link>
 						<span>{{input.amount}}</span>
 					</p>
 				</span>
@@ -1971,7 +2062,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.multisend.outputs')}}: </span>
 				<span>
 					<p v-for="(output,index) in outputs" :key="index">
-						<span @click="addressRoute(output.address)" class="address_link">{{output.address}}</span>
+<!--						<span @click="addressRoute(output.address)" class="address_link">{{output.address}}</span>-->
+						<router-link :to="`/address/${output.address}`" class="address_link">{{output.address}}</router-link>
 						<span>{{output.amount}}</span>
 					</p>
 				</span>
@@ -1990,14 +2082,16 @@
 				<span>{{$t('ExplorerLang.transactionInformation.htlc.sender')}} : </span>
 				<template>
 					<span v-if="sender === '--'">{{sender}}</span>
-					<span v-else @click="addressRoute(sender)" class="address_link">{{sender}}</span>
+<!--					<span v-else @click="addressRoute(sender)" class="address_link">{{sender}}</span>-->
+					<router-link v-else :to="`/address/${sender}`" class="address_link">{{sender}}</router-link>
 				</template>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.htlc.to')}} : </span>
 				<template>
 					<span v-if="to === '--'">{{to}}</span>
-					<span v-else @click="addressRoute(to)" class="address_link">{{to}}</span>
+<!--					<span v-else @click="addressRoute(to)" class="address_link">{{to}}</span>-->
+					<router-link v-else :to="`/address/${to}`" class="address_link">{{to}}</router-link>
 				</template>
 			</p>
 			<p>
@@ -2042,14 +2136,16 @@
 				<span>{{$t('ExplorerLang.transactionInformation.htlc.sender')}} : </span>
 				<template>
 					<span v-if="sender === '--'">{{sender}}</span>
-					<span v-else @click="addressRoute(sender)" class="address_link">{{sender}}</span>
+<!--					<span v-else @click="addressRoute(sender)" class="address_link">{{sender}}</span>-->
+					<router-link v-else :to="`/address/${sender}`" class="address_link">{{sender}}</router-link>
 				</template>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.htlc.recipient')}} : </span>
 				<template>
 					<span v-if="recipient === '--'">{{recipient}}</span>
-					<span v-else @click="addressRoute(recipient)" class="address_link">{{recipient}}</span>
+<!--					<span v-else @click="addressRoute(recipient)" class="address_link">{{recipient}}</span>-->
+					<router-link v-else :to="`/address/${recipient}`" class="address_link">{{recipient}}</router-link>
 				</template>
 			</p>
 			<p>
@@ -2066,7 +2162,8 @@
 				<span>{{$t('ExplorerLang.transactionInformation.htlc.sender')}} : </span>
 				<template>
 					<span v-if="sender === '--'">{{sender}}</span>
-					<span v-else @click="addressRoute(sender)" class="address_link">{{sender}}</span>
+<!--					<span v-else @click="addressRoute(sender)" class="address_link">{{sender}}</span>-->
+					<router-link class="address_link" :to="`/address/${sender}`"></router-link>
 				</template>
 			</p>
 			<p v-if="hashLock">
@@ -3235,7 +3332,7 @@
 								this.senderOnOtherChain = msg.sender_on_other_chain || '--';
 								if(msg.amount && msg.amount[0]) {
                   let coin = await converCoin(msg.amount[0])
-									this.amount = `${coin.amount} ${coin.denom}`;
+									this.amount = `${coin.amount} ${coin.denom.toUpperCase()}`;
 								} else {
 									this.amount = '--';
 								}
@@ -3279,7 +3376,7 @@
 								});
                 if(attributeMap.has('amount')){
                   let coin = await converCoin(attributeMap.get('amount'))
-                  this.amount = `${coin.amount} ${coin.denom}`;
+                  this.amount = `${coin.amount} ${coin.denom.toUpperCase()}`;
                 }
                 if(attributeMap.has('recipient')){
                   this.recipient = attributeMap.get('recipient')

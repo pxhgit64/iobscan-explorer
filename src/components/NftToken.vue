@@ -66,10 +66,10 @@
 					:pagination="{pageSize:Number(pageSize),dataCount:count,pageNum:Number(pageNum)}"
 					@pageChange="pageChange"
 				></list-component>
-				<div class="pagination_content">
+<!--				<div class="pagination_content">
 					<m-pagination :page-size="pageSize" :total="count" :page="pageNum"
 								  :page-change="pageChange"></m-pagination>
-				</div>
+				</div>-->
 			</div>
 		</div>
 	</div>
@@ -220,8 +220,8 @@ export default {
 							if (allNftTxMsgArr && allNftTxMsgArr[0]?.msg?.sender) {
 								filterSenderArr = [allNftTxMsgArr[0].msg.sender]
 							}
-							if (allNftTxMsgArr && allNftTxMsgArr[0]?.msg?.id) {
-								filterDenomId = [allNftTxMsgArr[0].msg.id]
+							if (allNftTxMsgArr && allNftTxMsgArr[0]?.msg?.denom) {
+								filterDenomId = [allNftTxMsgArr[0].msg.denom]
 							}
 						} else if (allNftTxMsgArr?.length > 1) {
 							let senderArr = allNftTxMsgArr.map(item => {
@@ -230,8 +230,8 @@ export default {
 								}
 							})
 							let denomIdArr = allNftTxMsgArr.map(item => {
-								if (item?.msg?.id) {
-									return item.msg.id
+								if (item?.msg?.denom) {
+									return item.msg.denom
 								}
 							})
 							filterSenderArr = Array.from(new Set(senderArr))
@@ -241,7 +241,7 @@ export default {
 							sender = filterSenderArr [0]
 						}
 						if (filterDenomId?.length === 1) {
-							denomId = filterSenderArr[0]
+							denomId = filterDenomId[0]
 						}
 						return {
 							txHash: item.tx_hash,

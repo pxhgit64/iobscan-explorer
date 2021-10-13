@@ -16,7 +16,6 @@
 				:column-list="validatorColumnList"
 				:list-data="tableData"
 				:pagination="{pageSize:Number(pageSize),dataCount:count,pageNum:Number(pageNum)}"
-				@tableSort='sortTable'
 			></list-component>
 <!--			<div class="staking_table_list_content">
 				
