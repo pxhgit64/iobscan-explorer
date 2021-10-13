@@ -9,16 +9,17 @@ const i18n = new VueI18n({
 })
 export default [
     {
-        label: i18n.t('ExplorerLang.table.denomId'),
-        displayValue: 'denomId',
-        nativeValue: 'denomId',
-    },
-    {
-        label: i18n.t('ExplorerLang.table.denomName'),
+        label: i18n.t('ExplorerLang.table.denom'),
         displayValue: 'denomName',
         nativeValue: 'denomName',
 
     },
+    {
+        label: i18n.t('ExplorerLang.table.denomId'),
+        displayValue: 'denomId',
+        nativeValue: 'denomId',
+    },
+
 
     {
         label: i18n.t('ExplorerLang.table.txHash'),
@@ -27,13 +28,13 @@ export default [
         linkRoute: '/tx?txHash=',
         isLink: true,
         isNeedFormat: true,
-        isFormatAddress: true,
+        isNeedFormatHash: true,
     },
     {
         label: i18n.t('ExplorerLang.table.nftCount'),
         displayValue: 'nftCount',
-        nativeValue: 'nftCount',
-        linkRoute: '/nftAsset?',
+        nativeValue: 'denomId',
+        linkRoute: '/nftAsset?denomId=',
         isLink: true,
     },
 

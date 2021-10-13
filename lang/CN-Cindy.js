@@ -42,7 +42,6 @@ export const ExplorerLang = {
         author: '服务创建者',
         requestContentId:'请求上下文标识',
         nftId:'数据对象标识',
-        denomName:'数据类别',
         recipient: 'Recipient',
         receiver: 'Receiver',
         feedName: '任务名称',

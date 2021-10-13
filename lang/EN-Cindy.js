@@ -289,7 +289,6 @@ export const ExplorerLang = {
         relevanceTx:'Related Transaction',
         txType: 'Type',
         denomId: 'Denom Id',
-        denomName: 'Denom Name',
         from: 'From',
         to: 'To',
         consumer: 'Consumer',

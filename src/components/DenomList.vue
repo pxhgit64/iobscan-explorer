@@ -17,6 +17,7 @@
       </div>
       <div class="nef_list_table_container">
         <list-component
+			:empty-text="$t('ExplorerLang.table.emptyDescription')"
             :is-loading="isDenomListLoading"
             :list-data="denomList"
             :column-list="denomListColumn"
@@ -128,7 +129,6 @@ export default {
   methods: {
     resetFilterCondition() {
       this.input = "";
-      this.owner = ''//新增
       this.pageNum = 1;
       this.getDenomsCount();
       this.getDenoms();
@@ -142,8 +142,6 @@ export default {
       this.getDenoms();
     },
     handleSearchClick(input) {
-      console.log(input,'这里是子组件输入框传递出来的值')
-      //下面传递参数的时候用的是this.input 你这里有owner 去接收  怎么会有效果呢
       this.input = input
       this.pageNum = 1;
       this.getDenomsCount();
