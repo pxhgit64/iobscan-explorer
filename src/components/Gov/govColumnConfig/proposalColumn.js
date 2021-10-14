@@ -14,7 +14,7 @@ export default [
         displayValue:'id',
         nativeValue:'id',
         isLink: true,
-        linkRoute: '/ProposalsDetail',
+        linkRoute: '/ProposalsDetail/',
         width: 50,
     },
     {
@@ -22,7 +22,7 @@ export default [
         displayValue:'title',
         nativeValue:'id',
         isLink: true,
-        linkRoute: '/ProposalsDetail',
+        linkRoute: '/ProposalsDetail/',
         width: 180
     },
     {

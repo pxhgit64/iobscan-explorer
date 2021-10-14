@@ -6,8 +6,8 @@
 				<slot name="dataPicket"></slot>
 			</div>
 			<slot name="msgType"></slot>
-			<loading v-if="isLoading"></loading>
-			<div class="scroll_container" style="margin-bottom: 0.1rem">
+			<loading v-if="isSetLoadingStatus"></loading>
+			<div v-show="!isSetLoadingStatus" class="scroll_container" style="margin-bottom: 0.1rem">
 				<vue-scroll :ops="opsConfig">
 					<el-table
 						:row-class-name="listTableRowClassName"
@@ -24,7 +24,7 @@
 							:prop="item.displayValue"
 							:label="item.label"
 							:sort-method="(a,b) => {return tableSort(item.sortName,a,b)}"
-							:width="item.width ? item.width : 'auto'"
+							:width="tableListWidth[index]"
 							:sort-orders="item.isNeedSort ? ['descending', 'ascending'] :[]"
 							:sortable="item.isNeedSort">
 							<template slot="header" slot-scope="scope">
@@ -37,7 +37,7 @@
 							</template>
 							<template slot-scope="scope">
 								<!--						blockChain-->
-								<div class="status" v-show="item.isShowTxStatusIcon">
+								<div class="status" v-if="item.isShowTxStatusIcon">
 									<img class="status_icon"
 										 :src="require(`../../assets/${scope.row.status==TX_STATUS.success?'success.png':'failed.png'}`)"/>
 								</div>
@@ -72,13 +72,13 @@
 <!--									-->
 									<span v-else-if="item.isHref">
 										
-										<a v-show="isShowHref(scope.row[item.displayValue])"
+										<a v-if="isShowHref(scope.row[item.displayValue])"
 										   class="route_link_style"
 										   :href="`${item.href}/#/address/${scope.row[item.nativeValue]}`"
 										   target="_blank"
 										   rel="noreferrer noopener">{{ formatAddress(scope.row[item.displayValue]) }}</a>
 										
-										<span v-show="!isShowHref(scope.row[item.displayValue])">{{ formatAddress(scope.row[item.displayValue]) }}</span>
+										<span v-if="!isShowHref(scope.row[item.displayValue])">{{ formatAddress(scope.row[item.displayValue]) }}</span>
 										
 									</span>
 <!--									-->
@@ -102,7 +102,7 @@
 										<el-tooltip :manual="isShowDenomTip(scope.row.denomTheme.tooltipContent)"
 													:content="scope.row.denomTheme.tooltipContent" placement="top">
 											
-											<span :style="{ color: scope.row.denomTheme.denomColor }">{{getAmountUnit(scope.row[item.displayValue]) }}</span>
+											<span class="denom_style" :style="{ color: scope.row.denomTheme.denomColor }">{{getAmountUnit(scope.row[item.displayValue]) }}</span>
 											
 										</el-tooltip>
 										
@@ -113,7 +113,7 @@
 									<div v-else-if="item.isShowMonikerImg" style="display: flex;
 										align-items: center;
 										position: relative">
-										<span v-show="scope.row[item.isDisplayIconValue]" class="avatar"
+										<span v-if="scope.row[item.isDisplayIconValue]" class="avatar"
 											  style="width: 0.3rem;
 											  height: 0.3rem;
 											  border-radius: 0.3rem;
@@ -122,7 +122,7 @@
 											  align-items: center;
 											  justify-content: center"
 										>{{scope.row[item.isDisplayIconValue] || '--'}}</span>
-										<img v-show="scope.row[item.imgUrlValue]"
+										<img v-if="scope.row[item.imgUrlValue]"
 											 style="width: 0.3rem;height: 0.3rem;border-radius: 0.3rem;overflow: hidden;position: absolute"
 											 :src="scope.row[item.imgUrlValue] ? scope.row[item.imgUrlValue] : ''"/>
 										<el-tooltip popper-class="tooltip" :disabled="!scope.row.isTooltip"
@@ -139,7 +139,7 @@
 											:final-votes="scope.row[item.finalVotes]"></proposal-status-component>
 									</div>
 <!--									-->
-									<span v-else>{{ scope.row[item.displayValue] == 0 ? 0 : scope.row[item.displayValue] || '--' }}</span>
+									<span v-else>{{ scope.row[item.displayValue] === 0 || scope.row[item.displayValue] === '0' ? 0 : scope.row[item.displayValue] || '--' }}</span>
 									
 								</el-tooltip>
 							</template>
@@ -193,6 +193,7 @@ export default {
 	components: {ProposalStatusComponent, MPagination, Loading},
 	data() {
 		return {
+			isSetLoadingStatus: false,
 			isShowFee: prodConfig.fee.isShowFee || false,
 			isShowProposer: prodConfig.blockList.proposer || false,
 			tableList: [],
@@ -274,13 +275,23 @@ export default {
 				if (!this.isShowProposer) {
 					this.deleteProposer()
 				}
-				// this.getTableWidth()
+				this.getTableWidth()
 			},
 			deep: true
 		},
 		listData: {
 			handler(newValue, oldValue) {
 				this.tableList = newValue
+			},
+			deep: true
+		},
+		isLoading: {
+			handler(newValue, oldValue) {
+				if(newValue){
+					this.isSetLoadingStatus = newValue
+				}else {
+					this.getTableWidth()
+				}
 			},
 			deep: true
 		},
@@ -530,28 +541,40 @@ export default {
 				}
 			}
 		},
-		/*getTableWidth () {
+		getTableWidth () {
 			this.tableListWidth = []
+			let listTableTimer = null
 			this.$nextTick(() => {
-				setTimeout(() => {
+				listTableTimer = setInterval(() => {
 					if(this.$refs['listTable'].$el){
+						let tableWidth = this.$refs['listTable'].$el.scrollWidth
+						clearInterval(listTableTimer)
+						//这里拿到的是 table 内容实际的占用空间 实际占用的空间小于 table 列表的宽度，需要为每一列设置一个补偿量，列表内容充满 table
 						this.tableListWidth = this.$adjustColumnWidth(this.$refs['listTable'].$el);
+						if(this.tableListWidth?.length){
+							//计算出实际内容占用的空间
+							let practicalWidth = this.tableListWidth.reduce((totalWidth,currentWidth) => {
+								return totalWidth + currentWidth
+							})
+							// 为每一列设置补偿量
+							if(practicalWidth < tableWidth && this?.columns?.length){
+								let compensationWidth = (tableWidth - practicalWidth) / this.columns.length
+								this.tableListWidth = this.tableListWidth.map( item => {
+									return item + compensationWidth
+								})
+							}
+							
+						}
 					}
-				},200);
+					this.isSetLoadingStatus = false
+				},50);
 			});
-			if(this.columns?.length){
-				// this.columns[1].width =  this.tableListWidth[1]
-				// this.columns[this.columns.length].width =  this.tableListWidth[this.tableListWidth.length]
-				// this.columns[this.columns.length-1].width =  this.tableListWidth[this.tableListWidth.length-1]
-				/!*this.columns.forEach( (item,index) => {
-					item.width = this.tableListWidth[index] || 'auto'
-				})*!/
-			}
-		}*/
+		}
 	},
 	mounted() {
 		this.columns = []
 		this.columns = this.columnList
+		this.getTableWidth()
 		if (!this.isShowFee) {
 			this.deleteColumnFee()
 		}
@@ -560,7 +583,6 @@ export default {
 		}
 		this.tableList = this.listData
 		this.getAllTokens()
-		// this.getTableWidth()
 	}
 }
 </script>
@@ -588,7 +610,9 @@ export default {
 				display: none;
 			}
 		}
-		
+		.denom_style{
+			margin-left: 0.1rem !important;
+		}
 		.list_component_footer {
 			display: flex;
 			justify-content: space-between;
@@ -723,7 +747,7 @@ export default {
 		::v-deep.cell {
 			display: flex;
 			align-items: center;
-			
+			white-space: nowrap;
 			.status {
 				display: flex;
 				align-items: center;
@@ -742,5 +766,8 @@ export default {
 
 .table_content_container .box-card.scroll_container .__vuescroll .__panel {
 	scrollbar-color: transparent transparent !important;
+}
+a{
+	white-space: nowrap;
 }
 </style>

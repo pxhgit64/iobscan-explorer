@@ -21,7 +21,7 @@ export default [
         isLink: true,
         displayValue:'address',
         nativeValue:'address',
-        linkRoute:'/address',
+        linkRoute:'/address/',
     },
     {
         label: i18n.t('ExplorerLang.stats.amount'),

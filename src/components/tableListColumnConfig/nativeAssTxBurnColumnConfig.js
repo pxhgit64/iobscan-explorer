@@ -49,7 +49,7 @@ export default [
         displayValue: 'block',
         nativeValue: 'block',
         isLink:true,
-        linkRoute:'/block'
+        linkRoute:'/block/'
     },
     {
         label: i18n.t('ExplorerLang.table.fee'),

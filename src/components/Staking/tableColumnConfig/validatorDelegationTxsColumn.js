@@ -42,7 +42,7 @@ export default [
         isLink: true,
         isNeedFormat: true,
         isFormatAddress: true,
-        linkRoute: '/address',
+        linkRoute: '/address/',
     },
     {
         label:i18n.t('ExplorerLang.table.block'),
@@ -50,7 +50,7 @@ export default [
         nativeValue:'blockHeight',
         isLink:true,
         isNeedFormatHash:false,
-        linkRoute:'/block',
+        linkRoute:'/block/',
         isShowMoniker:false
     },
     {

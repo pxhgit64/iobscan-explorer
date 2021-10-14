@@ -145,6 +145,14 @@
 				<span>{{nftName}}</span>
 			</p>
 			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.from')}}：</span>
+				<template>
+					<span v-if="sender === '--'">{{sender}}</span>
+					<!--					<span v-else @click="addressRoute(sender)" class="address_link">{{sender}}</span>-->
+					<router-link v-else class="address_link" :to="`/address/${sender}`">{{sender}}</router-link>
+				</template>
+			</p>
+			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.to')}}：</span>
 				<template>
 					<span v-if="recipient === '--'">{{recipient}}</span>
@@ -152,14 +160,7 @@
 					<router-link v-else class="address_link" :to="`/address/${recipient}`">{{recipient}}</router-link>
 				</template>
 			</p>
-			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.from')}}：</span>
-				<template>
-					<span v-if="sender === '--'">{{sender}}</span>
-<!--					<span v-else @click="addressRoute(sender)" class="address_link">{{sender}}</span>-->
-					<router-link v-else class="address_link" :to="`/address/${sender}`">{{sender}}</router-link>
-				</template>
-			</p>
+			
 <!--			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.data')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(tokenData)" v-if="tokenData" :text="tokenData" :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
@@ -1227,6 +1228,11 @@
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.acknowledgement')}}：</span>
 				<span>{{acknowledgement}}</span>
 			</p>
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.ibc.token')}}：</span>
+				<span>{{amount}}</span>
+			</p>
+
 <!--			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.ibc.proofAcked')}}：</span>
 				<LargeString :isShowPre="Tools.isJSON(proofAcked)" v-if="proofAcked" :text="proofAcked"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
@@ -2407,7 +2413,8 @@
 				viewSource: '',
 				amountArray:[],
 				COSMOS_ADDRESS_PREFIX,
-				IRIS_ADDRESS_PREFIX
+				IRIS_ADDRESS_PREFIX,
+				data:''
 			}
 		},
 		computed: {
@@ -3257,7 +3264,7 @@
 								this.nextSequenceRecv = msg.next_sequence_recv || '--';
 								this.signer = msg.signer || '--';
 								let originalDenom = TxHelper.getOriginalDenomFromPacket(msg.packet,message.type);
-                                if(msg.packet && msg.packet.data){
+                                if(msg.packet && msg.packet.data && JSON.stringify(msg.packet.data) !== '{}'){
                                     this.sender = msg.packet.data.sender;
                                     this.receiver = msg.packet.data.receiver;
                                     this.amount = await converCoin({
@@ -3275,11 +3282,18 @@
 								this.signer = msg.signer || '--';
 							break;
 							case TX_TYPE.acknowledge_packet:
+								if(msg.packet && msg.packet.data && JSON.stringify(msg.packet.data) !== '{}' ){
+									this.amount = await converCoin({
+										denom:originalDenom || msg.packet.data.denom,
+										amount:msg.packet.data.amount,
+									});
+								}
 								this.packet = msg.packet ? JSON.stringify(msg.packet) : '--';
 								this.acknowledgement = msg.acknowledgement || '--';
 								this.proofAcked = msg.proof_acked || '--';
 								this.proofHeight = msg.proof_height ? JSON.stringify(msg.proof_height) : '--';
 								this.signer = msg.signer || '--';
+								this.amount = `${this.amount.amount} ${this.amount.denom.toUpperCase()}`
 							break;
 							// MsgTypeIBCTransfer
 							case TX_TYPE.transfer:

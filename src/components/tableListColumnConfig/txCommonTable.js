@@ -30,6 +30,6 @@ export default [
         isShowTag:true,
         isLink:false,
         isShowMoniker:false,
-        width: 220
+        // width: 220
     },
 ]

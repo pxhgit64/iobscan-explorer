@@ -370,7 +370,6 @@
 				if (this.type === 'stake') {
 					const {data} = await getTypeStakingApi()
 					data.forEach(item => {
-						console.log(item)
 						res.push(item.typeName)
 					})
 				} else if (this.type === 'declaration') {

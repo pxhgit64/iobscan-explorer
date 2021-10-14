@@ -14,7 +14,7 @@ export default  [
         nativeValue:'address',
         isLink: true,
         isNeedFormat: true,
-        linkRoute:'/address',
+        linkRoute:'/address/',
         isFormatAddress: true,
     },
     {

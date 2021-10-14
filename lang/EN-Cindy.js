@@ -289,6 +289,7 @@ export const ExplorerLang = {
         relevanceTx:'Related Transaction',
         txType: 'Type',
         denomId: 'Denom Id',
+        denomName:'Denom Name',
         from: 'From',
         to: 'To',
         consumer: 'Consumer',
@@ -496,6 +497,7 @@ export const ExplorerLang = {
             from:'Sender',
             to:'Receiver',
             amount: 'Amount',
+            data:'Data'
         },
         multisend: {
             inputs: 'Inputs',
