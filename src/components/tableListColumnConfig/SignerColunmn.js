@@ -15,6 +15,6 @@ export default [
         isLink: true,
         isNeedFormat: true,
         isFormatAddress: true,
-        linkRoute: '/address',
+        linkRoute: '/address/',
     },
 ]
