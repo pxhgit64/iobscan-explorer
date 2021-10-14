@@ -746,6 +746,7 @@ import TabsComponent from "./common/TabsComponent";
 import {getAmountByTx, getDenomMap, getDenomTheme} from "../helper/txListAmoutHelper";
 import TxStatusTabsComponents from "./common/TxStatusTabsComponents";
 import TxCountComponent from "./TxCountComponent";
+import SignerColunmn from "./tableListColumnConfig/SignerColunmn";
 
 export default {
 	name: 'OwnerDetail',
@@ -932,7 +933,7 @@ export default {
 		this.mainToken = await getMainToken()
 	},
 	async mounted() {
-		this.txColumnList = txCommonTable.concat(txCommonLatestTable)
+		this.txColumnList = txCommonTable.concat(SignerColunmn,txCommonLatestTable)
 		await this.getTxTypeData()
 		document.documentElement.scrollTop = 0
 		this.address = this.$route.params.param
@@ -947,7 +948,7 @@ export default {
 				//处理点击all的情况
 				this.type = ''
 			}
-			this.txColumnList = txCommonTable.concat(txCommonLatestTable)
+			this.txColumnList = txCommonTable.concat(SignerColunmn,txCommonLatestTable)
 			if(this.type && needAddColumn[this.type]){
 				this.txColumnList = txCommonTable.concat(needAddColumn[this.type],txCommonLatestTable)
 			}
