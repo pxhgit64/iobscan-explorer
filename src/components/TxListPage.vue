@@ -174,6 +174,7 @@
 		async mounted () {
 			const {txType} = Tools.urlParser();
 			await this.getType();
+			this.txColumnList = txCommonTable.concat(txCommonLatestTable)
 			if(this.type === 'stake'){
 				this.txColumnList = txCommonTable.concat(stakingValidationAndDelegationAmount,SignerColunmn,txCommonLatestTable)
 			}
@@ -210,6 +211,7 @@
 		},
 		methods: {
 			setChoiceMsgTypeColumn(param){
+				this.txColumnList = txCommonTable.concat(txCommonLatestTable)
 				if(this.type === 'stake'){
 					this.txColumnList = txCommonTable.concat(stakingValidationAndDelegationAmount,SignerColunmn,txCommonLatestTable)
 				}
