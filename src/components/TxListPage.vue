@@ -142,6 +142,7 @@
 				totalPageNum: sessionStorage.getItem("txpagenum") ? JSON.parse(sessionStorage.getItem("txpagenum")) : 1,
 				currentPageNum: this.forCurrentPageNum(),
 				pickerStartTime: sessionStorage.getItem('firstBlockTime') ? sessionStorage.getItem('firstBlockTime') : '',
+				selectMsgTypeIndex: sessionStorage.getItem('selectMsgTypeIndex') ? JSON.parse(sessionStorage.getItem('selectMsgTypeIndex')) : 0,
 				PickerOptions: {
 					disabledDate: (time) => {
 						return time.getTime() < new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
@@ -204,10 +205,11 @@
 			statusArray.forEach(item => {
 				this.status.push(item)
 			})
-		
-			this.getTxListByFilterCondition(null, null, true)
 			
+			this.getTxListByFilterCondition(null, null, true)
 			this.getTxListByFilterCondition(this.currentPageNum, this.pageSize)
+			// this.$store.commit('currentTxModelIndex',this.selectMsgTypeIndex)
+			
 		},
 		methods: {
 			setChoiceMsgTypeColumn(param){
@@ -376,11 +378,13 @@
 						this.type = 'gov';
 						this.pageTitle = pageTitleConfig.GovGovTxs;
 				}
-				this.$store.commit('currentTxModelIndex',0)
+				// this.$store.commit('currentTxModelIndex',0)
 				this.getAllTxType();
 			},
 			async getAllTxType () {
 				let res = [];
+				sessionStorage.removeItem('selectMsgTypeIndex')
+				this.$store.commit('currentTxModelIndex',0)
 				if (this.type === 'stake') {
 					const {data} = await getTypeStakingApi()
 					data.forEach(item => {
@@ -414,6 +418,17 @@
 							}
 						];
 						this.txTypeListArray = this.txTypeListArray.concat(typeArray)
+						if(this.txTypeListArray?.length > 0 && this.TxType){
+							this.txTypeListArray.forEach( (item,index) => {
+								if(item?.value === this.TxType){
+									this.selectMsgTypeIndex  = index
+								}
+							})
+							sessionStorage.setItem('selectMsgTypeIndex',this.selectMsgTypeIndex)
+							sessionStorage.setItem('currentTxModelIndex',this.selectMsgTypeIndex)
+							sessionStorage.setItem('lastChoiceMsgModelIndex',this.selectMsgTypeIndex)
+							this.$store.commit('currentTxModelIndex',this.selectMsgTypeIndex)
+						}
 					}
 				} catch (e) {
 					console.error(e)
@@ -732,7 +747,12 @@
                 }
                 return type;
             },
-		}
+		},
+		beforeDestroy(){
+			this.$store.commit('currentTxModelIndex',0)
+			sessionStorage.removeItem('lastChoiceMsgModelIndex')
+			sessionStorage.removeItem('currentChoiceMsgType')
+		},
 	}
 </script>
 
