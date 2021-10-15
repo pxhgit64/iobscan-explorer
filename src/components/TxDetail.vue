@@ -50,7 +50,8 @@
 					<p class="tx_information_list_item">
 						<span>{{ $t('ExplorerLang.transactionInformation.signer') }}：</span>
 						<span style="word-break:break-all;">
-					<p style="margin-bottom: 0.05rem" v-for="item in signer" :key= "item" class="address_link" @click="addressRoute(item)">{{ item }}</p>
+<!--					<p style="margin-bottom: 0.05rem" v-for="item in signer" :key= "item" class="address_link" @click="addressRoute(item)">{{ item }}</p>-->
+					<router-link style="margin-bottom: 0.05rem" v-for="item in signer" :key= "item" class="address_link" :to="`/address/${item}`">{{ item }}</router-link>
 					</span>
 					</p>
 					<p class="tx_information_list_item">

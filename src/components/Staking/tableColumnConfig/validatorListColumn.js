@@ -23,7 +23,7 @@ export default {
             isFormatMoniker: true,
             isFormatAddress: true,
             isLink: true,
-            linkRoute: '/staking',
+            linkRoute: '/staking/',
         },
         {
             label: 'Commission',
@@ -83,7 +83,7 @@ export default {
             isFormatMoniker: true,
             isFormatAddress: true,
             isLink: true,
-            linkRoute: '/staking',
+            linkRoute: '/staking/',
         },
         {
             label: 'Commission',
@@ -112,7 +112,7 @@ export default {
             nativeValue:'unbondingHeight',
             isLink:true,
             isNeedFormatHash:false,
-            linkRoute:'/block',
+            linkRoute:'/block/',
             isShowMoniker:false,
             isNeedSort:true,
             sortName:'unbondingHeight'
@@ -143,7 +143,7 @@ export default {
             isFormatMoniker: true,
             isFormatAddress: true,
             isLink: true,
-            linkRoute: '/staking',
+            linkRoute: '/staking/',
         },
         {
             label: 'Commission',
@@ -172,7 +172,7 @@ export default {
             nativeValue:'unbondingHeight',
             isLink:true,
             isNeedFormatHash:false,
-            linkRoute:'/block',
+            linkRoute:'/block/',
             isShowMoniker:false,
             isNeedSort:true,
             sortName:'unbondingHeight'

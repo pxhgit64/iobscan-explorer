@@ -17,21 +17,21 @@ export default [
         isLink: true,
         isNeedFormat: true,
         isFormatAddress: true,
-        linkRoute: '/address',
+        linkRoute: '/address/',
     },
     {
         label: i18n.t('ExplorerLang.table.token'),
         displayValue: 'token',
         nativeValue: 'token',
         isLink: true,
-        linkRoute: '/assets'
+        linkRoute: '/assets/'
     },
     {
         label: i18n.t('ExplorerLang.table.block'),
         displayValue: 'block',
         nativeValue: 'block',
         isLink:true,
-        linkRoute:'/block'
+        linkRoute:'/block/'
     },
     {
         label:i18n.t('ExplorerLang.table.txHash'),

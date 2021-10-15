@@ -32,7 +32,7 @@ export default [
         displayValue: 'token',
         nativeValue: 'token',
         isLink: true,
-        linkRoute: '/assets'
+        linkRoute: '/assets/'
     },
     {
         label: i18n.t('ExplorerLang.table.sender'),
@@ -41,7 +41,7 @@ export default [
         isNeedFormat: 'sender',
         isNeedFormatHash: 'sender',
         isLink: true,
-        linkRoute: '/address'
+        linkRoute: '/address/'
     },
 
     {
@@ -49,7 +49,7 @@ export default [
         displayValue: 'block',
         nativeValue: 'block',
         isLink:true,
-        linkRoute:'/block'
+        linkRoute:'/block/'
     },
     {
         label: i18n.t('ExplorerLang.table.fee'),
@@ -61,9 +61,6 @@ export default [
         label:i18n.t('ExplorerLang.table.time'),
         displayValue:'Time',
         nativeValue:'Time',
-        isLink:false,
-        linkRoute:'',
-        isShowMoniker:false,
         width: 150
     },
 

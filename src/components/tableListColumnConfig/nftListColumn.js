@@ -19,7 +19,8 @@ export default [
         isLink:true,
         isNft: true,
         linkRoute: '/nft/token?denom=',
-        denomRouter: '&tokenId='
+        denomRouter: '&tokenId=',
+        width: 158
     },
     {
         label:i18n.t('ExplorerLang.table.tokenName'),
@@ -31,7 +32,8 @@ export default [
         isLink:true,
         isNft: true,
         linkRoute: '/nft/token?denom=',
-        denomRouter: '&tokenId='
+        denomRouter: '&tokenId=',
+        width: 138
     },
     {
         label: i18n.t('ExplorerLang.table.denom'),
@@ -44,18 +46,19 @@ export default [
         isLink: true,
         isNeedFormat: true,
         isFormatAddress: true,
-        linkRoute: '/address',
+        linkRoute: '/address/',
+        width: 180
     },
     {
         label: i18n.t('ExplorerLang.table.uri'),
         displayValue: 'tokenUri',
         nativeValue: 'tokenUri',
         isNftHref: true,
+        width: 340
     },
     {
         label: i18n.t('ExplorerLang.table.time'),
         displayValue: 'last_block_time',
         width: 150
-
     }
 ]

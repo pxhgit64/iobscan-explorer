@@ -15,14 +15,14 @@ export default [
         displayValue:'symbol',
         nativeValue:'symbol',
         isLink:true,
-        linkRoute:'/assets',
+        linkRoute:'/assets/',
     },
     {
         label:i18n.t('ExplorerLang.table.owner'),
         displayValue: 'owner',
         nativeValue: 'owner',
         isLink: true,
-        linkRoute:'/address',
+        linkRoute:'/address/',
         width: 425,
     },
     {

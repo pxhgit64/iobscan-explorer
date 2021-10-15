@@ -19,24 +19,13 @@
                 </span>
             </div>
             <div class="asset_table_list_content">
-                <el-table class="table" :empty-text="$t('ExplorerLang.table.emptyDescription')" :data="tableData">
-                    <el-table-column :label="$t('ExplorerLang.stats.id')" prop="index" :min-width="ColumnMinWidth.No"></el-table-column>
-                    <el-table-column class-name="address" :label="$t('ExplorerLang.stats.address')" prop="owner" :min-width="ColumnMinWidth.proposer">
-                        <template v-slot:default="{ row }">
-                            <span class="address_link" @click="addressRoute(row.address)"> {{row.address}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column align="right" prop="amount" :min-width="ColumnMinWidth.maxSupply">
-                        <template slot="header" slot-scope="scope">
-                            <span>{{ $t('ExplorerLang.stats.amount')}}</span>
-                            <el-tooltip :content="mainTokenSymbol"
-                                        placement="top">
-                                <i class="iconfont iconyiwen yiwen_icon" />
-                            </el-tooltip>
-                        </template>
-                    </el-table-column>
-                    <el-table-column :label="$t('ExplorerLang.stats.percentage')" align="right" prop="percent" :min-width="ColumnMinWidth.mintable"></el-table-column>
-                </el-table>
+				<list-component
+					:token-symbol="mainTokenSymbol"
+					:empty-text="$t('ExplorerLang.table.emptyDescription')"
+					:list-data="tableData"
+					:column-list="richListColumnConfig"
+					:is-loading="isRichListLoading"
+					:pagination="{pageSize:0,dataCount:0,pageNum:0}"></list-component>
             </div>
         </div>
     </div>
@@ -51,13 +40,16 @@ import { ColumnMinWidth } from '@/constant'
 import { addressRoute, getMainToken } from '@/helper/IritaHelper'
 import moment from 'moment';
 import {converCoin} from "@/helper/IritaHelper";
-
+import ListComponent from "../common/ListComponent";
+import richListColumn from "./statsColumnConfig/richListColumn";
 export default {
     name: 'RichList',
-    components: { MPagination },
+    components: {ListComponent, MPagination },
     props: {},
     data() {
         return {
+        	richListColumnConfig:[],
+			isRichListLoading:false,
             Tools,
             addressRoute,
             ColumnMinWidth,
@@ -70,17 +62,21 @@ export default {
         }
     },
     mounted() {
+    	this.richListColumnConfig = richListColumn
         this.fetchTokenRichList()
         this.setMainToken()
     },
     methods: {
         async fetchTokenRichList() {
+        	this.isRichListLoading = true
             try{
                 let res = await fetchTokenRichList()
                 if (res) {
                     this.handleData(res);
                 }
+				this.isRichListLoading = false
             }catch(err){
+				this.isRichListLoading = false
                 console.error(err);
             }
         },

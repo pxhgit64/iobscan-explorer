@@ -16,7 +16,7 @@ export default [
         displayValue: 'token',
         nativeValue: 'token',
         isLink: true,
-        linkRoute: '/assets'
+        linkRoute: '/assets/'
     },
     {
         label: 'SrcOwner',
@@ -25,7 +25,7 @@ export default [
         isLink: true,
         isNeedFormat: true,
         isFormatAddress: true,
-        linkRoute: '/address',
+        linkRoute: '/address/',
     },
 
     {
@@ -35,7 +35,7 @@ export default [
         isLink: true,
         isNeedFormat: true,
         isFormatAddress: true,
-        linkRoute: '/address',
+        linkRoute: '/address/',
     },
 
     {
@@ -43,7 +43,7 @@ export default [
         displayValue: 'block',
         nativeValue: 'block',
         isLink:true,
-        linkRoute:'/block'
+        linkRoute:'/block/'
     },
 
 

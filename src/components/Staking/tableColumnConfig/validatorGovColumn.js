@@ -36,7 +36,7 @@ export default [
         displayValue:'proposalId',
         nativeValue:'proposalId',
         isLink: true,
-        linkRoute: '/ProposalsDetail'
+        linkRoute: '/ProposalsDetail/'
     },
     {
         label: i18n.t('ExplorerLang.table.proposalType'),
@@ -50,7 +50,7 @@ export default [
         isLink: true,
         isNeedFormat: true,
         isFormatAddress: true,
-        linkRoute: '/address',
+        linkRoute: '/address/',
     },
     {
         label:'Block',
@@ -58,7 +58,7 @@ export default [
         nativeValue:'blockHeight',
         isLink:true,
         isNeedFormatHash:false,
-        linkRoute:'/block',
+        linkRoute:'/block/',
         isShowMoniker:false
     },
     {

@@ -16,7 +16,7 @@ export default [
         displayValue:'id',
         nativeValue:'id',
         isLink:true,
-        linkRoute:'/ProposalsDetail'
+        linkRoute:'/ProposalsDetail/'
     },
     {
         label: i18n.t('ExplorerLang.table.proposer'),
@@ -25,7 +25,7 @@ export default [
         isLink: true,
         isNeedFormat: true,
         isFormatAddress: true,
-        linkRoute: '/address',
+        linkRoute: '/address/',
     },
     {
         label: i18n.t('ExplorerLang.table.deposit'),

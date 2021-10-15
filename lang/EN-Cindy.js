@@ -4,7 +4,7 @@ export const ExplorerLang = {
         allTxStatus:'All Status',
         success:'Success',
         failed:'Failed',
-        allTxType:'All Type',
+        allTxType:'All',
         selectDate:'Select Date',
         copied:'Copied',
         copyFailed:'Failed',
@@ -289,6 +289,7 @@ export const ExplorerLang = {
         relevanceTx:'Related Transaction',
         txType: 'Type',
         denomId: 'Denom Id',
+        denomName:'Denom Name',
         from: 'From',
         to: 'To',
         consumer: 'Consumer',
@@ -496,6 +497,7 @@ export const ExplorerLang = {
             from:'Sender',
             to:'Receiver',
             amount: 'Amount',
+            data:'Data'
         },
         multisend: {
             inputs: 'Inputs',
