@@ -59,6 +59,7 @@ import TabsComponent from "./common/TabsComponent";
 import TxStatusTabsComponents from "./common/TxStatusTabsComponents";
 import TxCountComponent from "./TxCountComponent";
 import {needAddColumn} from "./tableListColumnConfig/allTxTableColumnConfig";
+import SignerColunmn from "./tableListColumnConfig/SignerColunmn";
 export default {
 	name: "TxList",
 	components: {
@@ -138,7 +139,7 @@ export default {
 	},
 	mounted() {
 		const {txType} = Tools.urlParser();
-		this.txColumnList = txCommonTable.concat(txCommonLatestTable)
+		this.txColumnList = txCommonTable.concat(SignerColunmn,txCommonLatestTable)
 		if(txType && needAddColumn[txType]){
 			this.txColumnList = txCommonTable.concat(needAddColumn[txType],txCommonLatestTable)
 		}
@@ -215,7 +216,7 @@ export default {
 				//处理点击all的情况
 				this.txType = ''
 			}
-			this.txColumnList = txCommonTable.concat(txCommonLatestTable)
+			this.txColumnList = txCommonTable.concat(SignerColunmn,txCommonLatestTable)
 			if(this.txType && needAddColumn[this.txType]){
 				this.txColumnList = txCommonTable.concat(needAddColumn[this.txType],txCommonLatestTable)
 			}

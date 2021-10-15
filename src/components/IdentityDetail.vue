@@ -213,7 +213,7 @@
                 } catch (e) {
                     console.error(e);
                 }
-            },    
+            },
             async getPubkeyListCount(){
               try {
                   const res = await getPubkeyListByIdentity(this.id, null, null, true);
@@ -225,11 +225,11 @@
               } catch (e) {
                   console.error(e);
               }
-            },         
+            },
             async getCertificateList(){
                 try {
                     const res = await getCertificateListByIdentity(this.id, this.certificateListPageNum, this.certificateListPageSize, false);
-                    if(res?.data.length > 0){           
+                    if(res?.data.length > 0){
                         this.certificateList = res.data.map((item) =>{
                             let result = {
                                 certificate: item.certificate || '--',
@@ -420,41 +420,41 @@
     @media screen and (max-width: 768px) {
         .identity_detail_container {
             .identity_detail_content_wrap {
-                
+
                 .identity_detail_title {
-                    
+
                     .identity_detail_title_first {
-                    
+
                     }
                     .identity_detail_title_hash {
-                    
+
                     }
                 }
                 .identity_information_content {
-                    
+
                     .identity_information_list_item {
-                        
+
                         span:nth-of-type(1) {
                             min-width: 1rem;
                         }
                         span:nth-of-type(2) {
-                        
+
                         }
                     }
                     .identity_information_list_item:last-child {
                     }
                 }
                 .identity_detail_bg{
-                
+
                 }
                 .content_title{
-                
+
                 }
                 .pagination_content{
-                
+
                 }
                 .status_icon{
-                
+
                 }
             }
         }
