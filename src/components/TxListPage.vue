@@ -118,7 +118,9 @@
 	import {needAddColumn} from "./tableListColumnConfig/allTxTableColumnConfig";
 	import TxStatusTabsComponents from "./common/TxStatusTabsComponents";
 	import TxCountComponent from "./TxCountComponent";
-
+	import stakingValidationAndDelegationAmount from './tableListColumnConfig/stakingValidationAndDelegationAmount'
+	import SignerColunmn from "./tableListColumnConfig/SignerColunmn";
+	import validatorMonikerColumn from "./tableListColumnConfig/validatorMonikerColumn";
 	export default {
 		name: "TransactionListPage",
 		components: {
@@ -171,7 +173,13 @@
 		},
 		async mounted () {
 			const {txType} = Tools.urlParser();
-			this.txColumnList = txCommonTable.concat(txCommonLatestTable)
+			await this.getType();
+			if(this.type === 'stake'){
+				this.txColumnList = txCommonTable.concat(stakingValidationAndDelegationAmount,SignerColunmn,txCommonLatestTable)
+			}
+			if(this.type === 'declaration'){
+				this.txColumnList = txCommonTable.concat(validatorMonikerColumn,SignerColunmn,txCommonLatestTable)
+			}
 			if(txType && needAddColumn[txType]){
 				this.txColumnList = txCommonTable.concat(needAddColumn[txType],txCommonLatestTable)
 			}
@@ -195,7 +203,6 @@
 			statusArray.forEach(item => {
 				this.status.push(item)
 			})
-			this.getType();
 		
 			this.getTxListByFilterCondition(null, null, true)
 			
@@ -203,7 +210,12 @@
 		},
 		methods: {
 			setChoiceMsgTypeColumn(param){
-				this.txColumnList = txCommonTable.concat(txCommonLatestTable)
+				if(this.type === 'stake'){
+					this.txColumnList = txCommonTable.concat(stakingValidationAndDelegationAmount,SignerColunmn,txCommonLatestTable)
+				}
+				if(this.type === 'declaration'){
+					this.txColumnList = txCommonTable.concat(validatorMonikerColumn,SignerColunmn,txCommonLatestTable)
+				}
 				if(param?.value && needAddColumn[param.value]){
 					this.txColumnList = txCommonTable.concat(needAddColumn[param.value],txCommonLatestTable)
 				}
@@ -441,7 +453,7 @@
                                 this.totalPageNum = Math.ceil((res.data / this.pageSize) === 0 ? 1 : (res.data / this.pageSize));
                                 for (const item of res.data) {
                                     if(item) {
-                                    	let msg = {}
+                                    	let msg = {};
 										if(item?.msgs?.length){
 											for (const msgElement of item.msgs) {
 												if(msgElement.type === this.TxType){
@@ -449,20 +461,57 @@
 												}
 											}
 										}
-                                        let msgsNumber = item.msgs ? item.msgs.length : 0, formTO;
-                                        let amount = '--'
-                                        if (msg && JSON.stringify(msg) !== '{}') {
-                                            formTO = TxHelper.getFromAndToAddressFromMsg(msg)
-                                            amount = msg ? await getAmountByTx(msg,item.events,true) : '--'
-                                        } else {
-                                            formTO = '--'
-                                        }
-                                        let fromMonikers,toMonikers
+										let msgsNumber = item.msgs ? item.msgs.length : 0, fromAddr = '--',toAddr = '--',fromAddrArr = [],toAddrArr = [];
+										let amount = '--'
+										if(msgsNumber > 1){
+											for (const msgElement of item.msgs) {
+												if(msgElement && JSON.stringify(msgElement) !== '{}'){
+													const fromToAddr = TxHelper.getFromAndToAddressFromMsg(msgElement)
+													if(fromToAddr?.from){
+														fromAddrArr.push(fromToAddr.from)
+													}
+													if(fromToAddr?.to){
+														toAddrArr.push(fromToAddr.to)
+													}
+													if(msgElement.type === this.TxType){
+														amount =  await getAmountByTx(msgElement,item.events,true)
+													}
+												}
+											}
+											fromAddrArr = Array.from(new Set(fromAddrArr))
+											toAddrArr = Array.from(new Set(toAddrArr))
+											fromAddr = fromAddrArr?.length > 1 ? ' ' : fromAddrArr?.length === 1 ? fromAddrArr[0] : '--'
+											toAddr = toAddrArr?.length > 1 ? ' ' : toAddrArr?.length === 1 ? toAddrArr[0] : '--'
+											amount = ' '
+										}else if(msgsNumber === 1) {
+											if (item.msgs[0] && JSON.stringify(item.msgs[0]) !== '{}') {
+												const fromToAddr = TxHelper.getFromAndToAddressFromMsg(item.msgs[0])
+												if(fromToAddr?.from){
+													fromAddr =fromToAddr.from
+												}
+												if(fromToAddr?.to){
+													toAddr =fromToAddr.to
+												}
+												amount = item.msgs[0] ? await getAmountByTx(item.msgs[0],item.events,true) : '--'
+											}
+										}
+                                        let fromMonikers = ' ',toMonikers = ' '
+										
                                         if(item.monikers.length) {
-                                            item.monikers.map( it => {
-                                                toMonikers = toMonikers|| it[formTO.to] || ''
-                                                fromMonikers = fromMonikers || it[formTO.from] || ''
-                                            })
+											let monikersMap = new Map()
+											item.monikers.forEach( item => {
+												monikersMap.set(Object.keys(item)[0],Object.values(item)[0])
+											})
+											if(monikersMap.has(fromAddr)){
+												fromMonikers = monikersMap.get(fromAddr)
+											}
+											if(monikersMap.has(toAddr)){
+												toMonikers = monikersMap.get(toAddr)
+											}
+                                            /*item.monikers.map( it => {
+                                                toMonikers = toMonikers|| it[toAddr] || ''
+                                                fromMonikers = fromMonikers || it[fromAddr] || ''
+                                            })*/
                                         }
                                         let isShowMore = false;
                                         // const type = item.msgs && item.msgs[0] && item.msgs[0].type;
@@ -475,10 +524,10 @@
 										this.txList.push({
 											txHash: item.tx_hash,
 											blockHeight: item.height,
-											from: formTO.from || "--",
+											from: fromAddr ,
                                             fromMonikers,
                                             amount: amount,
-                                            to: formTO.to || '--',
+                                            to: toAddr,
                                             toMonikers,
 											txType: (item.msgs || []).map(item=>item.type),
                                             MsgsNum: msgsNumber,
@@ -524,24 +573,42 @@
 												}
 											}
 										}
+										let validatorOperatorArr = [] , operatorAddr = '--',operatorMonikers = '' ;
+										if(item?.msgs?.length > 1 ){
+											for (const msg1 of item.msgs) {
+												if(msg1 &&JSON.stringify(msg1) !== '{}'){
+													const validatorOperator =  TxHelper.getValidationTxsOperator(msg1)
+													validatorOperatorArr.push(validatorOperator)
+												}
+											}
+										}else if(item?.msgs?.length === 1) {
+											operatorAddr = TxHelper.getValidationTxsOperator(item.msgs[0])
+										}
+										validatorOperatorArr = Array.from(new Set(validatorOperatorArr))
+										operatorAddr = validatorOperatorArr?.length > 1 ? ' ' : validatorOperatorArr?.length === 1 ? validatorOperatorArr[0] : operatorAddr || '--'
+										operatorMonikers = validatorOperatorArr?.length > 1 ? ' ' : '--'
+										let monikerMap = new Map()
+	
+										if(item.monikers.length) {
+											item.monikers.forEach( it => {
+												monikerMap.set(Object.keys(it)[0],Object.values(it)[0])
+											})
+										}
+										if(monikerMap.has(operatorAddr)){
+											operatorMonikers = monikerMap.get(operatorAddr)
+										}
+	
                                         const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) :'--';
                                         const selfBonded = item.msgs && item.msgs.length === 1 ? item.msgs[0].msg && item.msgs[0].msg.value ? await converCoin(item.msgs[0].msg.value) : '--' : '--';
                                         // const time = Tools.getDisplayDate(item.time)
                                         const time = Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix'))
-                                        let OperatorAddr = msg && JSON.stringify(msg) !== '{}' ?  TxHelper.getValidationTxsOperator(msg) : '--'
-                                        let OperatorMonikers
-                                        if(item.monikers.length) {
-                                            item.monikers.map( it => {
-                                                OperatorMonikers = OperatorMonikers || it[OperatorAddr] || ''
-                                            })
-                                        }
 									
                                         let amount = msg ? await getAmountByTx(msg,item.events,true) : '--'
                                         this.txList.push({
 												txHash: item.tx_hash,
 												blockHeight: item.height,
-												validatorAddress:OperatorAddr,
-												validatorMoniker: OperatorMonikers || '--',
+												validatorAddress: operatorAddr,
+												validatorMoniker: operatorMonikers ,
 												amount: amount || '--',
 												txType: (item.msgs || []).map(item=>item.type),
                                                 MsgsNum: msgsNumber,
