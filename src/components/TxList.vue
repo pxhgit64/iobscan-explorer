@@ -1001,6 +1001,11 @@ export default {
 							}else {
 								this.transactionArray[index].denomTheme = getDenomTheme(amount[index], this.denomMap)
 								this.transactionArray[index].amount = amount[index]
+								let denom = /[A-Za-z\-]{2,15}/.exec(amount[index])[0]
+								if (denom !== undefined && /(swap|SWAP|lpt|LPT|lpt-|LPT-)/g.test(denom)) {
+									this.transactionArray[index].amount = ''
+								}
+								
 							}
 						})
 					}
