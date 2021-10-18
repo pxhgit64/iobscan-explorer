@@ -20,7 +20,7 @@
 			  <template v-slot:txCount>
 				  <tx-count-component :title="allCount > 1 && isShowPlurality ? $t('ExplorerLang.nftAsset.subTitles') : $t('ExplorerLang.nftAsset.subTitle')" :icon="'iconNFT'" :tx-count="allCount"></tx-count-component>
 			  </template>
-			  <template v-slot:dataPicket>
+			  <template v-slot:datePicket>
 				  <nft-search-component
 					  :input-placeholder="$t('ExplorerLang.nftAsset.placeHolder')"
 					  @searchInput="handleSearchClick"

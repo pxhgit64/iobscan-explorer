@@ -3,10 +3,13 @@
 		<div class="box-card">
 			<div class="header_content">
 				<slot name="txCount"></slot>
-				<slot name="dataPicket"></slot>
+				<slot name="resetButton"></slot>
+			</div>
+			<div class="status_date_pick">
+				<slot name="datePicket"></slot>
 			</div>
 			<slot name="msgType"></slot>
-			<loading v-if="isSetLoadingStatus"></loading>
+			<loading v-show="isSetLoadingStatus"></loading>
 			<div v-show="!isSetLoadingStatus" class="scroll_container" style="margin-bottom: 0.1rem">
 				<vue-scroll :ops="opsConfig">
 					<el-table
@@ -28,7 +31,7 @@
 							:sort-orders="item.isNeedSort ? ['descending', 'ascending'] :[]"
 							:sortable="item.isNeedSort">
 							<template slot="header" slot-scope="scope">
-								<span>{{ item.label }}</span>
+								<span :class="item.isRight ? 'center_style' : ''">{{ item.label }}</span>
 								<el-tooltip v-show="item.isShowTokenSymbol"
 											:content="tokenSymbol"
 											placement="top">
@@ -95,7 +98,7 @@
 										
 									</span>
 <!--									-->
-									<span v-else-if="item.isShowDenomTip">
+									<span v-else-if="item.isShowDenomTip" :class="item.isRight ? 'right_style' : ''">
 										
 										<span>{{ getAmount(scope.row[item.displayValue]) }}</span>
 										
@@ -139,7 +142,8 @@
 											:final-votes="scope.row[item.finalVotes]"></proposal-status-component>
 									</div>
 <!--									-->
-									<span v-else>{{ scope.row[item.displayValue] === 0 || scope.row[item.displayValue] === '0' ? 0 : scope.row[item.displayValue] || '--' }}</span>
+									<span v-else>
+										{{ scope.row[item.displayValue] === 0 || scope.row[item.displayValue] === '0' ? 0 : scope.row[item.displayValue] || '--' }}</span>
 									
 								</el-tooltip>
 							</template>
@@ -213,11 +217,11 @@ export default {
 					opacity: 1,
 					background: '#E6E6E6',
 					// border: '1px solid #cecece',
-					size: '10px',
+					size: '6px',
 				},
 				bar: {
 					keepShow: true,
-					size: '10px',
+					size: '6px',
 					minSize: 0.1,
 					background: '#cdcdcd',
 				},
@@ -383,24 +387,24 @@ export default {
 			this.$emit('pageChange', pageNum)
 		},
 		getAmount(amount) {
-			if (!amount) {
-				return "";
+			if (!amount || amount === ' ' || amount === '-') {
+				return " ";
 			}
 			if (amount === '--') {
 				return '--'
 			}
 			let denomRule = /[0-9.]+/
-			return amount.match(denomRule)[0];
+			return amount.match(denomRule)[0] ;
 		},
 		getAmountUnit(amount) {
-			if (!amount) {
+			if (!amount || amount === ' ' || amount === '-') {
 				return "";
 			}
 			if (amount === '--') {
 				return ''
 			}
 			let denomRule = /[A-Za-z\/]+/
-			return amount.match(denomRule)[0];
+			return  amount.match(denomRule)?.length >= 1 ? amount.match(denomRule)[0] : '';
 		},
 		isShowHref(address) {
 			let storageAddressPrefix = JSON.parse(this.sessionStorage) || null
@@ -542,6 +546,9 @@ export default {
 				}
 			}
 		},
+		refWidth(){
+			this.getTableWidth()
+		},
 		getTableWidth () {
 			this.tableListWidth = []
 			let listTableTimer = null
@@ -564,15 +571,15 @@ export default {
 									return item + compensationWidth
 								})
 							}
-							
 						}
+						this.isSetLoadingStatus = false
 					}
-					this.isSetLoadingStatus = false
 				},50);
 			});
 		}
 	},
 	mounted() {
+		window.addEventListener("resize", this.refWidth,true);
 		this.columns = []
 		this.columns = this.columnList
 		this.getTableWidth()
@@ -608,21 +615,25 @@ export default {
 			align-items: center;
 			justify-content: space-between;
 			@media (max-width: 1150px) {
-				display: none;
+			
 			}
 		}
-		.denom_style{
+		/*.denom_style{
 			margin-left: 0.1rem !important;
-		}
+		}*/
 		.list_component_footer {
 			display: flex;
 			justify-content: space-between;
 			padding: 0.2rem 0;
-			
+			@media (max-width: 768px) {
+				flex-direction: column-reverse;
+			}
 			.token_type_container {
 				display: flex;
 				align-items: center;
-				
+				@media (max-width: 768px) {
+					margin-top: 0.2rem;
+				}
 				.tooltip_box {
 					display: flex;
 					align-items: center;
@@ -632,7 +643,11 @@ export default {
 					color: #8d8b8b;
 					border: 0.01rem solid rgba(231, 234, 243, 1);
 					border-radius: 0.08rem;
-					
+					@media (max-width: 375px) {
+						flex-direction: column;
+						justify-content: flex-start;
+						align-items: flex-start;
+					}
 					.tooltip_title {
 						margin-right: 0.24rem;
 					}
@@ -646,7 +661,10 @@ export default {
 						display: flex;
 						align-items: center;
 						position: relative;
-						
+						@media (max-width: 375px) {
+							margin-top: 0.04rem;
+							margin-left: 0.14rem;
+						}
 						&::before {
 							left: -0.12rem;
 							content: ' ';
@@ -749,6 +767,19 @@ export default {
 			display: flex;
 			align-items: center;
 			white-space: nowrap;
+			.center_style{
+				flex: 1;
+				text-align: center;
+			}
+			.right_style{
+				flex: 1;
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				grid-column-gap: 0.05rem;
+				span:first-child{
+					text-align: right;
+				}
+			}
 			.status {
 				display: flex;
 				align-items: center;

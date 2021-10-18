@@ -9,24 +9,24 @@
 				{{ item.label }}
 			</el-button>
 		</div>
-		<div class="tx_date_picket_content">
-			<el-date-picker size="small"
-							v-model="value"
-							range-separator="~"
-							type="daterange"
-							:start-placeholder="$t('ExplorerLang.common.startDate')"
-							:end-placeholder="$t('ExplorerLang.common.endDate')"
-							:picker-options="pickerOptions"
-							@change="selectTime"></el-date-picker>
+		<div class="tx_date_picket_container">
+			<div class="tx_date_picket_content">
+				<el-date-picker size="mini"
+								v-model="value"
+								:editable="false"
+								range-separator="~"
+								type="daterange"
+								:start-placeholder="$t('ExplorerLang.common.startDate')"
+								:end-placeholder="$t('ExplorerLang.common.endDate')"
+								:picker-options="pickerOptions"
+								@change="selectTime"></el-date-picker>
+			</div>
+			<div class="tooltip_content">
+				<el-tooltip popper-class="tooltip" :content="$t('ExplorerLang.transactions.tooltip')">
+					<i class="iconfont iconyiwen"></i>
+				</el-tooltip>
+			</div>
 		</div>
-		<div class="tooltip_content">
-		  	<el-tooltip popper-class="tooltip" :content="$t('ExplorerLang.transactions.tooltip')">
-				<i class="iconfont iconyiwen"></i>
-			</el-tooltip>
-		</div>
-		<button class="ref_content" @click="resetParams">
-			<i class="iconfont iconzhongzhi"></i>
-		</button>
 	</div>
 </template>
 
@@ -104,7 +104,7 @@ export default {
 			})
 			this.statusTypes[0].isActive = true
 			this.value = []
-			this.$emit('resetParams','')
+			// this.$emit('resetParams','')
 		}
 	}
 }
@@ -113,7 +113,11 @@ export default {
 <style scoped lang="scss">
 .tx_status_container {
 	display: flex;
-	margin: 0.2rem 0;
+	margin: 0.2rem 0 0.16rem 0;
+	@media (max-width: 768px) {
+		flex-direction: column;
+		justify-content: flex-start;
+	}
 	.tx_status_content {
 		display: flex;
 		margin-right: 0.12rem;
@@ -148,26 +152,46 @@ export default {
 			color: #fff !important;
 		}
 	}
-
-	.tx_date_picket_content {
-		::v-deep.el-date-editor {
-			border-radius: 0.08rem;
-		}
-	}
-	.tooltip_content {
+	.tx_date_picket_container{
 		display: flex;
 		align-items: center;
-		justify-content: center;
-		cursor: pointer;
-		margin: 0 0.1rem;
-	}
-	.ref_content{
-		border: none;
-		background: $theme_c !important;
-		color: #fff;
-		border-radius: 0.08rem;
-		width: 0.32rem;
-		height: 0.32rem;
+		@media (max-width: 768px) {
+			margin-top: 0.16rem;
+		}
+		
+		.tx_date_picket_content {
+			@media (max-width: 768px) {
+				display: flex;
+				justify-content: flex-start;
+			}
+			@media (max-width: 450px) {
+				.el-date-editor{
+					width: 2.8rem !important;
+				}
+			}
+			@media (max-width: 375px) {
+				.el-date-editor{
+					width: 2.3rem !important;
+				}
+			}
+			
+			::v-deep.el-range-editor.is-active{
+				border-color: $theme_c !important;
+			}
+			::v-deep.el-range-editor.is-active:hover{
+				border-color: $theme_c !important;
+			}
+			::v-deep.el-date-editor {
+				border-radius: 0.08rem;
+			}
+		}
+		.tooltip_content {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			margin: 0 0.1rem;
+		}
 	}
 }
 

@@ -46,11 +46,11 @@ export default {
 <style lang="scss">
 @import "style/index.css";
 @font-face {
-	font-family: PlblicScas;
+	font-family: PublicSans;
 	src: url("./font/PublicSans-Regular-14.otf");
 }
 #app {
-  font-family: PlblicScas, Helvetica, sans-serif;
+  font-family: PublicSans, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -178,5 +178,37 @@ export default {
 }
 .el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell{
 	background: transparent !important;
+}
+.el-picker-panel{
+	.el-picker-panel__body-wrapper{
+		.el-picker-panel__body{
+			@media (max-width: 768px) {
+				display: flex;
+				flex-direction: column;
+			}
+		}
+	}
+}
+.el-date-table td.today span{
+	color: $theme_c !important;
+}
+.el-date-table td.today.start-date span{
+	color: $theme_c !important;
+}
+.el-date-table td.start-date span{
+	background-color: $theme_c !important;
+	color: #fff !important;
+ }
+.el-date-table td.end-date span{
+	background-color: $theme_c !important;
+	color: #fff !important;
+}
+.el-date-range-picker{
+	@media (max-width: 768px) {
+		width: 2.56rem !important;
+		height: 2.55rem !important;
+		overflow-y: auto;
+		overflow-x: hidden;
+	}
 }
 </style>

@@ -18,12 +18,15 @@
 					<tabs-component :tab-list="txTypeOption"
 									@onSelectMagType="getFilterTxs"></tabs-component>
 				</template>
+				<template v-slot:resetButton>
+					<tx-reset-button-component @resetParams="resetFilterCondition"></tx-reset-button-component>
+				</template>
 				
-				<template v-slot:dataPicket>
+				<template v-slot:datePicket>
 					<tx-status-tabs-components
 						@onChangTxStatus="changeTxStatus"
 						@onChangeDate="changeTime"
-						@resetParams="resetFilterCondition"></tx-status-tabs-components>
+						ref="statusDatePicker"></tx-status-tabs-components>
 				</template>
 				<template v-slot:txCount>
 					<tx-count-component :title="$t('ExplorerLang.transactions.txs')" :icon="'iconTrainsaction'" :tx-count="txCount"></tx-count-component>
@@ -60,9 +63,11 @@ import TxStatusTabsComponents from "./common/TxStatusTabsComponents";
 import TxCountComponent from "./TxCountComponent";
 import {needAddColumn} from "./tableListColumnConfig/allTxTableColumnConfig";
 import SignerColunmn from "./tableListColumnConfig/SignerColunmn";
+import TxResetButtonComponent from "./common/TxResetButtonComponent";
 export default {
 	name: "TxList",
 	components: {
+		TxResetButtonComponent,
 		TxCountComponent,
 		TxStatusTabsComponents, TabsComponent, ListComponent, MPagination, TxListComponent
 	},
@@ -337,6 +342,7 @@ export default {
 			this.endTime = '';
 			this.pageNum = 1;
 			this.pageSize = 30;
+			this.$refs.statusDatePicker.resetParams()
 			this.resetUrl();
 			this.getTxListData(null, null, true)
 			this.getTxListData(this.pageNum, this.pageSize)
@@ -1001,7 +1007,7 @@ export default {
 							}else {
 								this.transactionArray[index].denomTheme = getDenomTheme(amount[index], this.denomMap)
 								this.transactionArray[index].amount = amount[index]
-								let denom = /[A-Za-z\-]{2,15}/.exec(amount[index])[0]
+								let denom = /[A-Za-z\-]{2,15}/.exec(amount[index])?.length ? /[A-Za-z\-]{2,15}/.exec(amount[index])[0] : ' '
 								if (denom !== undefined && /(swap|SWAP|lpt|LPT|lpt-|LPT-)/g.test(denom)) {
 									this.transactionArray[index].amount = ''
 								}
@@ -1036,24 +1042,22 @@ a {
 
 .tx_content_container {
 	width: 100%;
-	@media screen and (min-width: 910px) {
-		.tx_content_wrap {
-			max-width: 12.3rem;
-			.tx_content_header_title{
-				text-align: left;
-				margin-top: 0.4rem;
-				padding-bottom: 0.1rem;
-				.tc_content_header{
-					font-size: 0.22rem;
-					font-weight: 600;
-					color: #171D44;
-					line-height: 0.26rem;
-				}
+	.tx_content_wrap {
+		max-width: 12.3rem;
+		.tx_content_header_title{
+			text-align: left;
+			margin-top: 0.4rem;
+			padding-bottom: 0.1rem;
+			.tc_content_header{
+				font-size: 0.22rem;
+				font-weight: 600;
+				color: #171D44;
+				line-height: 0.26rem;
 			}
-			.tx_content_header_wrap {
-				display: flex;
-				justify-content: flex-start;
-			}
+		}
+		.tx_content_header_wrap {
+			display: flex;
+			justify-content: flex-start;
 		}
 	}
 	@media screen and (max-width: 910px) {

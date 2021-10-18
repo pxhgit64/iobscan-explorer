@@ -27,7 +27,7 @@
           <template v-slot:txCount>
             <tx-count-component :title="count > 1 && isShowPlurality ? $t('ExplorerLang.denom.subTitles') : $t('ExplorerLang.denom.subTitle')" :icon="'iconDenom'" :tx-count="count"></tx-count-component>
           </template>
-          <template v-slot:dataPicket>
+          <template v-slot:datePicket>
               <nft-search-component
                   :input-placeholder="$t('ExplorerLang.denom.placeHolder')"
                   @searchInput="handleSearchClick"
