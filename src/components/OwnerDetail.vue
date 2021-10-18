@@ -686,7 +686,7 @@
 						<tabs-component :tab-list="txTypeOption"
 										@onSelectMagType="getFilterTxs"></tabs-component>
 					</template>
-					<template v-slot:dataPicket>
+					<template v-slot:datePicket>
 						<tx-status-tabs-components
 							@onChangTxStatus="changeTxStatus"
 							@onChangeDate="changeTime"

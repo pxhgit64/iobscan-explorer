@@ -168,7 +168,7 @@
 											@onSelectMagModel="handleSearchClick"></tabs-component>
 						</template>
 						
-						<template v-slot:dataPicket>
+						<template v-slot:datePicket>
 							<tx-status-tabs-components
 								@onChangTxStatus="changeTxStatus"
 								@onChangeDate="changeTime"

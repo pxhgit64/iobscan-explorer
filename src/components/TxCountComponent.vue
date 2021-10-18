@@ -42,7 +42,7 @@ export default {
 <style scoped lang="scss">
 .tx_count_content {
 	display: flex;
-	margin: 0.2rem 0;
+	margin: 0.2rem 0 0 0;
 	align-items: center;
 	
 	.iconfont {

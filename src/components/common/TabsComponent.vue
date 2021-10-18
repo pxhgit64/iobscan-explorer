@@ -1,24 +1,31 @@
 <template>
 	<div class="tabs_container">
-		<div class="tabs_content">
-			<el-button
-				size="small"
-				v-for="(item,index) in tabList"
-				:key="item.label"
-				@click.stop="clickButton(item,index)"
-				:class="Number($store.state.currentTxModelIndex) === index ? 'active_style' :'default_style'">{{ item.label }}
-			</el-button>
-		</div>
-		<div class="child_tabs_content" v-if="$store.state.isShowMsgChildrenType">
+		<vue-scroll :ops="opsConfig">
+			<div class="tabs_content">
+				<el-button
+					size="small"
+					v-for="(item,index) in tabList"
+					:key="item.label"
+					@click.stop="clickButton(item,index)"
+					:class="Number($store.state.currentTxModelIndex) === index ? 'active_style' :'default_style'">{{ item.label }}
+				</el-button>
+			</div>
+		</vue-scroll>
+		
+		<div class="child_tabs_content" v-show="$store.state.isShowMsgChildrenType">
 			<div class="tag_content">
-				<el-card>
-					<el-tag v-for="(value,index) in childrenTabs"
-							:key="value.value"
-							@click.stop="selectMsgType(value,index)"
-							:class="value.active ? 'active_tag_style' : 'default_tag_style'">
-						{{ setDisplayMsgType(value.value) }}
-					</el-tag>
-				</el-card>
+				<div class="tag_v_scroll_content" ref="tag_content_wrap">
+					<vue-scroll :ops="tagOpsConfig">
+						<el-card>
+							<el-tag v-for="(value,index) in childrenTabs"
+									:key="value.value"
+									@click.stop="selectMsgType(value,index)"
+									:class="value.active ? 'active_tag_style' : 'default_tag_style'">
+								{{ setDisplayMsgType(value.value) }}
+							</el-tag>
+						</el-card>
+					</vue-scroll>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -36,6 +43,46 @@ export default {
 			positionTop: 0,
 			currentMsgTypeClickIndex: '',
 			currentMsgType:  null,
+			opsConfig: {
+				rail: {
+					opacity: 1,
+					background: '#E6E6E6',
+					// border: '1px solid #cecece',
+					size: '6px',
+				},
+				bar: {
+					keepShow: true,
+					size: '6px',
+					minSize: 0.1,
+					background: '#cdcdcd',
+				},
+				vuescroll: {
+					wheelScrollDuration: 0,
+					wheelDirectionReverse: false,
+					locking: true,
+					checkShifKey: true
+				}
+			},
+			tagOpsConfig:{
+				rail: {
+					opacity: 1,
+					background: '#E6E6E6',
+					// border: '1px solid #cecece',
+					size: '6px',
+				},
+				bar: {
+					keepShow: true,
+					size: '6px',
+					minSize: 0.1,
+					background: '#cdcdcd',
+				},
+				vuescroll: {
+					wheelScrollDuration: 0,
+					wheelDirectionReverse: false,
+					locking: true,
+					checkShifKey: true
+				}
+			}
 		}
 	},
 	props: {
@@ -60,10 +107,20 @@ export default {
 		}
 	},
 	mounted() {
-		// const currentMstType = sessionStorage.
+		this.setTagContentHeight()
+		window.addEventListener("resize", this.windowResizeFunc,true);
 		
 	},
 	methods: {
+		windowResizeFunc(){
+			this.setTagContentHeight()
+		},
+		setTagContentHeight(){
+			let clientHeight = document.body.clientHeight;
+			if(this.$refs.tag_content_wrap){
+				this.$refs.tag_content_wrap.style.height = `${Number(clientHeight)  * 0.26}px`
+			}
+		},
 		setDisplayMsgType(msgType){
 			if(msgType){
 				return TX_TYPE_DISPLAY[msgType]
@@ -127,12 +184,24 @@ export default {
 	display: flex;
 	flex-wrap: wrap;
 	position: relative;
-	
+	::v-deep .__vuescroll {
+			.__panel {
+				scrollbar-width: none;
+				-ms-overflow-style: none;
+				scrollbar-color: transparent transparent !important;
+				scrollbar-track-color: transparent !important;
+				-ms-scrollbar-track-color: transparent !important;
+				
+				&::-webkit-scrollbar {
+					width: 0 !important
+				}
+			}
+		}
 	.tabs_content {
 		display: flex;
 		justify-content: flex-start;
-		flex-wrap: wrap;
-		
+		flex-wrap: nowrap;
+		margin-bottom:0.1rem;
 		::v-deep.el-button {
 			border: none;
 			box-shadow: 0.01rem 0.02rem 0.04rem 0.01rem #EFEFEF;
@@ -173,7 +242,6 @@ export default {
 			left: 0;
 			top: 0;
 			animation: fadeInDown 0.2s linear;
-			
 			::v-deep .el-card {
 				padding: 0.18rem 0.18rem 0 0.18rem;
 				.el-card__body {
