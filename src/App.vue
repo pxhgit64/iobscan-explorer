@@ -169,11 +169,11 @@ export default {
     overflow: visible !important;
   }
 .el-table__row.statistics-blue-row {
-	background-color: $tableTrColor !important;
+	background-color: $table_tr_c !important;
 }
 .statistics-white-row{
 	&:hover{
-		background-color: $tableTrColor !important;
+		background-color: $table_tr_c !important;
 	}
 }
 .el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell{
