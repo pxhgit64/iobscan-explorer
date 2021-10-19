@@ -73,11 +73,15 @@
 							<tabs-component :tab-list="txTypeListArray"
 											@onSelectMagModel="setChoiceMsgTypeColumn"></tabs-component>
 						</template>
+						<template v-slot:resetButton>
+							<tx-reset-button-component @resetParams="resetFilterCondition"></tx-reset-button-component>
+						</template>
+
 						<template v-slot:datePicket>
 							<tx-status-tabs-components
 								@onChangTxStatus="changeTxStatus"
 								@onChangeDate="changeTime"
-								@resetParams="resetFilterCondition"></tx-status-tabs-components>
+								ref="statusDatePicker"></tx-status-tabs-components>
 						</template>
 						<template v-slot:txCount>
 							<tx-count-component :title="$t('ExplorerLang.transactions.txs')" :icon="'iconTrainsaction'" :tx-count="count"></tx-count-component>
@@ -121,9 +125,11 @@
 	import stakingValidationAndDelegationAmount from './tableListColumnConfig/stakingValidationAndDelegationAmount'
 	import SignerColunmn from "./tableListColumnConfig/SignerColunmn";
 	import validatorMonikerColumn from "./tableListColumnConfig/validatorMonikerColumn";
+	import TxResetButtonComponent from "./common/TxResetButtonComponent";
 	export default {
 		name: "TransactionListPage",
 		components: {
+			TxResetButtonComponent,
 			TxCountComponent,
 			TxStatusTabsComponents,
 			TabsComponent, ListComponent, MPagination,DelegationTxsList,ValidationTxsList,GovTxsList},
@@ -352,6 +358,7 @@
 				return Number(new Date(time).getTime() / 1000) + Number(oneDaySeconds) - Number(offest)
 			},
 			resetFilterCondition () {
+				this.TxType = ''
 				this.getType();
 				this.resetUrl()
                 this.getTxListByFilterCondition(null, null, true)
@@ -359,6 +366,7 @@
 				this.$store.commit('currentTxModelIndex', 0)
 				sessionStorage.setItem('lastChoiceMsgModelIndex',0)
 				sessionStorage.setItem('txTimeRange',[])
+				this.$refs.statusDatePicker.resetParams()//新增
 			},
 			getType () {
 				switch (this.$route.params.txType) {
@@ -383,6 +391,7 @@
 			},
 			async getAllTxType () {
 				let res = [];
+				this.selectMsgTypeIndex = 0
 				sessionStorage.removeItem('selectMsgTypeIndex')
 				this.$store.commit('currentTxModelIndex',0)
 				if (this.type === 'stake') {
