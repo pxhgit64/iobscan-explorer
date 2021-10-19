@@ -1442,7 +1442,6 @@ export default {
 				if (res?.data?.length > 0) {
 					this.consumerTxList = []
 					for (let item of res.data) {
-						console.log(item.status,"w kiou akds sl dk;laskd ;ask ")
 						let result = {
 							serviceName: item.msgs[0].msg.service_name || '--',
 							txHash: item.tx_hash,
