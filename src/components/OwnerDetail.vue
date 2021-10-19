@@ -338,7 +338,7 @@
 								<span class="consumer_transaction_content_available_icon"
 									  :style="`background:${getBgColorWithState(scope.row.state)}`"></span>
 								<span>{{
-										$t(
+										scope.row.state === 'Running' ? '--': $t(
 											"ExplorerLang.table." + getContentWithState(scope.row.state)
 										)
 									}}</span>
@@ -692,6 +692,7 @@
 
 					<template v-slot:datePicket>
 						<tx-status-tabs-components
+							:is-show-date-picker="false"
 							@onChangTxStatus="changeTxStatus"
 							@onChangeDate="changeTime"
 							ref="statusDatePicker" ></tx-status-tabs-components>
@@ -960,6 +961,7 @@ export default {
 				this.txColumnList = txCommonTable.concat(needAddColumn[this.type],txCommonLatestTable)
 			}
 			this.totalTxNumber = 0
+			this.pageNum = 1
 			this.getTxByAddressCount()
 			this.getTxByAddress()
 		},
@@ -1273,7 +1275,7 @@ export default {
 						this.transactionArray.push({
 							txHash: tx.tx_hash,
 							blockHeight: tx.height,
-							txType: (tx.msgs || []).map(item => this.TX_TYPE_DISPLAY[item.type] || item.type),
+							txType: (tx.msgs || []).map(item =>  item.type),
 							from,
 							fromMonikers,
 							toMonikers,
@@ -1440,6 +1442,7 @@ export default {
 				if (res?.data?.length > 0) {
 					this.consumerTxList = []
 					for (let item of res.data) {
+						console.log(item.status,"w kiou akds sl dk;laskd ;ask ")
 						let result = {
 							serviceName: item.msgs[0].msg.service_name || '--',
 							txHash: item.tx_hash,
@@ -1660,6 +1663,7 @@ export default {
 			return providers
 		},
 		getContentWithState(state) {
+			console.log(state,'？？？？？？？？？？？')
 			let content = ''
 			switch (state) {
 				case 0:

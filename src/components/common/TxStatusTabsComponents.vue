@@ -9,7 +9,7 @@
 				{{ item.label }}
 			</el-button>
 		</div>
-		<div class="tx_date_picket_container">
+		<div class="tx_date_picket_container" v-if="isShowDatePicker">
 			<div class="tx_date_picket_content">
 				<el-date-picker size="mini"
 								v-model="value"
@@ -36,6 +36,12 @@ import moment from 'moment'
 import Tools from "../../util/Tools";
 export default {
 	name: "TxStatusTabsComponents",
+	props:{
+		isShowDatePicker:{
+			type:Boolean,
+			default:true
+		}
+	},
 	data() {
 		return {
 			statusTypes: [

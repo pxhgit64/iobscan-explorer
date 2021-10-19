@@ -510,7 +510,7 @@
                             msgs = item.msgs || [{}];
                         return {
                             // type : item.msgs.length > 1 ? '--' : item.msgs[0].type,
-                            type : (item.msgs || []).map(item=>this.TX_TYPE_DISPLAY[item.type] || item.type),
+                            type : (item.msgs || []).map(item=>item.type),
                             msgCount: item.msgs.length,
                             from,
                             status : item.status,

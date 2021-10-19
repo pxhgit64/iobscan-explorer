@@ -245,7 +245,7 @@ export default {
 						}
 						return {
 							txHash: item.tx_hash,
-							txType: (item.msgs || []).map(item => this.TX_TYPE_DISPLAY[item.type] || item.type),
+							txType: (item.msgs || []).map(item =>  item.type),
 							blockHeight: item.height,
 							fee: item?.fee?.amount[0]?.amount ? item?.fee.amount[0] : ' ',
 							Time: Tools.formatLocalTime(item.time),
