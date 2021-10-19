@@ -37,7 +37,8 @@ export default [
     },
     {
         label: i18n.t('ExplorerLang.table.denom'),
-        displayValue: 'denom_id'
+        displayValue: 'denom_id',
+        isWrap: true
     },
     {
         label: i18n.t('ExplorerLang.table.owner'),
@@ -47,14 +48,13 @@ export default [
         isNeedFormat: true,
         isFormatAddress: true,
         linkRoute: '/address/',
-        width: 180
     },
     {
         label: i18n.t('ExplorerLang.table.uri'),
         displayValue: 'tokenUri',
         nativeValue: 'tokenUri',
         isNftHref: true,
-        width: 340
+        isWrap: true
     },
     {
         label: i18n.t('ExplorerLang.table.time'),

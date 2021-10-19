@@ -73,12 +73,11 @@ export default {
               };
             })
           );
-          this.isLoading =false
         } else {
           this.tableData = [];
-			this.isLoading =false
 		}
-      } catch (err) {
+		  this.isLoading =false
+	  } catch (err) {
 		  this.isLoading =false
         console.error(err);
       }

@@ -211,4 +211,8 @@ export default {
 		overflow-x: hidden;
 	}
 }
+.el-date-range-picker__content .el-date-range-picker__header div{
+	margin-left: 40px !important;
+	margin-right: 40px !important;
+}
 </style>
