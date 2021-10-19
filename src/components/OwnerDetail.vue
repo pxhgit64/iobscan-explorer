@@ -686,11 +686,15 @@
 						<tabs-component :tab-list="txTypeOption"
 										@onSelectMagType="getFilterTxs"></tabs-component>
 					</template>
+					<template v-slot:resetButton>
+						<tx-reset-button-component @resetParams="resetFilterCondition"></tx-reset-button-component>
+					</template>
+
 					<template v-slot:datePicket>
 						<tx-status-tabs-components
 							@onChangTxStatus="changeTxStatus"
 							@onChangeDate="changeTime"
-							@resetParams="resetFilterCondition"></tx-status-tabs-components>
+							ref="statusDatePicker" ></tx-status-tabs-components>
 					</template>
 					<template v-slot:txCount>
 						<tx-count-component :title="$t('ExplorerLang.transactions.txs')" :icon="'iconTrainsaction'" :tx-count="totalTxNumber"></tx-count-component>
@@ -748,10 +752,11 @@ import TxStatusTabsComponents from "./common/TxStatusTabsComponents";
 import TxCountComponent from "./TxCountComponent";
 import MClip from "./common/MClip";
 import SignerColunmn from "./tableListColumnConfig/SignerColunmn";
-
+import TxResetButtonComponent from "./common/TxResetButtonComponent";
 export default {
 	name: 'OwnerDetail',
 	components: {
+		TxResetButtonComponent,
 		MClip,
 		TxCountComponent,
 		TxStatusTabsComponents,
@@ -1731,6 +1736,7 @@ export default {
 			this.$store.commit('currentTxModelIndex', 0)
 			sessionStorage.setItem('lastChoiceMsgModelIndex',0)
 			sessionStorage.setItem('txTimeRange',[])
+			this.$refs.statusDatePicker.resetParams()//新增
 		},
 		async getAllTxType() {
 			try {
