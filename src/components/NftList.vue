@@ -361,7 +361,7 @@ a {
     padding: 0 0.15rem;
     .nft_list_header_content {
       width: 100%;
-      margin: 0.3rem 0 0.16rem 0;
+      margin: 0.4rem 0 0.1rem 0;
       .el-select {
         ::v-deep .el-input {
           .el-input__inner {
@@ -385,7 +385,7 @@ a {
         }
       }
       .nft_list_header_title {
-        font-size: $s18;
+        font-size: $s22;
         color: $t_first_c;
         line-height: 0.21rem;
         text-align: left;

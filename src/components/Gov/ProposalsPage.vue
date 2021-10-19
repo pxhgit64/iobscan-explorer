@@ -139,16 +139,15 @@ export default {
 	},
 	computed: {},
 	watch: {},
-	created() {
+	mounted() {
+		this.proposalListColumn = proposalColumn
 		this.getProposalsListCount();
 		this.getProposalsList();
 		this.getProposalsByStatus();
 	},
-	mounted() {
-		this.proposalListColumn = proposalColumn
-	},
 	methods: {
 		async getProposalsList() {
+			this.isProposalLoading = true
 			try {
 				let res = await getProposalsListApi('', this.pageNum, this.pageSize, false);
 				if (res && res.data && res.data.length > 0) {
@@ -200,7 +199,9 @@ export default {
 				} else {
 					this.tableData = []
 				}
+				this.isProposalLoading = false
 			} catch (e) {
+				this.isProposalLoading = false
 				console.error(e);
 			}
 		},

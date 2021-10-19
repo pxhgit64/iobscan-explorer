@@ -3,7 +3,7 @@ export default function (el) {
     el.querySelectorAll(".el-table__body tr").forEach(tr => {
         tr.querySelectorAll("td .cell").forEach((td, i) => {
             if (!widthList[i]) {
-                widthList[i] = [73];
+                widthList[i] = [40];
             }
             let width = 0
             if (td.children?.length > 1) {

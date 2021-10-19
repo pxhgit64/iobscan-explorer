@@ -341,7 +341,7 @@ export default {
 			this.beginTime = '';
 			this.endTime = '';
 			this.pageNum = 1;
-			this.pageSize = 30;
+			this.pageSize = 15;
 			this.$refs.statusDatePicker.resetParams()
 			this.resetUrl();
 			this.getTxListData(null, null, true)

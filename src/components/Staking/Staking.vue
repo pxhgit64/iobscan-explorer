@@ -3,11 +3,9 @@
 		<div class="staking_content">
 			<div class="staking_title_container">
 				<span>{{ $t('ExplorerLang.staking.title') }}</span>
-				<span>{{ count }} {{ titleStatus }}</span>
+<!--				<span>{{ count }} {{ titleStatus }}</span>-->
 			</div>
-			<div class="staking_tab_content">
-				<m-tabs class="staking_m_tabs" :data="stakingStatusTitleList" :chose="selectStakingStatus"></m-tabs>
-			</div>
+			
 			<list-component
 				:tableWidth="'11.5rem'"
 				:empty-text="$t('ExplorerLang.table.emptyDescription')"
@@ -16,7 +14,16 @@
 				:column-list="validatorColumnList"
 				:list-data="tableData"
 				:pagination="{pageSize:Number(pageSize),dataCount:count,pageNum:Number(pageNum)}"
-			></list-component>
+			>
+				<template v-slot:txCount>
+					<tx-count-component :title="titleStatus" :icon="'iconValidators'" :tx-count="count" ></tx-count-component>
+				</template>
+				<template v-slot:datePicket>
+					<div class="staking_tab_content">
+						<m-tabs class="staking_m_tabs" :data="stakingStatusTitleList" :chose="selectStakingStatus"></m-tabs>
+					</div>
+				</template>
+			</list-component>
 <!--			<div class="staking_table_list_content">
 				
 				<el-table class="sort_table table_overflow_x" :empty-text="$t('ExplorerLang.table.emptyDescription')"
@@ -123,9 +130,10 @@ import {getMainToken, converCoin, formatMoniker} from '@/helper/IritaHelper';
 import {ColumnMinWidth, monikerNum} from '@/constant';
 import ListComponent from "../common/ListComponent";
 import validatorListColumn from "./tableColumnConfig/validatorListColumn";
+import TxCountComponent from "../TxCountComponent";
 export default {
 	name: 'Staking',
-	components: {ListComponent, MTabs, MPagination},
+	components: {TxCountComponent, ListComponent, MTabs, MPagination},
 	props: {},
 	data() {
 		return {
@@ -163,9 +171,6 @@ export default {
 	},
 	computed: {},
 	watch: {},
-	created() {
-		this.getValidatorsList(this.stakingStatusTitleList[0].name)
-	},
 	mounted() {
 		this.validatorColumnList = validatorListColumn[this.stakingStatusTitleList[0].name]
 		if(!productionConfig.table.votingPower){
@@ -173,6 +178,7 @@ export default {
 				return item.displayValue !== "votingPower"
 			})
 		}
+		this.getValidatorsList(this.stakingStatusTitleList[0].name)
 		this.setMainToken();
 	},
 	methods: {
@@ -300,13 +306,12 @@ a {
 		text-align: left;
 		
 		.staking_title_container {
-			margin: 0.30rem 0 0rem 0;
+			margin: 0.4rem 0 0.1rem 0;
 			text-align: left;
 			display: flex;
 			color: $t_first_c;
-			font-size: $s18;
+			font-size: $s22;
 			font-weight: bold;
-			
 			span {
 				margin-right: 0.1rem;
 			}

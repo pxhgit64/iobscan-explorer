@@ -85,16 +85,16 @@
 										
 									</span>
 <!--									-->
-									<span v-else-if="item.isNftHref">
+									<span v-else-if="item.isNftHref" :class="item.isWrap ? 'wrap_style' : ''">
 										
 										<a v-if="testUrl(scope.row[item.displayValue])" :href="scope.row[item.displayValue]"
 										   target="_blank" rel="noreferrer noopener" class="route_link_style">{{ scope.row[item.displayValue] }}</a>
 										
-										<a v-else-if="startStr(scope.row[item.displayValue])"
+										<a class="route_link_style" v-else-if="startStr(scope.row[item.displayValue])"
 										   :href="'http://' + scope.row[item.displayValue]"
 										   target="_blank">{{ scope.row[item.displayValue] }}</a>
 										
-										<span v-else>{{ scope.row[item.displayValue] }}</span>
+										<span class="route_link_style" v-else>{{ scope.row[item.displayValue] }}</span>
 										
 									</span>
 <!--									-->
@@ -102,16 +102,16 @@
 										
 										<span>{{ getAmount(scope.row[item.displayValue]) }}</span>
 										
-										<el-tooltip :manual="isShowDenomTip(scope.row.denomTheme.tooltipContent)"
-													:content="scope.row.denomTheme.tooltipContent" placement="top">
+										<el-tooltip :manual="isShowDenomTip( scope.row && scope.row.denomTheme && scope.row.denomTheme.tooltipContent ? scope.row.denomTheme.tooltipContent  :'')"
+													:content="scope.row && scope.row.denomTheme && scope.row.denomTheme.tooltipContent ? scope.row.denomTheme.tooltipContent  :''" placement="top">
 											
-											<span class="denom_style" :style="{ color: scope.row.denomTheme.denomColor }">{{getAmountUnit(scope.row[item.displayValue]) }}</span>
+											<span class="denom_style" :style="{ color: scope.row && scope.row.denomTheme && scope.row.denomTheme.denomColor ? scope.row.denomTheme.denomColor : '' }">{{getAmountUnit(scope.row[item.displayValue]) }}</span>
 											
 										</el-tooltip>
 										
 									</span>
 <!--									-->
-									<span v-else-if="item.isShowIndex">{{scope.$index+1}}</span>
+									<span class="index_style" v-else-if="item.isShowIndex">{{scope.$index+1}}</span>
 <!--									-->
 									<div v-else-if="item.isShowMonikerImg" style="display: flex;
 										align-items: center;
@@ -142,7 +142,25 @@
 											:final-votes="scope.row[item.finalVotes]"></proposal-status-component>
 									</div>
 <!--									-->
-									<span v-else>
+									<div v-else-if="item.flMoniker">
+										<el-tooltip v-show="scope.row.isValidator"
+													:content="scope.row.address"
+													placement="top">
+											<router-link :to="`/staking/${scope.row.address}`">{{ formatMoniker(scope.row.moniker, monikerNum.otherTable) || formatAddress(scope.row.address) }}</router-link>
+										</el-tooltip>
+										<el-tooltip v-show="!scope.row.isValidator"
+													:content="scope.row.voter"
+													placement="top">
+											<router-link :to="`/address/${scope.row.voter}`">{{ formatAddress(scope.row.voter) }}</router-link>
+										</el-tooltip>
+									</div>
+									<div v-else-if="item.flDepositor">
+										<el-tooltip :content="scope.row.depositor" placement="top" :disabled="isValid(scope.row.moniker)">
+											<router-link :to="`/address/${scope.row.depositor}`">{{ formatMoniker(scope.row.moniker, monikerNum.otherTable) || formatAddress(scope.row.depositor) }}</router-link>
+										</el-tooltip>
+									</div>
+<!--									-->
+									<span v-else :class="item.isWrap ? 'wrap_style' : ''">
 										{{ scope.row[item.displayValue] === 0 || scope.row[item.displayValue] === '0' ? 0 : scope.row[item.displayValue] || '--' }}</span>
 									
 								</el-tooltip>
@@ -197,6 +215,8 @@ export default {
 	components: {ProposalStatusComponent, MPagination, Loading},
 	data() {
 		return {
+			monikerNum,
+			formatMoniker,
 			isSetLoadingStatus: false,
 			isShowFee: prodConfig.fee.isShowFee || false,
 			isShowProposer: prodConfig.blockList.proposer || false,
@@ -285,6 +305,7 @@ export default {
 		},
 		listData: {
 			handler(newValue, oldValue) {
+				console.log(newValue,'数值展示')
 				this.tableList = newValue
 			},
 			deep: true
@@ -371,6 +392,9 @@ export default {
 			}
 			return true
 		},
+		isValid(value) {
+			return !value || !value.length || value == '--' ? false : true
+		},
 		testUrl(url){
 			return Tools.testUrl(url)
 		},
@@ -378,6 +402,7 @@ export default {
 			return url.startsWith('www.')
 		},
 		isShowDenomTip(denom) {
+			console.log(denom,"????")
 			if (denom) {
 				return false
 			}
@@ -550,6 +575,7 @@ export default {
 			this.getTableWidth()
 		},
 		getTableWidth () {
+			console.log('123456789')
 			this.tableListWidth = []
 			let listTableTimer = null
 			this.$nextTick(() => {
@@ -568,7 +594,11 @@ export default {
 							if(practicalWidth < tableWidth && this?.columns?.length){
 								let compensationWidth = (tableWidth - practicalWidth) / this.columns.length
 								this.tableListWidth = this.tableListWidth.map( item => {
-									return item + compensationWidth
+									if(item <= 40){
+										return  item
+									}else {
+										return item + compensationWidth
+									}
 								})
 							}
 						}
@@ -715,9 +745,13 @@ export default {
 		.yiwen_icon {
 			cursor: pointer;
 		}
-		
+		.wrap_style{
+			white-space: normal !important;
+			width: 3.16rem !important;
+		}
 		.route_link_style {
 			color: $theme_c !important;
+			white-space: normal !important;
 		}
 		.tag_num {
 			color: $theme_c !important;
@@ -734,7 +768,11 @@ export default {
 						background: blue !important;
 					}
 				}
+				
 			}
+		}
+		.index_style{
+			width: 0.4rem !important;
 		}
 		::v-deep.el-table .descending .sort-caret.descending {
 			border-top-color: $theme_c;

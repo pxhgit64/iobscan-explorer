@@ -5,7 +5,7 @@
       <div class="native_asset_list_table_content" >
         <list-component
           :token-symbol="mainTokenSymbol"
-          :is-loading="isLoading"
+          :is-loading="isIssueTokenLoading"
           :list-data="issueToken"
           :column-list="issueTokenColumn"
           :pagination="{pageSize:Number(pageSize),dataCount:issueTokenTotalPageNum,pageNum:Number(issueTokenCurrentPageNum)}"
@@ -64,7 +64,7 @@
         </div>-->
         <list-component
             :token-symbol="mainTokenSymbol"
-            :is-loading="isLoading"
+            :is-loading="isEditTokenLoading"
             :list-data="editToken"
             :column-list="editTokenColumn"
             :pagination="{pageSize:Number(pageSize),dataCount:editTokenTotalPageNum,pageNum:Number(editTokenCurrentPageNum)}"
@@ -135,7 +135,7 @@
        -->
         <list-component
             :token-symbol="mainTokenSymbol"
-            :is-loading="isLoading"
+            :is-loading="isMintTokenLoading"
             :list-data="mintToken"
             :column-list="mintTokenColumn"
             :pagination="{pageSize:Number(pageSize),dataCount:mintTokenTotalPageNum,pageNum:Number(mintTokenCurrentPageNum)}"
@@ -195,7 +195,7 @@
         -->
         <list-component
             :token-symbol="mainTokenSymbol"
-            :is-loading="isLoading"
+            :is-loading="isBurnTokenLoading"
             :list-data="burnToken"
             :column-list="burnTokenColumn"
             :pagination="{pageSize:Number(pageSize),dataCount:burnTokenTotalPageNum,pageNum:Number(burnTokenCurrentPageNum)}"
@@ -263,7 +263,7 @@
 
         <list-component
             :token-symbol="mainTokenSymbol"
-            :is-loading="isLoading"
+            :is-loading="isTransferTokenLoading"
             :list-data="transferToken"
             :column-list="transferTokenColumn"
             :pagination="{pageSize:Number(pageSize),dataCount:transferTokenTotalPageNum,pageNum:Number(transferTokenCurrentPageNum)}"
@@ -349,7 +349,11 @@ export default {
     this.burnTokenColumn  = nativeAssTxBurnColumnConfig
     this.transferTokenColumn = nativeAssTxTransferTokenColumnConfig
     this.setMainToken()
-	  this.isLoading = true
+	  this.isIssueTokenLoading = true
+	  this.isEditTokenLoading = true
+	  this.isMintTokenLoading = true
+	  this.isBurnTokenLoading = true
+	  this.isTransferTokenLoading = true
     Promise.all([
       this.getIssueToken(),
       this.getEditToken(),
@@ -358,7 +362,11 @@ export default {
       this.getTransferToken()
     ])
       .then(() => {
-		  this.isLoading = false
+		  this.isIssueTokenLoading = false
+		  this.isEditTokenLoading = false
+		  this.isMintTokenLoading = false
+		  this.isBurnTokenLoading = false
+		  this.isTransferTokenLoading = false
          /**
          * @description: from parseTimeMixin
          */
@@ -373,6 +381,7 @@ export default {
           }
       },
     async getIssueToken() {
+      	this.isIssueTokenLoading = true
       try {
         let { count } = await this.getNativeAssets(null, null, true, TX_TYPE.issue_token,this.symbol)
         this.issueTokenTotalPageNum = count ? count : 0
@@ -404,11 +413,14 @@ export default {
         } else {
           this.issueToken = []
         }
+		  this.isIssueTokenLoading = false
       } catch (err) {
+		  this.isIssueTokenLoading = false
         console.error(err)
       }
     },
     async getEditToken() {
+      	this.isEditTokenLoading = true
       try {
         let { count } = await this.getNativeAssets(null, null, true, TX_TYPE.edit_token,this.symbol)
         this.editTokenTotalPageNum = count ? count : 0
@@ -438,11 +450,14 @@ export default {
         } else {
           this.editToken = []
         }
+		  this.isEditTokenLoading = false
       } catch (err) {
+		  this.isEditTokenLoading = false
         console.error(err)
       }
     },
     async getMintToken() {
+      	this.isMintTokenLoading = true
       try {
         let { count } = await this.getNativeAssets(null, null, true, TX_TYPE.mint_token,this.symbol)
         this.mintTokenTotalPageNum = count ? count : 0
@@ -474,11 +489,14 @@ export default {
         } else {
           this.mintToken = []
         }
+		  this.isMintTokenLoading = false
       } catch (err) {
+		  this.isMintTokenLoading = false
         console.error(err)
       }
     },
     async getBurnToken() {
+      	this.isBurnTokenLoading = true
       try {
         let { count } = await this.getNativeAssets(null, null, true, TX_TYPE.burn_token,this.symbol)
         this.burnTokenTotalPageNum = count ? count : 0
@@ -509,11 +527,14 @@ export default {
         } else {
           this.burnToken = []
         }
+		  this.isBurnTokenLoading = false
       } catch (err) {
+		  this.isBurnTokenLoading = false
         console.error(err)
       }
     },
     async getTransferToken() {
+      	this.isTransferTokenLoading = true
       try {
         let { count } = await this.getNativeAssets(null, null, true, TX_TYPE.transfer_token_owner,this.symbol)
         this.transferTokenTotalPageNum = count ? count : 0
@@ -544,7 +565,9 @@ export default {
         } else {
           this.transferToken = []
         }
+		  this.isTransferTokenLoading = false
       } catch (err) {
+		  this.isTransferTokenLoading = false
         console.error(err)
       }
     },
