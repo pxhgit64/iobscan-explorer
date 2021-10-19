@@ -1663,7 +1663,6 @@ export default {
 			return providers
 		},
 		getContentWithState(state) {
-			console.log(state,'？？？？？？？？？？？')
 			let content = ''
 			switch (state) {
 				case 0:
