@@ -48,7 +48,7 @@
 								<el-tooltip :manual="setManual(!item.isNeedFormat,scope.row[item.displayValue])"
 											:content="formatStr(scope.row[item.nativeValue])">
 <!--									-->
-									<router-link class="link_style"
+									<router-link class="link_style" :class="item.isAdjustStyle ? 'index_style' : ''"
 												 v-if="item.isLink &&  scope.row[item.displayValue] && scope.row[item.displayValue] !== '--'"
 												 :to="!item.isNft ? `${item.linkRoute}${scope.row[item.nativeValue]}` : `${item.linkRoute}${scope.row[item.nftRouterParamsValue]}${item.denomRouter}${scope.row[item.nativeValue]}`">
 										
@@ -111,7 +111,7 @@
 										
 									</span>
 <!--									-->
-									<span class="index_style" v-else-if="item.isShowIndex">{{scope.$index+1}}</span>
+									<span :class="item.isAdjustStyle ? 'index_style' : ''" v-else-if="item.isShowIndex">{{scope.$index+1}}</span>
 <!--									-->
 									<div v-else-if="item.isShowMonikerImg" style="display: flex;
 										align-items: center;
@@ -575,7 +575,6 @@ export default {
 			this.getTableWidth()
 		},
 		getTableWidth () {
-			console.log('123456789')
 			this.tableListWidth = []
 			let listTableTimer = null
 			this.$nextTick(() => {

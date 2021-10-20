@@ -4,7 +4,6 @@
 			<div class="proposals_title_container"
 				 v-if="votingPeriodDatas.length !== 0 || depositPeriodDatas.length !== 0">
 				<span>{{ $t("ExplorerLang.gov.proposalsTitle") }}</span>
-				<span>{{ count }} {{ $t("ExplorerLang.gov.proposals") }}</span>
 			</div>
 			<div class="graph_containers">
 				<!-- <div class="graph_container">
@@ -67,7 +66,7 @@
 					<div class="proposals_title"
 						 v-if="votingPeriodDatas.length === 0 && depositPeriodDatas.length === 0">
 						<span>{{ $t("ExplorerLang.gov.proposalsTitle") }}</span>
-						<span>{{ count }} {{ $t("ExplorerLang.gov.proposals") }}</span>
+<!--						<span>{{ count }} {{ $t("ExplorerLang.gov.proposals") }}</span>-->
 					</div>
 					<div class="icon_list">
 						<div>
@@ -94,7 +93,11 @@
 									:list-data="tableData"
 									:column-list="proposalListColumn"
 									:pagination="{pageSize:Number(pageSize),dataCount:count,pageNum:Number(pageNum)}"
-									@pageChange="pageChange"></list-component>
+									@pageChange="pageChange">
+						<template v-slot:txCount>
+							<tx-count-component :title="$t('ExplorerLang.gov.proposals')" :icon="'iconProposal'"  :tx-count="count"></tx-count-component>
+						</template>
+					</list-component>
 				</div>
 			</div>
 		</div>
@@ -113,9 +116,11 @@ import {proposalStatus, voteOptions} from "../../constant";
 import productionConfig from '@/productionConfig.js';
 import ListComponent from "../common/ListComponent";
 import proposalColumn from "./govColumnConfig/proposalColumn";
+import TxCountComponent from "../TxCountComponent";
 export default {
 	name: "",
 	components: {
+		TxCountComponent,
 		ListComponent,
 		MPagination,
 		MProposalsCard,

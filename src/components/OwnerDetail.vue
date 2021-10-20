@@ -1604,8 +1604,8 @@ export default {
 							result.deposit = `${item.msgs[0].msg.deposit[0].amount} ${item.msgs[0].msg.deposit[0].denom}`
 						}
 						let bindings = await getServiceBindingByServiceName(result.serviceName);
-						result.isAvailable = this.$t('ExplorerLang.common.false')
-						(bindings.result || []).forEach((bind) => {
+						result.isAvailable = this.$t('ExplorerLang.common.false');
+						;(bindings.result || []).forEach((bind) => {
 							if (
 								result.provider === bind.provider &&
 								result.owner == bind.owner) {
