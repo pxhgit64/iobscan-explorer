@@ -34,6 +34,9 @@ export default {
 .legend_container{
 	display: flex;
 	justify-content: flex-end;
+	@media (max-width: 768px) {
+		justify-content: flex-start;
+	}
 	.legend_content{
 		border-radius: 0.08rem;
 		border:0.01rem solid rgba(231, 234, 243, 1);
@@ -56,6 +59,12 @@ export default {
 					margin-left: 0.12rem;
 					background-color: $theme_c;
 					vertical-align: middle;
+					@media (max-width: 375px) {
+						width: 0.06rem;
+						height: 0.06rem;
+						border-radius: 0.03rem;
+						margin-left: 0.1rem;
+					}
 				}
 				
 				img {
