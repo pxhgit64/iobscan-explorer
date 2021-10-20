@@ -487,20 +487,20 @@
 												}
 											}
 										}
-										let msgsNumber = item.msgs ? item.msgs.length : 0, fromAddr = '--',toAddr = '--',fromAddrArr = [],toAddrArr = [];
+										let msgsNumber = item.msgs ? item.msgs.length : 0, amountArr= [], fromAddr = '--',toAddr = '--',fromAddrArr = [],toAddrArr = [];
 										let amount = '--'
 										if(msgsNumber > 1){
 											for (const msgElement of item.msgs) {
 												if(msgElement && JSON.stringify(msgElement) !== '{}'){
 													const fromToAddr = TxHelper.getFromAndToAddressFromMsg(msgElement)
-													if(fromToAddr?.from){
-														fromAddrArr.push(fromToAddr.from)
-													}
-													if(fromToAddr?.to){
-														toAddrArr.push(fromToAddr.to)
-													}
 													if(msgElement.type === this.TxType){
-														amount =  await getAmountByTx(msgElement,item.events,true)
+														amountArr.push(await getAmountByTx(msgElement,item.events,true))
+														if(fromToAddr?.from){
+															fromAddrArr.push(fromToAddr.from)
+														}
+														if(fromToAddr?.to){
+															toAddrArr.push(fromToAddr.to)
+														}
 													}
 												}
 											}
@@ -508,7 +508,7 @@
 											toAddrArr = Array.from(new Set(toAddrArr))
 											fromAddr = fromAddrArr?.length > 1 ? ' ' : fromAddrArr?.length === 1 ? fromAddrArr[0] : '--'
 											toAddr = toAddrArr?.length > 1 ? ' ' : toAddrArr?.length === 1 ? toAddrArr[0] : '--'
-											amount = ' '
+											amount = amountArr?.length > 1 ? ' ' : amountArr?.length === 1 ? amountArr[0] : ' '
 										}else if(msgsNumber === 1) {
 											if (item.msgs[0] && JSON.stringify(item.msgs[0]) !== '{}') {
 												const fromToAddr = TxHelper.getFromAndToAddressFromMsg(item.msgs[0])

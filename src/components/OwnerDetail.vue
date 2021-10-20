@@ -338,7 +338,7 @@
 								<span class="consumer_transaction_content_available_icon"
 									  :style="`background:${getBgColorWithState(scope.row.state)}`"></span>
 								<span>{{
-										$t(
+										scope.row.state === 'Running' ? '--': $t(
 											"ExplorerLang.table." + getContentWithState(scope.row.state)
 										)
 									}}</span>
@@ -692,6 +692,7 @@
 
 					<template v-slot:datePicket>
 						<tx-status-tabs-components
+							:is-show-date-picker="false"
 							@onChangTxStatus="changeTxStatus"
 							@onChangeDate="changeTime"
 							ref="statusDatePicker" ></tx-status-tabs-components>
@@ -960,6 +961,7 @@ export default {
 				this.txColumnList = txCommonTable.concat(needAddColumn[this.type],txCommonLatestTable)
 			}
 			this.totalTxNumber = 0
+			this.pageNum = 1
 			this.getTxByAddressCount()
 			this.getTxByAddress()
 		},
@@ -1273,7 +1275,7 @@ export default {
 						this.transactionArray.push({
 							txHash: tx.tx_hash,
 							blockHeight: tx.height,
-							txType: (tx.msgs || []).map(item => this.TX_TYPE_DISPLAY[item.type] || item.type),
+							txType: (tx.msgs || []).map(item =>  item.type),
 							from,
 							fromMonikers,
 							toMonikers,
@@ -1602,8 +1604,8 @@ export default {
 							result.deposit = `${item.msgs[0].msg.deposit[0].amount} ${item.msgs[0].msg.deposit[0].denom}`
 						}
 						let bindings = await getServiceBindingByServiceName(result.serviceName);
-						result.isAvailable = this.$t('ExplorerLang.common.false')
-						(bindings.result || []).forEach((bind) => {
+						result.isAvailable = this.$t('ExplorerLang.common.false');
+						;(bindings.result || []).forEach((bind) => {
 							if (
 								result.provider === bind.provider &&
 								result.owner == bind.owner) {

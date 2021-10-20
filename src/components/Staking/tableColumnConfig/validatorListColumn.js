@@ -3,7 +3,7 @@ export default {
         {
             label:'#',
             isShowIndex: true,
-            width: 45,
+            isAdjustStyle: true,
         },
         {
             label:'Moniker',

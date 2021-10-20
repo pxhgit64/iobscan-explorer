@@ -3,7 +3,17 @@ export default function (el) {
     el.querySelectorAll(".el-table__body tr").forEach(tr => {
         tr.querySelectorAll("td .cell").forEach((td, i) => {
             if (!widthList[i]) {
-                widthList[i] = [40];
+                if(td?.childNodes){
+                    for (const childNode of td.childNodes) {
+                        if(childNode.className && childNode?.className.includes('index_style')){
+                            widthList[i] = [40]
+                        }else {
+                            widthList[i] = [100];
+                        }
+                    }
+                }else {
+                    widthList[i] = [100];
+                }
             }
             let width = 0
             if (td.children?.length > 1) {

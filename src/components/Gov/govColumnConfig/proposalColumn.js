@@ -16,6 +16,7 @@ export default [
         isLink: true,
         linkRoute: '/ProposalsDetail/',
         width: 50,
+        isAdjustStyle: true,
     },
     {
         label: i18n.t('ExplorerLang.table.title'),
