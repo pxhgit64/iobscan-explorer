@@ -15,7 +15,7 @@
 						<div class="one_table_container clearfloat">
 							<p class="validator_information_content_title">{{
 								$t('ExplorerLang.validatorDetail.delegationsTitle') }}</p>
-							<div class="delegations_table_container" ref="delegationsList">
+							<div class="delegations_table_container">
 <!--								<el-table :data="delegations.items" style="width: 100%"
 								          :empty-text="$t('ExplorerLang.table.emptyDescription')" id="element_del">
 									<el-table-column class-name="address" prop="address" :label="$t('ExplorerLang.table.address')"
@@ -51,11 +51,12 @@
 									</el-table-column> &ndash;&gt;
 								</el-table>-->
 								<list-component
+									:isSmallTable="true"
 									:token-symbol="mainTokenSymbol"
 									:is-loading="isDelegationLoading"
 									:list-data="delegations.items"
 									:column-list="validatorDelegationColumn"
-									:pagination=" delegations.total > pageSize ? {pageSize:Number(pageSize),dataCount:delegations.total,pageNum:Number(1)} : {}"
+									:pagination="{pageSize:Number(pageSize),dataCount:delegations.total,pageNum:Number(1)}"
 									@pageChange="(e) => pageChange(e,'getDelegations')"
 								></list-component>
 							</div>
@@ -68,11 +69,12 @@
 							<p class="validator_information_content_title">{{
 								$t('ExplorerLang.validatorDetail.unbondingDelegationsTitle') }}</p>
 							<div class="delegations_table_container" ref="UnbondingDelList">
-								<list-component :token-symbol="mainTokenSymbol"
+								<list-component :isSmallTable="true"
+												:token-symbol="mainTokenSymbol"
 												:is-loading="isUnbondingLoading"
 												:list-data="unbondingDelegations.items"
 												:column-list="unBondingColumn"
-												:pagination=" unbondingDelegations.total > pageSize ? {pageSize:Number(pageSize),dataCount:unbondingDelegations.total,pageNum:Number(1)} : {}"
+												:pagination=" {pageSize:Number(pageSize),dataCount:unbondingDelegations.total,pageNum:Number(1)} "
 												@pageChange="(e) => pageChange(e,'getUnbondingDelegations')"
 								></list-component>
 <!--								<el-table :data="unbondingDelegations.items" style="width: 100%"
@@ -113,9 +115,9 @@
 									                 :width="ColumnMinWidth.time"></el-table-column>
 								</el-table>-->
 							</div>
-							<m-pagination v-if="unbondingDelegations.total > pageSize" :page-size="pageSize"
+<!--							<m-pagination v-if="unbondingDelegations.total > pageSize" :page-size="pageSize"
 							              :total="unbondingDelegations.total"
-							              :page-change="pageChange('getUnbondingDelegations')"></m-pagination>
+							              :page-change="pageChange('getUnbondingDelegations')"></m-pagination>-->
 						</div>
 					</div>
 				</div>
@@ -128,11 +130,12 @@
 								$t('ExplorerLang.validatorDetail.depositedProposalsTitle') }}</p>
 							<div class="delegations_table_container">
 								<list-component
+									:is-small-table="true"
 									:token-symbol="mainTokenSymbol"
 									:is-loading="isDepositedLoading"
 									:list-data="depositedProposals.items"
 									:column-list="depositedColumn"
-									:pagination=" depositedProposals.total > pageSize ? {pageSize:Number(pageSize),dataCount:depositedProposals.total,pageNum:Number(1)} : {}"
+									:pagination="{pageSize:Number(pageSize),dataCount:depositedProposals.total,pageNum:Number(1)}"
 									@pageChange="(e) => pageChange(e,'getDepositedProposals')"
 								></list-component>
 <!--								<el-table :data="depositedProposals.items" style="width: 100%"
@@ -184,10 +187,11 @@
 								$t('ExplorerLang.validatorDetail.votedProposalsTitle') }}</p>
 							<div class="delegations_table_container">
 								<list-component
+									:is-small-table="true"
 									:is-loading="isVotedLoading"
 									:list-data="votedProposals.items"
 									:column-list="votedColumn"
-									:pagination=" votedProposals.total > pageSize ? {pageSize:Number(pageSize),dataCount:votedProposals.total,pageNum:Number(1)} : {}"
+									:pagination="{pageSize:Number(pageSize),dataCount:votedProposals.total,pageNum:Number(1)}"
 									@pageChange="(e) => pageChange(e,'getVotedProposals')"
 								></list-component>
 								
@@ -233,7 +237,7 @@
 							:is-loading="isDelegationTxLoading"
 							:list-data="delegationTxs.items"
 							:column-list="delegationTxColumn"
-							:pagination=" delegationTxs.total > pageSize ? {pageSize:Number(pageSize),dataCount:delegationTxs.total,pageNum:Number(1)} : {}"
+							:pagination="{pageSize:Number(pageSize),dataCount:delegationTxs.total,pageNum:Number(1)}"
 							@pageChange="(e) => pageChange(e,'getDelegationTxs')"
 						></list-component>
 <!--						<m-pagination v-if="delegationTxs.total > pageSize" :page-size="pageSize"
@@ -252,7 +256,7 @@
 							:is-loading="isValidationTxLoading"
 							:list-data="validationTxs.items"
 							:column-list="validationTxColumn"
-							:pagination=" validationTxs.total > pageSize ? {pageSize:Number(pageSize),dataCount:validationTxs.total,pageNum:Number(1)} : {}"
+							:pagination="{pageSize:Number(pageSize),dataCount:validationTxs.total,pageNum:Number(1)} "
 							@pageChange="(e) => pageChange(e,'getValidationTxs')"
 						></list-component>
 <!--						<m-pagination v-if="validationTxs.total > pageSize" :page-size="pageSize"
@@ -270,7 +274,7 @@
 							:is-loading="isGovLoading"
 							:list-data="govTxs.items"
 							:column-list="govTxColumn"
-							:pagination=" govTxs.total > pageSize ? {pageSize:Number(pageSize),dataCount:govTxs.total,pageNum:Number(1)} : {}"
+							:pagination="{pageSize:Number(pageSize),dataCount:govTxs.total,pageNum:Number(1)} "
 							@pageChange="(e) => pageChange(e,'getGovTxs')"
 						></list-component>
 <!--						<m-pagination v-if="govTxs.total > pageSize" :page-size="pageSize"
@@ -447,55 +451,71 @@
 				this.validatorStatus = Tools.firstWordUpperCase(res.status)
 			},
 			async getDelegations(pageNum, pageSize = 5, useCount = false) {
-				const res = await getValidatorsDelegationsApi(this.$route.params.param, pageNum, pageSize, useCount)
-                if(useCount){
-                    this.delegations.total = res?.count;
-                    if (this.validationInformation) {
-                        this.validationInformation.delegator_num = res?.count;
-                    } else {
-                        this.validationInformation.delegator_num = 0
-                    }
-                }	
-				this.delegations.items = []
-				for (const item of res.data) {
-					let amount = await converCoin(item.amount)
-					// item.amount = `${Tools.toDecimal(amount.amount,this.amountDecimals)} ${amount.denom.toUpperCase()}`
-					item.amount = `${Tools.toDecimal(amount.amount,this.amountDecimals)}`
-					let selfShares = Tools.toDecimal(item.self_shares, this.sharesDecimals)
-					let shares = `${selfShares} (${Tools.formatPerNumber( item.total_shares ? (Number(item.self_shares) / Number(item.total_shares)) * 100 : 100)}%)`
-					this.delegations.items.push({
-						address: item.address,
-						amount: item.amount,
-						shares,
-						// block: item.block,
-					})
+				this.isDelegationLoading = true
+				try {
+					const res = await getValidatorsDelegationsApi(this.$route.params.param, pageNum, pageSize, useCount)
+					if(useCount){
+						this.delegations.total = res?.count;
+						if (this.validationInformation) {
+							this.validationInformation.delegator_num = res?.count;
+						} else {
+							this.validationInformation.delegator_num = 0
+						}
+					}
+					this.delegations.items = []
+					for (const item of res.data) {
+						let amount = await converCoin(item.amount)
+						// item.amount = `${Tools.toDecimal(amount.amount,this.amountDecimals)} ${amount.denom.toUpperCase()}`
+						item.amount = `${Tools.toDecimal(amount.amount,this.amountDecimals)}`
+						let selfShares = Tools.toDecimal(item.self_shares, this.sharesDecimals)
+						let shares = `${selfShares} (${Tools.formatPerNumber( item.total_shares ? (Number(item.self_shares) / Number(item.total_shares)) * 100 : 100)}%)`
+						this.delegations.items.push({
+							address: item.address,
+							amount: item.amount,
+							shares,
+							// block: item.block,
+						})
+					}
+					this.changedHeight()
+					this.isDelegationLoading = false
+				}catch (error){
+					console.error(error)
+					this.isDelegationLoading = false
 				}
-				this.changedHeight()
+				
 			},
 			async getUnbondingDelegations (pageNum, pageSize = 5, useCount = false) {
-				const res = await getUnbondingDelegationsApi(this.$route.params.param, pageNum, pageSize, useCount)
-                if(useCount){
-                this.unbondingDelegations.total = res?.count;
-                } else {
-                this.unbondingDelegations.total = 0
-                }	
-				this.unbondingDelegations.items = []
-				for (const item of res.data) {
-					let amount = await converCoin({
-						amount: item.amount,
-						denom: this.mainToken.denom
-					})
-					// item.amount = `${Tools.toDecimal(amount.amount,this.amountDecimals)} ${amount.denom.toUpperCase()}`
-					item.amount = `${Tools.toDecimal(amount.amount,this.amountDecimals)}`
-					item.until = Tools.formatLocalTime(new Date(item.until).getTime() / 1000)
-					this.unbondingDelegations.items.push({
-						address: item.address,
-						amount: item.amount,
-						block: item.block,
-						end_time: item.until,
-					})
+				this.isUnbondingLoading = true
+				try {
+					const res = await getUnbondingDelegationsApi(this.$route.params.param, pageNum, pageSize, useCount)
+					if(useCount){
+						this.unbondingDelegations.total = res?.count;
+					} else {
+						this.unbondingDelegations.total = 0
+					}
+					this.unbondingDelegations.items = []
+					for (const item of res.data) {
+						let amount = await converCoin({
+							amount: item.amount,
+							denom: this.mainToken.denom
+						})
+						// item.amount = `${Tools.toDecimal(amount.amount,this.amountDecimals)} ${amount.denom.toUpperCase()}`
+						item.amount = `${Tools.toDecimal(amount.amount,this.amountDecimals)}`
+						item.until = Tools.formatLocalTime(new Date(item.until).getTime() / 1000)
+						this.unbondingDelegations.items.push({
+							address: item.address,
+							amount: item.amount,
+							block: item.block,
+							end_time: item.until,
+						})
+					}
+					this.changedHeight()
+					this.isUnbondingLoading = false
+				}catch (e) {
+					console.error(e)
+					this.isUnbondingLoading = false
 				}
-				this.changedHeight()
+				
 			},
 			changedHeight () {
 				this.$nextTick(()=>{
@@ -509,45 +529,56 @@
 				})
 			},
 			async getDelegationTxs (pageNum, pageSize = 5) {
-				const res = await getDelegationTxsApi(this.$route.params.param, pageNum, pageSize, false)
-				this.delegationTxs.currentPage = res.pageNum
-				this.delegationTxs.items = []
-				for (const item of res.data) {
-					let msgsNumber = item.msgs ? item.msgs.length : 0, formTO;
-					let amount = '--'
-					if (item.msgs && item.msgs.length === 1) {
-						formTO = TxHelper.getFromAndToAddressFromMsg(item.msgs[0])
-						// amount = item.msgs[0].msg && item.msgs[0].msg.amount ? await converCoin(item.msgs[0].msg.amount) :'--'
-						amount = item.msgs[0] ? await getAmountByTx(item.msgs[0],item.events) : '--'
-					} else {
-						formTO = '--'
-					}
-					let fromMonikers,toMonikers
-					if(item.monikers.length) {
-						item.monikers.map( it => {
-							toMonikers = toMonikers|| it[formTO.to] || ''
-							fromMonikers = fromMonikers || it[formTO.from] || ''
+				this.isDelegationTxLoading = true
+				try {
+					const res = await getDelegationTxsApi(this.$route.params.param, pageNum, pageSize, false)
+					this.delegationTxs.currentPage = res.pageNum
+					this.delegationTxs.items = []
+					for (const item of res.data) {
+						let msgsNumber = item.msgs ? item.msgs.length : 0, formTO;
+						let amount = '--'
+						if (item.msgs && item.msgs.length === 1) {
+							formTO = TxHelper.getFromAndToAddressFromMsg(item.msgs[0])
+							// amount = item.msgs[0].msg && item.msgs[0].msg.amount ? await converCoin(item.msgs[0].msg.amount) :'--'
+							amount = item.msgs[0] ? await getAmountByTx(item.msgs[0],item.events) : '--'
+						} else {
+							formTO = '--'
+						}
+						if(msgsNumber > 1){
+							amount = ' '
+						}
+						let fromMonikers,toMonikers
+						if(item.monikers.length) {
+							item.monikers.map( it => {
+								toMonikers = toMonikers|| it[formTO.to] || ''
+								fromMonikers = fromMonikers || it[formTO.from] || ''
+							})
+						}
+						const time = Tools.getDisplayDate(item.time)
+						const fee =  this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) : ''
+						this.delegationTxs.items.push({
+							txHash: item.tx_hash,
+							blockHeight: item.height,
+							From: formTO.from || "--",
+							fromMonikers,
+							amount: amount,
+							To: formTO.to || '--',
+							toMonikers,
+							txType: (item.msgs || []).map(item=> item.type),
+							MsgsNum: msgsNumber,
+							// Tx_Fee: fee && fee.amount ? this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)} ${fee.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
+							Tx_Fee: fee && fee.amount ? `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
+							signer: item.signers[0] ? item.signers[0] : '--',
+							status: item.status,
+							Timestamp: time,
 						})
 					}
-					const time = Tools.getDisplayDate(item.time)
-					const fee =  this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) : ''
-					this.delegationTxs.items.push({
-						txHash: item.tx_hash,
-						blockHeight: item.height,
-						From: formTO.from || "--",
-						fromMonikers,
-						amount: amount,
-						To: formTO.to || '--',
-						toMonikers,
-						txType: (item.msgs || []).map(item=> item.type),
-						MsgsNum: msgsNumber,
-						// Tx_Fee: fee && fee.amount ? this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)} ${fee.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
-						Tx_Fee: fee && fee.amount ? `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
-						signer: item.signers[0] ? item.signers[0] : '--',
-						status: item.status,
-						Timestamp: time,
-					})
+					this.isDelegationTxLoading = false
+				}catch (e) {
+					this.isDelegationTxLoading = false
+					console.error(e)
 				}
+				
 			},
             async getDelegationTxsCount () {
 				const res = await getDelegationTxsApi(this.$route.params.param, null, null, true)
@@ -598,6 +629,7 @@
                 }	
 			},
 			async getDepositedProposals (pageNum, pageSize = 5, useCount = false) {
+				this.isDepositedLoading = true
 				try {
 					const res = await getDepositedProposalsApi(this.$route.params.param, pageNum, pageSize, useCount)
 					this.depositedProposals.items = []
@@ -624,11 +656,14 @@
                         }
                     }
 					}
+					this.isDepositedLoading = false
 				} catch(e) {
+					this.isDepositedLoading = false
 					console.error(e)
 				}
 			},
 			async getVotedProposals (pageNum, pageSize = 5, useCount = false) {
+				this.isVotedLoading = true
 				try {
 					const res = await getVotedProposalsApi(this.$route.params.param, pageNum, pageSize, useCount)
 					this.votedProposals.items = []
@@ -649,7 +684,9 @@
                         })
                     }
 					}
+					this.isVotedLoading = false
 				} catch(e) {
+					this.isVotedLoading = false
 					console.error(e)
 				}
 			},
@@ -783,9 +820,9 @@
 					}
 
 					.delegations_table_container {
-						overflow-x: auto;
+						//overflow-x: auto;
 						// border: 0.01rem solid $bd_first_c;
-						background: $bg_white_c;
+						//background: $bg_white_c;
 					}
 				}
 

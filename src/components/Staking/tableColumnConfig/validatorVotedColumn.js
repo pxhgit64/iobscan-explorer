@@ -15,7 +15,9 @@ export default [
         displayValue:'id',
         nativeValue:'id',
         isLink:true,
-        linkRoute:'/ProposalsDetail/'
+        linkRoute:'/ProposalsDetail/',
+        isShowIndex: true,
+        isAdjustStyle: true,
     },
     {
         label: i18n.t('ExplorerLang.table.title'),

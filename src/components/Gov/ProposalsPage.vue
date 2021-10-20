@@ -68,24 +68,7 @@
 						<span>{{ $t("ExplorerLang.gov.proposalsTitle") }}</span>
 <!--						<span>{{ count }} {{ $t("ExplorerLang.gov.proposals") }}</span>-->
 					</div>
-					<div class="icon_list">
-						<div>
-							<i style="margin-left: 0;"></i>
-							<span>{{ $t("ExplorerLang.gov.proposalOption.yes") }}</span>
-						</div>
-						<div>
-							<i style="background-color: #CCDCFF;"></i>
-							<span>{{ $t("ExplorerLang.gov.proposalOption.abstain") }}</span>
-						</div>
-						<div>
-							<i style="background-color: #FFCF65;"></i>
-							<span>{{ $t("ExplorerLang.gov.proposalOption.no") }}</span>
-						</div>
-						<div>
-							<i style="background-color: #FE8A8A;"></i>
-							<span>{{ $t("ExplorerLang.gov.proposalOption.noWithVeto") }}</span>
-						</div>
-					</div>
+					
 				</div>
 				<div class="proposals_list_table_content">
 					<list-component :empty-text="$t('ExplorerLang.table.emptyDescription')"
@@ -96,6 +79,9 @@
 									@pageChange="pageChange">
 						<template v-slot:txCount>
 							<tx-count-component :title="$t('ExplorerLang.gov.proposals')" :icon="'iconProposal'"  :tx-count="count"></tx-count-component>
+						</template>
+						<template v-slot:datePicket>
+							<proposal-legend-component></proposal-legend-component>
 						</template>
 					</list-component>
 				</div>
@@ -117,9 +103,11 @@ import productionConfig from '@/productionConfig.js';
 import ListComponent from "../common/ListComponent";
 import proposalColumn from "./govColumnConfig/proposalColumn";
 import TxCountComponent from "../TxCountComponent";
+import ProposalLegendComponent from "./ProposalLegendComponent";
 export default {
 	name: "",
 	components: {
+		ProposalLegendComponent,
 		TxCountComponent,
 		ListComponent,
 		MPagination,
@@ -604,39 +592,7 @@ a {
 					align-items: center;
 				}
 				
-				.icon_list {
-					display: flex;
-					padding: 0.30rem 0 0.16rem 0;
-					
-					div {
-						font-size: $s14;
-						color: $t_second_c;
-						display: flex;
-						align-items: center;
-						
-						i {
-							width: 0.12rem;
-							height: 0.12rem;
-							border-radius: 0.02rem;
-							display: inline-block;
-							margin-left: 0.5rem;
-							background-color: $theme_c;
-							vertical-align: middle;
-						}
-						
-						img {
-							width: 0.14rem;
-							height: 0.14rem;
-							margin-left: 0.5rem;
-							vertical-align: middle;
-						}
-						
-						span {
-							margin-left: 0.1rem;
-							vertical-align: middle;
-						}
-					}
-				}
+				
 			}
 			
 			.flex_right {
