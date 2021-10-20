@@ -2553,8 +2553,8 @@ a {
 					overflow-x: auto;
 					border-radius: 0.05rem;
 					// border: 0.01rem solid $bd_first_c;
-					min-height: 2.34rem;
-					background: $bg_white_c;
+					//min-height: 2.34rem;
+					//background: $bg_white_c;
 				}
 			}
 			

@@ -13,6 +13,7 @@
 			<div v-show="!isSetLoadingStatus" class="scroll_container" style="margin-bottom: 0.1rem">
 				<vue-scroll :ops="opsConfig">
 					<el-table
+						:class="isSmallTable ? 'small_style':''"
 						:row-class-name="listTableRowClassName"
 						:style="{width: `${tableWidth}`}"
 						v-if="!isLoading"
@@ -20,7 +21,6 @@
 						stripe
 						:empty-text="emptyText"
 						ref="listTable">
-						
 						<el-table-column
 							v-for="(item,index) in columns"
 							:key="item.label"
@@ -286,6 +286,10 @@ export default {
 		tableWidth: {
 			type: String,
 			default: 'auto'
+		},
+		isSmallTable:{
+			type:Boolean,
+			default: false
 		}
 	},
 	watch: {
@@ -305,7 +309,6 @@ export default {
 		},
 		listData: {
 			handler(newValue, oldValue) {
-				console.log(newValue,'数值展示')
 				this.tableList = newValue
 			},
 			deep: true
@@ -402,7 +405,6 @@ export default {
 			return url.startsWith('www.')
 		},
 		isShowDenomTip(denom) {
-			console.log(denom,"????")
 			if (denom) {
 				return false
 			}
@@ -584,15 +586,16 @@ export default {
 						clearInterval(listTableTimer)
 						//这里拿到的是 table 内容实际的占用空间 实际占用的空间小于 table 列表的宽度，需要为每一列设置一个补偿量，列表内容充满 table
 						this.tableListWidth = this.$adjustColumnWidth(this.$refs['listTable'].$el);
-						
 						if(this.tableListWidth?.length){
 							//计算出实际内容占用的空间
 							let practicalWidth = this.tableListWidth.reduce((totalWidth,currentWidth) => {
 								return totalWidth + currentWidth
 							})
+							// 由于某些情况如验证人列表的索引，所在那一列不需要进行补偿（如果补偿会造成那一列宽度过宽），所以需要进行二次补偿
 							let secondPracticalWidthCount = this.tableListWidth.filter(item => {
 								return item <= 40
 							})
+							
 							// 为每一列设置补偿量
 							if(practicalWidth < tableWidth && this?.columns?.length){
 								let compensationWidth = (tableWidth - practicalWidth) / this.columns.length
@@ -609,6 +612,9 @@ export default {
 									}
 								})
 							}
+						}
+						if(this.isSmallTable){
+							this.$refs['listTable'].$el.style.width = `550px`
 						}
 						this.isSetLoadingStatus = false
 					}
@@ -655,6 +661,21 @@ export default {
 			@media (max-width: 1150px) {
 			
 			}
+		}
+		::v-deep.small_style{
+			overflow: hidden !important;
+			.el-table__header{
+				width: 5.5rem !important;
+			}
+			.el-table__body{
+				width: 5.5rem !important;
+				tbody{
+					width: 5.5rem !important;
+				}
+			}
+		}
+		.el-table__header-wrapper{
+		
 		}
 		/*.denom_style{
 			margin-left: 0.1rem !important;
