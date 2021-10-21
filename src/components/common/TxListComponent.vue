@@ -299,7 +299,7 @@
                             this.txDataList.push({
                                     txHash : tx.tx_hash,
                                     blockHeight : tx.height,
-                                    txType :(tx.msgs || []).map(item=>this.TX_TYPE_DISPLAY[item.type] || item.type),
+                                    txType : (tx.msgs || []).map(item=>this.TX_TYPE_DISPLAY[item.type] || item.type),
                                     from,
                                     fromMonikers,
                                     toMonikers,

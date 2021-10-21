@@ -55,13 +55,13 @@ export default {
         background-color: $bg_white_c;
         &:nth-of-type(1) {
             border-right-width: 0;
-            border-top-left-radius: 1px;
-            border-bottom-left-radius: 1px;
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
         }
         &:last-child {
             border-left-width: 0;
-            border-top-right-radius: 1px;
-            border-bottom-right-radius: 1px;
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
         }
     }
     .active {

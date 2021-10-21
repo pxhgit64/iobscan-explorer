@@ -145,7 +145,7 @@ export function getTxList(params){
       url += `pageNum=${pageNum}&pageSize=${pageSize}`
     }
     if(useCount){
-        url += `useCount=${useCount}`;
+        url += `&useCount=${useCount}`;
     }
     if(txType){
         url += `&type=${txType}`;
@@ -623,7 +623,9 @@ export function fetchTokenRichList () {
     let url = `/statistics/accounts`;
     return get(url);
 }
-
-
+export function fetchAllTokens() {
+    const url=`/cosmos/bank/v1beta1/supply`
+    return getFromLcd(url);
+}
 
 

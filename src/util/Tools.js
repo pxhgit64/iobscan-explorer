@@ -70,7 +70,9 @@ export default class Tools {
       return `${str}`
     }
   }
-
+  static formatLocalTime(timestamp){
+      return moment(timestamp * 1000).format('YYYY-MM-DD HH:mm:ss')
+  }
   /**
 	 * 格式化hash
 	 * */

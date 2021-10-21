@@ -9,8 +9,9 @@ export class TxHelper {
             let { source_port, source_channel, destination_port, destination_channel, data } = ibc_package;
             let prefix_sc = `${source_port}/${source_channel}/`;
             let prefix_dc = `${destination_port}/${destination_channel}/`;
+
             let denom = data.denom;
-            if (type && type == TX_TYPE.timeout_packet) {
+            if (type && type == TX_TYPE.timeout_packet || type && type == TX_TYPE.acknowledge_packet ) {
                 if (denom.startsWith(prefix_sc)) {
                     denom_result = `ibc/${Tools.sha256(denom).toUpperCase()}`;
                 }else{
@@ -195,6 +196,8 @@ export class TxHelper {
             case TX_TYPE.burn_token:
                 res.from = msg.sender;
                 break;
+            case TX_TYPE.multisend:
+                res.from = msg.inputs && msg.inputs.length > 0 ? msg.inputs[0].address : '';
         }
         return res;
     }
@@ -273,6 +276,9 @@ export class TxHelper {
                     break;
                 case TX_TYPE.unjail:
                     operator = msg.address ? msg.address : '--'
+                    break;
+                case TX_TYPE.withdraw_validator_commission:
+                    operator = msg.validator_address || '--'
                     break;
                 default:
                     operator = '--'
@@ -915,7 +921,7 @@ export class TxHelper {
 
 			}
         });
-		allTxType.push(tansferObj,stakingObj,iServiceObj,nftObj,coinswapObj,identityObj,ibcObj,htlcObj,crossChainObj,oracleObj,randomObj,recordObj,assetObj,govObj,othersObj);
+		allTxType.push(tansferObj, nftObj, identityObj, ibcObj, stakingObj, coinswapObj, htlcObj, assetObj, govObj, oracleObj, randomObj, recordObj, iServiceObj,crossChainObj,othersObj);
         allTxType = allTxType.filter(item => item.children.length)
         return allTxType
     }

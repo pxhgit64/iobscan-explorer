@@ -6,6 +6,10 @@ import './theme/index.css';
 import '../icon/iconfont.css';
 import ElementUI from "element-ui";
 import 'element-ui/lib/theme-chalk/index.css';
+import vuescroll from 'vuescroll';
+import Vuebar from 'vuebar';
+import 'vue-happy-scroll/docs/happy-scroll.css'
+Vue.use(Vuebar);
 //日期选择器
 import lang from 'element-ui/lib/locale/lang/en';
 import locale from 'element-ui/lib/locale';
@@ -16,6 +20,7 @@ import VueI18n from 'vue-i18n';
 import prodConfig from "./productionConfig";
 import adjustColumnWidth from '@/helper/adjustColumnWidth';
 import {getMainToken} from "@/helper/IritaHelper";
+import 'spinkit/spinkit.css'
 
 Vue.prototype.$adjustColumnWidth = adjustColumnWidth;
 
@@ -25,7 +30,10 @@ Vue.use(directives);
 
 locale.use(prodConfig.lang === 'EN'? lang:zhLocale);
 Vue.use(ElementUI)
-
+Vue.use(vuescroll, {
+    ops: {}, // 在这里设置全局默认配置
+    name: 'vue-scroll' // 在这里自定义组件名字，默认是vueScroll
+});
 
 Vue.use(VueI18n)
 const i18n = new VueI18n({

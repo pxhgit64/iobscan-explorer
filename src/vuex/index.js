@@ -12,6 +12,8 @@ const store = new Vuex.Store({
             isMobile:false,
         },
         mainToken:'',
+        currentTxModelIndex:sessionStorage.getItem('lastChoiceMsgModelIndex') ? sessionStorage.getItem('lastChoiceMsgModelIndex') : 0,
+        isShowMsgChildrenType :false
     },
     mutations : {
         SET_TEMP_DENOM_ID(state, data){
@@ -25,6 +27,12 @@ const store = new Vuex.Store({
         },
         setMainToken(state, data){
             state.mainToken = data || '';
+        },
+        currentTxModelIndex(state, data){
+            state.currentTxModelIndex = data;
+        },
+        isShowMsgChildrenType(state, data){
+            state.isShowMsgChildrenType = data;
         }
     }
 });

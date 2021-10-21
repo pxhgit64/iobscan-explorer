@@ -2,19 +2,36 @@
   <div class="nft_list_container">
     <div class="nft_list_content_wrap">
       <div class="nft_list_header_content">
-        <h3 class="nft_list_header_title">{{allCount}} {{$t('ExplorerLang.nftAsset.assets')}}{{allCount>1 && isShowPlurality ? 's' : ''}}</h3>
-        <el-input v-model="input" @change="handleSearchClick" :placeholder="$t('ExplorerLang.nftAsset.placeHolder')"></el-input>
+        <h3 class="nft_list_header_title">{{$t('ExplorerLang.nftAsset.mainTitle')}}</h3>
+<!--        <el-input v-model="input" @change="handleSearchClick" :placeholder="$t('ExplorerLang.nftAsset.placeHolder')"></el-input>
         <div class="tx_type_mobile_content">
           <div class="search_btn" @click="handleSearchClick">{{$t('ExplorerLang.nftAsset.search')}}</div>
           <div class="reset_btn" @click="resetFilterCondition"><i class="iconfont iconzhongzhi"></i></div>
-        </div>
+        </div>-->
       </div>
       <div class="nef_list_table_container">
-        <el-table class="table table_overflow_x" :data="denomArray" :empty-text="$t('ExplorerLang.table.emptyDescription')" :default-sort="{ prop: 'Time', order: 'descending' }">
+		  <list-component
+		  	:is-loading="isNftListLoading"
+			:list-data="denomArray"
+			:column-list="nftListColumn"
+			:pagination="{pageSize:Number(pageSize),dataCount:allCount,pageNum:Number(currentPageNum)}"
+			@pageChange="pageChange"
+		  >
+			  <template v-slot:txCount>
+				  <tx-count-component :title="allCount > 1 && isShowPlurality ? $t('ExplorerLang.nftAsset.subTitles') : $t('ExplorerLang.nftAsset.subTitle')" :icon="'iconNFT'" :tx-count="allCount"></tx-count-component>
+			  </template>
+			  <template v-slot:datePicket>
+				  <nft-search-component
+					  :input-placeholder="$t('ExplorerLang.nftAsset.placeHolder')"
+					  @searchInput="handleSearchClick"
+					  @resetFilterCondition="resetFilterCondition"></nft-search-component>
+			  </template>
+		  </list-component>
+<!--        <el-table class="table table_overflow_x" :data="denomArray" :empty-text="$t('ExplorerLang.table.emptyDescription')" :default-sort="{ prop: 'Time', order: 'descending' }">
           <el-table-column :min-width="ColumnMinWidth.tokenId" :label="$t('ExplorerLang.table.tokenId')">
             <template slot-scope="scope">
               <el-tooltip :content="scope.row.nft_id" placement="top" effect="dark" :disabled="Tools.disabled(scope.row.nft_id)">
-                <router-link v-if="formatAddress(scope.row.nft_id) !== '--'" :to="`/nft/token?denom=${scope.row.denom_id}&&tokenId=${scope.row.nft_id}`">{{formatAddress(scope.row.nft_id)}}</router-link>
+                <router-link v-if="formatAddress(scope.row.nft_id) !== '&#45;&#45;'" :to="`/nft/token?denom=${scope.row.denom_id}&&tokenId=${scope.row.nft_id}`">{{formatAddress(scope.row.nft_id)}}</router-link>
                 <span v-else>{{formatAddress(scope.row.nft_id)}}</span>
               </el-tooltip>
             </template>
@@ -22,7 +39,7 @@
           <el-table-column :min-width="ColumnMinWidth.tokenId" :label="$t('ExplorerLang.table.tokenName')">
             <template slot-scope="scope">
               <el-tooltip :content="scope.row.nft_name" placement="top" effect="dark" :disabled="Tools.disabled(scope.row.nft_name)">
-                <router-link v-if="formatAddress(scope.row.nft_name) !== '--'" :to="`/nft/token?denom=${scope.row.denom_id}&&tokenId=${scope.row.nft_id}`">{{formatAddress(scope.row.nft_name)}}</router-link>
+                <router-link v-if="formatAddress(scope.row.nft_name) !== '&#45;&#45;'" :to="`/nft/token?denom=${scope.row.denom_id}&&tokenId=${scope.row.nft_id}`">{{formatAddress(scope.row.nft_name)}}</router-link>
                 <span v-else>{{formatAddress(scope.row.nft_name)}}</span>
               </el-tooltip>
             </template>
@@ -40,12 +57,12 @@
               </el-tooltip>
             </template>
           </el-table-column>
-          <!-- <el-table-column :min-width="ColumnMinWidth.nftListDate" :label="$t('ExplorerLang.table.data')" prop="tokenData">
+          &lt;!&ndash; <el-table-column :min-width="ColumnMinWidth.nftListDate" :label="$t('ExplorerLang.table.data')" prop="tokenData">
 						<template slot-scope="scope">
 							<LargeString :key="scope.row.tokenData" v-if="scope.row.tokenData" :text="scope.row.tokenData"  mode="cell" textWidth="300px" :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight" />
-							<span v-else>--</span>
+							<span v-else>&#45;&#45;</span>
 						</template>
-					</el-table-column> -->
+					</el-table-column> &ndash;&gt;
           <el-table-column :min-width="ColumnMinWidth.URI" :label="$t('ExplorerLang.table.uri')" prop="tokenUri">
             <template slot-scope="scope">
               <div v-if="scope.row.tokenUri">
@@ -53,7 +70,7 @@
                 <a v-else-if="startStr(scope.row.tokenUri)" :href="'http://' + scope.row.tokenUri" target="_blank">{{scope.row.tokenUri}}</a>
                 <span v-else>{{scope.row.tokenUri}}</span>
               </div>
-              <span v-else>--</span>
+              <span v-else>&#45;&#45;</span>
             </template>
           </el-table-column>
           <el-table-column :width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.timestamp')" prop="last_block_time">
@@ -61,14 +78,14 @@
               <span>{{scope.row.last_block_time}}</span>
             </template>
           </el-table-column>
-        </el-table>
+        </el-table>-->
       </div>
-      <div class="pagination_content">
+<!--      <div class="pagination_content">
         <keep-alive>
           <m-pagination :page-size="pageSize" :total="allCount" :page="currentPageNum" :page-change="pageChange">
           </m-pagination>
         </keep-alive>
-      </div>
+      </div>-->
     </div>
   </div>
 </template>
@@ -81,10 +98,13 @@ import { ColumnMinWidth } from '../constant'
 import LargeString from './common/LargeString'
 import productionConfig from '@/productionConfig.js'
 import parseTimeMixin from '../mixins/parseTime'
-
+import ListComponent from "./common/ListComponent";
+import nftListColumn from "./tableListColumnConfig/nftListColumn";
+import TxCountComponent from "./TxCountComponent";
+import NftSearchComponent from "./common/NftSearchComponent";
 export default {
   name: 'NftList',
-  components: { MPagination, LargeString },
+  components: {NftSearchComponent, TxCountComponent, ListComponent, MPagination, LargeString },
   mixins: [parseTimeMixin],
   data() {
     let denom = ''
@@ -92,12 +112,13 @@ export default {
       denom = this.$store.state.tempDenomId
     }
     return {
+		isNftListLoading:false,
+		nftListColumn: [],
       ColumnMinWidth,
-      Tools,
       denomArray: [],
       denom,
       currentPageNum: 1,
-      pageSize: 20,
+      pageSize: 10,
       tokenId: '',
       owner: '',
       input: '',
@@ -108,6 +129,7 @@ export default {
     }
   },
   mounted() {
+  	this.nftListColumn = nftListColumn
     this.getNftsByFilterCount()
     this.getNftsByFilter()
     if (this.$store.state.tempDenomId) {
@@ -142,18 +164,21 @@ export default {
       // }
       this.getNftsByFilter()
     },
-    handleSearchClick() {
+    handleSearchClick(input) {
+		this.owner = input
       this.currentPageNum = 1
       this.getNftsByFilterCount()
       this.getNftsByFilter()
     },
     async getNftsByFilter() {
+
       if (Tools.isBech32(this.input)) {
         this.owner = this.input
       }
       if (!this.owner) {
         this.tokenId = this.input
       }
+		this.isNftListLoading = true
       try {
         let nftData = await getNfts(
           this.currentPageNum,
@@ -166,23 +191,29 @@ export default {
         if (nftData?.data.length > 0) {
           nftData.data.forEach((item) => {
             item.Time = item.last_block_time ? item.last_block_time : ''
-            item.last_block_time = item.last_block_time
+            /*item.last_block_time = item.last_block_time
               ? Tools.formatAge(
                   Tools.getTimestamp(),
                   item.last_block_time * 1000,
                   this.$t('ExplorerLang.table.suffix')
                 )
               : '--'
-          })
+          })*/
+			  item.last_block_time = item.last_block_time
+				  ? Tools.formatLocalTime(item.last_block_time )
+				  : '--'
+		  })
           this.denomArray = nftData.data
           /**
            * @description: from parseTimeMixin
            */
-          this.parseTime('denomArray', 'Time', 'last_block_time')
+          // this.parseTime('denomArray', 'Time', 'last_block_time')
         } else {
           this.denomArray = []
         }
+		  this.isNftListLoading = false
       } catch (e) {
+		  this.isNftListLoading = false
         console.error(e)
       }
     },
@@ -330,7 +361,7 @@ a {
     padding: 0 0.15rem;
     .nft_list_header_content {
       width: 100%;
-      margin: 0.3rem 0 0.16rem 0;
+      margin: 0.4rem 0 0.1rem 0;
       .el-select {
         ::v-deep .el-input {
           .el-input__inner {
@@ -354,7 +385,7 @@ a {
         }
       }
       .nft_list_header_title {
-        font-size: $s18;
+        font-size: $s22;
         color: $t_first_c;
         line-height: 0.21rem;
         text-align: left;
