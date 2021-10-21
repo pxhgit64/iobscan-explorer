@@ -853,7 +853,6 @@ export default {
 								serviceName = msg.msg.service_name
 							}
 							if(msg?.type=== TX_TYPE.update_request_context && msg?.msg?.ex && msg?.msg?.ex?.service_name){
-								console.log('这里执行了几次')
 								serviceName = msg.msg.ex.service_name
 							}
 						}
