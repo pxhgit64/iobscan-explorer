@@ -467,105 +467,73 @@ export default {
 			try {
 				//这里处理方式需要优化
 				if (this.txData && this.txData.length) {
-					let fees = [],
-						amounts = [],
-						numberOfTo = '--',
-						numberOfToArr = [],
-						requestId= '--',
-						requestIdArr= [],
-						denomId = '--',
-						denomIdArr = [],
-						denomName = '--',
-						denomNameArr= [],
-						nftId='--',
-						nftIdArr = [],
-						feedName='--',
-						feedNameArr = [],
-						oracleCreator = '--',
-						oracleCreatorArr = [],
-						consumer = '--',
-						consumerArr = [],
-						digest='--',
-						digestArr = [],
-						digest_algo ='--',
-						digest_algoArr = [],
-						symbol='--',
-						symbolArr = [],
-						minUnit='--',
-						minUnitArr = [],
-						owner='--',
-						ownerArr = [],
-						dstOwner = '--',
-						dstOwnerArr = [],
-						srcOwner = '--',
-						srcOwnerArr = [],
-						sender = '--',
-						senderArr = [],
-						proposalId = '--',
-						proposalIdArr = [],
-						option='--',
-						optionArr = [],
-						voter='--',
-						voterArr = [],
-						depositor='--',
-						depositorArr=[],
-						title='--',
-						author = '--',
-						authorArr = [],
-						provider = '--',
-						providerArr = [],
-						requestContextId='--',
-						requestContextIdArr = [],
-						serviceName='--',
-						serviceNameArr = [],
-						clientId = '--',
-						clientIdArr= [],
-						portId = '--',
-						portIdArr =[],
-						channelId='--',
-						channelIdArr = [],
-						connectionId='--',
-						connectionIdArr = [],
-						receiver='--',
-						receiverArr = [],
-						sameMsg = [],
-						sameMsgFromAddrArr = [],
-						sameMsgToAddrArr = []
-					;
+					let fees = [],amounts = [];
 					for (const tx of this.txData) {
-						let msg;
-						portIdArr =[];
-						channelIdArr = [];
-						connectionIdArr = [];
-						receiverArr = [];
-						sameMsg = [];
-						sameMsgFromAddrArr = [];
-						sameMsgToAddrArr = [];
-						numberOfToArr = [];
-						requestIdArr = [];
-						denomIdArr = [];
-						nftIdArr = [];
-						feedNameArr = [];
-						clientIdArr= [];
-						denomNameArr = [];
-						oracleCreatorArr = [];
-						consumerArr = [];
-						digestArr = [];
-						digest_algoArr = [];
-						symbolArr = [];
-						minUnitArr = [];
-						ownerArr = [];
-						dstOwnerArr = [];
-						srcOwnerArr = [];
-						senderArr = [];
-						proposalIdArr = [];
-						optionArr = [];
-						voterArr = [];
-						depositorArr=[];
-						authorArr = [];
-						providerArr = [];
-						requestContextIdArr = [];
-						serviceNameArr = [];
+						let numberOfTo = '--',
+							numberOfToArr = [],
+							requestId= '--',
+							requestIdArr= [],
+							denomId = '--',
+							denomIdArr = [],
+							denomName = '--',
+							denomNameArr= [],
+							nftId='--',
+							nftIdArr = [],
+							feedName='--',
+							feedNameArr = [],
+							oracleCreator = '--',
+							oracleCreatorArr = [],
+							consumer = '--',
+							consumerArr = [],
+							digest='--',
+							digestArr = [],
+							digest_algo ='--',
+							digest_algoArr = [],
+							symbol='--',
+							symbolArr = [],
+							minUnit='--',
+							minUnitArr = [],
+							owner='--',
+							ownerArr = [],
+							dstOwner = '--',
+							dstOwnerArr = [],
+							srcOwner = '--',
+							srcOwnerArr = [],
+							sender = '--',
+							senderArr = [],
+							proposalId = '--',
+							proposalIdArr = [],
+							option='--',
+							optionArr = [],
+							voter='--',
+							voterArr = [],
+							depositor='--',
+							depositorArr=[],
+							title='--',
+							author = '--',
+							authorArr = [],
+							provider = '--',
+							providerArr = [],
+							requestContextId='--',
+							requestContextIdArr = [],
+							serviceName='--',
+							
+							serviceNameArr = [],
+							clientId = '--',
+							clientIdArr= [],
+							portId = '--',
+							portIdArr =[],
+							channelId='--',
+							channelIdArr = [],
+							connectionId='--',
+							connectionIdArr = [],
+							receiver='--',
+							receiverArr = [],
+							sameMsg = [],
+							sameMsgFromAddrArr = [],
+							sameMsgToAddrArr = [],
+							msg
+						;
 						if (tx.msgs.length > 0) {
 							let recvPacketItem = tx.msgs.find((m) => {
 								if (m.type === TX_TYPE.recv_packet || m.type === TX_TYPE.transfer || m.type === TX_TYPE.timeout_packet) {
@@ -885,6 +853,7 @@ export default {
 								serviceName = msg.msg.service_name
 							}
 							if(msg?.type=== TX_TYPE.update_request_context && msg?.msg?.ex && msg?.msg?.ex?.service_name){
+								console.log('这里执行了几次')
 								serviceName = msg.msg.ex.service_name
 							}
 						}
