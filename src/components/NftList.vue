@@ -20,11 +20,13 @@
 			  <template v-slot:txCount>
 				  <tx-count-component :title="allCount > 1 && isShowPlurality ? $t('ExplorerLang.nftAsset.subTitles') : $t('ExplorerLang.nftAsset.subTitle')" :icon="'iconNFT'" :tx-count="allCount"></tx-count-component>
 			  </template>
+			  <template v-slot:resetButton>
+				  <nft-reset-button-component @resetFilterCondition="resetFilterCondition"></nft-reset-button-component>
+			  </template>
 			  <template v-slot:datePicket>
 				  <nft-search-component
 					  :input-placeholder="$t('ExplorerLang.nftAsset.placeHolder')"
-					  @searchInput="handleSearchClick"
-					  @resetFilterCondition="resetFilterCondition"></nft-search-component>
+					  @searchInput="handleSearchClick" ref="searchNft"></nft-search-component>
 			  </template>
 		  </list-component>
 <!--        <el-table class="table table_overflow_x" :data="denomArray" :empty-text="$t('ExplorerLang.table.emptyDescription')" :default-sort="{ prop: 'Time', order: 'descending' }">
@@ -102,9 +104,10 @@ import ListComponent from "./common/ListComponent";
 import nftListColumn from "./tableListColumnConfig/nftListColumn";
 import TxCountComponent from "./TxCountComponent";
 import NftSearchComponent from "./common/NftSearchComponent";
+import NftResetButtonComponent from "./common/NftResetButtonComponent";
 export default {
   name: 'NftList',
-  components: {NftSearchComponent, TxCountComponent, ListComponent, MPagination, LargeString },
+  components: {NftResetButtonComponent, NftSearchComponent, TxCountComponent, ListComponent, MPagination, LargeString },
   mixins: [parseTimeMixin],
   data() {
     let denom = ''
@@ -154,6 +157,7 @@ export default {
       this.currentPageNum = 1
       this.tokenId = ''
       this.owner = ''
+		this.$refs.searchNft.resetFilterCondition()
       this.getNftsByFilterCount()
       this.getNftsByFilter()
     },
@@ -202,6 +206,7 @@ export default {
 			  item.last_block_time = item.last_block_time
 				  ? Tools.formatLocalTime(item.last_block_time )
 				  : '--'
+			  item.tokenUri = item.tokenUri ? item.tokenUri : '--'
 		  })
           this.denomArray = nftData.data
           /**

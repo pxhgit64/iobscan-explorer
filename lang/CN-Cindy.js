@@ -217,6 +217,7 @@ export const ExplorerLang = {
         validatorSet:'Validator Set'
     },
     transactions:{
+        title:'交易',
         txs: '交易',
         search: '搜索',
         status: '交易状态',

@@ -224,6 +224,7 @@ export const ExplorerLang = {
         validatorSet: 'Validator Set'
     },
     transactions:{
+        title:'Transactions',
         txs: 'Txs',
         search: 'Search',
         status: ' Status',

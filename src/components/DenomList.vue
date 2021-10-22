@@ -27,11 +27,13 @@
           <template v-slot:txCount>
             <tx-count-component :title="count > 1 && isShowPlurality ? $t('ExplorerLang.denom.subTitles') : $t('ExplorerLang.denom.subTitle')" :icon="'iconDenom'" :tx-count="count"></tx-count-component>
           </template>
+			<template v-slot:resetButton>
+				<nft-reset-button-component @resetFilterCondition="resetFilterCondition"></nft-reset-button-component>
+			</template>
           <template v-slot:datePicket>
               <nft-search-component
                   :input-placeholder="$t('ExplorerLang.denom.placeHolder')"
-                  @searchInput="handleSearchClick"
-                  @resetFilterCondition="resetFilterCondition"></nft-search-component>
+                  @searchInput="handleSearchClick" ref="denomSearchNode"></nft-search-component>
           </template>
         </list-component>
        <!-- <el-table class="table table_overflow_x" :data="denomList" :empty-text="$t('ExplorerLang.table.emptyDescription')">
@@ -98,9 +100,10 @@ import ListComponent from "./common/ListComponent";//新增
 import denomListColumnConfig from "./tableListColumnConfig/denomListColumnConfig";
 import TxCountComponent from "./TxCountComponent";
 import NftSearchComponent from "./common/NftSearchComponent";
+import NftResetButtonComponent from "./common/NftResetButtonComponent";
 export default {
   name: "DenomList",
-  components: {NftSearchComponent, MPagination,ListComponent,TxCountComponent },//新增
+  components: {NftResetButtonComponent, NftSearchComponent, MPagination,ListComponent,TxCountComponent },//新增
   mixins: [parseTimeMixin],
   data() {
     return {
@@ -132,6 +135,7 @@ export default {
       this.pageNum = 1;
       this.getDenomsCount();
       this.getDenoms();
+      this.$refs.denomSearchNode.resetFilterCondition()
     },
     handleNftCountClick(denomId) {
       this.$router.push(`/nftAsset?denomId=${denomId}`);
