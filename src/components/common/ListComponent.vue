@@ -94,7 +94,7 @@
 										   :href="'http://' + scope.row[item.displayValue]"
 										   target="_blank">{{ scope.row[item.displayValue] }}</a>
 										
-										<span class="route_link_style" v-else>{{ scope.row[item.displayValue] }}</span>
+										<span v-else>{{ scope.row[item.displayValue] }}</span>
 										
 									</span>
 <!--									-->
@@ -766,6 +766,7 @@ export default {
 		}
 		
 		.tag_style {
+			font-size: 0.14rem !important;
 			background: $tag_c !important;
 			border: none;
 			color: $theme_c !important;
@@ -785,7 +786,7 @@ export default {
 		.tag_num {
 			color: $theme_c !important;
 			margin-left: 0.06rem;
-			font-size: 0.14rem;
+			font-size: 0.12rem;
 		}
 		::v-deep.el-table{
 			.caret-wrapper{
@@ -868,5 +869,6 @@ export default {
 }
 a{
 	white-space: nowrap;
+	color: $theme_c !important;
 }
 </style>

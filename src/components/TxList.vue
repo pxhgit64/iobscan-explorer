@@ -2,7 +2,7 @@
 	<div class="tx_content_container">
 		<div class="tx_content_wrap">
 			<div class="tx_content_header_title">
-				<p class="tc_content_header">{{$t('ExplorerLang.transactions.txs')}}</p>
+				<p class="tc_content_header">{{$t('ExplorerLang.transactions.title')}}</p>
 			</div>
 			<list-component
 				:tableWidth="'11.5rem'"
