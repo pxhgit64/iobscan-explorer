@@ -149,7 +149,7 @@ export const ExplorerLang = {
         voter: 'Voter',
         voteOption: 'Vote Option',
         proposalType: 'Proposal_Type',
-        proposalID: 'Proposal_ID',
+        proposalID: 'Proposal ID',
         proposalTitle: 'Proposal_Title',
         proposer: 'Proposer',
         submited: 'Submited',
