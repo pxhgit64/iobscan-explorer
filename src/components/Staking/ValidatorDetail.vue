@@ -317,6 +317,7 @@
 	import validatorValidationColumn from "./tableColumnConfig/validatorValidationColumn";
 	import validatorVotedColumn from "./tableColumnConfig/validatorVotedColumn";
 	import validatorGovColumn from "./tableColumnConfig/validatorGovColumn";
+	import validatorDetailDepositedProposal from "./tableColumnConfig/validatorDetailDepositedProposal";
 	export default {
 		name: '',
 		components: {
@@ -418,6 +419,7 @@
 			this.validationTxColumn = validatorValidationColumn
 			this.votedColumn = validatorVotedColumn
 			this.govTxColumn = validatorGovColumn
+			this.depositedColumn=validatorDetailDepositedProposal
 			this.setMainToken();
 		},
 		methods: {
