@@ -169,7 +169,7 @@ export default {
       this.getNftsByFilter()
     },
     handleSearchClick(input) {
-		this.owner = input
+		this.input = input
       this.currentPageNum = 1
       this.getNftsByFilterCount()
       this.getNftsByFilter()
