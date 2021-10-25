@@ -305,6 +305,7 @@ export default {
 					slot: 'allTxType',
 				});
 				this.txTypeOption = typeList;
+				sessionStorage.setItem('typeList',JSON.stringify(typeList))
 				this.txTypeArray = TxHelper.getTxTypeArray(this.txTypeOption, this.txType)
 			} catch (e) {
 				console.error(e);
