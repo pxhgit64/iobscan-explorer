@@ -883,6 +883,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
+            linkRoute:'/address/',
         }
     ],
     timeout_packet: [
