@@ -482,7 +482,10 @@ export default {
 		},
 		formatStr(str) {
 			if (str && Array.isArray(str)) {
-				const {txType} = Tools.urlParser();
+				let {txType} = Tools.urlParser();
+				if(!txType){
+					txType = sessionStorage.getItem('currentChoiceMsgType') ? sessionStorage.getItem('currentChoiceMsgType'):undefined;
+				}
 				let msgTxTypeIndex = 0, tmp = str[0]
 				str.forEach((item, index) => {
 					if (txType && item === txType) {
