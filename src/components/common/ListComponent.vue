@@ -325,10 +325,10 @@ export default {
 		},
 		pagination: {
 			handler(newValue, oldValue) {
-				if (JSON.stringify(newValue) !== '{}') {
-					this.pageNum = newValue.pageNum
-					this.pageSize = newValue.pageSize
-					this.dataCount = newValue.dataCount
+				if (JSON.stringify(this.pagination) !== '{}') {
+					this.pageNum = this.pagination.pageNum
+					this.pageSize = this.pagination.pageSize
+					this.dataCount = this.pagination.dataCount
 				}
 				this.getTableWidth()
 			},
@@ -623,6 +623,11 @@ export default {
 		}
 	},
 	mounted() {
+		if (JSON.stringify(this.pagination) !== '{}') {
+			this.pageNum = this.pagination.pageNum
+			this.pageSize = this.pagination.pageSize
+			this.dataCount = this.pagination.dataCount
+		}
 		window.addEventListener("resize", this.refWidth,true);
 		this.columns = []
 		this.columns = this.columnList
