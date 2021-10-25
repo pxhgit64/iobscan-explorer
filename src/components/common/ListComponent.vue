@@ -324,12 +324,12 @@ export default {
 			deep: true
 		},
 		pagination: {
-			handler(newValue, oldValue) {
-				if (JSON.stringify(this.pagination) !== '{}') {
-					this.pageNum = this.pagination.pageNum
-					this.pageSize = this.pagination.pageSize
-					this.dataCount = this.pagination.dataCount
-				}
+				handler(newValue, oldValue) {
+					if (JSON.stringify(newValue) !== '{}') {
+						this.pageNum = newValue.pageNum
+						this.pageSize = newValue.pageSize
+						this.dataCount = newValue.dataCount
+					}
 				this.getTableWidth()
 			},
 			deep: true
