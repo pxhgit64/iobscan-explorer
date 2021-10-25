@@ -1171,21 +1171,13 @@ export default {
 					for (const tx of this.txList) {
 						let msg;
 						if (tx.msgs.length > 0) {
-							let recvPacketItem = tx.msgs.find((m) => {
-								if (m.type === TX_TYPE.recv_packet || m.type === TX_TYPE.transfer || m.type === TX_TYPE.timeout_packet) {
-									return true;
+							tx.msgs.forEach(item => {
+								if(item.type === msgType){
+									sameMsg.push(item)
+									msg=item
 								}
-							});
-							if (recvPacketItem) {
-								msg = recvPacketItem;
-							} else {
-								tx.msgs.forEach(item => {
-									if (item.type === msgType) {
-										msg = item
-									}
-								})
-								
-							}
+							})
+
 						}
 						if (msg?.type === TX_TYPE.multisend && msg?.msg?.outputs?.length) {
 							numberOfTo = msg.msg.outputs.length
