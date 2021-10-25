@@ -107,6 +107,24 @@ export default {
 		}
 	},
 	mounted() {
+		const {txType} = Tools.urlParser();
+		let typeListData = null
+		if(sessionStorage.getItem('typeList')){
+			typeListData = JSON.parse(sessionStorage.getItem('typeList')) || null
+		}
+		if(typeListData?.length){
+			typeListData.forEach( (item,index) =>{
+				if(item.children && txType){
+					item.children.forEach( item =>{
+						if(item.value === txType){
+							sessionStorage.setItem('lastChoiceMsgModelIndex',index)
+							this.$store.commit('currentTxModelIndex',index)
+						}
+					})
+				}
+			})
+		}
+		
 		this.setTagContentHeight()
 		window.addEventListener("resize", this.windowResizeFunc,true);
 		

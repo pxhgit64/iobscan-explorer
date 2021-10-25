@@ -124,6 +124,7 @@ router.beforeEach((to,from,next) => {
 		sessionStorage.removeItem('txTimeRange')
 		sessionStorage.removeItem('currentChoiceMsgType')
 		sessionStorage.removeItem('currentTxModelIndex')
+		sessionStorage.removeItem('lastChoiceMsgModelIndex')
 	}
 	if(to.path !== '/txs/delegations'){
 		sessionStorage.removeItem('selectMsgTypeIndex')
