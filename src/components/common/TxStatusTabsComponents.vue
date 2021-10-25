@@ -189,6 +189,7 @@ export default {
 			}
 			::v-deep.el-date-editor {
 				border-radius: 0.08rem;
+				border-color: #e7eaf3;
 			}
 		}
 		.tooltip_content {

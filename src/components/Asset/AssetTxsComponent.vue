@@ -537,6 +537,7 @@ export default {
       	this.isTransferTokenLoading = true
       try {
         let { count } = await this.getNativeAssets(null, null, true, TX_TYPE.transfer_token_owner,this.symbol)
+		  console.log(count,"这里的数据是啥")
         this.transferTokenTotalPageNum = count ? count : 0
         let res = await this.getNativeAssets(this.transferTokenCurrentPageNum, this.pageSize, false, TX_TYPE.transfer_token_owner,this.symbol)
         let result = res && res.data ? res.data : null
