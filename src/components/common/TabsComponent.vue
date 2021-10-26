@@ -33,6 +33,7 @@
 
 <script>
 import {TX_TYPE_DISPLAY} from "../../constant";
+import Tools from "../../util/Tools";
 export default {
 	name: "TabsComponent",
 	data() {
