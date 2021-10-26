@@ -162,7 +162,7 @@
 <!--									-->
 									<span v-else :class="item.isWrap ? 'wrap_style' : ''">
 										{{ scope.row[item.displayValue] === 0 || scope.row[item.displayValue] === '0' ? 0 : scope.row[item.displayValue] || '--' }}</span>
-									
+										
 								</el-tooltip>
 							</template>
 						</el-table-column>
@@ -309,6 +309,7 @@ export default {
 		},
 		listData: {
 			handler(newValue, oldValue) {
+				console.log(newValue,"服了")
 				this.tableList = newValue
 			},
 			deep: true
@@ -414,20 +415,20 @@ export default {
 			this.$emit('pageChange', pageNum)
 		},
 		getAmount(amount) {
-			if (!amount || amount === ' ' || amount === '-') {
+			if (amount === ' ' || amount === '-') {
 				return " ";
 			}
-			if (amount === '--') {
+			if (amount === '--' || !amount) {
 				return '--'
 			}
 			let denomRule = /[0-9.]+/
 			return amount.match(denomRule)[0] ;
 		},
 		getAmountUnit(amount) {
-			if (!amount || amount === ' ' || amount === '-') {
+			if (amount === ' ' || amount === '-') {
 				return "";
 			}
-			if (amount === '--') {
+			if (amount === '--' || !amount  ) {
 				return ''
 			}
 			let denomRule = /[A-Za-z\/]+/
