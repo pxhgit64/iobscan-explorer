@@ -105,7 +105,7 @@
 										<el-tooltip :manual="isShowDenomTip( scope.row && scope.row.denomTheme && scope.row.denomTheme.tooltipContent ? scope.row.denomTheme.tooltipContent  :'')"
 													:content="scope.row && scope.row.denomTheme && scope.row.denomTheme.tooltipContent ? scope.row.denomTheme.tooltipContent  :''" placement="top">
 											
-											<span class="denom_style" :style="{ color: scope.row && scope.row.denomTheme && scope.row.denomTheme.denomColor ? scope.row.denomTheme.denomColor : '' }">{{getAmountUnit(scope.row[item.displayValue]) }}</span>
+											<span class="denom_style" :style="{ color: scope.row && scope.row.denomTheme && scope.row.denomTheme.denomColor ? scope.row.denomTheme.denomColor : '' }"> {{getAmountUnit(scope.row[item.displayValue]) }}</span>
 											
 										</el-tooltip>
 										
@@ -685,9 +685,12 @@ export default {
 		.el-table__header-wrapper{
 		
 		}
-		/*.denom_style{
-			margin-left: 0.1rem !important;
-		}*/
+		.denom_style{
+			width: 0.5rem;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
 		.list_component_footer {
 			display: flex;
 			justify-content: space-between;
@@ -797,6 +800,14 @@ export default {
 			font-size: 0.12rem;
 		}
 		::v-deep.el-table{
+			/*tbody{
+				tr{
+					td{
+						padding: 0.07rem 0 !important;
+					}
+					
+				}
+			}*/
 			.caret-wrapper{
 				box-sizing: border-box;
 				top:0.02rem;
@@ -849,10 +860,11 @@ export default {
 			}
 			.right_style{
 				flex: 1;
-				display: grid;
-				grid-template-columns: 1fr 1fr;
-				grid-column-gap: 0.05rem;
+				display: flex;
+				justify-content: space-between;
 				span:first-child{
+					flex: 1;
+					margin-right: 0.1rem;
 					text-align: right;
 				}
 			}
