@@ -19,7 +19,7 @@
 								<tx-count-component :icon="'iconBlockchain'"
 													:title="$t('ExplorerLang.block.currentHeight')"
 													:isLink="true"
-													:linkRoute="'/block/'"
+													:linkRoute="'/block'"
 													:tx-count="latestBlockHeight"></tx-count-component>
 							</template>
 						</list-component>
