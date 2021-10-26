@@ -309,7 +309,6 @@ export default {
 		},
 		listData: {
 			handler(newValue, oldValue) {
-				console.log(newValue,"服了")
 				this.tableList = newValue
 			},
 			deep: true
