@@ -124,8 +124,8 @@ export const TX_TYPE = {
   tibc_nft_transfer:'tibc_nft_transfer',
   tibc_recv_packet:'tibc_recv_packet',
   tibc_acknowledge_packet:'tibc_acknowledge_packet',
-  tibc_clean_packet:'tibc_clean_packet',
-  tibc_recv_clean_packet:'tibc_recv_clean_packet',
+  clean_packet:'clean_packet',
+  recv_clean_packet:'recv_clean_packet',
   tibc_update_client:'tibc_update_client',
 
 }
@@ -243,8 +243,8 @@ export const TX_TYPE_DISPLAY = {
   tibc_nft_transfer:'TIBC NFT Transfer Out',
   tibc_recv_packet:'TIBC NFT Transfer In',
   tibc_acknowledge_packet:'TIBC Acknowledge Packet',
-  tibc_clean_packet:'TIBC Clean Packet Out',
-  tibc_recv_clean_packet:'TIBC Clean Packet In',
+  clean_packet:'TIBC Clean Packet Out',
+  recv_clean_packet:'TIBC Clean Packet In',
   tibc_update_client:'TIBC Update Client',
 }
 

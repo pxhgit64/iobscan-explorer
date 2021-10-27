@@ -718,13 +718,13 @@ export default {
 									dest_chainArr.push(msg.msg.dest_chain)
 
 								}
-								if (msg?.type === TX_TYPE.tibc_clean_packet && msg?.msg?.sequence && msg?.msg?.source_chain && msg?.msg?.signer) {
+								if (msg?.type === TX_TYPE.clean_packet && msg?.msg?.sequence && msg?.msg?.source_chain && msg?.msg?.signer) {
 									sequenceArr.push(msg.msg.sequence)
 									source_chainArr.push(msg.msg.source_chain)
 									signers.push(msg.msg.signer)
 
 								}
-								if (msg?.type === TX_TYPE.tibc_recv_clean_packet && msg?.msg?.signer) {
+								if (msg?.type === TX_TYPE.recv_clean_packet && msg?.msg?.signer) {
 									signers.push(msg.msg.signer)
 
 								}
@@ -929,9 +929,9 @@ export default {
 								&& msg?.msg?.dest_chain) {
 								dest_chain = msg.msg.dest_chain
 							}
-							if (msg?.type === TX_TYPE.tibc_recv_clean_packet
+							if (msg?.type === TX_TYPE.recv_clean_packet
 								|| msg?.type === TX_TYPE.tibc_update_client
-								|| msg?.type === TX_TYPE.tibc_clean_packet
+								|| msg?.type === TX_TYPE.clean_packet
 								&& msg?.msg?.signer) {
 								signer = msg.msg.signer
 
@@ -942,7 +942,7 @@ export default {
 								receiver = msg.msg.receiver
 							}
 							if(msg?.type ===TX_TYPE.tibc_recv_packet
-								||msg?.type === TX_TYPE.tibc_clean_packet
+								||msg?.type === TX_TYPE.clean_packet
 								&& msg?.msg?.source_chain){
 								source_chain = msg.msg.source_chain
 							}
@@ -962,7 +962,7 @@ export default {
 								denomName = msg.msg.denomName
 							}
 
-							if(msg?.type === TX_TYPE.tibc_clean_packet && msg?.msg?.sequence){
+							if(msg?.type === TX_TYPE.clean_packet && msg?.msg?.sequence){
 								sequence = msg.msg.sequence
 
 							}

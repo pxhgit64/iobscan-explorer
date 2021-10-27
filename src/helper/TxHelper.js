@@ -629,19 +629,19 @@ export class TxHelper {
                         }
                     )
                     break;
-                case TX_TYPE.tibc_clean_packet:
+                case TX_TYPE.clean_packet:
                     tibcObj.children.push(
                         {
-                            value:TX_TYPE.tibc_clean_packet,
-                            label:TX_TYPE_DISPLAY[TX_TYPE.tibc_clean_packet]
+                            value:TX_TYPE.clean_packet,
+                            label:TX_TYPE_DISPLAY[TX_TYPE.clean_packet]
                         }
                     )
                     break;
-                case TX_TYPE.tibc_recv_clean_packet:
+                case TX_TYPE.recv_clean_packet:
                     tibcObj.children.push(
                         {
-                            value:TX_TYPE.tibc_recv_clean_packet,
-                            label:TX_TYPE_DISPLAY[TX_TYPE.tibc_recv_clean_packet]
+                            value:TX_TYPE.recv_clean_packet,
+                            label:TX_TYPE_DISPLAY[TX_TYPE.recv_clean_packet]
                         }
                     )
                     break;

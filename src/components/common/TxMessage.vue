@@ -2368,7 +2368,7 @@
 			</p>
 		</div>
 		<!--TIBC Clean Packet Out-->
-		<div v-if="txType === TX_TYPE.tibc_clean_packet">
+		<div v-if="txType === TX_TYPE.clean_packet">
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.sequence')}}</span>
 				<span>{{sequence}}</span>
@@ -2393,7 +2393,7 @@
 			</p>
 		</div>
         <!--  TIBC Clean Packet In这里signer-->
-		<div v-if="txType === TX_TYPE.tibc_recv_clean_packet">
+		<div v-if="txType === TX_TYPE.recv_clean_packet">
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.clean_packet')}}</span>
 				<span>{{clean_packet}}</span>
@@ -3752,7 +3752,7 @@
 								this.signer = msg.signer|| '--'
 								break;
                             //新增 TIBC Clean Packet Out
-							case TX_TYPE.tibc_clean_packet:
+							case TX_TYPE.clean_packet:
 								this.sequence = msg.clean_packet.sequence|| '--'
 								this.source_chain = msg.clean_packet.source_chain|| '--'
 								this.dest_chain = msg.clean_packet.destination_chain|| '--'
@@ -3760,7 +3760,7 @@
 								this.signer = msg.signer|| '--'
 								break;
 							//新增 	TIBC Clean Packet In
-							case TX_TYPE.tibc_recv_clean_packet:
+							case TX_TYPE.recv_clean_packet:
 								this.clean_packet= msg.clean_packet|| '--'
 								this.signer = msg.signer|| '--'
 								break;

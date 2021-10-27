@@ -216,9 +216,9 @@ export default {
 							break
 						case TX_TYPE.tibc_update_client:
 							break
-						case TX_TYPE.tibc_recv_clean_packet:
+						case TX_TYPE.recv_clean_packet:
 							break
-						case TX_TYPE.tibc_clean_packet:
+						case TX_TYPE.clean_packet:
 							break
 						case TX_TYPE.tibc_acknowledge_packet:
 							break

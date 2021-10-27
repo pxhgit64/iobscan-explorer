@@ -1501,7 +1501,7 @@ export const needAddColumn = {
             nativeValue:'dest_chain',
         },
     ],
-    tibc_clean_packet:[
+    clean_packet:[
 
         {
             label:i18n.t('ExplorerLang.table.sequence'),
@@ -1519,7 +1519,7 @@ export const needAddColumn = {
             nativeValue:'signer',
         },
     ],
-    tibc_recv_clean_packet:[
+    recv_clean_packet:[
         {
             label:i18n.t('ExplorerLang.table.signer'),
             displayValue:'signer',
