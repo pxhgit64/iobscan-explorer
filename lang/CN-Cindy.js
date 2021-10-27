@@ -156,6 +156,13 @@ export const ExplorerLang = {
         paused: '暂停',
         completed: '完成',
         creatorName:'创建者',
+        destination_chain:'Destination Chain',//新增
+        soure_chain:'Source Chain',
+        chain_name:'Chain Name',
+        denom_id:'Denom ID' ,
+        denom_name:'Denom Name',
+        sequence:'sequence',
+
     },
     unit:{
         ellipsis:' ,...',
@@ -303,6 +310,34 @@ export const ExplorerLang = {
         uri: '链外链接',
         fee: 'Fee',
         gasUsed:'Gas Used',
+        tibc:{
+            class_tibc:'Class',//tibc新增
+            dest_chain:'Destination Chain',
+            realay_chain:'Realay Chain',
+            sender:'Sender',
+            receiver:'Receiver',
+            view_source:'View Source',
+            id_tibc:'Id',
+            url_tibc:'URL',
+            sequence:'Sequence',
+            port:'Port',
+            source_chain:'Source Chain',
+            nft_status:'NFT Status',
+            signer:'Signer',
+            clean_packet:'CleanPacket',
+            chain_name:'Chain Name',
+        },
+        nft:{
+            denomId:'ID',//nft新增
+            sender:'Sender',
+            receiver:'Recipient',
+            denom_name:'Denom Name',
+            symbol:'Symbol',
+            schema:'Schema',
+            mint_restricted:'Mint Restricted',
+            update_restricted:'Update Restricted',
+            signer:'Signer',
+        },
         issueDenom:{
             schema: '上链结构',
             sender: '创建者',

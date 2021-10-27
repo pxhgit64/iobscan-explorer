@@ -753,16 +753,21 @@ export const needAddColumn = {
     ],
     transfer_denom: [
         {
-            label: i18n.t('ExplorerLang.table.denomId'),
-            value: '',
+            label:i18n.t('ExplorerLang.table.denom_id'),
+            displayValue:'denomId',
+            nativeValue:'denomId',
         },
         {
-            label: i18n.t('ExplorerLang.table.sender'),
-            value: '',
+            label:i18n.t('ExplorerLang.table.sender'),
+            displayValue:'sender',
+            nativeValue:'sender',
         },
         {
-            label: i18n.t('ExplorerLang.table.recipient'),
-            value: '',
+            label:i18n.t('ExplorerLang.table.receiver'),
+            displayValue:'receiver',
+            nativeValue:'receiver',
+            islink:true,
+            linkRoute:'/adderss/'
         },
     ],
     swap_order: [
@@ -1441,6 +1446,98 @@ export const needAddColumn = {
             isNeedFormat: true,
             isFormatAddress: true,
         },
-    ]
+    ],
+    //新增tibc展示配置字段
+    tibc_nft_transfer:[
+        {
+            label:i18n.t('ExplorerLang.table.nftId'),
+            displayValue:'nftId',
+            nativeValue:'nftId',
+        },
+        {
+            label:i18n.t('ExplorerLang.table.sender'),
+            displayValue:'sender',
+            nativeValue:'sender',
+        },
+        {
+            label:i18n.t('ExplorerLang.table.destination_chain'),
+            displayValue:'dest_chain',
+            nativeValue:'dest_chain',
+        },
+    ],
+    tibc_recv_packet:[
+        {
+            label:i18n.t('ExplorerLang.table.nftId'),
+            displayValue:'nftId',
+            nativeValue:'nftId',
+        },
+        {
+            label:i18n.t('ExplorerLang.table.receiver'),
+            displayValue:'receiver',
+            nativeValue:'receiver',
+            islink:true,
+            linkRoute:'/address/'
+        },
+        {
+            label:i18n.t('ExplorerLang.table.source_chain'),
+            displayValue:'source_chain',
+            nativeValue:'source_chain',
+        },
+    ],
+    tibc_acknowledge_packet:[
+        {
+            label:i18n.t('ExplorerLang.table.nftId'),
+            displayValue:'nftId',
+            nativeValue:'nftId',
+        },
+        {
+            label:i18n.t('ExplorerLang.table.sender'),
+            displayValue:'sender',
+            nativeValue:'sender',
+        },
+        {
+            label:i18n.t('ExplorerLang.table.destination_chain'),
+            displayValue:'dest_chain',
+            nativeValue:'dest_chain',
+        },
+    ],
+    tibc_clean_packet:[
+
+        {
+            label:i18n.t('ExplorerLang.table.sequence'),
+            displayValue:'sequence',
+            nativeValue:'sequence',
+        },
+        {
+            label:i18n.t('ExplorerLang.table.source_chain'),
+            displayValue:'source_chain',
+            nativeValue:'source_chain',
+        },
+        {
+            label:i18n.t('ExplorerLang.table.signer'),
+            displayValue:'signer',
+            nativeValue:'signer',
+        },
+    ],
+    tibc_recv_clean_packet:[
+        {
+            label:i18n.t('ExplorerLang.table.signer'),
+            displayValue:'signer',
+            nativeValue:'signer',
+        },
+    ],
+    tibc_update_client:[
+        {
+            label:i18n.t('ExplorerLang.table.chain_name'),
+            displayValue:'chain_name',
+            nativeValue:'chain_name',
+        },
+        {
+            label:i18n.t('ExplorerLang.table.signer'),
+            displayValue:'signer',
+            nativeValue:'signer',
+        },
+    ],
+
 
 }

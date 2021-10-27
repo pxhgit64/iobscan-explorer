@@ -278,25 +278,41 @@
 			</p>
 		</div>
 		<div v-if="txType === TX_TYPE.issue_denom">
+		<p>
+			<span>{{$t('ExplorerLang.transactionInformation.nft.denomId')}}</span>
+			<span>{{denomId}}</span>
+		</p>
+		<p>
+			<span>{{$t('ExplorerLang.transactionInformation.nft.denom_name')}}</span>
+			<span>{{denom_name}}</span>
+		</p>
+		<p>
+			<span>{{$t('ExplorerLang.transactionInformation.nft.symbol')}}</span>
+			<span>{{symbol}}</span>
+		</p>
+		<p>
+			<span>{{$t('ExplorerLang.transactionInformation.nft.schema')}}</span>
+			<span>{{schema}}</span>
+		</p>
+		<p>
+			<span>{{$t('ExplorerLang.transactionInformation.nft.mint_restricted')}}</span>
+			<span>{{mint_restricted}}</span>
+		</p>
+		<p>
+			<span>{{$t('ExplorerLang.transactionInformation.nft.update_restricted')}}</span>
+			<span>{{update_restricted}}</span>
+		</p>
+		<p>
+			<span>{{$t('ExplorerLang.transactionInformation.issueDenom.sender')}}：</span>
+			<template>
+				<span v-if="sender === '--'">{{sender}}</span>
+				<!--					<span v-else @click="addressRoute(sender)" class="address_link">{{sender}}</span>-->
+				<router-link v-else class="address_link" :to="`/address/${sender}`">{{sender}}</router-link>
+			</template>
+		</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.denomId')}}：</span>
 				<span>{{denom}}</span>
-			</p>
-			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.denomName')}}：</span>
-				<span>{{denomName}}</span>
-			</p>
-<!--			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.issueDenom.schema')}}：</span>
-				<LargeString :isShowPre="Tools.isJSON(schema)" v-if="schema" :text="schema"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight" />
-			</p>-->
-			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.issueDenom.sender')}}：</span>
-				<template>
-					<span v-if="sender === '--'">{{sender}}</span>
-<!--					<span v-else @click="addressRoute(sender)" class="address_link">{{sender}}</span>-->
-					<router-link v-else class="address_link" :to="`/address/${sender}`">{{sender}}</router-link>
-				</template>
 			</p>
 		</div>
 		<div v-if="txType === TX_TYPE.send">
@@ -2177,7 +2193,276 @@
 				<span>{{hashLock}}</span>
 			</p>
 		</div>
-		<!-- exclude UpdateClient -->
+		<!--新增TIBC NFT Transfer Out-->
+		<div v-if="txType === TX_TYPE.tibc_nft_transfer">
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.id_tibc')}}</span>
+				<span>{{id_tibc}}</span>
+			</p>
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.class_tibc')}}</span>
+				<span>{{class_tibc}}</span>
+			</p>
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.dest_chain')}}</span>
+				<span>{{dest_chain}}</span>
+			</p>
+			<p>
+			<span>{{$t('ExplorerLang.transactionInformation.tibc.realay_chain')}}</span>
+				<span>{{realay_chain}}</span>
+			</p>
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.sender')}}</span>
+				<template>
+					<span v-if="sender === '--'">{{sender}}</span>
+					<router-link v-else :to="`/address/${sender}`" class="address_link">{{sender}}</router-link>
+				</template>
+			</p>
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.receiver')}}</span>
+				<template>
+					<span v-if="sender === '--'">{{receiver}}</span>
+					<span v-else @click="addressRoute(receiver)"
+						  :class="(receiver.startsWith(COSMOS_ADDRESS_PREFIX) || receiver.startsWith(IRIS_ADDRESS_PREFIX))? 'address_link' : ''"
+					>{{receiver}}</span>
+				</template>
+			</p>
+
+			</div>
+		<!--新增TIBC NFT Transfer In -->
+		<div v-if="txType === TX_TYPE.tibc_recv_packet">
+				<p>
+					<span>{{$t('ExplorerLang.transactionInformation.tibc.id_tibc')}}</span>
+					<span>{{id_tibc}}</span>
+				</p>
+
+				<p>
+					<span>{{$t('ExplorerLang.transactionInformation.tibc.url_tibc')}}</span>
+					<span>{{url_tibc}}</span>
+				</p>
+
+				<p>
+					<span>{{$t('ExplorerLang.transactionInformation.tibc.class_tibc')}}</span>
+					<span>{{class_tibc}}</span>
+				</p>
+
+				<p>
+					<span>{{$t('ExplorerLang.transactionInformation.tibc.sequence')}}</span>
+					<span>{{sequence}}</span>
+				</p>
+
+				<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.port')}}</span>
+				<span>{{port}}</span>
+				</p>
+
+				<p>
+					<span>{{$t('ExplorerLang.transactionInformation.tibc.source_chain')}}</span>
+					<span>{{source_chain}}</span>
+				</p>
+
+				<p>
+					<span>{{$t('ExplorerLang.transactionInformation.tibc.dest_chain')}}</span>
+					<span>{{dest_chain}}</span>
+				</p>
+
+				<p>
+					<span>{{$t('ExplorerLang.transactionInformation.tibc.realay_chain')}}</span>
+					<span>{{realay_chain}}</span>
+				</p>
+
+				<p>
+					<span>{{$t('ExplorerLang.transactionInformation.tibc.sender')}}</span>
+					<template>
+					<span v-if="sender === '--'">{{sender}}</span>
+					<router-link v-else :to="`/address/${sender}`" class="address_link">{{sender}}</router-link>
+					</template>
+				</p>
+
+				<p>
+					<span>{{$t('ExplorerLang.transactionInformation.tibc.receiver')}}</span>
+					<template>
+					<span v-if="sender === '--'">{{receiver}}</span>
+					<span v-else @click="addressRoute(receiver)"
+			  		:class="(receiver.startsWith(COSMOS_ADDRESS_PREFIX) || receiver.startsWith(IRIS_ADDRESS_PREFIX))? 'address_link' : ''"
+					>{{receiver}}</span>
+					</template>
+				</p>
+
+				<p>
+					<span>{{$t('ExplorerLang.transactionInformation.tibc.nft_status')}}</span>
+					<span>{{ nft_status}}</span>
+				</p>
+				<p>
+					<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}</span>
+					<span>{{signer}}</span>
+				</p>
+		</div>
+		<!--新增TIBC Acknowledge Packet-->
+        <div v-if="txType === TX_TYPE.tibc_acknowledge_packet">
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.id_tibc')}}</span>
+				<span>{{id_tibc}}</span>
+			</p>
+
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.url_tibc')}}</span>
+				<span>{{url_tibc}}</span>
+			</p>
+
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.class_tibc')}}</span>
+				<span>{{class_tibc}}</span>
+			</p>
+
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.sequence')}}</span>
+				<span>{{sequence}}</span>
+			</p>
+
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.port')}}</span>
+				<span>{{port}}</span>
+			</p>
+
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.source_chain')}}</span>
+				<span>{{source_chain}}</span>
+			</p>
+
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.dest_chain')}}</span>
+				<span>{{dest_chain}}</span>
+			</p>
+
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.realay_chain')}}</span>
+				<span>{{realay_chain}}</span>
+			</p>
+
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.sender')}}</span>
+				<template>
+					<span v-if="sender === '--'">{{sender}}</span>
+					<router-link v-else :to="`/address/${sender}`" class="address_link">{{sender}}</router-link>
+				</template>
+			</p>
+
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.receiver')}}</span>
+				<template>
+					<span v-if="sender === '--'">{{receiver}}</span>
+					<span v-else @click="addressRoute(receiver)"
+					  	:class="(receiver.startsWith(COSMOS_ADDRESS_PREFIX) || receiver.startsWith(IRIS_ADDRESS_PREFIX))? 'address_link' : ''"
+						>{{receiver}}</span>
+				</template>
+		</p>
+
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.nft_status')}}</span>
+				<span>{{ nft_status}}</span>
+			</p>
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}</span>
+				<span>{{signer}}</span>
+			</p>
+		</div>
+		<!--TIBC Clean Packet Out-->
+		<div v-if="txType === TX_TYPE.tibc_clean_packet">
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.sequence')}}</span>
+				<span>{{sequence}}</span>
+			</p>
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.source_chain')}}</span>
+				<span>{{source_chain}}</span>
+			</p>
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.dest_chain')}}</span>
+				<span>{{dest_chain}}</span>
+			</p>
+
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.realay_chain')}}</span>
+				<span>{{realay_chain}}</span>
+			</p>
+
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}</span>
+				<span>{{signer}}</span>
+			</p>
+		</div>
+        <!--  TIBC Clean Packet In这里signer-->
+		<div v-if="txType === TX_TYPE.tibc_recv_clean_packet">
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.clean_packet')}}</span>
+				<span>{{clean_packet}}</span>
+			</p>
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}</span>
+				<span>{{signer}}</span>
+			</p>
+		</div>
+        <!--TIBC Update Client-->
+		<div v-if="txType === TX_TYPE.tibc_update_client">
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.chain_name')}}</span>
+				<span>{{chain_name}}</span>
+			</p>
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}</span>
+				<span>{{signer}}</span>
+			</p>
+		</div>
+        <!--新增Transfer Denom (Denom Transfer)-->
+		<div v-if="txType === TX_TYPE.transfer_denom">
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.nft.denomId')}}</span>
+				<span>{{denomId}}</span>
+			</p>
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.nft.sender')}}</span>
+				<span>{{sender}}</span>
+			</p>
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.nft.receiver')}}</span>
+				<span>{{receiver}}</span>
+			</p>
+
+		</div>
+		<!--新增Issue Denom (Denom Issue)-->
+		<div v-if="txType === TX_TYPE.nft_issue_denom">
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.nft.denomId')}}</span>
+				<span>{{denomId}}</span>
+			</p>
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.nft.denom_name')}}</span>
+				<span>{{denom_name}}</span>
+			</p>
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.nft.symbol')}}</span>
+				<span>{{symbol}}</span>
+			</p>
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.nft.schema')}}</span>
+				<span>{{schema}}</span>
+			</p>
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.nft.mint_restricted')}}</span>
+				<span>{{mint_restricted}}</span>
+			</p>
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.nft.update_restricted')}}</span>
+				<span>{{update_restricted}}</span>
+			</p>
+			<p>
+				<span>{{$t('ExplorerLang.transactionInformation.nft.sender')}}</span>
+				<span>{{sender}}</span>
+			</p>
+		</div>
+
+<!-- exclude UpdateClient -->
 		<p v-if="txType !== TX_TYPE.update_client" :style="{marginTop: '0.26rem'}">
 			<span>{{$t('ExplorerLang.transactionInformation.recvPacket.viewSource')}}：</span>
 			<LargeString :isShowPre="Tools.isJSON(viewSource)"  v-if="viewSource" :text="viewSource"  :minHeight="LargeStringMinHeight" :lineHeight="LargeStringLineHeight"/>
@@ -2414,7 +2699,26 @@
 				amountArray:[],
 				COSMOS_ADDRESS_PREFIX,
 				IRIS_ADDRESS_PREFIX,
-				data:''
+				data:'',
+				//新增
+				class_tibc:'',//tibc新增
+				dest_chain:'',
+				realay_chain:'',
+				id_tibc:'',
+				url_tibc:'',
+				sequence:'',
+				port:'',
+				source_chain:'',
+				nft_status:'',
+				clean_packet:'',
+				chain_name:'',
+				denomId:'',//nft新增
+				denom_name:'',
+				mint_restricted:'',
+				update_restricted:'',
+
+
+
 			}
 		},
 		computed: {
@@ -2581,10 +2885,13 @@
 								this.tokenUri = msg.uri || '--';
 								break;
 							case TX_TYPE.issue_denom:
-								this.denom = msg.id || '--';
-								this.denomName = msg.name || '--';
-								this.schema = msg.schema || '--';
-								this.sender = msg.sender || '--';
+								this.denomId=msg.id || '--'
+								this.denom_name=msg.name || '--'
+								this.symbol=msg.symbol || '--'
+								this.schema=msg.schema || '--'
+								this.mint_restricted=msg.mintRestricted || '--'
+								this.update_restricted=msg.updateRestricted || '--'
+								this.sender= msg.sender
 								break;
 							case TX_TYPE.respond_service:
 								this.output = msg.output || '--';
@@ -3407,6 +3714,67 @@
 								this.sender = msg.sender || '--';
 								this.hashLock = msg.hash_lock || '--';
 							break;
+							//新增TIBC NFT Transfer Out
+							case TX_TYPE.tibc_nft_transfer:
+								this.class_tibc = msg.class  || '--';
+								this.id_tibc = msg.id|| '--';
+								this.dest_chain = msg. dest_chain || '--';
+								this.realay_chain = msg.realay_chain || '--';
+								this.sender = msg.sender || '--';
+								this.receiver = msg.receiver || '--';
+								break;
+							//新增TIBC NFT Transfer In
+							case TX_TYPE.tibc_recv_packet:
+								this.id_tibc=msg.packet.data.id || '--';
+								this.url_tibc = msg.packet.data.url || '--';
+								this.class_tibc = msg.packet.data.class|| '--'
+								this.sequence = msg.packet.sequence|| '--'
+								this.port = msg.packet.port|| '--'
+								this.source_chain = msg.packet.source_chain|| '--'
+								this.dest_chain = msg.packet.destination_chain|| '--'
+								this.realay_chain = msg.packet.relay_chain|| '--'
+								this.sender = msg.packet.data.sender|| '--'
+								this.nft_status = msg.packet.acknowledgement ? "Success":"Failed"
+								this.signer = msg.signer|| '--'
+								break;
+							//新增TIBC Acknowledge Packet
+							case TX_TYPE.tibc_acknowledge_packet:
+								this.id_tibc=msg.packet.data.id || '--';
+								this.url_tibc = msg.packet.data.url || '--';
+								this.class_tibc = msg.packet.data.class|| '--'
+								this.sequence = msg.packet.sequence|| '--'
+								this.port = msg.packet.port|| '--'
+								this.source_chain = msg.packet.source_chain|| '--'
+								this.dest_chain = msg.packet.destination_chain|| '--'
+								this.realay_chain = msg.packet.relay_chain|| '--'
+								this.sender = msg.packet.data.sender|| '--'
+								this.nft_status = msg.packet.acknowledgement ? "Success":"Failed"
+								this.signer = msg.signer|| '--'
+								break;
+                            //新增 TIBC Clean Packet Out
+							case TX_TYPE.tibc_clean_packet:
+								this.sequence = msg.clean_packet.sequence|| '--'
+								this.source_chain = msg.clean_packet.source_chain|| '--'
+								this.dest_chain = msg.clean_packet.destination_chain|| '--'
+								this.realay_chain = msg.clean_packet.relay_chain|| '--'
+								this.signer = msg.signer|| '--'
+								break;
+							//新增 	TIBC Clean Packet In
+							case TX_TYPE.tibc_recv_clean_packet:
+								this.clean_packet= msg.clean_packet|| '--'
+								this.signer = msg.signer|| '--'
+								break;
+							//新增TIBC Update Client
+							case TX_TYPE.tibc_update_client:
+								this.chain_name=msg.chain_name|| '--'
+								this.signer = msg.signer
+								break;
+                            //新增Transfer Denom (Denom Transfer)
+							case TX_TYPE.transfer_denom:
+								this.denomId=msg.id || '--'
+								this.sender= msg.sender|| '--'
+								this.receiver= msg.recipient|| '--'
+								break;
 						}
 					}
 				} catch (e) {

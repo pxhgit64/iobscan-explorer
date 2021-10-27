@@ -162,7 +162,13 @@ export const ExplorerLang = {
         running: 'Running',
         paused: 'Paused',
         completed: 'Completed',
-        creatorName:'Creator'
+        creatorName:'Creator',
+        destination_chain:'Destination Chain',//新增
+        source_chain:'Source Chain',
+        chain_name:'Chain Name',
+        denom_id:'Denom ID' ,
+        denom_name:'Denom Name',
+        sequence:'sequence',
     },
     unit:{
         ellipsis:' ,...',
@@ -304,15 +310,44 @@ export const ExplorerLang = {
         owner: 'Owner',
         qos: 'QoS', // 更改，中文未变
         deposit: 'Deposit',
-        nftId: 'NFT Id',
+        nftId: 'Id',
         nftName: 'NFT Name',
         data: 'Data',
         uri: 'Uri',
         fee: 'Fee',
         gasUsed:'Gas Used',
+        tibc:{
+            class_tibc:'Class',//tibc新增
+            dest_chain:'Destination Chain',
+            realay_chain:'Realay Chain',
+            sender:'Sender',
+            receiver:'Receiver',
+            view_source:'View Source',
+            id_tibc:'Id',
+            url_tibc:'URL',
+            sequence:'Sequence',
+            port:'Port',
+            source_chain:'Source Chain',
+            nft_status:'NFT Status',
+            signer:'Signer',
+            clean_packet:'CleanPacket',
+            chain_name:'Chain Name',
+        },
+        nft:{
+            denomId:'ID',//nft新增
+            sender:'Sender',
+            receiver:'Recipient',
+            denom_name:'Denom Name',
+            symbol:'Symbol',
+            schema:'Schema',
+            mint_restricted:'Mint Restricted',
+            update_restricted:'Update Restricted',
+            signer:'Signer',
+        },
         issueDenom:{
             schema: 'Schema',
             sender: 'Sender',
+
         },
         send:{
             amount: 'Amount',

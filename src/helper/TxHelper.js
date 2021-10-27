@@ -356,6 +356,11 @@ export class TxHelper {
                 label: LEVEL_TX_TYPE.NFT,
                 children:[]
             },
+            tibcObj={
+                value: LEVEL_TX_TYPE.TIBC,
+                label: LEVEL_TX_TYPE.TIBC,
+                children:[]
+            },
             coinswapObj = {
                 value: LEVEL_TX_TYPE.Coinswap,
                 label: LEVEL_TX_TYPE.Coinswap,
@@ -599,6 +604,65 @@ export class TxHelper {
                         label: TX_TYPE_DISPLAY[TX_TYPE.burn_nft]
                     });
                     break;
+                    //新增TIBC相关
+                case TX_TYPE.tibc_nft_transfer:
+                    tibcObj.children.push(
+                        {
+                            value:TX_TYPE.tibc_nft_transfer,
+                            label:TX_TYPE_DISPLAY[TX_TYPE.tibc_nft_transfer]
+                        }
+                    )
+                    break;
+                case TX_TYPE.tibc_recv_packet:
+                    tibcObj.children.push(
+                        {
+                            value:TX_TYPE.tibc_recv_packet,
+                            label:TX_TYPE_DISPLAY[TX_TYPE.tibc_recv_packet]
+                        }
+                    )
+                    break;
+                case TX_TYPE.tibc_acknowledge_packet:
+                    tibcObj.children.push(
+                        {
+                            value:TX_TYPE.tibc_acknowledge_packet,
+                            label:TX_TYPE_DISPLAY[TX_TYPE.tibc_acknowledge_packet]
+                        }
+                    )
+                    break;
+                case TX_TYPE.tibc_clean_packet:
+                    tibcObj.children.push(
+                        {
+                            value:TX_TYPE.tibc_clean_packet,
+                            label:TX_TYPE_DISPLAY[TX_TYPE.tibc_clean_packet]
+                        }
+                    )
+                    break;
+                case TX_TYPE.tibc_recv_clean_packet:
+                    tibcObj.children.push(
+                        {
+                            value:TX_TYPE.tibc_recv_clean_packet,
+                            label:TX_TYPE_DISPLAY[TX_TYPE.tibc_recv_clean_packet]
+                        }
+                    )
+                    break;
+                case TX_TYPE.tibc_update_client:
+                    tibcObj.children.push(
+                        {
+                            value:TX_TYPE.tibc_update_client,
+                            label:TX_TYPE_DISPLAY[TX_TYPE.tibc_update_client]
+                        }
+                    )
+                    break;
+                    //新增nft
+                case TX_TYPE.transfer_denom:
+                    nftObj.children.push(
+                        {
+                            value:TX_TYPE.transfer_denom,
+                            label:TX_TYPE_DISPLAY[TX_TYPE.transfer_denom]
+                        }
+                    )
+                    break;
+
                 case TX_TYPE.add_liquidity:
                     coinswapObj.children.push({
                         value: TX_TYPE.add_liquidity,
@@ -921,7 +985,7 @@ export class TxHelper {
 
 			}
         });
-		allTxType.push(tansferObj, nftObj, identityObj, ibcObj, stakingObj, coinswapObj, htlcObj, assetObj, govObj, oracleObj, randomObj, recordObj, iServiceObj,crossChainObj,othersObj);
+		allTxType.push(tansferObj, nftObj,tibcObj, identityObj, ibcObj, stakingObj, coinswapObj, htlcObj, assetObj, govObj, oracleObj, randomObj, recordObj, iServiceObj,crossChainObj,othersObj);
         allTxType = allTxType.filter(item => item.children.length)
         return allTxType
     }
