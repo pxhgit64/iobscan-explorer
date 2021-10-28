@@ -105,7 +105,7 @@ export default {
                 }
                 if(data.updated_time){
                     // this.updateTime = `${moment(data.updated_time*1000).utc().format('YYYY-MM-DD HH:MM:SS')}+UTC`
-                    this.updateTime = Tools.getDisplayDate(data.updated_time)
+                    this.updateTime = Tools.formatLocalTime(data.updated_time)
                 }
             }
         }

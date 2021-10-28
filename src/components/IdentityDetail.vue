@@ -172,7 +172,7 @@
                         this.credentials = res.credentials || '--';
                         this.createTxHash = res.create_tx_hash || '--';
                         this.createHeight = res.create_block_height || '--';
-                        this.createTime = Tools.getDisplayDate(res.create_block_time);
+                        this.createTime = Tools.formatLocalTime(res.create_block_time);
                     }
                 } catch (e) {
                     console.error(e);
@@ -203,7 +203,7 @@
                                 pubkey: (item.pubkey || {}).pubkey || '',
                                 pubKeyAlgo: (item.pubkey || {}).algorithm || '',
                                 txHash: item.hash || '',
-                                time: Tools.getDisplayDate(item.time),
+                                time: Tools.formatLocalTime(item.time),
                             };
                             return result;
                         });
@@ -234,7 +234,7 @@
                             let result = {
                                 certificate: item.certificate || '--',
                                 txHash: item.hash || '--',
-                                time: Tools.getDisplayDate(item.time),
+                                time: Tools.formatLocalTime(item.time),
                             };
                             return result;
                         });

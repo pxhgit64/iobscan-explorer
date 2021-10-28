@@ -123,7 +123,7 @@
                                 let bindings = await getServiceBindingByServiceName(service.serviceName);                                                    
                                 if(bindings.result){
                                     service.bindList.forEach((s)=>{
-                                        s.bindTime = Tools.getDisplayDate(s.bindTime);
+                                        s.bindTime = Tools.formatLocalTime(s.bindTime);
                                         bindings.result.forEach((b)=>{
                                             if(s.provider === b.provider){
                                                 s.available = b.available;

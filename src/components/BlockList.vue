@@ -90,7 +90,7 @@ export default {
 							// validatorValue: `${item.precommit_validator_num || 0} / ${item.total_validator_num || 0}`,
 							// votingPowerValue: item.precommit_voting_power ? `${Tools.formatPerNumber((Number(item.precommit_voting_power) / item.total_voting_power) * 100)} %` : '--',
 							height: item.height,
-							time: Tools.getDisplayDate(item.time),
+							time: Tools.formatLocalTime(item.time),
 							Time: item.time,
 							numTxs: item.txn,
 							ageTime: Tools.formatAge(

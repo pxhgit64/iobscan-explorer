@@ -191,7 +191,7 @@
 									flShowTranslationalAnimation :  item.flShowTranslationalAnimation ? item.flShowTranslationalAnimation : "",
 									showAnimation: item.showAnimation ? item.showAnimation : "",
 									height: item.height,
-                                    time: Tools.getDisplayDate(item.time),
+                                    time: Tools.formatLocalTime(item.time),
                                     Time: item.time,
 									txNumber: item.txn,
 									blockAgeTime: Tools.formatAge(Tools.getTimestamp(),item.time*1000,"ago",">")
@@ -240,7 +240,7 @@
                                 flShowTranslationalAnimtation :  item.flShowTranslationalAnimation ? item.flShowTranslationalAnimation : "",
                                 showAnimation: item.showAnimation ? item.showAnimation : '',
                                 hash: item.tx_hash,
-                                time: Tools.getDisplayDate(item.time),
+                                time: Tools.formatLocalTime(item.time),
                                 // txType: item.msgs ? (item.msgs.length > 1 ? '--' : item.msgs[0].type) : '--',
                                 txType: (item.msgs || []).map(item=>item.type),
                                 Time: item.time,

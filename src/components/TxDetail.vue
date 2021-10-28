@@ -270,7 +270,7 @@ export default {
 			}
 		},
 		formatTimestampAndAge(second) {
-			const timestamp = Tools.getDisplayDate(second);
+			const timestamp = Tools.formatLocalTime(second);
 			const age = Tools.formatAge(Tools.getTimestamp(),second*1000,"ago",">");
 			return `${timestamp}  (${age})`
 		},
@@ -299,7 +299,7 @@ export default {
 								txHash: tx.tx_hash,
 								txType: tx.type,
 								blockHeight: tx.height,
-								time: Tools.getDisplayDate(tx.time),
+								time: Tools.formatLocalTime(tx.time),
 							}
 							switch (tx.type) {
 								case TX_TYPE.call_service:

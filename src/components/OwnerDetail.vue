@@ -563,7 +563,7 @@
 					<el-table-column :min-width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.timestamp')"
 									 prop="time">
 						<template slot-scope="scope">
-							<span>{{ Tools.getDisplayDate(scope.row.time) }}</span>
+							<span>{{ Tools.formatLocalTime(scope.row.time) }}</span>
 						</template>
 					</el-table-column>
 					<el-table-column class-name="address" :min-width="ColumnMinWidth.address"
@@ -1113,7 +1113,7 @@ export default {
 						return {
 							id: item.identities_id,
 							txHash: item.update_tx_hash || '--',
-							time: Tools.getDisplayDate(item.update_block_time) || '--',
+							time: Tools.formatLocalTime(item.update_block_time) || '--',
 						}
 					})
 				}
@@ -1440,7 +1440,7 @@ export default {
 							blockHeight: item.height,
 							txType: this.TX_TYPE_DISPLAY[item.type],
 							provider: item.msgs[0].msg.providers,
-							time: Tools.getDisplayDate(item.time),
+							time: Tools.formatLocalTime(item.time),
 							state: 'Running',
 							status: item.status,
 							respond: [],
@@ -1468,7 +1468,7 @@ export default {
 									blockHeight: r.height,
 									txType: this.TX_TYPE_DISPLAY[r.type],
 									provider: r.msgs[0].msg.provider,
-									time: Tools.getDisplayDate(r.time),
+									time: Tools.formatLocalTime(r.time),
 									requestContextId: (r.msgs[0].msg.ex || {}).request_context_id,
 									requestStatus: '--',
 									status: r.status,
@@ -1583,9 +1583,9 @@ export default {
 							respond_times: item.respond_times,
 							pricing: JSON.parse(item.msgs[0].msg.pricing || '{}').price,
 							qos: item.msgs[0].msg.qos,
-							time: Tools.getDisplayDate(item.time),
+							time: Tools.formatLocalTime(item.time),
 							unbindTime: item.unbinding_time
-								? Tools.getDisplayDate(item.unbinding_time)
+								? Tools.formatLocalTime(item.unbinding_time)
 								: '--',
 							txHash: item.tx_hash,
 							blockHeight: item.height,
@@ -1607,7 +1607,7 @@ export default {
 								if (bind.disabled_time) {
 									let time = new Date(bind.disabled_time).getTime()
 									result.unbindTime =
-										time > 0 ? Tools.getDisplayDate(time / 1000) : '--'
+										time > 0 ? Tools.formatLocalTime(time / 1000) : '--'
 								}
 							}
 						})

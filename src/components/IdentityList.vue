@@ -123,7 +123,7 @@
                                 credentials : (item.credentials && item.credentials!='[do-not-modify]') ? item.credentials : '--',
                                 algorithm: pubkey.algorithm || '--',
                                 txHash: item.update_tx_hash || '--',
-                                time: Tools.getDisplayDate(item.update_block_time) || '--'
+                                time: Tools.formatLocalTime(item.update_block_time) || '--'
                             }
                         })
                     } else {

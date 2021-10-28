@@ -271,7 +271,7 @@ export default {
                             switch(item) {
                                 case 201:
                                     itemObj.value = statisticsNetwork.txCount;
-                                    itemObj.footerLabel = Tools.getDisplayDate(statisticsNetwork.latestBlockTime)
+                                    itemObj.footerLabel = Tools.formatLocalTime(statisticsNetwork.latestBlockTime)
                                     break;
                                 case 202:
                                     itemObj.value = statisticsDb.validatorCount;
