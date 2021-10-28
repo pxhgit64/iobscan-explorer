@@ -395,9 +395,9 @@ export default {
             }
           }
           this.submitTime = res.submit_time ?Tools.formatLocalTime(res.submit_time) : ''
-          this.submitAge = res.submit_time ? Tools.formatLocalTime(Tools.getTimestamp(), res.submit_time * 1000, 'ago') : ''
+          this.submitAge = res.submit_time ?  Tools.formatAge(Tools.getTimestamp(), res.submit_time * 1000, 'ago') : ''
           this.depositEndTime = res.deposit_end_time ? Tools.formatLocalTime(res.deposit_end_time) : ''
-          this.depositEndAge = res.deposit_end_time ? Tools.formatLocalTime(Tools.getTimestamp(), res.deposit_end_time * 1000, 'ago') : ''
+          this.depositEndAge = res.deposit_end_time ?  Tools.formatAge(Tools.getTimestamp(), res.deposit_end_time * 1000, 'ago') : ''
           res.deposit_end_time ? this.getDepositTime(res.deposit_end_time) : ''
           if (res.total_deposit && res.total_deposit.length !== 0) {
             let amount = await converCoin(res.total_deposit[0])
@@ -406,9 +406,9 @@ export default {
           this.burnValue = `${(Number(res.burned_rate) * 100).toFixed(2)}`
           if(res.status !== proposalStatus.depositPeriod) {
             this.votingStartTime = res.voting_start_time ? Tools.formatLocalTime(res.voting_start_time) : ''
-            this.votingStartAge = res.voting_start_time ? Tools.formatLocalTime(Tools.getTimestamp(), res.voting_start_time * 1000, 'ago') : ''
+            this.votingStartAge = res.voting_start_time ? Tools.formatAge(Tools.getTimestamp(), res.voting_start_time * 1000, 'ago') : ''
             this.votingEndTime = res.voting_end_time ? Tools.formatLocalTime(res.voting_end_time) : ''
-            this.votingEndAge = res.voting_end_time ? Tools.formatLocalTime(Tools.getTimestamp(), res.voting_end_time * 1000, 'ago') : ''
+            this.votingEndAge = res.voting_end_time ? Tools.formatAge(Tools.getTimestamp(), res.voting_end_time * 1000, 'ago') : ''
             res.voting_end_time ? this.getVotingEndTime(res.voting_end_time) : ''
           } else {
             this.votingStartTime = '--',
