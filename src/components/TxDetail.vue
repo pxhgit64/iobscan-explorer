@@ -24,7 +24,7 @@
 						<span>{{ $t('ExplorerLang.transactionInformation.status') }}：</span>
 						<span :style="{color: status === 'Failed' ? '#fa8593' : ''}">
               {{status}}
-              <el-tooltip  popper-class="tooltip" placement="top" v-if="status === 'Failed'">
+              <el-tooltip  popper-class="tooltip" placement="top" v-if="status === $t('ExplorerLang.common.failed')">
 					<div slot="content" >
 						{{ log }}
 					</div>
