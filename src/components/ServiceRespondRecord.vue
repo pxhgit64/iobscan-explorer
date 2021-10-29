@@ -207,7 +207,7 @@
                     if(serviceInfo){
                         this.hash = serviceInfo.hash;
                         this.owner = serviceInfo.owner;
-                        this.bindTime = Tools.getDisplayDate(serviceInfo.time);
+                        this.bindTime = Tools.formatLocalTime(serviceInfo.time);
                     }
                     if(bindings && bindings.result){
                         let {available, pricing, qos, deposit, disabled_time} = bindings.result;
@@ -246,7 +246,7 @@
                             respondHash : item.respondHash,
                             requestContextId : item.requestContextId,
                             height : item.height,
-                            time : Tools.getDisplayDate(item.time),
+                            time : Tools.formatLocalTime(item.time),
                             consumer : item.consumer,
                             requestHash : item.requestHash,
                             respondStatus : item.respondStatus,

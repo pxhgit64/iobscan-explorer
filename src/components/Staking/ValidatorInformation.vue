@@ -286,7 +286,7 @@
 						}else if(item.dataName === 'missed_blocks_count'){
 							item.value = `${information.missed_blocks_count} in ${information.stats_blocks_window} ${this.$t('ExplorerLang.common.blocks')}')`;
 						}else if(item.dataName === 'jailed_until'){
-							item.value = new Date(Number(information[item.dataName])).getTime() ? Tools.getDisplayDate(information[item.dataName]) : "--";
+							item.value = new Date(Number(information[item.dataName])).getTime() ? Tools.formatLocalTime(information[item.dataName]) : "--";
 						} else {
 							item.value = information[item.dataName];
 						}

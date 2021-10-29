@@ -217,7 +217,7 @@
 						this.transactionsValue = res.txn;
 						//TODO zhangjinbiao  单个区块的奖励没有
 						// this.inflationValue =
-						this.timestampValue = Tools.getDisplayDate(res.time);
+						this.timestampValue = Tools.formatLocalTime(res.time);
 					}
 				} catch(e) {
 					console.error(e)
@@ -240,7 +240,7 @@
 						this.heightValue = blockData.height;
 						this.blockHash = blockData.hash;
 						this.txNumber = blockData.txn;
-						this.time = Tools.getDisplayDate(blockData.time);
+						this.time = Tools.formatLocalTime(blockData.time);
 					}
 				} catch (e) {
 					console.error(e)

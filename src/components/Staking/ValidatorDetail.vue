@@ -556,7 +556,7 @@
 								fromMonikers = fromMonikers || it[formTO.from] || ''
 							})
 						}
-						const time = Tools.getDisplayDate(item.time)
+						const time = Tools.formatLocalTime(item.time)
 						const fee =  this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) : ''
 						this.delegationTxs.items.push({
 							txHash: item.tx_hash,
