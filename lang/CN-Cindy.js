@@ -59,8 +59,8 @@ export const ExplorerLang = {
         portId: 'PortId',
         channelId: 'Channel ID',
         connectionId: 'Connection ID',
-
-
+        denomId:'数据类别标识',
+        denomName: '数据类别',
         emptyDescription:'- 暂时没有内容 -',
         block: '区块高度',
         transactions: '交易数量',
