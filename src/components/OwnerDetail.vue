@@ -1559,7 +1559,7 @@ export default {
 						if (tx.type === TX_TYPE.send) {
 							tx && tx.msgs && tx.msgs[0] && tx.msgs[0].msg && tx.msgs[0].msg.amount && tx.msgs[0].msg.amount.length > 1 ? isShowMore = true : ''
 							let denom = tx?.msgs?.[0]?.msg?.amount?.[0]?.denom
-							if (denom !== undefined && /(swap|SWAP)/g.test(denom)) {
+							if (denom !== undefined && /(lpt|lpt-|LPT|LPT-)/g.test(denom)) {
 								isShowMore = true
 							}
 						}
@@ -1645,9 +1645,11 @@ export default {
 								this.transactionArray[index].swapAmount2 =  amount[index][1]
 							}else {
 								this.transactionArray[index].denomTheme = getDenomTheme(amount[index], this.denomMap)
-								this.transactionArray[index].amount = amount[index]
+								// this.transactionArray[index].amount = amount[index]
+								this.transactionArray[index].amount = this.getAmount(amount[index])
+								this.transactionArray[index].denom = this.getAmountUnit(amount[index])
 								let denom = /[A-Za-z\-]{2,15}/.exec(amount[index])?.length ? /[A-Za-z\-]{2,15}/.exec(amount[index])[0] : ' '
-								if (denom !== undefined && /(swap|SWAP|lpt|LPT|lpt-|LPT-)/g.test(denom)) {
+								if (denom !== undefined && /(lpt|LPT|lpt-|LPT-)/g.test(denom)) {
 									this.transactionArray[index].amount = ''
 								}
 								
@@ -1666,6 +1668,21 @@ export default {
 				this.isLoading = false
 				console.log(error)
 			}
+		},
+		getAmount(amount) {
+			
+			if (!amount) {
+				return "";
+			}
+			let denomRule = /[0-9.]+/
+			return amount.match(denomRule)[0];
+		},
+		getAmountUnit(amount) {
+			if (!amount) {
+				return "";
+			}
+			let denomRule = /[A-Za-z\/]+/
+			return amount.match(denomRule)[0];
 		},
 		parseTime(txListKeys, key, parsedKey) {
 			if (!txListKeys) {

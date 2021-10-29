@@ -3,20 +3,24 @@ import prodConfig from '../productionConfig';
 import Tools from "../util/Tools";
 export class TxHelper {
     //The corresponding IBC Denom was deduced through the IBC Packet path
-    static getOriginalDenomFromPacket (ibc_package,type) { 
+    static getOriginalDenomFromPacket (ibc_package,type) {
         let denom_result = '';
         if (ibc_package && typeof ibc_package == 'object') {
             let { source_port, source_channel, destination_port, destination_channel, data } = ibc_package;
             let prefix_sc = `${source_port}/${source_channel}/`;
             let prefix_dc = `${destination_port}/${destination_channel}/`;
-
             let denom = data.denom;
             if (type && type == TX_TYPE.timeout_packet || type && type == TX_TYPE.acknowledge_packet ) {
                 if (denom.startsWith(prefix_sc)) {
                     denom_result = `ibc/${Tools.sha256(denom).toUpperCase()}`;
                 }else{
-                    denom_result = denom;
+                    if(denom.includes(source_port)){
+                        denom_result = `ibc/${Tools.sha256(denom).toUpperCase()}`;
+                    }else {
+                        denom_result = denom;
+                    }
                 }
+
             }else{
                 if (denom.startsWith(prefix_sc)){
                     let denom_clear_prefix = denom.replace(prefix_sc,'');
