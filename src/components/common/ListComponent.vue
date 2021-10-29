@@ -191,7 +191,7 @@
 import Loading from "./Loading";
 import MPagination from "./MPagination";
 import Tools from "../../util/Tools";
-import {formatMoniker, getConfig} from "../../helper/IritaHelper";
+import {formatMoniker, getConfig,getTxType} from "../../helper/IritaHelper";
 import prodConfig from "../../productionConfig"
 import BigNumber from 'bignumber.js';
 import {
@@ -201,7 +201,7 @@ import {
 	monikerNum,
 	decimals,
 	IRIS_ADDRESS_PREFIX,
-	COSMOS_ADDRESS_PREFIX, TX_TYPE_DISPLAY
+	COSMOS_ADDRESS_PREFIX
 } from '../../constant';
 import {fetchAllTokens} from "../../service/api";
 import ProposalStatusComponent from "../Gov/ProposalStatusComponent";
@@ -212,6 +212,7 @@ export default {
 	data() {
 		return {
 			monikerNum,
+			TX_TYPE_DISPLAY:{},
 			formatMoniker,
 			isSetLoadingStatus: false,
 			isShowFee: prodConfig.fee.isShowFee || false,
@@ -305,7 +306,7 @@ export default {
 		},
 		listData: {
 			handler(newValue, oldValue) {
-				// console.log(newValue,'试试？')
+				this.getTxTypeData()
 				this.tableList = newValue
 			},
 			deep: true
@@ -503,11 +504,11 @@ export default {
 				let formatStr = ''
 				for (let dataKey in data) {
 					dataKey = dataKey.toLowerCase()
-					formatStr += `${TX_TYPE_DISPLAY[dataKey] || dataKey} *${data[dataKey] || dataKey},`
+					formatStr += `${this.TX_TYPE_DISPLAY[dataKey] || dataKey} *${data[dataKey] || dataKey},`
 				}
 				return formatStr.substring(0, formatStr.length - 1)
 			} else {
-				return TX_TYPE_DISPLAY[str?.toString()] || TX_TYPE_DISPLAY[str] || str?.toString() || str
+				return this.TX_TYPE_DISPLAY[str?.toString()] || this.TX_TYPE_DISPLAY[str] || str?.toString() || str
 			}
 		},
 		setTagNum(value) {
@@ -533,14 +534,23 @@ export default {
 							displayMsgType = value[0]
 						}
 					})
-					return TX_TYPE_DISPLAY[displayMsgType] || displayMsgType
+					
+					return this.TX_TYPE_DISPLAY[displayMsgType] || displayMsgType
 				} else {
 					this.isShowTooltip = false
-					return TX_TYPE_DISPLAY[value[0]] || value[0]
+					return this.TX_TYPE_DISPLAY[value[0]] || value[0]
 				}
 			} else {
 				this.isShowTooltip = false
-				return TX_TYPE_DISPLAY[value] || value
+				return this.TX_TYPE_DISPLAY[value] || value
+			}
+		},
+		async getTxTypeData() {
+			try {
+				let res = await getTxType()
+				this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+			} catch (error) {
+				console.log(error)
 			}
 		},
 		deleteColumnFee() {
@@ -597,7 +607,6 @@ export default {
 							let secondPracticalWidthCount = this.tableListWidth.filter(item => {
 								return item <= 40
 							})
-							console.log(practicalWidth,'内容所占的空间')
 							// 为每一列设置补偿量
 							if(practicalWidth < tableWidth && this?.columns?.length){
 								let compensationWidth = (tableWidth - practicalWidth) / this.columns.length
@@ -608,7 +617,6 @@ export default {
 								if(secondPracticalWidthCount?.length){
 									secondPracticalWidth = (compensationWidth * secondPracticalWidthCount.length) / (this.columns.length - secondPracticalWidthCount.length )
 								}
-								console.log(secondPracticalWidth,'二次补偿量')
 								this.tableListWidth = this.tableListWidth.map( item => {
 									if(item <= 40){
 										item = 40
@@ -629,6 +637,7 @@ export default {
 		}
 	},
 	mounted() {
+		this.getTxTypeData()
 		if (JSON.stringify(this.pagination) !== '{}') {
 			this.pageNum = this.pagination.pageNum
 			this.pageSize = this.pagination.pageSize
