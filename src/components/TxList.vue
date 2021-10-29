@@ -5,7 +5,6 @@
 				<p class="tc_content_header">{{$t('ExplorerLang.transactions.title')}}</p>
 			</div>
 			<list-component
-				:tableWidth="'11.5rem'"
 				:is-show-token-type="true"
 				:is-loading="isLoading"
 				:token-symbol="mainTokenSymbol"
@@ -41,7 +40,7 @@ import Tools from "../util/Tools"
 import MPagination from "./common/MPagination";
 import TxListComponent from "./common/TxListComponent";
 import {TxHelper} from "../helper/TxHelper";
-import {getTxList, getAllTxTypes} from '../service/api';
+import {getTxList, getAllTxTypes, getIbcTransferByHash} from '../service/api';
 import {
 	TX_TYPE,
 	TX_STATUS,
@@ -376,14 +375,16 @@ export default {
 				return "";
 			}
 			let denomRule = /[0-9.]+/
-			return amount.match(denomRule)[0];
+			let result = amount.match(denomRule)
+			return result ? amount.match(denomRule)[0] : ' ';
 		},
 		getAmountUnit(amount) {
 			if (!amount) {
 				return "";
 			}
 			let denomRule = /[A-Za-z\/]+/
-			return amount.match(denomRule)[0];
+			let result = amount.match(denomRule)
+			return result ? amount.match(denomRule)[0] : ' ';
 		},
 		/*getParamsByUrlHash(){
 			let txType,
@@ -882,7 +883,7 @@ export default {
 						if (tx.type === TX_TYPE.send) {
 							tx && tx.msgs && tx.msgs[0] && tx.msgs[0].msg && tx.msgs[0].msg.amount && tx.msgs[0].msg.amount.length > 1 ? isShowMore = true : ''
 							let denom = tx?.msgs?.[0]?.msg?.amount?.[0]?.denom
-							if (denom !== undefined && /(swap|SWAP)/g.test(denom)) {
+							if (denom !== undefined && /(ltp|LPT|lpt-|LPT-)/g.test(denom)) {
 								isShowMore = true
 							}
 						}
@@ -964,13 +965,16 @@ export default {
 							if(amount[index]?.length === 2 ){
 								this.transactionArray[index].swapDenomTheme1 = getDenomTheme(amount[index][0], this.denomMap)
 								this.transactionArray[index].swapDenomTheme2 = getDenomTheme(amount[index][1], this.denomMap)
-								this.transactionArray[index].swapAmount1 =  amount[index][0]
-								this.transactionArray[index].swapAmount2 =  amount[index][1]
+								this.transactionArray[index].swapAmount1 =  this.getAmount(amount[index][0])
+								this.transactionArray[index].swapAmount1Denom =  this.getAmountUnit(amount[index][0])
+								this.transactionArray[index].swapAmount2 =  this.getAmount(amount[index][1])
+								this.transactionArray[index].swapAmount2Denom  =  this.getAmountUnit(amount[index][1])
 							}else {
 								this.transactionArray[index].denomTheme = getDenomTheme(amount[index], this.denomMap)
-								this.transactionArray[index].amount = amount[index]
+								this.transactionArray[index].amount = this.getAmount(amount[index])
+								this.transactionArray[index].denom = this.getAmountUnit(amount[index])
 								let denom = /[A-Za-z\-]{2,15}/.exec(amount[index])?.length ? /[A-Za-z\-]{2,15}/.exec(amount[index])[0] : ' '
-								if (denom !== undefined && /(swap|SWAP|lpt|LPT|lpt-|LPT-)/g.test(denom)) {
+								if (denom !== undefined && /(lpt|LPT|lpt-|LPT-)/g.test(denom)) {
 									this.transactionArray[index].amount = ''
 								}
 								
@@ -990,6 +994,7 @@ export default {
 			
 		},
 	},
+	
 	beforeDestroy(){
 		this.$store.commit('currentTxModelIndex',0)
 	},

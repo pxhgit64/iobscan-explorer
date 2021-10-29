@@ -88,9 +88,9 @@
 									<span v-else-if="item.isNftHref" :class="item.isWrap ? 'wrap_style' : ''">
 										
 										<a v-if="testUrl(scope.row[item.displayValue])" :href="scope.row[item.displayValue]"
-										   target="_blank" rel="noreferrer noopener" class="route_link_style">{{ scope.row[item.displayValue] }}</a>
+										   target="_blank" rel="noreferrer noopener" class="href_route_link_style">{{ scope.row[item.displayValue] }}</a>
 										
-										<a class="route_link_style" v-else-if="startStr(scope.row[item.displayValue])"
+										<a class="href_route_link_style" v-else-if="startStr(scope.row[item.displayValue])"
 										   :href="'http://' + scope.row[item.displayValue]"
 										   target="_blank">{{ scope.row[item.displayValue] }}</a>
 										
@@ -99,14 +99,10 @@
 									</span>
 <!--									-->
 									<span v-else-if="item.isShowDenomTip" :class="item.isRight ? 'right_style' : ''">
-										
-										<span>{{ getAmount(scope.row[item.displayValue]) }}</span>
-										
+<!--										<span>{{ getAmount(scope.row[item.displayValue]) }}</span>-->
 										<el-tooltip :manual="isShowDenomTip( scope.row && scope.row.denomTheme && scope.row.denomTheme.tooltipContent ? scope.row.denomTheme.tooltipContent  :'')"
 													:content="scope.row && scope.row.denomTheme && scope.row.denomTheme.tooltipContent ? scope.row.denomTheme.tooltipContent  :''" placement="top">
-											
 											<span class="denom_style" :style="{ color: scope.row && scope.row.denomTheme && scope.row.denomTheme.denomColor ? scope.row.denomTheme.denomColor : '' }"> {{getAmountUnit(scope.row[item.displayValue]) }}</span>
-											
 										</el-tooltip>
 										
 									</span>
@@ -160,7 +156,7 @@
 										</el-tooltip>
 									</div>
 <!--									-->
-									<span v-else :class="item.isWrap ? 'wrap_style' : ''">
+									<span v-else :class="item.isWrap ? 'wrap_style' : item.isRight ? 'right_style' : '' " >
 										{{ scope.row[item.displayValue] === 0 || scope.row[item.displayValue] === '0' ? 0 : scope.row[item.displayValue] || '--' }}</span>
 										
 								</el-tooltip>
@@ -309,6 +305,7 @@ export default {
 		},
 		listData: {
 			handler(newValue, oldValue) {
+				// console.log(newValue,'试试？')
 				this.tableList = newValue
 			},
 			deep: true
@@ -420,8 +417,9 @@ export default {
 			if (amount === '--' || !amount) {
 				return '--'
 			}
+			return amount
 			let denomRule = /[0-9.]+/
-			return amount.match(denomRule)[0] ;
+			// return amount.match(denomRule)[0] ;
 		},
 		getAmountUnit(amount) {
 			if (amount === ' ' || amount === '-') {
@@ -431,7 +429,8 @@ export default {
 				return ''
 			}
 			let denomRule = /[A-Za-z\/]+/
-			return  amount.match(denomRule)?.length >= 1 ? amount.match(denomRule)[0] : '';
+			return amount
+			// return  amount.match(denomRule)?.length >= 1 ? amount.match(denomRule)[0] : '';
 		},
 		isShowHref(address) {
 			let storageAddressPrefix = JSON.parse(this.sessionStorage) || null
@@ -598,14 +597,18 @@ export default {
 							let secondPracticalWidthCount = this.tableListWidth.filter(item => {
 								return item <= 40
 							})
-							
+							console.log(practicalWidth,'内容所占的空间')
 							// 为每一列设置补偿量
 							if(practicalWidth < tableWidth && this?.columns?.length){
 								let compensationWidth = (tableWidth - practicalWidth) / this.columns.length
+								if(compensationWidth < 20){
+									compensationWidth = 20
+								}
 								let secondPracticalWidth = 0
 								if(secondPracticalWidthCount?.length){
 									secondPracticalWidth = (compensationWidth * secondPracticalWidthCount.length) / (this.columns.length - secondPracticalWidthCount.length )
 								}
+								console.log(secondPracticalWidth,'二次补偿量')
 								this.tableListWidth = this.tableListWidth.map( item => {
 									if(item <= 40){
 										item = 40
@@ -686,10 +689,13 @@ export default {
 		
 		}
 		.denom_style{
-			width: 0.5rem;
-			overflow: hidden;
-			white-space: nowrap;
-			text-overflow: ellipsis;
+			//width: auto;
+			//overflow: hidden;
+			//white-space: nowrap;
+			//text-overflow: ellipsis;
+			position: relative;
+			top:0;
+			left: -0.1rem;
 		}
 		.list_component_footer {
 			display: flex;
@@ -792,6 +798,10 @@ export default {
 		}
 		.route_link_style {
 			color: $theme_c !important;
+			//white-space: normal !important;
+		}
+		.href_route_link_style{
+			color: $theme_c !important;
 			white-space: normal !important;
 		}
 		.tag_num {
@@ -854,18 +864,21 @@ export default {
 			display: flex;
 			align-items: center;
 			white-space: nowrap;
+			width: 100%;
+			
 			.center_style{
-				flex: 1;
-				text-align: center;
+				position: absolute;
+				left: 80%;
+				overflow: visible !important;
 			}
 			.right_style{
-				flex: 1;
-				display: flex;
-				justify-content: space-between;
-				span:first-child{
-					flex: 1;
-					margin-right: 0.1rem;
-					text-align: right;
+				width: 120%;
+				text-align: right;
+				display: inline-block;
+				.denom_style{
+					position: relative;
+					top:0;
+					left: 0;
 				}
 			}
 			.status {

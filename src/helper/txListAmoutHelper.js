@@ -70,7 +70,7 @@ export async function getAmountByTx (message, events, isShowDenom) {
 					const sendAmount = msg && msg.amount.length > 0 ? await converCoin(msg.amount[0]) : null
 					// formatPriceToFixed 四舍五入 toDecimal 截取
 					amount = sendAmount && sendAmount.amount && sendAmount.denom ?  isShowDenom ? `${Tools.toDecimal(sendAmount.amount,amountDecimals) } ${sendAmount.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(sendAmount.amount,amountDecimals) }` : '--';
-					if(sendAmount?.denom && sendAmount.denom.startsWith('SWAP') || sendAmount.denom.startsWith('LPT') || sendAmount.denom.startsWith('swap') || sendAmount.denom.startsWith('lpt')){
+					if(sendAmount?.denom &&  sendAmount.denom.startsWith('LPT')  || sendAmount.denom.startsWith('lpt')){
 						amount = ''
 					}
 				}else {
@@ -268,7 +268,7 @@ export async function getAmountByTx (message, events, isShowDenom) {
 				break;
 			// 联盟链和公有链 ibc交易类型名称一致
 			case TX_TYPE.recv_packet:
-				if(msg.packet && msg.packet.data) {    
+				if(msg.packet && msg.packet.data) {
 					let originalDenom = TxHelper.getOriginalDenomFromPacket(msg.packet,txType);
 					let amountMaxUnit = await converCoin({
 						denom:originalDenom || msg.packet.data.denom,
@@ -334,7 +334,7 @@ export async function getAmountByTx (message, events, isShowDenom) {
 					let originalDenom = TxHelper.getOriginalDenomFromPacket(msg.packet,txType);
 					let amountMaxUnit = await converCoin({
 						amount:msg.packet.data.amount,
-						denom:originalDenom || msg.packet.data.denom,
+						denom: originalDenom || msg.packet.data.denom,
 					});
 					amount = isShowDenom ? `${Tools.toDecimal(amountMaxUnit.amount,amountDecimals)} ${amountMaxUnit.denom.toUpperCase()}` : `${Tools.toDecimal(amountMaxUnit.amount,amountDecimals)}`;
 				}

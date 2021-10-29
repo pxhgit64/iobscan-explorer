@@ -17,6 +17,11 @@ export const needAddColumn = {
             isRight: true
         },
         {
+            label: '',
+            displayValue: 'denom',
+            isShowDenomTip: true,
+        },
+        {
             label: i18n.t('ExplorerLang.table.from'),
             displayValue: 'from',
             nativeValue: 'from',
@@ -43,6 +48,11 @@ export const needAddColumn = {
             isRight: true
         },
         {
+            label: '',
+            displayValue: 'denom',
+            isShowDenomTip: true,
+        },
+        {
             label:i18n.t('ExplorerLang.table.from'),
             displayValue: 'from',
             nativeValue: 'from',
@@ -63,8 +73,12 @@ export const needAddColumn = {
         {
             label: i18n.t('ExplorerLang.table.amount'),
             displayValue: 'amount',
-            isShowDenomTip:true,
             isRight: true
+        },
+        {
+            label: '',
+            displayValue: 'denom',
+            isShowDenomTip: true,
         },
         {
             label: i18n.t('ExplorerLang.table.from'),
@@ -89,8 +103,12 @@ export const needAddColumn = {
         {
             label: i18n.t('ExplorerLang.table.amount'),
             displayValue: 'amount',
-            isShowDenomTip: true,
             isRight: true
+        },
+        {
+            label: '',
+            displayValue: 'denom',
+            isShowDenomTip: true,
         },
         {
             label: i18n.t('ExplorerLang.table.from'),
@@ -115,8 +133,12 @@ export const needAddColumn = {
         {
             label: i18n.t('ExplorerLang.table.amount'),
             displayValue: 'amount',
-            isShowDenomTip: true,
             isRight: true
+        },
+        {
+            label: '',
+            displayValue: 'denom',
+            isShowDenomTip: true,
         },
         {
             label: i18n.t('ExplorerLang.table.from'),
@@ -142,8 +164,12 @@ export const needAddColumn = {
         {
             label: i18n.t('ExplorerLang.table.amount'),
             displayValue: 'amount',
-            isShowDenomTip: true,
             isRight: true
+        },
+        {
+            label: '',
+            displayValue: 'denom',
+            isShowDenomTip: true,
         },
         {
             label: i18n.t('ExplorerLang.table.from'),
@@ -181,8 +207,12 @@ export const needAddColumn = {
         {
             label: i18n.t('ExplorerLang.table.amount'),
             displayValue: 'amount',
-            isShowDenomTip: true,
             isRight: true
+        },
+        {
+            label: '',
+            displayValue: 'denom',
+            isShowDenomTip: true,
         },
         {
             label: i18n.t('ExplorerLang.table.depositor'),
@@ -778,14 +808,22 @@ export const needAddColumn = {
         {
             label: i18n.t('ExplorerLang.table.swapAmount1'),
             displayValue: 'swapAmount1',
-            isShowDenomTip: true,
             isRight: true
+        },
+        {
+            label: '',
+            displayValue: 'swapAmount1Denom',
+            isShowDenomTip: true,
         },
         {
             label: i18n.t('ExplorerLang.table.swapAmount2'),
             displayValue: 'swapAmount2',
-            isShowDenomTip: true,
             isRight: true
+        },
+        {
+            label: '',
+            displayValue: 'swapAmount2Denom',
+            isShowDenomTip: true,
         },
     ],
     add_liquidity: [
@@ -801,14 +839,22 @@ export const needAddColumn = {
         {
             label: i18n.t('ExplorerLang.table.swapAmount1'),
             displayValue: 'swapAmount1',
-            isShowDenomTip: true,
             isRight: true
+        },
+        {
+            label: '',
+            displayValue: 'swapAmount1Denom',
+            isShowDenomTip: true,
         },
         {
             label: i18n.t('ExplorerLang.table.swapAmount2'),
             displayValue: 'swapAmount2',
-            isShowDenomTip: true,
             isRight: true
+        },
+        {
+            label: ' ',
+            displayValue: 'swapAmount2Denom',
+            isShowDenomTip: true,
         },
     ],
     remove_liquidity: [
@@ -828,18 +874,32 @@ export const needAddColumn = {
             isRight: true
         },
         {
+            label: '',
+            displayValue: 'swapAmount1Denom',
+            isShowDenomTip: true,
+        },
+        {
             label: i18n.t('ExplorerLang.table.swapAmount2'),
             displayValue: 'swapAmount2',
             isShowDenomTip: true,
             isRight: true
+        },
+        {
+            label: ' ',
+            displayValue: 'swapAmount2Denom',
+            isShowDenomTip: true,
         },
     ],
     transfer: [
         {
             label: i18n.t('ExplorerLang.table.amount'),
             displayValue: 'amount',
-            isShowDenomTip: true,
             isRight: true
+        },
+        {
+            label: '',
+            displayValue: 'denom',
+            isShowDenomTip: true,
         },
         {
             label: i18n.t('ExplorerLang.table.sender'),
@@ -864,8 +924,12 @@ export const needAddColumn = {
         {
             label: i18n.t('ExplorerLang.table.amount'),
             displayValue: 'amount',
-            isShowDenomTip: true,
             isRight: true
+        },
+        {
+            label: '',
+            displayValue: 'denom',
+            isShowDenomTip: true,
         },
         {
             label: i18n.t('ExplorerLang.table.sender'),
@@ -890,8 +954,12 @@ export const needAddColumn = {
         {
             label: i18n.t('ExplorerLang.table.amount'),
             displayValue: 'amount',
-            isShowDenomTip: true,
             isRight: true
+        },
+        {
+            label: '',
+            displayValue: 'denom',
+            isShowDenomTip: true,
         },
         {
             label: i18n.t('ExplorerLang.table.sender'),
@@ -915,8 +983,12 @@ export const needAddColumn = {
         {
             label: i18n.t('ExplorerLang.table.amount'),
             displayValue: 'amount',
-            isShowDenomTip: true,
             isRight: true
+        },
+        {
+            label:'',
+            displayValue: 'denom',
+            isShowDenomTip: true,
         },
         {
             label: i18n.t('ExplorerLang.table.sender'),
@@ -941,8 +1013,12 @@ export const needAddColumn = {
         {
             label: i18n.t('ExplorerLang.table.amount'),
             displayValue: 'amount',
-            isShowDenomTip: true,
             isRight: true
+        },
+        {
+            label:'',
+            displayValue: 'denom',
+            isShowDenomTip: true,
         },
         {
             label: i18n.t('ExplorerLang.table.sender'),
@@ -1184,9 +1260,13 @@ export const needAddColumn = {
             label:i18n.t('ExplorerLang.table.initialDeposit'),
             displayValue: 'amount',
             nativeValue: 'amount',
-            isShowDenomTip: true,
             isRight: true
         },
+        {
+            label:'',
+            displayValue: 'denom',
+            isShowDenomTip: true
+        }
     ],
     deposit: [
         {
@@ -1421,8 +1501,12 @@ export const needAddColumn = {
         {
             label: i18n.t('ExplorerLang.table.amount'),
             displayValue: 'amount',
-            isShowDenomTip: true,
             isRight: true
+        },
+        {
+            label: '',
+            displayValue: 'denom',
+            isShowDenomTip: true,
         },
         {
             label: i18n.t('ExplorerLang.table.sender'),
