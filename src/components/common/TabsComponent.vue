@@ -7,7 +7,7 @@
 					v-for="(item,index) in tabList"
 					:key="item.label"
 					@click.stop="clickButton(item,index)"
-					:class="Number($store.state.currentTxModelIndex) === index ? 'active_style' :'default_style'">{{ item.label }}
+					:class="Number($store.state.currentTxModelIndex) === index ? 'active_style' :'default_style'">{{setDisplayMagType(item.label)}}
 				</el-button>
 			</div>
 		</vue-scroll>
@@ -32,7 +32,9 @@
 </template>
 
 <script>
-import {TX_TYPE_DISPLAY} from "../../constant";
+import Tools from "../../util/Tools";
+import {getTxType} from "../../helper/IritaHelper";
+import prodConfig from "../../productionConfig"
 export default {
 	name: "TabsComponent",
 	data() {
@@ -43,6 +45,9 @@ export default {
 			positionTop: 0,
 			currentMsgTypeClickIndex: '',
 			currentMsgType:  null,
+			TX_TYPE_DISPLAY:{},
+			moduleTxTypeDisplay:[],
+			moduleMap:new Map(),
 			opsConfig: {
 				rail: {
 					opacity: 1,
@@ -107,11 +112,49 @@ export default {
 		}
 	},
 	mounted() {
+		this.getTxTypeData()
+		const {txType} = Tools.urlParser();
+		let typeListData = null,moduleData = null;
+		if(sessionStorage.getItem('typeList')){
+			typeListData = JSON.parse(sessionStorage.getItem('typeList')) || null
+		}
+		if(sessionStorage.getItem('txType')){
+			moduleData = JSON.parse(sessionStorage.getItem('txType')).txTypeData || null
+		}
+		this.moduleMap = new Map()
+		if(moduleData?.length){
+			moduleData.forEach( item => {
+				this.moduleMap.set(item.module_en,item)
+			})
+		}
+		if(typeListData?.length){
+			typeListData.forEach( (item,index) =>{
+				if(item.children && txType){
+					item.children.forEach( item =>{
+						if(item.value === txType){
+							sessionStorage.setItem('lastChoiceMsgModelIndex',index)
+							this.$store.commit('currentTxModelIndex',index)
+						}
+					})
+				}
+			})
+		}
 		this.setTagContentHeight()
 		window.addEventListener("resize", this.windowResizeFunc,true);
 		
 	},
 	methods: {
+		setDisplayMagType(value){
+			if(this.moduleMap.has(value)){
+				if(prodConfig.lang === 'CN'){
+					return this.moduleMap.get(value).module_cn
+				}else if(prodConfig.lang === 'EN'){
+					return this.moduleMap.get(value).module_en
+				}
+			}else {
+				return value
+			}
+		},
 		windowResizeFunc(){
 			this.setTagContentHeight()
 		},
@@ -123,9 +166,17 @@ export default {
 		},
 		setDisplayMsgType(msgType){
 			if(msgType){
-				return TX_TYPE_DISPLAY[msgType]
+				return this.TX_TYPE_DISPLAY[msgType] || msgType
 			}
 			return ''
+		},
+		async getTxTypeData() {
+			try {
+				let res = await getTxType()
+				this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+			} catch (error) {
+				console.log(error)
+			}
 		},
 		clickButton(value, index) {
 			// this.isShowChildren = false

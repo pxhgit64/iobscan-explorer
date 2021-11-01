@@ -131,7 +131,7 @@ export async function converCoin (_coin) {
         //         coin.denom = (ibcDenomPrefix + res.denom_trace.base_denom).toUpperCase()
         //     }
         // }
-        const ibcTest = /(ibc|IBC)\/[0-9A-Za-z]{54}/ 
+        const ibcTest = /(ibc|IBC)\/[0-9A-Za-z]{54}/
         if(ibcTest.test(coin.denom)){
           const data = await uploadIbcToken(coin.denom)
           if(data?.symbol){

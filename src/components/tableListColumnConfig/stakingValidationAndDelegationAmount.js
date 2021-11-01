@@ -11,5 +11,11 @@ export default [
     {
         label: i18n.t('ExplorerLang.table.amount'),
         displayValue: 'amount',
+        isRight:true,
     },
+    {
+        label: '',
+        displayValue: 'denom',
+        isShowDenomTip: true
+    }
 ]

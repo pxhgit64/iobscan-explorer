@@ -6,8 +6,7 @@
             <el-button type="primary" size="small" class="search_btn" @click="handleSearchClick">
                 {{ $t('ExplorerLang.nftAsset.search') }}
             </el-button>
-            <el-button type="primary" size="small" class="reset_btn" @click="resetFilterCondition"><i
-                class="iconfont iconzhongzhi"></i></el-button>
+            
         </div>
     </div>
 
@@ -32,10 +31,10 @@ export default {
         handleSearchClick() {
             this.$emit('searchInput', this.input)
         },
-        resetFilterCondition() {
-            this.input = ''
-            this.$emit('resetFilterCondition', this.input)
-        }
+		resetFilterCondition() {
+			this.input = ''
+			this.$emit('resetFilterCondition',this.input)
+		}
     }
 }
 </script>
@@ -45,8 +44,8 @@ export default {
     display: flex;
     align-items: center;
     flex: 1;
-    justify-content: flex-end;
-
+    justify-content: flex-start;
+	margin: 0.2rem 0;
     .nft_search_content {
         max-width: 3.5rem;
     }
@@ -61,11 +60,12 @@ export default {
             margin: 0 0.1rem;
         }
 
-        .reset_btn {
-            background: $theme_c;
-            border-color: $theme_c;
-            padding: 0.07rem;
-        }
+        
     }
+	::v-deep .el-input {
+		.el-input__inner:focus {
+			border-color: $theme_c !important;
+		}
+	}
 }
 </style>

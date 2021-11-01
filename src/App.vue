@@ -215,4 +215,8 @@ export default {
 	margin-left: 40px !important;
 	margin-right: 40px !important;
 }
+.el-table th.el-table__cell{
+	overflow: visible !important;
+	background-color: transparent!important;
+}
 </style>

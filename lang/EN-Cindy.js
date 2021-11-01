@@ -45,6 +45,9 @@ export const ExplorerLang = {
         author: 'Author',
         requestContentId:'Request Context ID',
         nftId:'NFT ID',
+        numberOfTo:'Number of To',
+        denomId:'Denom ID',
+        denomName:'Denom Name',
         recipient: 'Recipient',
         receiver: 'Receiver',
         feedName: 'Feed Name',
@@ -113,11 +116,11 @@ export const ExplorerLang = {
         updateTime:'Timestamp',
         // 新增
         commission: 'Commission',
-        bondedTokens: 'Bonded_Tokens',
+        bondedTokens: 'Bonded Tokens',
         uptime: 'Uptime',
         delegators: 'Delegators',
-        bondHeight: 'Bond_Height',
-        unbondingHeight: 'Unbonding_Height', // 新增
+        bondHeight: 'Bond Height',
+        unbondingHeight: 'Unbonding Height', // 新增
         address: 'Address',
         amount: 'Amount',
         swapAmount1: 'Amount1',
@@ -146,9 +149,9 @@ export const ExplorerLang = {
         votingEndTime: 'Voting Endtime',
         voter: 'Voter',
         voteOption: 'Vote Option',
-        proposalType: 'Proposal_Type',
-        proposalID: 'Proposal_ID',
-        proposalTitle: 'Proposal_Title',
+        proposalType: 'Proposal Type',
+        proposalID: 'Proposal ID',
+        proposalTitle: 'Proposal Title',
         proposer: 'Proposer',
         submited: 'Submited',
         proposalStatus: 'Status',
@@ -229,6 +232,7 @@ export const ExplorerLang = {
         validatorSet: 'Validator Set'
     },
     transactions:{
+        title:'Transactions',
         txs: 'Txs',
         search: 'Search',
         status: ' Status',
@@ -445,7 +449,7 @@ export const ExplorerLang = {
             responseThreshold: 'Response Threshold',
         },
         random: {
-            blockInterval: 'Block_interval',
+            blockInterval: 'Block interval',
             oracle: 'Oracle',
         },
         // 新增
@@ -496,7 +500,7 @@ export const ExplorerLang = {
             misbehaviour: 'Misbehaviour',
             counterparty: 'Counterparty',
             version: 'version',
-            delayPeriod: 'delay_period',
+            delayPeriod: 'delay period',
             previousConnectionId: 'PreviousConnectionId',
             counterpartyVersions: 'CounterpartyVersions',
             proofHeight: 'ProofHeight',
@@ -641,7 +645,7 @@ export const ExplorerLang = {
             scatter: {
                 title: 'Commission Rate & Bonded Tokens Distribution',
                 xAxis: 'Commission Rate (%)',
-                yAxis: 'Bonded_Token',
+                yAxis: 'Bonded Token',
                 tooltip: {
                     commissionRate: 'Commission Rate',
                     bondedTokens: 'Bonded Tokens',

@@ -423,7 +423,7 @@
                         this.tags = tags.length > 0 ? tags : '--';
                         this.hash = res.tx_hash;
                         this.height = res.height;
-                        this.time = Tools.getDisplayDate(res.time);
+                        this.time = Tools.formatLocalTime(res.time);
                     }
 
                 } catch (e) {
@@ -438,7 +438,7 @@
                         let bindings = await getServiceBindingByServiceName(this.$route.query.serviceName);
                         if(bindings.result){
                             serviceList.data.forEach((s) =>{
-                                s.bindTime = Tools.getDisplayDate(s.bindTime);
+                                s.bindTime = Tools.formatLocalTime(s.bindTime);
                                 bindings.result.forEach((b) =>{
                                     let deposit = `${b.deposit[0].amount} ${b.deposit[0].denom}`;
                                     if(s.provider === b.provider){

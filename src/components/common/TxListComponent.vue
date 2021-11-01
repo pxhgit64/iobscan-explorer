@@ -292,14 +292,14 @@
                             if(tx.type === TX_TYPE.send) {
                                 tx && tx.msgs && tx.msgs[0] && tx.msgs[0].msg && tx.msgs[0].msg.amount && tx.msgs[0].msg.amount.length > 1 ? isShowMore = true : ''
                                 let denom = tx?.msgs?.[0]?.msg?.amount?.[0]?.denom
-                                if(denom !== undefined && /(swap|SWAP)/g.test(denom)) {
-                                isShowMore = true
+                                if(denom !== undefined && /(lpt|LPT|lpt-|LPT-)/g.test(denom)) {
+                                	isShowMore = true
                                 }
                             } 
                             this.txDataList.push({
                                     txHash : tx.tx_hash,
                                     blockHeight : tx.height,
-                                    txType : (tx.msgs || []).map(item=>this.TX_TYPE_DISPLAY[item.type] || item.type),
+                                    txType : (tx.msgs || []).map(item.type),
                                     from,
                                     fromMonikers,
                                     toMonikers,

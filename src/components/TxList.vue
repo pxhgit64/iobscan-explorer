@@ -2,10 +2,9 @@
 	<div class="tx_content_container">
 		<div class="tx_content_wrap">
 			<div class="tx_content_header_title">
-				<p class="tc_content_header">{{$t('ExplorerLang.transactions.txs')}}</p>
+				<p class="tc_content_header">{{$t('ExplorerLang.transactions.title')}}</p>
 			</div>
 			<list-component
-				:tableWidth="'11.5rem'"
 				:is-show-token-type="true"
 				:is-loading="isLoading"
 				:token-symbol="mainTokenSymbol"
@@ -41,7 +40,7 @@ import Tools from "../util/Tools"
 import MPagination from "./common/MPagination";
 import TxListComponent from "./common/TxListComponent";
 import {TxHelper} from "../helper/TxHelper";
-import {getTxList, getAllTxTypes} from '../service/api';
+import {getTxList, getAllTxTypes, getIbcTransferByHash} from '../service/api';
 import {
 	TX_TYPE,
 	TX_STATUS,
@@ -305,6 +304,7 @@ export default {
 					slot: 'allTxType',
 				});
 				this.txTypeOption = typeList;
+				sessionStorage.setItem('typeList',JSON.stringify(typeList))
 				this.txTypeArray = TxHelper.getTxTypeArray(this.txTypeOption, this.txType)
 			} catch (e) {
 				console.error(e);
@@ -375,14 +375,16 @@ export default {
 				return "";
 			}
 			let denomRule = /[0-9.]+/
-			return amount.match(denomRule)[0];
+			let result = amount.match(denomRule)
+			return result ? amount.match(denomRule)[0] : ' ';
 		},
 		getAmountUnit(amount) {
 			if (!amount) {
 				return "";
 			}
 			let denomRule = /[A-Za-z\/]+/
-			return amount.match(denomRule)[0];
+			let result = amount.match(denomRule)
+			return result ? amount.match(denomRule)[0] : ' ';
 		},
 		/*getParamsByUrlHash(){
 			let txType,
@@ -572,126 +574,127 @@ export default {
 								if(item?.type === TX_TYPE.multisend && item?.msg?.outputs?.length){
 									numberOfToArr.push(item.msg.outputs.length)
 								}
-								if(msg?.type === TX_TYPE.respond_service && msg?.msg?.request_id){
-									requestIdArr.push(msg.msg.request_id)
+								if(item?.type === TX_TYPE.respond_service && item?.msg?.request_id){
+									requestIdArr.push(item.msg.request_id)
 								}
-								if(msg?.type === TX_TYPE.burn_nft
-									|| msg?.type === TX_TYPE.edit_nft
-									|| msg?.type === TX_TYPE.mint_nft
-									||  msg?.type === TX_TYPE.transfer_nft
-									&& msg?.msg?.denom && msg?.msg?.id){
-									denomIdArr.push(msg.msg.denom)
-									nftIdArr.push(msg.msg.id)
+								if(item?.type === TX_TYPE.burn_nft
+									|| item?.type === TX_TYPE.edit_nft
+									|| item?.type === TX_TYPE.mint_nft
+									||  item?.type === TX_TYPE.transfer_nft
+									&& item?.msg?.denom && item?.msg?.id){
+									denomIdArr.push(item.msg.denom)
+									nftIdArr.push(item.msg.id)
 								}
-								if(msg?.type === TX_TYPE.start_feed || msg?.type === TX_TYPE.edit_feed || msg?.type === TX_TYPE.pause_feed || msg?.type === TX_TYPE.create_feed  && msg?.msg?.feed_name && msg?.msg?.creator){
-									feedNameArr.push(msg.msg.feed_name)
-									oracleCreatorArr.push(msg.msg.creator)
-								}
-								
-								if(msg?.type=== TX_TYPE.request_rand && msg?.msg?.consumer){
-									consumerArr.push(msg.msg.consumer)
-								}
-								if(msg?.type=== TX_TYPE.create_client
-									|| msg?.type=== TX_TYPE.update_client
-									&& msg?.msg?.client_id){
-									clientIdArr.push(msg.msg.client_id)
-								}
-								if(msg?.type=== TX_TYPE.call_service
-									|| msg?.type=== TX_TYPE.respond_service
-									|| msg?.msg?.consumer && msg?.msg?.request_context_id && msg?.msg?.service_name){
-									consumerArr.push(msg.msg.consumer)
-									requestContextIdArr.push(msg.msg.request_context_id)
-									serviceNameArr.push( msg.msg.service_name)
-									
-								}
-								if(msg?.type === TX_TYPE.issue_denom && msg?.msg?.id && msg?.msg?.name &&  msg?.msg?.sender){
-									senderArr.push(msg.msg.sender)
-									denomIdArr.push(msg.msg.id)
-									denomNameArr.push(msg.msg.name)
-								}
-								if(msg?.type === TX_TYPE.channel_open_init
-									|| msg?.type === TX_TYPE.channel_open_confirm
-									|| msg?.type === TX_TYPE.channel_open_try
-									|| msg?.type === TX_TYPE.channel_open_ack
-									&& msg?.msg?.channel_id && msg?.msg?.port_id){
-									portIdArr.push(msg.msg.port_id)
-									channelIdArr.push(msg.msg.channel_id)
-								}
-								if(msg?.type === TX_TYPE.connection_open_init
-									|| msg?.type === TX_TYPE.connection_open_confirm
-									|| msg?.type === TX_TYPE.connection_open_try
-									|| msg?.type === TX_TYPE.connection_open_ack
-									&& msg?.msg?.connection_id && msg?.msg?.client_id){
-									clientIdArr.push(msg.msg.client_id)
-									connectionIdArr.push(msg.msg.connection_id)
+
+								if(item?.type === TX_TYPE.start_feed || item?.type === TX_TYPE.edit_feed || item?.type === TX_TYPE.pause_feed || item?.type === TX_TYPE.create_feed  && item?.msg?.feed_name && item?.msg?.creator){
+									feedNameArr.push(item.msg.feed_name)
+									oracleCreatorArr.push(item.msg.creator)
 								}
 								
-								if(msg?.type === TX_TYPE.create_record && msg?.msg?.contents?.length && msg?.msg?.contents[0]?.digest  && msg?.msg?.contents[0]?.digest_algo){
-									digestArr.push(msg.msg.contents[0].digest)
-									digest_algoArr.push(msg.msg.contents[0].digest_algo)
+								if(item?.type=== TX_TYPE.request_rand && item?.msg?.consumer){
+									consumerArr.push(item.msg.consumer)
 								}
-								if(msg?.type === TX_TYPE.issue_token && msg?.msg?.symbol && msg?.msg?.owner && msg?.msg?.min_unit){
-									symbolArr.push(msg.msg.symbol)
-									minUnitArr.push(msg.msg.min_unit)
-									ownerArr.push(msg.msg.owner)
+								if(item?.type=== TX_TYPE.create_client
+									|| item?.type=== TX_TYPE.update_client
+									&& item?.msg?.client_id){
+									clientIdArr.push(item.msg.client_id)
 								}
-								if(msg?.type === TX_TYPE.acknowledge_packet && msg?.msg?.packet?.data?.receiver){
-									receiverArr.push(msg.msg.packet.data.receiver)
-								}
-								if(msg?.type === TX_TYPE.edit_token && msg?.msg?.symbol  && msg?.msg?.owner){
-									symbolArr.push( msg.msg.symbol)
-									ownerArr.push(msg.msg.owner)
-								}
-								if(msg?.type === TX_TYPE.transfer_token_owner && msg?.msg?.symbol && msg?.msg?.dst_owner  && msg?.msg?.src_owner){
-									symbolArr.push(msg.msg.symbol)
-									dstOwnerArr.push(msg.msg.dst_owner)
-									srcOwnerArr.push(msg.msg.src_owner)
-								}
-								if(msg?.type === TX_TYPE.mint_token && msg?.msg?.owner && msg?.msg?.symbol && msg?.msg?.amount  && msg?.msg?.to){
-									symbolArr.push( msg.msg.symbol)
-									ownerArr.push(msg.msg.owner)
-								}
-								if(msg?.type === TX_TYPE.burn_token && msg?.msg?.sender && msg?.msg?.symbol && msg?.msg?.amount){
-									symbolArr.push( msg.msg.symbol)
-									senderArr.push(msg.msg.sender)
-								}
-								if(msg?.type === TX_TYPE.vote && msg?.msg?.option && msg?.msg?.proposal_id && msg?.msg?.voter){
-									proposalIdArr.push(msg.msg.proposal_id)
-									optionArr.push(msg.msg.option)
-									voterArr.push(msg.msg.voter)
-								}
-								if(msg?.type === TX_TYPE.deposit && msg?.msg?.depositor && msg?.msg?.proposal_id ){
-									proposalIdArr.push(msg.msg.proposal_id)
-									depositorArr.push(msg.msg.depositor)
-								}
-								if(msg?.type === TX_TYPE.submit_proposal && msg?.msg?.content?.title ){
-									title = msg.msg.content.title
-								}
-								if(msg?.type === TX_TYPE.pause_request_context
-									|| msg?.type === TX_TYPE.start_request_context
-									|| msg?.type === TX_TYPE.update_request_context
-									|| msg?.type === TX_TYPE.kill_request_context
-									&& msg?.msg?.consumer && msg?.msg?.request_context_id){
-									consumerArr.push(msg.msg.consumer)
-									requestContextIdArr.push(msg.msg.request_context_id)
-								}
-								if(msg?.type === TX_TYPE.define_service && msg?.msg?.author && msg?.msg?.name){
-									authorArr.push(msg.msg.author)
-									serviceNameArr.push( msg.msg.service_name)
-								}
-								if(msg?.type === TX_TYPE.bind_service
-									|| msg?.type === TX_TYPE.refund_service_deposit
-									|| msg?.type === TX_TYPE.disable_service_binding
-									|| msg?.type === TX_TYPE.enable_service_binding
-									|| msg?.type === TX_TYPE.update_service_binding
+								if(item?.type=== TX_TYPE.call_service
+									|| item?.type=== TX_TYPE.respond_service
+									|| item?.msg?.consumer && item?.msg?.request_context_id && item?.msg?.service_name){
+									consumerArr.push(item.msg.consumer)
+									requestContextIdArr.push(item.msg.request_context_id)
+									serviceNameArr.push( item.msg.service_name)
 									
-									&& msg?.msg?.owner && msg?.msg?.provider && msg?.msg?.service_name){
-									ownerArr.push(msg.msg.owner)
-									providerArr.push( msg.msg.provider)
-									serviceNameArr.push( msg.msg.service_name)
 								}
-								if(msg?.type=== TX_TYPE.update_request_context && msg?.msg?.ex && msg?.msg?.ex?.service_name){
-									serviceNameArr.push( msg.msg.service_name)
+								if(item?.type === TX_TYPE.issue_denom && item?.msg?.id && item?.msg?.name &&  item?.msg?.sender){
+									senderArr.push(item.msg.sender)
+									denomIdArr.push(item.msg.id)
+									denomNameArr.push(item.msg.name)
+								}
+								if(item?.type === TX_TYPE.channel_open_init
+									|| item?.type === TX_TYPE.channel_open_confirm
+									|| item?.type === TX_TYPE.channel_open_try
+									|| item?.type === TX_TYPE.channel_open_ack
+									&& item?.msg?.channel_id && item?.msg?.port_id){
+									portIdArr.push(item.msg.port_id)
+									channelIdArr.push(item.msg.channel_id)
+								}
+								if(item?.type === TX_TYPE.connection_open_init
+									|| item?.type === TX_TYPE.connection_open_confirm
+									|| item?.type === TX_TYPE.connection_open_try
+									|| item?.type === TX_TYPE.connection_open_ack
+									&& item?.msg?.connection_id && item?.msg?.client_id){
+									clientIdArr.push(item.msg.client_id)
+									connectionIdArr.push(item.msg.connection_id)
+								}
+								
+								if(item?.type === TX_TYPE.create_record && item?.msg?.contents?.length && item?.msg?.contents[0]?.digest  && item?.msg?.contents[0]?.digest_algo){
+									digestArr.push(item.msg.contents[0].digest)
+									digest_algoArr.push(item.msg.contents[0].digest_algo)
+								}
+								if(item?.type === TX_TYPE.issue_token && item?.msg?.symbol && item?.msg?.owner && item?.msg?.min_unit){
+									symbolArr.push(item.msg.symbol)
+									minUnitArr.push(item.msg.min_unit)
+									ownerArr.push(item.msg.owner)
+								}
+								if(item?.type === TX_TYPE.acknowledge_packet && item?.msg?.packet?.data?.receiver){
+									receiverArr.push(item.msg.packet.data.receiver)
+								}
+								if(item?.type === TX_TYPE.edit_token && item?.msg?.symbol  && item?.msg?.owner){
+									symbolArr.push( item.msg.symbol)
+									ownerArr.push(item.msg.owner)
+								}
+								if(item?.type === TX_TYPE.transfer_token_owner && item?.msg?.symbol && item?.msg?.dst_owner  && item?.msg?.src_owner){
+									symbolArr.push(item.msg.symbol)
+									dstOwnerArr.push(item.msg.dst_owner)
+									srcOwnerArr.push(item.msg.src_owner)
+								}
+								if(item?.type === TX_TYPE.mint_token && item?.msg?.owner && item?.msg?.symbol && item?.msg?.amount  && item?.msg?.to){
+									symbolArr.push( item.msg.symbol)
+									ownerArr.push(item.msg.owner)
+								}
+								if(item?.type === TX_TYPE.burn_token && item?.msg?.sender && item?.msg?.symbol && item?.msg?.amount){
+									symbolArr.push( item.msg.symbol)
+									senderArr.push(item.msg.sender)
+								}
+								if(item?.type === TX_TYPE.vote && item?.msg?.option && item?.msg?.proposal_id && item?.msg?.voter){
+									proposalIdArr.push(item.msg.proposal_id)
+									optionArr.push(item.msg.option)
+									voterArr.push(item.msg.voter)
+								}
+								if(item?.type === TX_TYPE.deposit && item?.msg?.depositor && item?.msg?.proposal_id ){
+									proposalIdArr.push(item.msg.proposal_id)
+									depositorArr.push(item.msg.depositor)
+								}
+								if(item?.type === TX_TYPE.submit_proposal && item?.msg?.content?.title ){
+									title = item.msg.content.title
+								}
+								if(item?.type === TX_TYPE.pause_request_context
+									|| item?.type === TX_TYPE.start_request_context
+									|| item?.type === TX_TYPE.update_request_context
+									|| item?.type === TX_TYPE.kill_request_context
+									&& item?.msg?.consumer && item?.msg?.request_context_id){
+									consumerArr.push(item.msg.consumer)
+									requestContextIdArr.push(item.msg.request_context_id)
+								}
+								if(item?.type === TX_TYPE.define_service && item?.msg?.author && item?.msg?.name){
+									authorArr.push(item.msg.author)
+									serviceNameArr.push( item.msg.service_name)
+								}
+								if(item?.type === TX_TYPE.bind_service
+									|| item?.type === TX_TYPE.refund_service_deposit
+									|| item?.type === TX_TYPE.disable_service_binding
+									|| item?.type === TX_TYPE.enable_service_binding
+									|| item?.type === TX_TYPE.update_service_binding
+									
+									&& item?.msg?.owner && item?.msg?.provider && item?.msg?.service_name){
+									ownerArr.push(item.msg.owner)
+									providerArr.push( item.msg.provider)
+									serviceNameArr.push( item.msg.service_name)
+								}
+								if(item?.type=== TX_TYPE.update_request_context && item?.msg?.ex && item?.msg?.ex?.service_name){
+									serviceNameArr.push( item.msg.service_name)
 								}
 								//新增
 								if (msg?.type === TX_TYPE.tibc_nft_transfer && msg?.msg?.id && msg?.msg?.sender && msg?.msg?.dest_chain) {
@@ -903,6 +906,143 @@ export default {
 							if(msg?.type=== TX_TYPE.update_request_context && msg?.msg?.ex && msg?.msg?.ex?.service_name){
 								serviceName = msg.msg.ex.service_name
 							}
+						}
+						
+						let addrObj = TxHelper.getFromAndToAddressFromMsg(msg);
+						amounts.push(msg ? sameMsg?.length > 1 ? ' ' : await getAmountByTx(msg, tx.events, true) : '--');
+						let from = sameMsg?.length > 1 ? sameMsgFromAddrArr?.length > 1 ? ' ' : sameMsgFromAddrArr?.length === 1 ? sameMsgFromAddrArr[0] : '--' : addrObj.from || '--',
+							to = sameMsg?.length > 1 ? sameMsgToAddrArr?.length > 1 ? ' ' : sameMsgToAddrArr?.length === 1 ? sameMsgToAddrArr[0] : '--' : addrObj.to || '--';
+						let fromMonikers = ' ', toMonikers =  ' ' ,validatorMoniker,validatorAddress;
+						if ((tx.monikers || {}).length) {
+							let monikersMap = new Map()
+							tx.monikers.forEach( item => {
+								validatorMoniker = Object.values(item)[0] || ' '
+								validatorAddress = Object.keys(item)[0] || ' '
+								monikersMap.set(Object.keys(item)[0],Object.values(item)[0])
+							})
+							if(monikersMap.has(from)){
+								fromMonikers = monikersMap.get(from)
+							}
+							if(monikersMap.has(to)){
+								toMonikers = monikersMap.get(to)
+							}
+							
+						}
+						if (this.isShowFee) {
+							fees.push(tx.fee && tx.fee.amount && tx.fee.amount.length > 0 ? await converCoin(tx.fee.amount[0]) : '--')
+						}
+						let isShowMore = false;
+						const type = tx.msgs && tx.msgs[0] && tx.msgs[0].type;
+						if (type && (type === TX_TYPE.add_liquidity || type === TX_TYPE.remove_liquidity)) {
+							isShowMore = true
+						}
+						if (tx.type === TX_TYPE.send) {
+							tx && tx.msgs && tx.msgs[0] && tx.msgs[0].msg && tx.msgs[0].msg.amount && tx.msgs[0].msg.amount.length > 1 ? isShowMore = true : ''
+							let denom = tx?.msgs?.[0]?.msg?.amount?.[0]?.denom
+							if (denom !== undefined && /(ltp|LPT|lpt-|LPT-)/g.test(denom)) {
+								isShowMore = true
+							}
+						}
+						this.transactionArray.push({
+							txHash: tx.tx_hash,
+							blockHeight: tx.height,
+							txType: (tx.msgs || []).map(item => item.type ),
+							from,
+							author : authorArr?.length > 1 ?  ' ' : authorArr?.length === 1 ? authorArr[0] : author ,
+							provider: providerArr?.length > 1 ? ' ' : providerArr?.length === 1 ? providerArr[0] : provider,
+							requestContextId: requestContextIdArr?.length > 1 ? ' ' : requestContextIdArr?.length === 1 ? requestContextIdArr[0] : requestContextId,
+							fromMonikers,
+							toMonikers,
+							receiver:receiverArr?.length > 1 ? ' ' : receiverArr?.length === 1 ? receiverArr[0] : receiver,
+							to,
+							portId: portIdArr?.length > 1 ? ' ' : portIdArr?.length === 1 ? portIdArr[0] : portId,
+							channelId: channelIdArr?.length > 1 ? ' ' : channelIdArr?.length === 1 ? channelIdArr[0] : channelId,
+							connectionId: connectionIdArr?.length > 1 ? ' ' : connectionIdArr?.length === 1 ? connectionIdArr[0] : connectionId,
+							validatorMoniker,
+							validatorAddress,
+							numberOfTo: numberOfToArr?.length > 1 ? ' ' : numberOfToArr?.length === 1 ? numberOfToArr[0] : numberOfTo,
+							requestId : requestIdArr?.length > 1 ? ' ' : requestIdArr?.length === 1 ? requestIdArr[0] : requestId,
+							denomId: denomIdArr?.length > 1 ? ' ' : denomIdArr?.length === 1 ? denomIdArr[0] : denomId,
+							denomName: denomNameArr?.length > 1 ? ' ' : denomNameArr?.length === 1 ? denomNameArr[0] : denomName,
+							nftId:nftIdArr?.length > 1 ? ' ' : nftIdArr?.length === 1 ? nftIdArr[0] : nftId,
+							clientId: clientIdArr?.length > 1 ? ' ' : clientIdArr?.length === 1 ? clientIdArr[0] : clientId,
+							feedName: feedNameArr?.length > 1 ? ' ' : feedNameArr?.length ===1 ? feedNameArr[0] : feedName,
+							oracleCreator: oracleCreatorArr?.length > 1 ? ' ' : oracleCreatorArr?.length === 1 ? oracleCreatorArr[0] : oracleCreator,
+							consumer: consumerArr?.length > 1 ? ' ' : consumerArr?.length === 1 ? consumerArr[0] : consumer,
+							serviceName: serviceNameArr?.length > 1 ? ' ' : serviceNameArr?.length === 1 ? serviceNameArr[0] : serviceName,
+							digest: digestArr?.length > 1 ? ' ' :  digestArr?.length === 1 ? digestArr[0] : digest,
+							digest_algo: digest_algoArr?.length > 1 ? ' ' : digest_algoArr?.length === 1 ? digest_algoArr[0] : digest_algo,
+							symbol:symbolArr?.length > 1 ? ' ' : symbolArr?.length ===1 ? symbolArr[0] : symbol,
+							minUnit: minUnitArr?.length > 1 ? ' ' : minUnitArr?.length === 1 ? minUnitArr[0] : minUnit,
+							owner: ownerArr?.length > 1 ? ' ' : ownerArr?.length === 1 ? ownerArr[0] : owner,
+							dstOwner: dstOwnerArr?.length > 1 ? ' ' : dstOwnerArr?.length === 1 ? dstOwnerArr[0] : dstOwner,
+							srcOwner: srcOwnerArr?.length > 1 ? ' ' : srcOwnerArr?.length === 1 ? srcOwnerArr[0] : srcOwner,
+							sender: senderArr?.length > 1 ? ' ' : senderArr?.length === 1 ? senderArr[0] : sender,
+							proposalId: proposalIdArr?.length > 1 ? ' ' : proposalIdArr?.length === 1 ? proposalIdArr[0] : proposalId,
+							option:optionArr?.length > 1 ? ' ' : optionArr?.length === 1 ? optionArr[0] : option,
+							voter: voterArr?.length > 1 ? ' ' : voterArr?.length ===1 ? voterArr[0] : voter,
+							depositor : depositorArr?.length > 1 ? ' ' : depositorArr?.length === 1 ? depositorArr[0] : depositor,
+							title,
+							signer: tx.signers?.length > 1 ? ' ' : tx.signers?.length === 1 ? tx.signers[0] : '--',
+							status: tx.status,
+							msgCount: tx.msgs.length,
+							// time :Tools.getDisplayDate(tx.time),
+							Tx_Fee: '',
+							Time: Tools.formatLocalTime(tx.time),
+							amount: '',
+							swapAmount1:'',
+							swapDenomTheme1:'',
+							swapAmount2:'',
+							swapDenomTheme2:'',
+							ageTime: Tools.formatAge(Tools.getTimestamp(), tx.time * 1000, this.$t('ExplorerLang.table.suffix')),
+							isShowMore,
+							denomTheme: {
+								denomColor: '',
+								tooltipContent: ''
+							}
+						})
+						/**
+						 * @description: from parseTimeMixin
+						 */
+						this.parseTime('transactionArray', 'Time', 'ageTime')
+					}
+					if (fees && fees.length > 0 && this.isShowFee) {
+						let fee = await Promise.all(fees);
+						this.transactionArray.forEach((item, index) => {
+							// this.transactionArray[index].Tx_Fee = fee[index] && fee[index].amount ?  this.isShowDenom ? `${Tools.toDecimal(fee[index].amount,this.feeDecimals)} ${fee[index].denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee[index].amount,this.feeDecimals)}` : '--';
+							// remove denom
+							this.transactionArray[index].Tx_Fee = fee[index] && fee[index].amount ? this.isShowDenom ? `${Tools.toDecimal(fee[index].amount, this.feeDecimals)}` : `${Tools.toDecimal(fee[index].amount, this.feeDecimals)}` : '--';
+						})
+					}
+					if (amounts && amounts.length > 0) {
+						let amount = await Promise.all(amounts)
+						this.denomMap = await getDenomMap()
+						this.transactionArray.forEach((item, index) => {
+							if(amount[index]?.length === 2 ){
+								this.transactionArray[index].swapDenomTheme1 = getDenomTheme(amount[index][0], this.denomMap)
+								this.transactionArray[index].swapDenomTheme2 = getDenomTheme(amount[index][1], this.denomMap)
+								this.transactionArray[index].swapAmount1 =  this.getAmount(amount[index][0])
+								this.transactionArray[index].swapAmount1Denom =  this.getAmountUnit(amount[index][0])
+								this.transactionArray[index].swapAmount2 =  this.getAmount(amount[index][1])
+								this.transactionArray[index].swapAmount2Denom  =  this.getAmountUnit(amount[index][1])
+							}else {
+								this.transactionArray[index].denomTheme = getDenomTheme(amount[index], this.denomMap)
+								this.transactionArray[index].amount = this.getAmount(amount[index])
+								this.transactionArray[index].denom = this.getAmountUnit(amount[index])
+								let denom = /[A-Za-z\-]{2,15}/.exec(amount[index])?.length ? /[A-Za-z\-]{2,15}/.exec(amount[index])[0] : ' '
+								if (denom !== undefined && /(lpt|LPT|lpt-|LPT-)/g.test(denom)) {
+									this.transactionArray[index].amount = ''
+								}
+								
+							}
+						})
+					}
+					/*this.$nextTick(() => {
+						setTimeout(() => {
+							this.colWidthList = this.$adjustColumnWidth(this.$refs['listTable'].$el);
+							this.loading = false;
+						});
+					});*/
 							//新增tibc
 							if (msg?.type === TX_TYPE.tibc_nft_transfer && msg?.msg?.id) {
 								nftId = msg.msg.id
@@ -1133,6 +1273,10 @@ export default {
 			console.log(error)
 		}
 
+	},
+
+	beforeDestroy(){
+		this.$store.commit('currentTxModelIndex',0)
 	},
 }
 ,

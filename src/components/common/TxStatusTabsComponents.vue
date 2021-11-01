@@ -11,7 +11,7 @@
 		</div>
 		<div class="tx_date_picket_container" v-if="isShowDatePicker">
 			<div class="tx_date_picket_content">
-				<el-date-picker size="mini"
+				<el-date-picker size="small"
 								v-model="value"
 								:editable="false"
 								range-separator="~"
@@ -189,6 +189,7 @@ export default {
 			}
 			::v-deep.el-date-editor {
 				border-radius: 0.08rem;
+				border-color: #e7eaf3;
 			}
 		}
 		.tooltip_content {

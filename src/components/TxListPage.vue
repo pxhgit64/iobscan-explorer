@@ -443,6 +443,20 @@
 					console.error(e)
 				}
 			},
+			getAmount(amount) {
+				if (!amount) {
+					return "";
+				}
+				let denomRule = /[0-9.]+/
+				return amount.match(denomRule)[0] ;
+			},
+			getAmountUnit(amount) {
+				if (!amount) {
+					return "";
+				}
+				let denomRule = /[A-Za-z\/]+/
+				return amount.match(denomRule)[0];
+			},
 			async getTxListByFilterCondition (currentPageNum, pageSize, useCount = false) {
 				this.isLoading = true;
 				let mainToken = await getMainToken()
@@ -552,7 +566,8 @@
 											blockHeight: item.height,
 											from: fromAddr ,
                                             fromMonikers,
-                                            amount: amount,
+                                            amount: this.getAmount(amount),
+                                            denom: this.getAmountUnit(amount),
                                             to: toAddr,
                                             toMonikers,
 											txType: (item.msgs || []).map(item=>item.type),

@@ -88,25 +88,21 @@
 									<span v-else-if="item.isNftHref" :class="item.isWrap ? 'wrap_style' : ''">
 										
 										<a v-if="testUrl(scope.row[item.displayValue])" :href="scope.row[item.displayValue]"
-										   target="_blank" rel="noreferrer noopener" class="route_link_style">{{ scope.row[item.displayValue] }}</a>
+										   target="_blank" rel="noreferrer noopener" class="href_route_link_style">{{ scope.row[item.displayValue] }}</a>
 										
-										<a class="route_link_style" v-else-if="startStr(scope.row[item.displayValue])"
+										<a class="href_route_link_style" v-else-if="startStr(scope.row[item.displayValue])"
 										   :href="'http://' + scope.row[item.displayValue]"
 										   target="_blank">{{ scope.row[item.displayValue] }}</a>
 										
-										<span class="route_link_style" v-else>{{ scope.row[item.displayValue] }}</span>
+										<span v-else>{{ scope.row[item.displayValue] }}</span>
 										
 									</span>
 <!--									-->
 									<span v-else-if="item.isShowDenomTip" :class="item.isRight ? 'right_style' : ''">
-										
-										<span>{{ getAmount(scope.row[item.displayValue]) }}</span>
-										
+<!--										<span>{{ getAmount(scope.row[item.displayValue]) }}</span>-->
 										<el-tooltip :manual="isShowDenomTip( scope.row && scope.row.denomTheme && scope.row.denomTheme.tooltipContent ? scope.row.denomTheme.tooltipContent  :'')"
 													:content="scope.row && scope.row.denomTheme && scope.row.denomTheme.tooltipContent ? scope.row.denomTheme.tooltipContent  :''" placement="top">
-											
-											<span class="denom_style" :style="{ color: scope.row && scope.row.denomTheme && scope.row.denomTheme.denomColor ? scope.row.denomTheme.denomColor : '' }">{{getAmountUnit(scope.row[item.displayValue]) }}</span>
-											
+											<span class="denom_style" :style="{ color: scope.row && scope.row.denomTheme && scope.row.denomTheme.denomColor ? scope.row.denomTheme.denomColor : '' }"> {{getAmountUnit(scope.row[item.displayValue]) }}</span>
 										</el-tooltip>
 										
 									</span>
@@ -160,9 +156,9 @@
 										</el-tooltip>
 									</div>
 <!--									-->
-									<span v-else :class="item.isWrap ? 'wrap_style' : ''">
+									<span v-else :class="item.isWrap ? 'wrap_style' : item.isRight ? 'right_style' : '' " >
 										{{ scope.row[item.displayValue] === 0 || scope.row[item.displayValue] === '0' ? 0 : scope.row[item.displayValue] || '--' }}</span>
-									
+										
 								</el-tooltip>
 							</template>
 						</el-table-column>
@@ -195,7 +191,7 @@
 import Loading from "./Loading";
 import MPagination from "./MPagination";
 import Tools from "../../util/Tools";
-import {formatMoniker, getConfig} from "../../helper/IritaHelper";
+import {formatMoniker, getConfig,getTxType} from "../../helper/IritaHelper";
 import prodConfig from "../../productionConfig"
 import BigNumber from 'bignumber.js';
 import {
@@ -205,7 +201,7 @@ import {
 	monikerNum,
 	decimals,
 	IRIS_ADDRESS_PREFIX,
-	COSMOS_ADDRESS_PREFIX, TX_TYPE_DISPLAY
+	COSMOS_ADDRESS_PREFIX
 } from '../../constant';
 import {fetchAllTokens} from "../../service/api";
 import ProposalStatusComponent from "../Gov/ProposalStatusComponent";
@@ -216,6 +212,7 @@ export default {
 	data() {
 		return {
 			monikerNum,
+			TX_TYPE_DISPLAY:{},
 			formatMoniker,
 			isSetLoadingStatus: false,
 			isShowFee: prodConfig.fee.isShowFee || false,
@@ -309,6 +306,7 @@ export default {
 		},
 		listData: {
 			handler(newValue, oldValue) {
+				this.getTxTypeData()
 				this.tableList = newValue
 			},
 			deep: true
@@ -324,12 +322,12 @@ export default {
 			deep: true
 		},
 		pagination: {
-			handler(newValue, oldValue) {
-				if (JSON.stringify(newValue) !== '{}') {
-					this.pageNum = newValue.pageNum
-					this.pageSize = newValue.pageSize
-					this.dataCount = newValue.dataCount
-				}
+				handler(newValue, oldValue) {
+					if (JSON.stringify(newValue) !== '{}') {
+						this.pageNum = newValue.pageNum
+						this.pageSize = newValue.pageSize
+						this.dataCount = newValue.dataCount
+					}
 				this.getTableWidth()
 			},
 			deep: true
@@ -414,24 +412,26 @@ export default {
 			this.$emit('pageChange', pageNum)
 		},
 		getAmount(amount) {
-			if (!amount || amount === ' ' || amount === '-') {
+			if (amount === ' ' || amount === '-') {
 				return " ";
 			}
-			if (amount === '--') {
+			if (amount === '--' || !amount) {
 				return '--'
 			}
+			return amount
 			let denomRule = /[0-9.]+/
-			return amount.match(denomRule)[0] ;
+			// return amount.match(denomRule)[0] ;
 		},
 		getAmountUnit(amount) {
-			if (!amount || amount === ' ' || amount === '-') {
+			if (amount === ' ' || amount === '-') {
 				return "";
 			}
-			if (amount === '--') {
+			if (amount === '--' || !amount  ) {
 				return ''
 			}
 			let denomRule = /[A-Za-z\/]+/
-			return  amount.match(denomRule)?.length >= 1 ? amount.match(denomRule)[0] : '';
+			return amount
+			// return  amount.match(denomRule)?.length >= 1 ? amount.match(denomRule)[0] : '';
 		},
 		isShowHref(address) {
 			let storageAddressPrefix = JSON.parse(this.sessionStorage) || null
@@ -482,7 +482,10 @@ export default {
 		},
 		formatStr(str) {
 			if (str && Array.isArray(str)) {
-				const {txType} = Tools.urlParser();
+				let {txType} = Tools.urlParser();
+				if(!txType){
+					txType = sessionStorage.getItem('currentChoiceMsgType') ? sessionStorage.getItem('currentChoiceMsgType'):undefined;
+				}
 				let msgTxTypeIndex = 0, tmp = str[0]
 				str.forEach((item, index) => {
 					if (txType && item === txType) {
@@ -501,11 +504,11 @@ export default {
 				let formatStr = ''
 				for (let dataKey in data) {
 					dataKey = dataKey.toLowerCase()
-					formatStr += `${TX_TYPE_DISPLAY[dataKey] || dataKey} *${data[dataKey] || dataKey},`
+					formatStr += `${this.TX_TYPE_DISPLAY[dataKey] || dataKey} *${data[dataKey] || dataKey},`
 				}
 				return formatStr.substring(0, formatStr.length - 1)
 			} else {
-				return TX_TYPE_DISPLAY[str?.toString()] || TX_TYPE_DISPLAY[str] || str?.toString() || str
+				return this.TX_TYPE_DISPLAY[str?.toString()] || this.TX_TYPE_DISPLAY[str] || str?.toString() || str
 			}
 		},
 		setTagNum(value) {
@@ -531,14 +534,23 @@ export default {
 							displayMsgType = value[0]
 						}
 					})
-					return TX_TYPE_DISPLAY[displayMsgType] || displayMsgType
+					
+					return this.TX_TYPE_DISPLAY[displayMsgType] || displayMsgType
 				} else {
 					this.isShowTooltip = false
-					return TX_TYPE_DISPLAY[value[0]] || value[0]
+					return this.TX_TYPE_DISPLAY[value[0]] || value[0]
 				}
 			} else {
 				this.isShowTooltip = false
-				return TX_TYPE_DISPLAY[value] || value
+				return this.TX_TYPE_DISPLAY[value] || value
+			}
+		},
+		async getTxTypeData() {
+			try {
+				let res = await getTxType()
+				this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+			} catch (error) {
+				console.log(error)
 			}
 		},
 		deleteColumnFee() {
@@ -595,10 +607,12 @@ export default {
 							let secondPracticalWidthCount = this.tableListWidth.filter(item => {
 								return item <= 40
 							})
-							
 							// 为每一列设置补偿量
 							if(practicalWidth < tableWidth && this?.columns?.length){
 								let compensationWidth = (tableWidth - practicalWidth) / this.columns.length
+								if(compensationWidth < 20){
+									compensationWidth = 20
+								}
 								let secondPracticalWidth = 0
 								if(secondPracticalWidthCount?.length){
 									secondPracticalWidth = (compensationWidth * secondPracticalWidthCount.length) / (this.columns.length - secondPracticalWidthCount.length )
@@ -623,6 +637,12 @@ export default {
 		}
 	},
 	mounted() {
+		this.getTxTypeData()
+		if (JSON.stringify(this.pagination) !== '{}') {
+			this.pageNum = this.pagination.pageNum
+			this.pageSize = this.pagination.pageSize
+			this.dataCount = this.pagination.dataCount
+		}
 		window.addEventListener("resize", this.refWidth,true);
 		this.columns = []
 		this.columns = this.columnList
@@ -677,9 +697,15 @@ export default {
 		.el-table__header-wrapper{
 		
 		}
-		/*.denom_style{
-			margin-left: 0.1rem !important;
-		}*/
+		.denom_style{
+			//width: auto;
+			//overflow: hidden;
+			//white-space: nowrap;
+			//text-overflow: ellipsis;
+			position: relative;
+			top:0;
+			left: -0.1rem;
+		}
 		.list_component_footer {
 			display: flex;
 			justify-content: space-between;
@@ -766,6 +792,7 @@ export default {
 		}
 		
 		.tag_style {
+			font-size: 0.14rem !important;
 			background: $tag_c !important;
 			border: none;
 			color: $theme_c !important;
@@ -780,14 +807,26 @@ export default {
 		}
 		.route_link_style {
 			color: $theme_c !important;
+			//white-space: normal !important;
+		}
+		.href_route_link_style{
+			color: $theme_c !important;
 			white-space: normal !important;
 		}
 		.tag_num {
 			color: $theme_c !important;
 			margin-left: 0.06rem;
-			font-size: 0.14rem;
+			font-size: 0.12rem;
 		}
 		::v-deep.el-table{
+			/*tbody{
+				tr{
+					td{
+						padding: 0.07rem 0 !important;
+					}
+					
+				}
+			}*/
 			.caret-wrapper{
 				box-sizing: border-box;
 				top:0.02rem;
@@ -834,17 +873,21 @@ export default {
 			display: flex;
 			align-items: center;
 			white-space: nowrap;
+			width: 100%;
+			
 			.center_style{
-				flex: 1;
-				text-align: center;
+				position: absolute;
+				left: 80%;
+				overflow: visible !important;
 			}
 			.right_style{
-				flex: 1;
-				display: grid;
-				grid-template-columns: 1fr 1fr;
-				grid-column-gap: 0.05rem;
-				span:first-child{
-					text-align: right;
+				width: 120%;
+				text-align: right;
+				display: inline-block;
+				.denom_style{
+					position: relative;
+					top:0;
+					left: 0;
 				}
 			}
 			.status {
@@ -868,5 +911,6 @@ export default {
 }
 a{
 	white-space: nowrap;
+	color: $theme_c !important;
 }
 </style>

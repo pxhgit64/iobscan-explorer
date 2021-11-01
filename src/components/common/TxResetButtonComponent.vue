@@ -30,5 +30,6 @@ export default {
 	border-radius: 0.08rem;
 	width: 0.32rem;
 	height: 0.32rem;
+	margin-top: 0.2rem;
 }
 </style>

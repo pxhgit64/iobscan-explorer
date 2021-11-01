@@ -3217,7 +3217,7 @@
 
 
 								this.outputAddress = msg.output.address || '--';
-								this.deadline = Tools.getDisplayDate(msg.deadline)  || '--';
+								this.deadline = Tools.formatLocalTime(msg.deadline)  || '--';
 								break;
 							case TX_TYPE.add_liquidity:
 								(this.eventsNew || []).forEach((item) => {
@@ -3267,7 +3267,7 @@
 								let maxToken = await converCoin(msg.max_token);
 								this.maxToken = `${maxToken.amount} ${maxToken.denom.toLocaleUpperCase()}`;
 								this.minLiquidity = msg.min_liquidity || '--';
-								this.deadline = Tools.getDisplayDate(msg.deadline)  || '--';
+								this.deadline = Tools.formatLocalTime(msg.deadline)  || '--';
 								break;
 							case TX_TYPE.remove_liquidity:
 								(this.eventsNew || []).forEach((item) => {
@@ -3317,7 +3317,7 @@
 								// this.minIrisAmt = `${minIrisAmt.amount} ${minIrisAmt.denom.toLocaleUpperCase()}`;
 								this.minIrisAmt = msg.min_iris_amt;
 								this.minToken = msg.min_token;
-								this.deadline = Tools.getDisplayDate(msg.deadline)  || '--';
+								this.deadline = Tools.formatLocalTime(msg.deadline)  || '--';
 							break;
 							case TX_TYPE.unjail:
 								this.operatorAddress = msg.address || '--';
@@ -3448,12 +3448,12 @@
 								if(plan) {
 									this.name = plan.name
 									let timestamp = plan.time  && Math.floor(new Date(plan.time).getTime() / 1000)
-									this.time = timestamp && Tools.getDisplayDate(timestamp)
+									this.time = timestamp && Tools.formatLocalTime(timestamp)
 									this.switchHeight = plan.height ? plan.height : '--'
 									if(this.switchHeight && this.switchHeight !== '--') {
 										this.time = '--'
 									} else {
-										this.time = timestamp && Tools.getDisplayDate(timestamp)
+										this.time = timestamp && Tools.formatLocalTime(timestamp)
 									}
 									this.info = plan.info
 									this.upgradedClientState = plan.upgradedclientstate || '--'
@@ -3611,7 +3611,7 @@
 								this.receiver = msg.receiver || '--';
 								this.timeoutHeight = msg.timeout_height ? JSON.stringify(msg.timeout_height) : '--';
 								let timeoutTimestamp = msg.timeout_timestamp  && Math.floor(new Date(msg.timeout_timestamp).getTime() / 1000);
-								timeoutTimestamp ? this.timeoutTimestamp = Tools.getDisplayDate(timeoutTimestamp) : this.timeoutTimestamp ='--';
+								timeoutTimestamp ? this.timeoutTimestamp = Tools.formatLocalTime(timeoutTimestamp) : this.timeoutTimestamp ='--';
 							break;
 							case TX_TYPE.multisend:
 								this.inputs = [];
@@ -3659,7 +3659,7 @@
 								}
 								this.hashLock = msg.hash_lock || '--';
 								// this.timestamp = msg.timestamp ? `${msg.timestamp} s` : '--';
-								this.timestamp = Tools.getDisplayDate(msg.timestamp) || '--';
+								this.timestamp = Tools.formatLocalTime(msg.timestamp) || '--';
 								this.timeLock = msg.time_lock ? `${msg.time_lock} block` : '--';
 								this.transfer = msg.transfer === false ? 'HTLC' : 'HTLT';
 								// let timeLock = msg.time_lock  && Math.floor(new Date(msg.time_lock).getTime() / 1000);
