@@ -159,10 +159,8 @@ export const ExplorerLang = {
         completed: '完成',
         creatorName:'创建者',
         destination_chain:'Destination Chain',//新增
-        soureChain:'Source Chain',
+        sourceChain:'Source Chain',
         chainName:'Chain Name',
-        denomId:'Denom ID' ,
-        denomName:'Denom Name',
         sequence:'Sequence',
         destinationChain:'Destination Chain'
 
