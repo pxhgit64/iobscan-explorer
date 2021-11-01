@@ -907,7 +907,81 @@ export default {
 								serviceName = msg.msg.ex.service_name
 							}
 						}
-						
+						if (msg?.type === TX_TYPE.tibc_nft_transfer && msg?.msg?.id) {
+							nftId = msg.msg.id
+
+						}
+						if(msg?.type === TX_TYPE.tibc_recv_packet
+							|| msg?.type === TX_TYPE.tibc_acknowledge_packet
+							&& msg?.msg?.packet?.data?.id){
+							nftId = msg.msg.packet.data.id
+
+						}
+						if(msg?.type === TX_TYPE.tibc_recv_packet && msg?.msg?.packet?.data?.receiver){
+							receiver =msg.msg.packet.data.receiver
+						}
+						if(msg?.type === TX_TYPE.tibc_acknowledge_packet && msg?.msg?.packet?.data?.sender){
+							sender = msg.msg.packet.data.sender
+						}
+						if(msg?.type===TX_TYPE.tibc_update_client
+							&& msg?.msg?.chain_name){
+							chain_name = msg.msg.chain_name
+						}
+						if (msg?.type === TX_TYPE.tibc_nft_transfer
+							&& msg?.msg?.dest_chain) {
+							dest_chain = msg.msg.dest_chain
+						}
+						if(msg?.type === TX_TYPE.tibc_recv_packet && msg?.msg?.packet?.source_chain){
+							source_chain = msg.msg.packet.source_chain
+						}
+						if(msg?.type === TX_TYPE.tibc_acknowledge_packet&& msg?.msg?.packet?.destination_chain){
+							dest_chain= msg.msg.packet.destination_chain
+						}
+						if (msg?.type === TX_TYPE.tibc_nft_transfer){
+							sender = msg.msg.sender
+						}
+						if(msg?.type===TX_TYPE.issue_denom
+							&& msg?.msg?.denomName){
+							denomName = msg.msg.denomName
+						}
+
+						if(msg?.type === TX_TYPE.clean_packet && msg?.msg?.packet?.source_chain){
+							source_chain = msg.msg.packet.source_chain
+						}
+						if(msg?.type === TX_TYPE.clean_packet && msg?.msg?.packet?.sequence){
+							sequence = msg.msg.packet.sequence
+						}
+
+
+
+						if (msg?.type === TX_TYPE.transfer_denom
+							|| msg?.type === TX_TYPE.issue_denom
+							&& msg?.msg?.sender) {
+							sender = msg.msg.sender
+
+						}
+
+
+						if (msg?.type === TX_TYPE.recv_clean_packet
+							|| msg?.type === TX_TYPE.tibc_update_client
+							|| msg?.type === TX_TYPE.clean_packet
+							&& msg?.msg?.signer) {
+							signer = msg.msg.signer
+
+						}
+						if (msg?.type === TX_TYPE.transfer_denom
+							&& msg?.msg?.receiver) {
+							receiver = msg.msg.receiver
+						}
+
+						if(msg?.type ===TX_TYPE.transfer_denom
+							||msg?.type ===TX_TYPE.issue_denom
+							&& msg?.msg?.denomId
+							&& msg?.msg?.sender){
+							denomId = msg.msg.denomId
+							sender  = msg.msg.sender
+						}
+
 						let addrObj = TxHelper.getFromAndToAddressFromMsg(msg);
 						amounts.push(msg ? sameMsg?.length > 1 ? ' ' : await getAmountByTx(msg, tx.events, true) : '--');
 						let from = sameMsg?.length > 1 ? sameMsgFromAddrArr?.length > 1 ? ' ' : sameMsgFromAddrArr?.length === 1 ? sameMsgFromAddrArr[0] : '--' : addrObj.from || '--',
@@ -999,7 +1073,11 @@ export default {
 							denomTheme: {
 								denomColor: '',
 								tooltipContent: ''
-							}
+							},
+							dest_chain: dest_chainArr?.length > 1 ? ' ' : dest_chainArr?.length === 1 ? dest_chainArr[0] : dest_chain,
+							source_chain: source_chainArr?.length > 1 ? ' ' : source_chainArr?.length === 1 ? source_chainArr[0] : source_chain,
+							sequence: sequenceArr?.length > 1 ? ' ' : sequenceArr?.length === 1 ? sequenceArr[0] : sequence,
+							chain_name: chain_nameArr?.length > 1 ? ' ' : chain_nameArr?.length === 1 ? chain_nameArr[0] : chain_name,
 						})
 						/**
 						 * @description: from parseTimeMixin
@@ -1037,238 +1115,7 @@ export default {
 							}
 						})
 					}
-					/*this.$nextTick(() => {
-						setTimeout(() => {
-							this.colWidthList = this.$adjustColumnWidth(this.$refs['listTable'].$el);
-							this.loading = false;
-						});
-					});*/
-							//新增tibc
-							if (msg?.type === TX_TYPE.tibc_nft_transfer && msg?.msg?.id) {
-								nftId = msg.msg.id
-
-							}
-							if(msg?.type === TX_TYPE.tibc_recv_packet
-								|| msg?.type === TX_TYPE.tibc_acknowledge_packet
-								&& msg?.msg?.packet?.data?.id){
-								nftId = msg.msg.packet.data.id
-
-							}
-							if(msg?.type === TX_TYPE.tibc_recv_packet && msg?.msg?.packet?.data?.receiver){
-								receiver =msg.msg.packet.data.receiver
-							}
-							if(msg?.type === TX_TYPE.tibc_acknowledge_packet && msg?.msg?.packet?.data?.sender){
-								sender = msg.msg.packet.data.sender
-							}
-							if(msg?.type===TX_TYPE.tibc_update_client
-								&& msg?.msg?.chain_name){
-								chain_name = msg.msg.chain_name
-							}
-							if (msg?.type === TX_TYPE.tibc_nft_transfer
-								&& msg?.msg?.dest_chain) {
-								dest_chain = msg.msg.dest_chain
-							}
-							if(msg?.type === TX_TYPE.tibc_recv_packet && msg?.msg?.packet?.source_chain){
-								source_chain = msg.msg.packet.source_chain
-							}
-							if(msg?.type === TX_TYPE.tibc_acknowledge_packet&& msg?.msg?.packet?.destination_chain){
-								dest_chain= msg.msg.packet.destination_chain
-							}
-							if (msg?.type === TX_TYPE.tibc_nft_transfer){
-								sender = msg.msg.sender
-							}
-							if(msg?.type===TX_TYPE.issue_denom
-								&& msg?.msg?.denomName){
-								denomName = msg.msg.denomName
-							}
-
-							if(msg?.type === TX_TYPE.clean_packet && msg?.msg?.packet?.source_chain){
-								source_chain = msg.msg.packet.source_chain
-							}
-							if(msg?.type === TX_TYPE.clean_packet && msg?.msg?.packet?.sequence){
-								sequence = msg.msg.packet.sequence
-							}
-
-
-
-							if (msg?.type === TX_TYPE.transfer_denom
-								|| msg?.type === TX_TYPE.issue_denom
-								&& msg?.msg?.sender) {
-								sender = msg.msg.sender
-
-							}
-
-
-							if (msg?.type === TX_TYPE.recv_clean_packet
-								|| msg?.type === TX_TYPE.tibc_update_client
-								|| msg?.type === TX_TYPE.clean_packet
-								&& msg?.msg?.signer) {
-								signer = msg.msg.signer
-
-							}
-							if (msg?.type === TX_TYPE.transfer_denom
-								&& msg?.msg?.receiver) {
-								receiver = msg.msg.receiver
-							}
-
-							if(msg?.type ===TX_TYPE.transfer_denom
-								||msg?.type ===TX_TYPE.issue_denom
-								&& msg?.msg?.denomId
-								&& msg?.msg?.sender){
-								denomId = msg.msg.denomId
-								sender  = msg.msg.sender
-							}
-
-
-
-
-
-
-
-
-							let addrObj = TxHelper.getFromAndToAddressFromMsg(msg);
-							amounts.push(msg ? sameMsg?.length > 1 ? ' ' : await getAmountByTx(msg, tx.events, true) : '--');
-							let from = sameMsg?.length > 1 ? sameMsgFromAddrArr?.length > 1 ? ' ' : sameMsgFromAddrArr?.length === 1 ? sameMsgFromAddrArr[0] : '--' : addrObj.from || '--',
-								to = sameMsg?.length > 1 ? sameMsgToAddrArr?.length > 1 ? ' ' : sameMsgToAddrArr?.length === 1 ? sameMsgToAddrArr[0] : '--' : addrObj.to || '--';
-							let fromMonikers = ' ', toMonikers = ' ', validatorMoniker, validatorAddress;
-							if ((tx.monikers || {}).length) {
-								let monikersMap = new Map()
-								tx.monikers.forEach(item => {
-									validatorMoniker = Object.values(item)[0] || ' '
-									validatorAddress = Object.keys(item)[0] || ' '
-									monikersMap.set(Object.keys(item)[0], Object.values(item)[0])
-								})
-								if (monikersMap.has(from)) {
-									fromMonikers = monikersMap.get(from)
-								}
-								if (monikersMap.has(to)) {
-									toMonikers = monikersMap.get(to)
-								}
-
-							}
-							if (this.isShowFee) {
-								fees.push(tx.fee && tx.fee.amount && tx.fee.amount.length > 0 ? await converCoin(tx.fee.amount[0]) : '--')
-							}
-							let isShowMore = false;
-							const type = tx.msgs && tx.msgs[0] && tx.msgs[0].type;
-							if (type && (type === TX_TYPE.add_liquidity || type === TX_TYPE.remove_liquidity)) {
-								isShowMore = true
-							}
-							if (tx.type === TX_TYPE.send) {
-								tx && tx.msgs && tx.msgs[0] && tx.msgs[0].msg && tx.msgs[0].msg.amount && tx.msgs[0].msg.amount.length > 1 ? isShowMore = true : ''
-								let denom = tx?.msgs?.[0]?.msg?.amount?.[0]?.denom
-								if (denom !== undefined && /(swap|SWAP)/g.test(denom)) {
-									isShowMore = true
-								}
-							}
-
-
-							this.transactionArray.push({
-								txHash: tx.tx_hash,
-								blockHeight: tx.height,
-								txType: (tx.msgs || []).map(item => item.type),
-								from,
-								author: authorArr?.length > 1 ? ' ' : authorArr?.length === 1 ? authorArr[0] : author,
-								provider: providerArr?.length > 1 ? ' ' : providerArr?.length === 1 ? providerArr[0] : provider,
-								requestContextId: requestContextIdArr?.length > 1 ? ' ' : requestContextIdArr?.length === 1 ? requestContextIdArr[0] : requestContextId,
-								fromMonikers,
-								toMonikers,
-								receiver: receiverArr?.length > 1 ? ' ' : receiverArr?.length === 1 ? receiverArr[0] : receiver,
-								to,
-								portId: portIdArr?.length > 1 ? ' ' : portIdArr?.length === 1 ? portIdArr[0] : portId,
-								channelId: channelIdArr?.length > 1 ? ' ' : channelIdArr?.length === 1 ? channelIdArr[0] : channelId,
-								connectionId: connectionIdArr?.length > 1 ? ' ' : connectionIdArr?.length === 1 ? connectionIdArr[0] : connectionId,
-								validatorMoniker,
-								validatorAddress,
-								numberOfTo: numberOfToArr?.length > 1 ? ' ' : numberOfToArr?.length === 1 ? numberOfToArr[0] : numberOfTo,
-								requestId: requestIdArr?.length > 1 ? ' ' : requestIdArr?.length === 1 ? requestIdArr[0] : requestId,
-								denomId: denomIdArr?.length > 1 ? ' ' : denomIdArr?.length === 1 ? denomIdArr[0] : denomId,
-								denomName: denomNameArr?.length > 1 ? ' ' : denomNameArr?.length === 1 ? denomNameArr[0] : denomName,
-								nftId: nftIdArr?.length > 1 ? ' ' : nftIdArr?.length === 1 ? nftIdArr[0] : nftId,
-								clientId: clientIdArr?.length > 1 ? ' ' : clientIdArr?.length === 1 ? clientIdArr[0] : clientId,
-								feedName: feedNameArr?.length > 1 ? ' ' : feedNameArr?.length === 1 ? feedNameArr[0] : feedName,
-								oracleCreator: oracleCreatorArr?.length > 1 ? ' ' : oracleCreatorArr?.length === 1 ? oracleCreatorArr[0] : oracleCreator,
-								consumer: consumerArr?.length > 1 ? ' ' : consumerArr?.length === 1 ? consumerArr[0] : consumer,
-								serviceName: serviceNameArr?.length > 1 ? ' ' : serviceNameArr?.length === 1 ? serviceNameArr[0] : serviceName,
-								digest: digestArr?.length > 1 ? ' ' : digestArr?.length === 1 ? digestArr[0] : digest,
-								digest_algo: digest_algoArr?.length > 1 ? ' ' : digest_algoArr?.length === 1 ? digest_algoArr[0] : digest_algo,
-								symbol: symbolArr?.length > 1 ? ' ' : symbolArr?.length === 1 ? symbolArr[0] : symbol,
-								minUnit: minUnitArr?.length > 1 ? ' ' : minUnitArr?.length === 1 ? minUnitArr[0] : minUnit,
-								owner: ownerArr?.length > 1 ? ' ' : ownerArr?.length === 1 ? ownerArr[0] : owner,
-								dstOwner: dstOwnerArr?.length > 1 ? ' ' : dstOwnerArr?.length === 1 ? dstOwnerArr[0] : dstOwner,
-								srcOwner: srcOwnerArr?.length > 1 ? ' ' : srcOwnerArr?.length === 1 ? srcOwnerArr[0] : srcOwner,
-								sender: senderArr?.length > 1 ? ' ' : senderArr?.length === 1 ? senderArr[0] : sender,
-								proposalId: proposalIdArr?.length > 1 ? ' ' : proposalIdArr?.length === 1 ? proposalIdArr[0] : proposalId,
-								option: optionArr?.length > 1 ? ' ' : optionArr?.length === 1 ? optionArr[0] : option,
-								voter: voterArr?.length > 1 ? ' ' : voterArr?.length === 1 ? voterArr[0] : voter,
-								depositor: depositorArr?.length > 1 ? ' ' : depositorArr?.length === 1 ? depositorArr[0] : depositor,
-								title,
-								signer: tx.signers?.length > 1 ? ' ' : tx.signers?.length === 1 ? tx.signers[0] : '--',
-								status: tx.status,
-								msgCount: tx.msgs.length,
-								// time :Tools.getDisplayDate(tx.time),
-								Tx_Fee: '',
-								Time: Tools.formatLocalTime(tx.time),
-								amount: '',
-								swapAmount1: '',
-								swapDenomTheme1: '',
-								swapAmount2: '',
-								swapDenomTheme2: '',
-								ageTime: Tools.formatAge(Tools.getTimestamp(), tx.time * 1000, this.$t('ExplorerLang.table.suffix')),
-								isShowMore,
-								denomTheme: {
-									denomColor: '',
-									tooltipContent: ''
-								},
-								dest_chain: dest_chainArr?.length > 1 ? ' ' : dest_chainArr?.length === 1 ? dest_chainArr[0] : dest_chain,
-								source_chain: source_chainArr?.length > 1 ? ' ' : source_chainArr?.length === 1 ? source_chainArr[0] : source_chain,
-								sequence: sequenceArr?.length > 1 ? ' ' : sequenceArr?.length === 1 ? sequenceArr[0] : sequence,
-								chain_name: chain_nameArr?.length > 1 ? ' ' : chain_nameArr?.length === 1 ? chain_nameArr[0] : chain_name,
-
-
-							})
-							/**
-							 * @description: from parseTimeMixin
-							 */
-							this.parseTime('transactionArray', 'Time', 'ageTime')
-						}
-						if (fees && fees.length > 0 && this.isShowFee) {
-							let fee = await Promise.all(fees);
-							this.transactionArray.forEach((item, index) => {
-								// this.transactionArray[index].Tx_Fee = fee[index] && fee[index].amount ?  this.isShowDenom ? `${Tools.toDecimal(fee[index].amount,this.feeDecimals)} ${fee[index].denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee[index].amount,this.feeDecimals)}` : '--';
-								// remove denom
-								this.transactionArray[index].Tx_Fee = fee[index] && fee[index].amount ? this.isShowDenom ? `${Tools.toDecimal(fee[index].amount, this.feeDecimals)}` : `${Tools.toDecimal(fee[index].amount, this.feeDecimals)}` : '--';
-							})
-						}
-						if (amounts && amounts.length > 0) {
-							let amount = await Promise.all(amounts)
-							this.denomMap = await getDenomMap()
-							this.transactionArray.forEach((item, index) => {
-								if (amount[index]?.length === 2) {
-									this.transactionArray[index].swapDenomTheme1 = getDenomTheme(amount[index][0], this.denomMap)
-									this.transactionArray[index].swapDenomTheme2 = getDenomTheme(amount[index][1], this.denomMap)
-									this.transactionArray[index].swapAmount1 = amount[index][0]
-									this.transactionArray[index].swapAmount2 = amount[index][1]
-								} else {
-									this.transactionArray[index].denomTheme = getDenomTheme(amount[index], this.denomMap)
-									this.transactionArray[index].amount = amount[index]
-									let denom = /[A-Za-z\-]{2,15}/.exec(amount[index])?.length ? /[A-Za-z\-]{2,15}/.exec(amount[index])[0] : ' '
-									if (denom !== undefined && /(swap|SWAP|lpt|LPT|lpt-|LPT-)/g.test(denom)) {
-										this.transactionArray[index].amount = ''
-									}
-
-								}
-							})
-						}
-
-						/*this.$nextTick(() => {
-					setTimeout(() => {
-						this.colWidthList = this.$adjustColumnWidth(this.$refs['listTable'].$el);
-						this.loading = false;
-					});
-				});*/
 					}
-				}
 		}catch(error) {
 			console.log(error)
 		}

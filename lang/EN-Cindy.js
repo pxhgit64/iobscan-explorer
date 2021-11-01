@@ -167,8 +167,6 @@ export const ExplorerLang = {
         destination_chain:'Destination Chain',//新增
         sourceChain:'Source Chain',
         chainName:'Chain Name',
-        denomId:'Denom ID',
-        denomName:'Denom Name',
         sequence:'Sequence',
         destinationChain:'Destination Chain'
     },
