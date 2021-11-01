@@ -45,6 +45,7 @@ export const ExplorerLang = {
         author: 'Author',
         requestContentId:'Request Context ID',
         nftId:'NFT ID',
+        numberOfTo:'Number of To',
         denomId:'Denom ID',
         denomName:'Denom Name',
         recipient: 'Recipient',
