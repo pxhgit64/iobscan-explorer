@@ -546,14 +546,6 @@ export default {
 
 
 						if (tx.msgs.length > 0) {
-							let recvPacketItem = tx.msgs.find((m) => {
-								if (m.type === TX_TYPE.recv_packet || m.type === TX_TYPE.transfer || m.type === TX_TYPE.timeout_packet) {
-									return true;
-								}
-							});
-							if (recvPacketItem) {
-								msg = recvPacketItem;
-							} else {
 								tx.msgs.forEach(item => {
 									if(item.type === msgType){
 										sameMsg.push(item)
