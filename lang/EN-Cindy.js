@@ -162,8 +162,8 @@ export const ExplorerLang = {
         completed: 'Completed',
         creatorName:'Creator',
         destination_chain:'Destination Chain',//新增
-        source_chain:'Source Chain',
-        chain_name:'Chain Name',
+        sourceChain:'Source Chain',
+        chainName:'Chain Name',
         denomId:'Denom ID',
         denomName:'Denom Name',
         sequence:'Sequence',

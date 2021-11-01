@@ -7,7 +7,9 @@ module.exports = {
   devServer: {
     proxy: {
       '/api': {
-        target:'http://localhost:3000/',
+        //qa测试
+        //target:'http://192.168.150.61:30207',
+        target: 'https://nyancat.iobscan.io/api/',
         secure: false,
         pathRewrite: { '^/api': '' },
       },
