@@ -2196,23 +2196,23 @@
 		<!--新增TIBC NFT Transfer Out-->
 		<div v-if="txType === TX_TYPE.tibc_nft_transfer">
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.id_tibc')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.id_tibc')}}:</span>
 				<span>{{id_tibc}}</span>
 			</p>
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.class_tibc')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.class_tibc')}}:</span>
 				<span>{{class_tibc}}</span>
 			</p>
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.dest_chain')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.dest_chain')}}:</span>
 				<span>{{dest_chain}}</span>
 			</p>
 			<p>
-			<span>{{$t('ExplorerLang.transactionInformation.tibc.realay_chain')}}</span>
+			<span>{{$t('ExplorerLang.transactionInformation.tibc.realay_chain')}}:</span>
 				<span>{{realay_chain}}</span>
 			</p>
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.sender')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.sender')}}:</span>
 				<template>
 					<span v-if="sender === '--'">{{sender}}</span>
 					<router-link v-else :to="`/address/${sender}`" class="address_link">{{sender}}</router-link>
@@ -2232,47 +2232,47 @@
 		<!--新增TIBC NFT Transfer In -->
 		<div v-if="txType === TX_TYPE.tibc_recv_packet">
 				<p>
-					<span>{{$t('ExplorerLang.transactionInformation.tibc.id_tibc')}}</span>
+					<span>{{$t('ExplorerLang.transactionInformation.tibc.id_tibc')}}:</span>
 					<span>{{id_tibc}}</span>
 				</p>
 
 				<p>
-					<span>{{$t('ExplorerLang.transactionInformation.tibc.url_tibc')}}</span>
+					<span>{{$t('ExplorerLang.transactionInformation.tibc.url_tibc')}}:</span>
 					<span>{{url_tibc}}</span>
 				</p>
 
 				<p>
-					<span>{{$t('ExplorerLang.transactionInformation.tibc.class_tibc')}}</span>
+					<span>{{$t('ExplorerLang.transactionInformation.tibc.class_tibc')}}:</span>
 					<span>{{class_tibc}}</span>
 				</p>
 
 				<p>
-					<span>{{$t('ExplorerLang.transactionInformation.tibc.sequence')}}</span>
+					<span>{{$t('ExplorerLang.transactionInformation.tibc.sequence')}}:</span>
 					<span>{{sequence}}</span>
 				</p>
 
 				<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.port')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.port')}}:</span>
 				<span>{{port}}</span>
 				</p>
 
 				<p>
-					<span>{{$t('ExplorerLang.transactionInformation.tibc.source_chain')}}</span>
+					<span>{{$t('ExplorerLang.transactionInformation.tibc.source_chain')}}:</span>
 					<span>{{source_chain}}</span>
 				</p>
 
 				<p>
-					<span>{{$t('ExplorerLang.transactionInformation.tibc.dest_chain')}}</span>
+					<span>{{$t('ExplorerLang.transactionInformation.tibc.dest_chain')}}:</span>
 					<span>{{dest_chain}}</span>
 				</p>
 
 				<p>
-					<span>{{$t('ExplorerLang.transactionInformation.tibc.realay_chain')}}</span>
+					<span>{{$t('ExplorerLang.transactionInformation.tibc.realay_chain')}}:</span>
 					<span>{{realay_chain}}</span>
 				</p>
 
 				<p>
-					<span>{{$t('ExplorerLang.transactionInformation.tibc.sender')}}</span>
+					<span>{{$t('ExplorerLang.transactionInformation.tibc.sender')}}:</span>
 					<template>
 					<span v-if="sender === '--'">{{sender}}</span>
 					<router-link v-else :to="`/address/${sender}`" class="address_link">{{sender}}</router-link>
@@ -2280,7 +2280,7 @@
 				</p>
 
 				<p>
-					<span>{{$t('ExplorerLang.transactionInformation.tibc.receiver')}}</span>
+					<span>{{$t('ExplorerLang.transactionInformation.tibc.receiver')}}:</span>
 					<template>
 					<span v-if="sender === '--'">{{receiver}}</span>
 					<span v-else @click="addressRoute(receiver)"
@@ -2290,58 +2290,58 @@
 				</p>
 
 				<p>
-					<span>{{$t('ExplorerLang.transactionInformation.tibc.nft_status')}}</span>
+					<span>{{$t('ExplorerLang.transactionInformation.tibc.nft_status')}}:</span>
 					<span>{{ nft_status}}</span>
 				</p>
 				<p>
-					<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}</span>
+					<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}:</span>
 					<span>{{signer}}</span>
 				</p>
 		</div>
 		<!--新增TIBC Acknowledge Packet-->
         <div v-if="txType === TX_TYPE.tibc_acknowledge_packet">
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.id_tibc')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.id_tibc')}}:</span>
 				<span>{{id_tibc}}</span>
 			</p>
 
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.url_tibc')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.url_tibc')}}:</span>
 				<span>{{url_tibc}}</span>
 			</p>
 
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.class_tibc')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.class_tibc')}}:</span>
 				<span>{{class_tibc}}</span>
 			</p>
 
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.sequence')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.sequence')}}:</span>
 				<span>{{sequence}}</span>
 			</p>
 
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.port')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.port')}}:</span>
 				<span>{{port}}</span>
 			</p>
 
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.source_chain')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.source_chain')}}:</span>
 				<span>{{source_chain}}</span>
 			</p>
 
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.dest_chain')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.dest_chain')}}:</span>
 				<span>{{dest_chain}}</span>
 			</p>
 
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.realay_chain')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.realay_chain')}}:</span>
 				<span>{{realay_chain}}</span>
 			</p>
 
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.sender')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.sender')}}:</span>
 				<template>
 					<span v-if="sender === '--'">{{sender}}</span>
 					<router-link v-else :to="`/address/${sender}`" class="address_link">{{sender}}</router-link>
@@ -2349,7 +2349,7 @@
 			</p>
 
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.receiver')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.receiver')}}:</span>
 				<template>
 					<span v-if="sender === '--'">{{receiver}}</span>
 					<span v-else @click="addressRoute(receiver)"
@@ -2359,73 +2359,73 @@
 		</p>
 
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.nft_status')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.nft_status')}}:</span>
 				<span>{{ nft_status}}</span>
 			</p>
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}:</span>
 				<span>{{signer}}</span>
 			</p>
 		</div>
 		<!--TIBC Clean Packet Out-->
 		<div v-if="txType === TX_TYPE.clean_packet">
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.sequence')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.sequence')}}:</span>
 				<span>{{sequence}}</span>
 			</p>
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.source_chain')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.source_chain')}}:</span>
 				<span>{{source_chain}}</span>
 			</p>
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.dest_chain')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.dest_chain')}}:</span>
 				<span>{{dest_chain}}</span>
 			</p>
 
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.realay_chain')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.realay_chain')}}:</span>
 				<span>{{realay_chain}}</span>
 			</p>
 
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}:</span>
 				<span>{{signer}}</span>
 			</p>
 		</div>
         <!--  TIBC Clean Packet In这里signer-->
 		<div v-if="txType === TX_TYPE.recv_clean_packet">
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.clean_packet')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.clean_packet')}}:</span>
 				<span>{{clean_packet}}</span>
 			</p>
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}:</span>
 				<span>{{signer}}</span>
 			</p>
 		</div>
         <!--TIBC Update Client-->
 		<div v-if="txType === TX_TYPE.tibc_update_client">
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.chain_name')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.chain_name')}}:</span>
 				<span>{{chain_name}}</span>
 			</p>
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}:</span>
 				<span>{{signer}}</span>
 			</p>
 		</div>
         <!--新增Transfer Denom (Denom Transfer)-->
 		<div v-if="txType === TX_TYPE.transfer_denom">
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.nft.denomId')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.nft.denomId')}}:</span>
 				<span>{{denomId}}</span>
 			</p>
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.nft.sender')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.nft.sender')}}:</span>
 				<span>{{sender}}</span>
 			</p>
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.nft.receiver')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.nft.receiver')}}:</span>
 				<span>{{receiver}}</span>
 			</p>
 
@@ -2433,31 +2433,31 @@
 		<!--新增Issue Denom (Denom Issue)-->
 		<div v-if="txType === TX_TYPE.nft_issue_denom">
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.nft.denomId')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.nft.denomId')}}:</span>
 				<span>{{denomId}}</span>
 			</p>
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.nft.denom_name')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.nft.denom_name')}}:</span>
 				<span>{{denom_name}}</span>
 			</p>
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.nft.symbol')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.nft.symbol')}}:</span>
 				<span>{{symbol}}</span>
 			</p>
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.nft.schema')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.nft.schema')}}:</span>
 				<span>{{schema}}</span>
 			</p>
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.nft.mint_restricted')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.nft.mint_restricted')}}:</span>
 				<span>{{mint_restricted}}</span>
 			</p>
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.nft.update_restricted')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.nft.update_restricted')}}:</span>
 				<span>{{update_restricted}}</span>
 			</p>
 			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.nft.sender')}}</span>
+				<span>{{$t('ExplorerLang.transactionInformation.nft.sender')}}:</span>
 				<span>{{sender}}</span>
 			</p>
 		</div>
@@ -3726,7 +3726,7 @@
 							//新增TIBC NFT Transfer In
 							case TX_TYPE.tibc_recv_packet:
 								this.id_tibc=msg.packet.data.id || '--';
-								this.url_tibc = msg.packet.data.url || '--';
+								this.url_tibc = msg.packet.data.uri || '--';
 								this.class_tibc = msg.packet.data.class|| '--'
 								this.sequence = msg.packet.sequence|| '--'
 								this.port = msg.packet.port|| '--'
@@ -3736,11 +3736,12 @@
 								this.sender = msg.packet.data.sender|| '--'
 								this.nft_status = msg.packet.acknowledgement ? "Success":"Failed"
 								this.signer = msg.signer|| '--'
+								this.receiver = msg.packet.data.receiver || '--';
 								break;
 							//新增TIBC Acknowledge Packet
 							case TX_TYPE.tibc_acknowledge_packet:
 								this.id_tibc=msg.packet.data.id || '--';
-								this.url_tibc = msg.packet.data.url || '--';
+								this.url_tibc = msg.packet.data.uri || '--';
 								this.class_tibc = msg.packet.data.class|| '--'
 								this.sequence = msg.packet.sequence|| '--'
 								this.port = msg.packet.port|| '--'

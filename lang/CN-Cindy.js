@@ -161,7 +161,7 @@ export const ExplorerLang = {
         chain_name:'Chain Name',
         denom_id:'Denom ID' ,
         denom_name:'Denom Name',
-        sequence:'sequence',
+        sequence:'Sequence',
 
     },
     unit:{

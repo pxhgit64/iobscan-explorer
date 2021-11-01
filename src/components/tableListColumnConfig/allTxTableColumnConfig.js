@@ -1458,6 +1458,11 @@ export const needAddColumn = {
             label:i18n.t('ExplorerLang.table.sender'),
             displayValue:'sender',
             nativeValue:'sender',
+            isLink: true,
+            isNeedFormat: true,
+            isFormatAddress: true,
+            linkRoute: '/address/',
+
         },
         {
             label:i18n.t('ExplorerLang.table.destination_chain'),
@@ -1475,8 +1480,10 @@ export const needAddColumn = {
             label:i18n.t('ExplorerLang.table.receiver'),
             displayValue:'receiver',
             nativeValue:'receiver',
-            islink:true,
-            linkRoute:'/address/'
+            isLink: true,
+            isNeedFormat: true,
+            isFormatAddress: true,
+            linkRoute: '/address/',
         },
         {
             label:i18n.t('ExplorerLang.table.source_chain'),
@@ -1494,6 +1501,11 @@ export const needAddColumn = {
             label:i18n.t('ExplorerLang.table.sender'),
             displayValue:'sender',
             nativeValue:'sender',
+            isLink: true,
+            isNeedFormat: true,
+            isFormatAddress: true,
+            linkRoute: '/address/',
+
         },
         {
             label:i18n.t('ExplorerLang.table.destination_chain'),
@@ -1536,6 +1548,10 @@ export const needAddColumn = {
             label:i18n.t('ExplorerLang.table.signer'),
             displayValue:'signer',
             nativeValue:'signer',
+            isLink:true,
+            isNeedFormat: true,
+            isFormatAddress: true,
+            linkRoute:'/address/',
         },
     ],
 
