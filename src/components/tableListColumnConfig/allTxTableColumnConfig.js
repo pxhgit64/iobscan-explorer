@@ -62,7 +62,7 @@ export const needAddColumn = {
             linkRoute: '/address/',
         },
         {
-            label: 'Number of To',
+            label: i18n.t('ExplorerLang.table.numberOfTo'),
             displayValue: 'numberOfTo',
             nativeValue: 'txHash',
             isLink: true,
