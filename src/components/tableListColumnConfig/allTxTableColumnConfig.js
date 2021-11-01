@@ -753,7 +753,7 @@ export const needAddColumn = {
     ],
     transfer_denom: [
         {
-            label:i18n.t('ExplorerLang.table.denom_id'),
+            label:i18n.t('ExplorerLang.table.denomId'),
             displayValue:'denomId',
             nativeValue:'denomId',
         },
@@ -1465,7 +1465,7 @@ export const needAddColumn = {
 
         },
         {
-            label:i18n.t('ExplorerLang.table.destination_chain'),
+            label:i18n.t('ExplorerLang.table.destinationChain'),
             displayValue:'dest_chain',
             nativeValue:'dest_chain',
         },
@@ -1486,7 +1486,7 @@ export const needAddColumn = {
             linkRoute: '/address/',
         },
         {
-            label:i18n.t('ExplorerLang.table.source_chain'),
+            label:i18n.t('ExplorerLang.table.sourceChain'),
             displayValue:'source_chain',
             nativeValue:'source_chain',
         },
@@ -1508,7 +1508,7 @@ export const needAddColumn = {
 
         },
         {
-            label:i18n.t('ExplorerLang.table.destination_chain'),
+            label:i18n.t('ExplorerLang.table.destinationChain'),
             displayValue:'dest_chain',
             nativeValue:'dest_chain',
         },
@@ -1518,10 +1518,9 @@ export const needAddColumn = {
         {
             label:i18n.t('ExplorerLang.table.sequence'),
             displayValue:'sequence',
-            nativeValue:'sequence',
         },
         {
-            label:i18n.t('ExplorerLang.table.source_chain'),
+            label:i18n.t('ExplorerLang.table.sourceChain'),
             displayValue:'source_chain',
             nativeValue:'source_chain',
         },
@@ -1540,7 +1539,7 @@ export const needAddColumn = {
     ],
     tibc_update_client:[
         {
-            label:i18n.t('ExplorerLang.table.chain_name'),
+            label:i18n.t('ExplorerLang.table.chainName'),
             displayValue:'chain_name',
             nativeValue:'chain_name',
         },
