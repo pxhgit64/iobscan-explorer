@@ -2360,7 +2360,7 @@
 
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.nftStatus')}}</span>
-				<span>{{ nftStatus}}</span>
+				<span>{{nftStatus}}</span>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}</span>
@@ -2478,6 +2478,7 @@
 	import { converCoin,addressRoute,getTxType } from "../../helper/IritaHelper";
 	import prodConfig from "../../productionConfig";
 	import axios from '@/axios';
+	import {ExplorerLang} from "../../../lang/EN-Cindy";
 	export default {
 		name: "txMessage",
 		components: {LargeString},
@@ -2888,8 +2889,8 @@
 								this.denomName=msg.name || '--'
 								this.symbol=msg.symbol || '--'
 								this.schema=msg.schema || '--'
-								this.mintRestricted=msg.mintRestricted || '--'
-								this.updateRestricted=msg.updateRestricted || '--'
+								this.mintRestricted=msg.mint_restricted || '--'
+								this.updateRestricted=msg.update_restricted || '--'
 								this.sender= msg.sender
 								break;
 							case TX_TYPE.respond_service:
@@ -3733,9 +3734,10 @@
 								this.destChain = msg.packet.destination_chain|| '--'
 								this.realayChain = msg.packet.relay_chain|| '--'
 								this.sender = msg.packet.data.sender|| '--'
-								this.nftStatus = msg.packet.acknowledgement ? "Success":"Failed"
 								this.signer = msg.signer|| '--'
 								this.receiver = msg.packet.data.receiver || '--';
+								this.nftStatus = msg.acknowledgement ? this.$t('ExplorerLang.common.success'):this.$t('ExplorerLang.common.failed')
+
 								break;
 							//新增TIBC Acknowledge Packet
 							case TX_TYPE.tibc_acknowledge_packet:
@@ -3748,8 +3750,9 @@
 								this.destChain = msg.packet.destination_chain|| '--'
 								this.realayChain = msg.packet.relay_chain|| '--'
 								this.sender = msg.packet.data.sender|| '--'
-								this.nftStatus = msg.packet.acknowledgement ? "Success":"Failed"
 								this.signer = msg.signer|| '--'
+								this.receiver = msg.packet.data.receiver || '--';
+								this.nftStatus = msg.acknowledgement ? this.$t('ExplorerLang.common.success'):this.$t('ExplorerLang.common.failed')
 								break;
                             //新增 TIBC Clean Packet Out
 							case TX_TYPE.clean_packet:
