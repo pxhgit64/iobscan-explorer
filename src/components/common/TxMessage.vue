@@ -283,8 +283,8 @@
 			<span>{{denomId}}</span>
 		</p>
 		<p>
-			<span>{{$t('ExplorerLang.transactionInformation.nft.denom_name')}}</span>
-			<span>{{denom_name}}</span>
+			<span>{{$t('ExplorerLang.transactionInformation.nft.denomName')}}</span>
+			<span>{{denomName}}</span>
 		</p>
 		<p>
 			<span>{{$t('ExplorerLang.transactionInformation.nft.symbol')}}</span>
@@ -295,12 +295,12 @@
 			<span>{{schema}}</span>
 		</p>
 		<p>
-			<span>{{$t('ExplorerLang.transactionInformation.nft.mint_restricted')}}</span>
-			<span>{{mint_restricted}}</span>
+			<span>{{$t('ExplorerLang.transactionInformation.nft.mintRestricted')}}</span>
+			<span>{{mintRestricted}}</span>
 		</p>
 		<p>
-			<span>{{$t('ExplorerLang.transactionInformation.nft.update_restricted')}}</span>
-			<span>{{update_restricted}}</span>
+			<span>{{$t('ExplorerLang.transactionInformation.nft.updateRestricted')}}</span>
+			<span>{{updateRestricted}}</span>
 		</p>
 		<p>
 			<span>{{$t('ExplorerLang.transactionInformation.issueDenom.sender')}}：</span>
@@ -2197,19 +2197,19 @@
 		<div v-if="txType === TX_TYPE.tibc_nft_transfer">
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.idTibc')}}</span>
-				<span>{{id_tibc}}</span>
+				<span>{{idTibc}}</span>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.classTibc')}}</span>
-				<span>{{class_tibc}}</span>
+				<span>{{classTibc}}</span>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.destChain')}}</span>
-				<span>{{dest_chain}}</span>
+				<span>{{destChain}}</span>
 			</p>
 			<p>
 			<span>{{$t('ExplorerLang.transactionInformation.tibc.realayChain')}}</span>
-				<span>{{realay_chain}}</span>
+				<span>{{realayChain}}</span>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.sender')}}</span>
@@ -2233,17 +2233,17 @@
 		<div v-if="txType === TX_TYPE.tibc_recv_packet">
 				<p>
 					<span>{{$t('ExplorerLang.transactionInformation.tibc.idTibc')}}</span>
-					<span>{{id_tibc}}</span>
+					<span>{{idTibc}}</span>
 				</p>
 
 				<p>
 					<span>{{$t('ExplorerLang.transactionInformation.tibc.urlTibc')}}</span>
-					<span>{{url_tibc}}</span>
+					<span>{{urlTibc}}</span>
 				</p>
 
 				<p>
 					<span>{{$t('ExplorerLang.transactionInformation.tibc.classTibc')}}</span>
-					<span>{{class_tibc}}</span>
+					<span>{{classTibc}}</span>
 				</p>
 
 				<p>
@@ -2258,17 +2258,17 @@
 
 				<p>
 					<span>{{$t('ExplorerLang.transactionInformation.tibc.sourceChain')}}</span>
-					<span>{{source_chain}}</span>
+					<span>{{sourceChain}}</span>
 				</p>
 
 				<p>
 					<span>{{$t('ExplorerLang.transactionInformation.tibc.destChain')}}</span>
-					<span>{{dest_chain}}</span>
+					<span>{{destChain}}</span>
 				</p>
 
 				<p>
 					<span>{{$t('ExplorerLang.transactionInformation.tibc.realayChain')}}</span>
-					<span>{{realay_chain}}</span>
+					<span>{{realayChain}}</span>
 				</p>
 
 				<p>
@@ -2291,7 +2291,7 @@
 
 				<p>
 					<span>{{$t('ExplorerLang.transactionInformation.tibc.nftStatus')}}</span>
-					<span>{{ nft_status}}</span>
+					<span>{{ nftStatus}}</span>
 				</p>
 				<p>
 					<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}</span>
@@ -2302,17 +2302,17 @@
         <div v-if="txType === TX_TYPE.tibc_acknowledge_packet">
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.idTibc')}}</span>
-				<span>{{id_tibc}}</span>
+				<span>{{idTibc}}</span>
 			</p>
 
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.urlTibc')}}</span>
-				<span>{{url_tibc}}</span>
+				<span>{{urlTibc}}</span>
 			</p>
 
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.classTibc')}}</span>
-				<span>{{class_tibc}}</span>
+				<span>{{classTibc}}</span>
 			</p>
 
 			<p>
@@ -2327,17 +2327,17 @@
 
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.sourceChain')}}</span>
-				<span>{{source_chain}}</span>
+				<span>{{sourceChain}}</span>
 			</p>
 
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.destChain')}}</span>
-				<span>{{dest_chain}}</span>
+				<span>{{destChain}}</span>
 			</p>
 
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.realayChain')}}</span>
-				<span>{{realay_chain}}</span>
+				<span>{{realayChain}}</span>
 			</p>
 
 			<p>
@@ -2360,7 +2360,7 @@
 
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.nftStatus')}}</span>
-				<span>{{ nft_status}}</span>
+				<span>{{ nftStatus}}</span>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}</span>
@@ -2375,16 +2375,16 @@
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.sourceChain')}}</span>
-				<span>{{source_chain}}</span>
+				<span>{{sourceChain}}</span>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.destChain')}}</span>
-				<span>{{dest_chain}}</span>
+				<span>{{destChain}}</span>
 			</p>
 
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.realayChain')}}</span>
-				<span>{{realay_chain}}</span>
+				<span>{{realayChain}}</span>
 			</p>
 
 			<p>
@@ -2396,7 +2396,7 @@
 		<div v-if="txType === TX_TYPE.recv_clean_packet">
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.cleanPacket')}}</span>
-				<span>{{clean_packet}}</span>
+				<span>{{cleanPacket}}</span>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}</span>
@@ -2407,7 +2407,7 @@
 		<div v-if="txType === TX_TYPE.tibc_update_client">
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.chainName')}}</span>
-				<span>{{chain_name}}</span>
+				<span>{{chainName}}</span>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}</span>
@@ -2438,7 +2438,7 @@
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.nft.denomName')}}</span>
-				<span>{{denom_name}}</span>
+				<span>{{denomName}}</span>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.nft.symbol')}}</span>
@@ -2450,11 +2450,11 @@
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.nft.mintRestricted')}}</span>
-				<span>{{mint_restricted}}</span>
+				<span>{{mintRestricted}}</span>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.nft.updateRestricted')}}</span>
-				<span>{{update_restricted}}</span>
+				<span>{{updateRestricted}}</span>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.nft.sender')}}</span>
@@ -2701,21 +2701,20 @@
 				IRIS_ADDRESS_PREFIX,
 				data:'',
 				//新增
-				class_tibc:'',//tibc新增
-				dest_chain:'',
-				realay_chain:'',
-				id_tibc:'',
-				url_tibc:'',
+				classTibc:'',//tibc新增
+				destChain:'',
+				realayChain:'',
+				idTibc:'',
+				urlTibc:'',
 				sequence:'',
 				port:'',
-				source_chain:'',
+				sourceChain:'',
 				nft_status:'',
-				clean_packet:'',
-				chain_name:'',
+				cleanPacket:'',
+				chainName:'',
 				denomId:'',//nft新增
-				denom_name:'',
-				mint_restricted:'',
-				update_restricted:'',
+				mintRestricted:'',
+				updateRestricted:'',
 
 
 
@@ -2886,11 +2885,11 @@
 								break;
 							case TX_TYPE.issue_denom:
 								this.denomId=msg.id || '--'
-								this.denom_name=msg.name || '--'
+								this.denomName=msg.name || '--'
 								this.symbol=msg.symbol || '--'
 								this.schema=msg.schema || '--'
-								this.mint_restricted=msg.mintRestricted || '--'
-								this.update_restricted=msg.updateRestricted || '--'
+								this.mintRestricted=msg.mintRestricted || '--'
+								this.updateRestricted=msg.updateRestricted || '--'
 								this.sender= msg.sender
 								break;
 							case TX_TYPE.respond_service:
@@ -3716,58 +3715,58 @@
 							break;
 							//新增TIBC NFT Transfer Out
 							case TX_TYPE.tibc_nft_transfer:
-								this.class_tibc = msg.class  || '--';
-								this.id_tibc = msg.id|| '--';
-								this.dest_chain = msg. dest_chain || '--';
-								this.realay_chain = msg.realay_chain || '--';
+								this.classTibc = msg.class  || '--';
+								this.idTibc = msg.id|| '--';
+								this.destChain = msg. dest_chain || '--';
+								this.realayChain = msg.realay_chain || '--';
 								this.sender = msg.sender || '--';
 								this.receiver = msg.receiver || '--';
 								break;
 							//新增TIBC NFT Transfer In
 							case TX_TYPE.tibc_recv_packet:
-								this.id_tibc=msg.packet.data.id || '--';
-								this.url_tibc = msg.packet.data.uri || '--';
-								this.class_tibc = msg.packet.data.class|| '--'
+								this.idTibc=msg.packet.data.id || '--';
+								this.urlTibc = msg.packet.data.uri || '--';
+								this.classTibc = msg.packet.data.class|| '--'
 								this.sequence = msg.packet.sequence|| '--'
 								this.port = msg.packet.port|| '--'
-								this.source_chain = msg.packet.source_chain|| '--'
-								this.dest_chain = msg.packet.destination_chain|| '--'
-								this.realay_chain = msg.packet.relay_chain|| '--'
+								this.sourceChain = msg.packet.source_chain|| '--'
+								this.destChain = msg.packet.destination_chain|| '--'
+								this.realayChain = msg.packet.relay_chain|| '--'
 								this.sender = msg.packet.data.sender|| '--'
-								this.nft_status = msg.packet.acknowledgement ? "Success":"Failed"
+								this.nftStatus = msg.packet.acknowledgement ? "Success":"Failed"
 								this.signer = msg.signer|| '--'
 								this.receiver = msg.packet.data.receiver || '--';
 								break;
 							//新增TIBC Acknowledge Packet
 							case TX_TYPE.tibc_acknowledge_packet:
-								this.id_tibc=msg.packet.data.id || '--';
-								this.url_tibc = msg.packet.data.uri || '--';
-								this.class_tibc = msg.packet.data.class|| '--'
+								this.idTibc=msg.packet.data.id || '--';
+								this.urlTibc = msg.packet.data.uri || '--';
+								this.classTibc = msg.packet.data.class|| '--'
 								this.sequence = msg.packet.sequence|| '--'
 								this.port = msg.packet.port|| '--'
-								this.source_chain = msg.packet.source_chain|| '--'
-								this.dest_chain = msg.packet.destination_chain|| '--'
-								this.realay_chain = msg.packet.relay_chain|| '--'
+								this.sourceChain = msg.packet.source_chain|| '--'
+								this.destChain = msg.packet.destination_chain|| '--'
+								this.realayChain = msg.packet.relay_chain|| '--'
 								this.sender = msg.packet.data.sender|| '--'
-								this.nft_status = msg.packet.acknowledgement ? "Success":"Failed"
+								this.nftStatus = msg.packet.acknowledgement ? "Success":"Failed"
 								this.signer = msg.signer|| '--'
 								break;
                             //新增 TIBC Clean Packet Out
 							case TX_TYPE.clean_packet:
 								this.sequence = msg.clean_packet.sequence|| '--'
-								this.source_chain = msg.clean_packet.source_chain|| '--'
-								this.dest_chain = msg.clean_packet.destination_chain|| '--'
-								this.realay_chain = msg.clean_packet.relay_chain|| '--'
+								this.sourceChain = msg.clean_packet.source_chain|| '--'
+								this.destChain = msg.clean_packet.destination_chain|| '--'
+								this.realayChain = msg.clean_packet.relay_chain|| '--'
 								this.signer = msg.signer|| '--'
 								break;
 							//新增 	TIBC Clean Packet In
 							case TX_TYPE.recv_clean_packet:
-								this.clean_packet= msg.clean_packet|| '--'
+								this.cleanPacket= msg.clean_packet|| '--'
 								this.signer = msg.signer|| '--'
 								break;
 							//新增TIBC Update Client
 							case TX_TYPE.tibc_update_client:
-								this.chain_name=msg.chain_name|| '--'
+								this.chainName=msg.chain_name|| '--'
 								this.signer = msg.signer
 								break;
                             //新增Transfer Denom (Denom Transfer)
