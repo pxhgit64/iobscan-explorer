@@ -164,7 +164,6 @@ export const ExplorerLang = {
         paused: 'Paused',
         completed: 'Completed',
         creatorName:'Creator',
-        destination_chain:'Destination Chain',//新增
         sourceChain:'Source Chain',
         chainName:'Chain Name',
         sequence:'Sequence',
