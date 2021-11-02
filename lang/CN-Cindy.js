@@ -158,10 +158,10 @@ export const ExplorerLang = {
         paused: '暂停',
         completed: '完成',
         creatorName:'创建者',
-        sourceChain:'Source Chain',
-        chainName:'Chain Name',
-        sequence:'Sequence',
-        destinationChain:'Destination Chain'
+        sourceChain:'发起链',
+        chainName:'链名称',
+        sequence:'序列号',
+        destinationChain:'目标链'
 
     },
     unit:{
@@ -312,32 +312,32 @@ export const ExplorerLang = {
         fee: '网络费用',
         gasUsed:'Gas Used',
         tibc:{
-            classTibc:'Class:',//tibc新增
-            destChain:'Destination Chain:',
-            realayChain:'Realay Chain:',
-            sender:'Sender:',
-            receiver:'Receiver:',
-            viewSource:'View Source:',
-            idTibc:'Id:',
-            urlTibc:'URL:',
-            sequence:'Sequence:',
-            port:'Port:',
-            sourceChain:'Source Chain:',
-            nftStatus:'NFT Status:',
-            signer:'Signer:',
-            cleanPacket:'CleanPacket:',
-            chainName:'Chain Name:',
+            classTibc:'路径:',//tibc新增
+            destChain:'目标链:',
+            realayChain:'中继链:',
+            sender:'发送者:',
+            receiver:'接收者:',
+            viewSource:'查看源码:',
+            idTibc:'标识:',
+            urlTibc:'链接:',
+            sequence:'序列号:',
+            port:'端口:',
+            sourceChain:'发起链:',
+            nftStatus:'数据对象状态:',
+            signer:'签名者:',
+            cleanPacket:'清除数据包:',
+            chainName:'链名称:',
         },
         nft:{
-            denomId:'ID:',//nft新增
-            sender:'Sender:',
-            receiver:'Recipient:',
-            denomName:'Denom Name:',
+            denomId:'标识:',//nft新增
+            sender:'发送者:',
+            receiver:'接收者:',
+            denomName:'数据类别:',
             symbol:'Symbol:',
             schema:'Schema:',
             mintRestricted:'Mint Restricted:',
             updateRestricted:'Update Restricted:',
-            signer:'Signer',
+            signer:'签名者',
         },
         issueDenom:{
             schema: '上链结构',
