@@ -2280,7 +2280,7 @@
 				</p>
 
 				<p>
-					<span>{{$t('ExplorerLang.transactionInformation.tibc.receiver')}}:</span>
+					<span>{{$t('ExplorerLang.transactionInformation.tibc.receiver')}}</span>
 					<template>
 					<span v-if="sender === '--'">{{receiver}}</span>
 					<span v-else @click="addressRoute(receiver)"
