@@ -102,6 +102,19 @@ export default {
 	watch: {
 		tabList: {
 			handler(newValue, oldValue) {
+				const {txType} = Tools.urlParser();
+				if(newValue?.length){
+					newValue.forEach( item => {
+						if(item.children){
+							item.children.forEach( item => {
+								item.active = 0
+								if(item.value === txType){
+									item.active = 1
+								}
+							})
+						}
+					})
+				}
 			},
 			deep: true
 		},
@@ -186,9 +199,10 @@ export default {
 				// this.isShowChildren = true
 				this.$store.commit('isShowMsgChildrenType',true)
 				const currentSearchType = sessionStorage.getItem('currentChoiceMsgType') || ''
+				const {txType} = Tools.urlParser();
 				value.children.forEach((item, index) => {
 					item.active = 0
-					if (item.value === currentSearchType) {
+					if (item.value === txType || item.value === currentSearchType) {
 						item.active = 1
 					}
 				})

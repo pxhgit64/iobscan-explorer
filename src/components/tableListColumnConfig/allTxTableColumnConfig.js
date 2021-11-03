@@ -1260,13 +1260,8 @@ export const needAddColumn = {
             label:i18n.t('ExplorerLang.table.initialDeposit'),
             displayValue: 'amount',
             nativeValue: 'amount',
-            isRight: true
+            isShowTokenSymbol:true,
         },
-        {
-            label:'',
-            displayValue: 'denom',
-            isShowDenomTip: true
-        }
     ],
     deposit: [
         {
