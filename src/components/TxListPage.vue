@@ -756,6 +756,7 @@
 				 */
 				this.parseTime('txList', 'Time', 'Timestamp')
 			},
+			
 			formatAddress (address) {
 				return Tools.formatValidatorAddress(address)
 			},
