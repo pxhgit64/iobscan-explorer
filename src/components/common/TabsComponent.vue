@@ -102,19 +102,6 @@ export default {
 	watch: {
 		tabList: {
 			handler(newValue, oldValue) {
-				const {txType} = Tools.urlParser();
-				if(newValue?.length){
-					newValue.forEach( item => {
-						if(item.children){
-							item.children.forEach( item => {
-								item.active = 0
-								if(item.value === txType){
-									item.active = 1
-								}
-							})
-						}
-					})
-				}
 			},
 			deep: true
 		},
