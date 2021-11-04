@@ -58,6 +58,8 @@ export default {
             background: $theme_c;
             border-color: $theme_c;
             margin: 0 0.1rem;
+			border-radius: 0.08rem;
+			padding: 0.08rem 0.15rem;
         }
 
         

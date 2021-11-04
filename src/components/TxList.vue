@@ -142,6 +142,7 @@ export default {
 		this.formatTxData(txType)
 	},
 	mounted() {
+		this.getFilterTxs('init');
 		const {txType} = Tools.urlParser();
 		this.txColumnList = txCommonTable.concat(SignerColunmn,txCommonLatestTable)
 		if(txType && needAddColumn[txType]){
@@ -375,12 +376,20 @@ export default {
 				return "";
 			}
 			let denomRule = /[0-9.]+/
+			const amountRule = /^[0-9]+.?[0-9]*$/
+			if(amountRule.test(amount)){
+				return  amount
+			}
 			let result = amount.match(denomRule)
 			return result ? amount.match(denomRule)[0] : ' ';
 		},
 		getAmountUnit(amount) {
 			if (!amount) {
 				return "";
+			}
+			const amountRule = /^[0-9]+.?[0-9]*$/
+			if(amountRule.test(amount)){
+				return  ' '
 			}
 			let denomRule = /[A-Za-z\/]+/
 			let result = amount.match(denomRule)

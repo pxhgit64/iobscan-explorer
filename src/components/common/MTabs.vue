@@ -65,8 +65,8 @@ export default {
         }
     }
     .active {
-        background-color: $bg_button_c;
-        border-color: $bg_button_c;
+        background-color: $theme_c;
+        border-color: $theme_c;;
         color: $t_button_c;
     }
 }

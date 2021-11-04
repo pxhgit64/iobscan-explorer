@@ -13,7 +13,6 @@ export const needAddColumn = {
         {
             label:i18n.t('ExplorerLang.table.amount'),
             displayValue: 'amount',
-            isShowDenomTip: true,
             isRight: true
         },
         {
@@ -44,7 +43,6 @@ export const needAddColumn = {
         {
             label: i18n.t('ExplorerLang.table.amount'),
             displayValue: 'amount',
-            isShowDenomTip: true,
             isRight: true
         },
         {
@@ -647,22 +645,10 @@ export const needAddColumn = {
         {
             label: i18n.t('ExplorerLang.table.nftId'),
             displayValue: 'nftId',
-            nativeValue: 'nftId',
-            nftRouterParamsValue: 'denomId',
-            isLink: true,
-            isNft: true,
-            linkRoute: '/nft/token?denom=',
-            denomRouter: '&tokenId='
         },
         {
             label:i18n.t('ExplorerLang.table.denomId'),
             displayValue: 'denomId',
-            nativeValue: 'nftId',
-            nftRouterParamsValue: 'denomId',
-            isLink: true,
-            isNft: true,
-            linkRoute: '/nft/token?denom=',
-            denomRouter: '&tokenId='
         },
         {
             label: i18n.t('ExplorerLang.table.from'),
