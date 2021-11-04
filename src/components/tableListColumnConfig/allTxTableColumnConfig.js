@@ -1255,7 +1255,7 @@ export const needAddColumn = {
             displayValue:'proposalId',
             nativeValue:'proposalId',
             isLink: true,
-            linkRoute: '/ProposalsDetail'
+            linkRoute: '/ProposalsDetail/'
         },
         {
             label: i18n.t('ExplorerLang.table.depositor'),
@@ -1278,7 +1278,7 @@ export const needAddColumn = {
             displayValue:'proposalId',
             nativeValue:'proposalId',
             isLink: true,
-            linkRoute: '/ProposalsDetail'
+            linkRoute: '/ProposalsDetail/'
         },
         {
             label: i18n.t('ExplorerLang.table.voter'),
