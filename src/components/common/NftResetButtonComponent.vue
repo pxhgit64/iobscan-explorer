@@ -24,6 +24,7 @@ export default {
 		background: $theme_c;
 		border-color: $theme_c;
 		padding: 0.07rem;
+		border-radius: 0.08rem;
 	}
 }
 
