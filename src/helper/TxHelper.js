@@ -1,21 +1,26 @@
-import { TX_TYPE, PubKeyAlgorithm,LEVEL_TX_TYPE,TX_TYPE_DISPLAY } from "../constant";
+import { TX_TYPE, PubKeyAlgorithm, LEVEL_TX_TYPE,TX_TYPE_DISPLAY } from "../constant";
 import prodConfig from '../productionConfig';
 import Tools from "../util/Tools";
 export class TxHelper {
     //The corresponding IBC Denom was deduced through the IBC Packet path
-    static getOriginalDenomFromPacket (ibc_package,type) { 
+    static getOriginalDenomFromPacket (ibc_package,type) {
         let denom_result = '';
         if (ibc_package && typeof ibc_package == 'object') {
             let { source_port, source_channel, destination_port, destination_channel, data } = ibc_package;
             let prefix_sc = `${source_port}/${source_channel}/`;
             let prefix_dc = `${destination_port}/${destination_channel}/`;
             let denom = data.denom;
-            if (type && type == TX_TYPE.timeout_packet) {
+            if (type && type == TX_TYPE.timeout_packet || type && type == TX_TYPE.acknowledge_packet ) {
                 if (denom.startsWith(prefix_sc)) {
                     denom_result = `ibc/${Tools.sha256(denom).toUpperCase()}`;
                 }else{
-                    denom_result = denom;
+                    if(denom.includes(source_port)){
+                        denom_result = `ibc/${Tools.sha256(denom).toUpperCase()}`;
+                    }else {
+                        denom_result = denom;
+                    }
                 }
+
             }else{
                 if (denom.startsWith(prefix_sc)){
                     let denom_clear_prefix = denom.replace(prefix_sc,'');
@@ -195,6 +200,8 @@ export class TxHelper {
             case TX_TYPE.burn_token:
                 res.from = msg.sender;
                 break;
+            case TX_TYPE.multisend:
+                res.from = msg.inputs && msg.inputs.length > 0 ? msg.inputs[0].address : '';
         }
         return res;
     }
@@ -274,12 +281,63 @@ export class TxHelper {
                 case TX_TYPE.unjail:
                     operator = msg.address ? msg.address : '--'
                     break;
+                case TX_TYPE.withdraw_validator_commission:
+                    operator = msg.validator_address || '--'
+                    break;
                 default:
                     operator = '--'
             }
             return operator
         }
     }
+    static formatTxTypeData (TxTypeData) {
+        let retOptions = []
+        let map = new Map()
+        let index = 0
+        let TX_TYPE_DISPLAY = {}
+        let lang = 'en'
+        if (prodConfig.lang === "EN") {
+            lang = 'en'
+        } else {
+            lang = 'cn'
+        }
+        TxTypeData.forEach(txType => {
+            let module = txType['module_' + `${lang}`]
+            let type = txType['type_' + `${lang}`]
+            if (!map.has(module)) {
+                retOptions.push({
+                    label: module,
+                    value: module,
+                    children: []
+                })
+                map.set(module, index)
+                index++;
+            }
+            retOptions[map.get(module)].children.push({
+                label: type,
+                value: txType.typeName
+            }) 
+            
+            TX_TYPE_DISPLAY[txType.typeName] = type
+        })
+        // retOptions.filter(module => { module.children.length > 0 })
+  
+        retOptions.forEach((module, index) => {
+            if (module.children.length === 0) {
+                retOptions.splice(index, 1)
+            }
+         })
+
+        let txType = {
+            txTypeData: TxTypeData,
+            txTypeDataOptions: retOptions,
+            TX_TYPE_DISPLAY: TX_TYPE_DISPLAY
+        }
+        sessionStorage.setItem('txType', JSON.stringify(txType))
+
+    }
+
+    // abandon
     static formatTxType (txTypeArray) {
 		let allTxType = [],
 			tansferObj = {
@@ -867,7 +925,7 @@ export class TxHelper {
 
 			}
         });
-		allTxType.push(tansferObj,stakingObj,iServiceObj,nftObj,coinswapObj,identityObj,ibcObj,htlcObj,crossChainObj,oracleObj,randomObj,recordObj,assetObj,govObj,othersObj);
+		allTxType.push(tansferObj, nftObj, identityObj, ibcObj, stakingObj, coinswapObj, htlcObj, assetObj, govObj, oracleObj, randomObj, recordObj, iServiceObj,crossChainObj,othersObj);
         allTxType = allTxType.filter(item => item.children.length)
         return allTxType
     }

@@ -70,9 +70,21 @@ export async function getAmountByTx (message, events, isShowDenom) {
 					const sendAmount = msg && msg.amount.length > 0 ? await converCoin(msg.amount[0]) : null
 					// formatPriceToFixed 四舍五入 toDecimal 截取
 					amount = sendAmount && sendAmount.amount && sendAmount.denom ?  isShowDenom ? `${Tools.toDecimal(sendAmount.amount,amountDecimals) } ${sendAmount.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(sendAmount.amount,amountDecimals) }` : '--';
+					if(sendAmount?.denom &&  sendAmount.denom.startsWith('LPT')  || sendAmount.denom.startsWith('lpt')){
+						amount = ''
+					}
+				}else {
+					amount = ''
 				}
 				break;
 			case TX_TYPE.multisend:
+				if(msg && msg.inputs && msg.inputs.length && msg.inputs.length  === 1){
+					amount = msg?.inputs[0]?.coins ? `${Tools.toDecimal(msg.inputs[0].coins[0].amount,amountDecimals) } ${msg.inputs[0].coins[0].denom.toLocaleUpperCase()}` :'--'
+				}else if(msg && msg.inputs && msg.inputs.length && msg.inputs.length  > 1) {
+					amount = ''
+				}else {
+					amount = '--'
+				}
 				break;
 			case TX_TYPE.verify_invariant:
 				break;
@@ -85,6 +97,10 @@ export async function getAmountByTx (message, events, isShowDenom) {
 			case TX_TYPE.edit_validator:
 				break;
 			case TX_TYPE.create_validator:
+				if(msg && msg?.value){
+					let selfBond = await converCoin(msg.value)
+					amount = msg?.value ? `${Tools.toDecimal(selfBond.amount,amountDecimals) } ${selfBond.denom.toLocaleUpperCase()}` :'--'
+				}
 				break;
 			case TX_TYPE.delegate:
 				let delegateAmount = msg &&  msg.amount ? await converCoin(msg.amount) : null
@@ -109,6 +125,10 @@ export async function getAmountByTx (message, events, isShowDenom) {
 				amount = poolAmount && poolAmount.amount  && poolAmount.denom?  isShowDenom ? `${Tools.toDecimal(poolAmount.amount,amountDecimals)} ${poolAmount.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(poolAmount.amount,amountDecimals)}` : '--'
 				break;
 			case TX_TYPE.deposit:
+				if(msg?.amount?.length  === 1) {
+					let amountMaxUnit = await converCoin(msg.amount[0]);
+					amount = isShowDenom ? `${Tools.toDecimal(amountMaxUnit.amount,amountDecimals)} ${amountMaxUnit.denom.toUpperCase()}` : `${Tools.toDecimal(amountMaxUnit.amount,amountDecimals)}`;
+				}
 				break;
 			case TX_TYPE.vote:
 				break;
@@ -131,6 +151,18 @@ export async function getAmountByTx (message, events, isShowDenom) {
 				}
 				break;
 			case TX_TYPE.add_liquidity:
+				let amountArray = []
+				if(msg?.swap_amount?.length === 2){
+					const addliquidityAmount = msg.swap_amount[0]
+					if(addliquidityAmount.includes(',')){
+						const tokenAmount1 =  await converCoin(formatAccountCoinsAmount(addliquidityAmount.split(',')[0]))
+						const tokenAmount2 =  await converCoin(formatAccountCoinsAmount(addliquidityAmount.split(',')[1]))
+						const addLiquidityAmount1 = `${Tools.toDecimal(tokenAmount1.amount,amountDecimals)} ${tokenAmount1.denom.toUpperCase()}`
+						const addLiquidityAmount2 = `${Tools.toDecimal(tokenAmount2.amount,amountDecimals)} ${tokenAmount2.denom.toUpperCase()}`
+						amountArray.push(addLiquidityAmount1, addLiquidityAmount2)
+						amount = amountArray
+					}
+				}
 				// events display eg: 18dog,1000000ubif
 				// (events || []).forEach(event => {
 				// 	if(event.type === 'transfer') {
@@ -145,6 +177,38 @@ export async function getAmountByTx (message, events, isShowDenom) {
 				// })
 				break;
 			case TX_TYPE.remove_liquidity:
+				let removeAmountArray = []
+				if(msg?.swap_amount?.length === 2){
+					let removeLiquidityAmount = msg.swap_amount[1]
+					let tokenAmount1,tokenAmount2;
+					if(removeLiquidityAmount.includes(',')){
+						tokenAmount1 =  await converCoin(formatAccountCoinsAmount(removeLiquidityAmount.split(',')[0]))
+						tokenAmount2 =  await converCoin(formatAccountCoinsAmount(removeLiquidityAmount.split(',')[1]))
+						const removeLiquidityAmount1 = `${Tools.toDecimal(tokenAmount1.amount,amountDecimals)} ${tokenAmount1.denom.toUpperCase()}`
+						const removeLiquidityAmount2 = `${Tools.toDecimal(tokenAmount2.amount,amountDecimals)} ${tokenAmount2.denom.toUpperCase()}`
+						removeAmountArray.push(removeLiquidityAmount1, removeLiquidityAmount2)
+						amount = removeAmountArray
+					}else{
+						tokenAmount1 =  await converCoin(formatAccountCoinsAmount(removeLiquidityAmount))
+						const removeLiquidityAmount1 = `${Tools.toDecimal(tokenAmount1.amount,amountDecimals)} ${tokenAmount1.denom.toUpperCase()}`
+						const removeLiquidityAmount2 = '--'
+						removeAmountArray.push(removeLiquidityAmount1, removeLiquidityAmount2)
+						amount = removeAmountArray
+					}
+				}
+				/*let amountArray = []
+				if(msg?.swap_amount?.length === 2){
+					const addliquidityAmount = msg.swap_amount[0]
+					if(addliquidityAmount.includes(',')){
+						const tokenAmount1 =  await converCoin(formatAccountCoinsAmount(addliquidityAmount.split(',')[0]))
+						const tokenAmount2 =  await converCoin(formatAccountCoinsAmount(addliquidityAmount.split(',')[1]))
+						const addLiquidityAmount1 = `${Tools.toDecimal(tokenAmount1.amount,amountDecimals)} ${tokenAmount1.denom.toUpperCase()}`
+						const addLiquidityAmount2 = `${Tools.toDecimal(tokenAmount2.amount,amountDecimals)} ${tokenAmount2.denom.toUpperCase()}`
+						amountArray.push(addLiquidityAmount1, addLiquidityAmount2)
+						amount = amountArray
+					}
+				}
+*/
 				// events display eg: 4dog,252824ubif
 				// (events || []).forEach(event => {
 				// 	if(event.type === 'transfer') {
@@ -159,6 +223,18 @@ export async function getAmountByTx (message, events, isShowDenom) {
 				// })
 				break;
 			case TX_TYPE.swap_order:
+				let swapOrderAmount = []
+				if(msg?.input?.coin && JSON.stringify(msg.input.coin) !== '{}'){
+					const swapOrderAmount1 = await converCoin(msg.input.coin)
+					const swapOrderAmountStr1 = `${swapOrderAmount1.amount} ${swapOrderAmount1.denom.toUpperCase()}`
+					swapOrderAmount.push(swapOrderAmountStr1)
+				}
+				if(msg?.output?.coin && JSON.stringify(msg.output.coin) !== '{}'){
+					const swapOrderAmount2 = await converCoin(msg.output.coin)
+					const swapOrderAmountStr2 = `${swapOrderAmount2.amount} ${swapOrderAmount2.denom.toUpperCase()}`
+					swapOrderAmount.push(swapOrderAmountStr2)
+				}
+				amount = swapOrderAmount
 				break;
 			case TX_TYPE.create_htlc:
 				if(msg.amount && msg.amount[0]) {
@@ -192,7 +268,7 @@ export async function getAmountByTx (message, events, isShowDenom) {
 				break;
 			// 联盟链和公有链 ibc交易类型名称一致
 			case TX_TYPE.recv_packet:
-				if(msg.packet && msg.packet.data) {    
+				if(msg.packet && msg.packet.data) {
 					let originalDenom = TxHelper.getOriginalDenomFromPacket(msg.packet,txType);
 					let amountMaxUnit = await converCoin({
 						denom:originalDenom || msg.packet.data.denom,
@@ -212,13 +288,13 @@ export async function getAmountByTx (message, events, isShowDenom) {
 			case TX_TYPE.update_identity:
 				break;
 			case TX_TYPE.transfer:
-                if(msg.token) {
+                if(msg?.token) {
                     let amountMaxUnit = await converCoin(msg.token);
                     amount = isShowDenom ? `${Tools.toDecimal(amountMaxUnit.amount,amountDecimals)} ${amountMaxUnit.denom.toUpperCase()}` : `${Tools.toDecimal(amountMaxUnit.amount,amountDecimals)}`;
                 }
 				break;
 			case TX_TYPE.timeout_packet:
-                if(msg.packet && msg.packet.data) {
+                if(msg?.packet && msg?.packet?.data) {
 					let originalDenom = TxHelper.getOriginalDenomFromPacket(msg.packet,txType);
                     let amountMaxUnit = await converCoin({
                         amount:msg.packet.data.amount,
@@ -254,12 +330,33 @@ export async function getAmountByTx (message, events, isShowDenom) {
 			case TX_TYPE.timeout_on_close_packet:
 				break;
 			case TX_TYPE.acknowledge_packet:
+				if(msg?.packet && msg?.packet?.data) {
+					let originalDenom = TxHelper.getOriginalDenomFromPacket(msg.packet,txType);
+					let amountMaxUnit = await converCoin({
+						amount:msg.packet.data.amount,
+						denom: originalDenom || msg.packet.data.denom,
+					});
+					amount = isShowDenom ? `${Tools.toDecimal(amountMaxUnit.amount,amountDecimals)} ${amountMaxUnit.denom.toUpperCase()}` : `${Tools.toDecimal(amountMaxUnit.amount,amountDecimals)}`;
+				}
 				break;
 			case TX_TYPE.request_rand:
+				if(msg?.service_fee_cap?.length  === 1) {
+					let amountMaxUnit = await converCoin(msg.service_fee_cap[0]);
+					amount = isShowDenom ? `${Tools.toDecimal(amountMaxUnit.amount,amountDecimals)} ${amountMaxUnit.denom.toUpperCase()}` : `${Tools.toDecimal(amountMaxUnit.amount,amountDecimals)}`;
+				}
 				break;
 		}
 		return amount
 	}
+}
+function formatAccountCoinsAmount(coinsAmount) {
+	const token = {
+		denom: '',
+		amount: '0'
+	}
+	token.denom = coinsAmount.includes('ibc') ? `ibc${coinsAmount.split('ibc')[1]}` :/[A-Za-z\-]{2,15}/.exec(coinsAmount)[0]
+	token.amount = /[0-9]+[.]?[0-9]*/.exec(coinsAmount)[0]
+	return token
 }
 
 export async function getDenomMap() {

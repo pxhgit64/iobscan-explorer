@@ -1,10 +1,11 @@
-import { getConfig as getConfigApi,getIbcTransferByHash, getIbcToken } from "@/service/api";
+import { getConfig as getConfigApi,getIbcTransferByHash, getIbcToken, getAllTxTypes } from "@/service/api";
 import moveDecimal from 'move-decimal-point';
 import Tools from "../util/Tools";
 import { COSMOS_ADDRESS_PREFIX , IRIS_ADDRESS_PREFIX} from "@/constant";
 // import { ibcDenomPrefix } from '../constant';
 import {cfg} from "@/config";
 import md5 from "js-md5";
+import {TxHelper} from "../helper/TxHelper";
 
 export function validatePositiveInteger(value){
 	if(+value === 0 || value && +value < 1){
@@ -51,6 +52,21 @@ export async function getConfig(){
         config = JSON.parse(config || "{}");
     }
     return config;
+}
+
+export async function getTxType(){
+    let txType = window.sessionStorage.getItem('txType');
+    if (!txType) {
+        let res = await getAllTxTypes().catch((e) => { throw e });
+        if (res) {
+            txType = TxHelper.formatTxTypeData(res.data)
+        }else{
+            txType = {};
+        }
+    }else{
+        txType = JSON.parse(txType || "{}");
+    }
+    return txType;
 }
 
 export async function getMainToken(){
@@ -115,7 +131,7 @@ export async function converCoin (_coin) {
         //         coin.denom = (ibcDenomPrefix + res.denom_trace.base_denom).toUpperCase()
         //     }
         // }
-        const ibcTest = /(ibc|IBC)\/[0-9A-Za-z]{54}/ 
+        const ibcTest = /(ibc|IBC)\/[0-9A-Za-z]{54}/
         if(ibcTest.test(coin.denom)){
           const data = await uploadIbcToken(coin.denom)
           if(data?.symbol){

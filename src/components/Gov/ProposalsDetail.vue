@@ -27,9 +27,10 @@
           <div class="information_props_wrap">
             <span class="information_props">{{ $t('ExplorerLang.gov.proposalDetail.proposer') }} :</span>
             <span v-show="proposer !== '--'" class="information_value information_show_trim">
-              <span style="font-family:Arial" class="address_link jump_route" @click="addressRoute(proposer)">
+<!--              <span style="font-family:Arial" class="address_link jump_route" @click="addressRoute(proposer)">
                 {{ proposer }}
-              </span>
+              </span>-->
+				<router-link :to="`/address/${proposer}`">{{ proposer }}</router-link>
             </span>
             <span v-show="proposer == '--'" class="information_value information_show_trim ">{{ proposer }}</span>
           </div>
@@ -202,37 +203,13 @@
           </div>
         </div>
         <div class="proposals_detail_table_wrap">
-          <el-table class="proposals_voter_table" :empty-text="$t('ExplorerLang.table.emptyDescription')" :data="voterData">
-            <el-table-column prop="voter" :min-width="ColumnMinWidth.address" :label="$t('ExplorerLang.table.voter')">
-              <template v-slot:default="{ row }">
-                <el-tooltip v-if="row.isValidator" :content="row.address" placement="top">
-                  <router-link :to="`/staking/${row.address}`">{{ formatMoniker(row.moniker, monikerNum.otherTable) || formatAddress(row.address) }}</router-link>
-                </el-tooltip>
-                <el-tooltip v-else :content="row.voter" placement="top">
-                  <router-link :to="`/address/${row.voter}`">{{ formatAddress(row.voter) }}</router-link>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-            <el-table-column prop="option" :min-width="ColumnMinWidth.voteOption" :label="$t('ExplorerLang.table.voteOption')"></el-table-column>
-            <el-table-column prop="block" :min-width="ColumnMinWidth.blockListHeight" :label="$t('ExplorerLang.table.block')">
-              <template v-slot:default="{ row }">
-                <router-link :to="`/block/${row.block}`">{{ row.block }}</router-link>
-              </template>
-            </el-table-column>
-            <el-table-column prop="hash" :width="ColumnMinWidth.txHash" :label="$t('ExplorerLang.table.txHash')">
-              <template v-slot:default="{ row }">
-                <el-tooltip :content="row.hash" placement="top" :disabled="!isValid(row.hash)">
-                  <router-link :to="`/tx?txHash=${row.hash}`">{{ formatTxHash(row.hash) }}</router-link>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-            <el-table-column prop="time" align="right" :min-width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.time')"></el-table-column>
-          </el-table>
-        </div>
-        <div class="table_pagination">
-          <keep-alive>
-            <m-pagination :pageSize="pageSize" :total="voterCount" :page="currentVoterPageNum" :page-change="pageChangeVoter"></m-pagination>
-          </keep-alive>
+			<list-component :empty-text="$t('ExplorerLang.table.emptyDescription')"
+							:is-loading="isVoterLoading"
+							:list-data="voterData"
+							:column-list="proposalDetailVoterListColumn"
+							:pagination="{pageSize:Number(pageSize),dataCount:voterCount,pageNum:Number(currentVoterPageNum)}"
+							@pageChange="pageChangeVoter"></list-component>
+			
         </div>
       </div>
 
@@ -240,37 +217,13 @@
       <div class="proposal_table">
         <div class="proposals_table_title_div" style="margin-top: 0;">Depositors</div>
         <div class="proposals_detail_table_wrap">
-          <el-table class="proposals_voter_table" :empty-text="$t('ExplorerLang.table.emptyDescription')" :data="depositorData">
-            <el-table-column prop="depositor" :min-width="ColumnMinWidth.address" :label="$t('ExplorerLang.table.voter')">
-              <template v-slot:default="{ row }">
-                <el-tooltip :content="row.depositor" placement="top" :disabled="isValid(row.moniker)">
-                  <router-link :to="`/address/${row.depositor}`">{{ formatMoniker(row.moniker, monikerNum.otherTable) || formatAddress(row.depositor) }}</router-link>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-            <el-table-column prop="amount" :min-width="ColumnMinWidth.amount" :label="$t('ExplorerLang.table.amount')">
-              <template slot="header" slot-scope="scope">
-                <span>{{ $t('ExplorerLang.table.amount')}}</span>
-                <el-tooltip :content="mainTokenSymbol" placement="top">
-                  <i class="iconfont iconyiwen yiwen_icon" />
-                </el-tooltip>
-              </template>
-            </el-table-column>
-            <el-table-column prop="type" :min-width="ColumnMinWidth.proposalType" :label="$t('ExplorerLang.table.type')"></el-table-column>
-            <el-table-column prop="hash" :width="ColumnMinWidth.txHash" :label="$t('ExplorerLang.table.txHash')">
-              <template v-slot:default="{ row }">
-                <el-tooltip :content="row.hash" placement="top" :disabled="!isValid(row.hash)">
-                  <router-link :to="`/tx?txHash=${row.hash}`">{{ formatTxHash(row.hash) }}</router-link>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-            <el-table-column prop="time" align="right" :min-width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.time')"></el-table-column>
-          </el-table>
-        </div>
-        <div class="table_pagination">
-          <keep-alive>
-            <m-pagination :pageSize="pageSize" :total="depositorCount" :page="currentDepositorPageNum" :page-change="pageChangeDepositor"></m-pagination>
-          </keep-alive>
+			<list-component :empty-text="$t('ExplorerLang.table.emptyDescription')"
+							:is-loading="isDepositorLoading"
+							:list-data="depositorData"
+							:column-list="proposalDepositorColumn"
+							:pagination="{pageSize:Number(pageSize),dataCount:depositorCount,pageNum:Number(currentDepositorPageNum)}"
+							@pageChange="pageChangeDepositor"
+							:token-symbol="mainTokenSymbol"></list-component>
         </div>
       </div>
     </div>
@@ -285,10 +238,13 @@ import { addressRoute, converCoin, formatMoniker, getMainToken } from '@/helper/
 import MDepositCard from '../common/MDepositCard'
 import MVotingCard from '../common/MVotingCard'
 import MPagination from '.././common/MPagination'
-
+import ListComponent from "../common/ListComponent";
+import proposalDetailVoterListColumn from "./govColumnConfig/proposalDetailVoterListColumn";
+import proposalDepositorColumn from "./govColumnConfig/proposalDepositorColumn";
 export default {
   name: '',
   components: {
+	  ListComponent,
     MDepositCard,
     MVotingCard,
     MPagination,
@@ -296,6 +252,10 @@ export default {
   props: {},
   data() {
     return {
+		proposalDetailVoterListColumn,
+		proposalDepositorColumn,
+		isVoterLoading:false,
+		isDepositorLoading:false,
       formatMoniker,
       monikerNum,
       ColumnMinWidth,
@@ -379,15 +339,14 @@ export default {
   },
   computed: {},
   watch: {},
-  created() {
-    this.getProposalsDetail()
-    this.getVoterCount()
-    this.getVoter()
-    this.getDepositorCount()
-    this.getDepositor()
-    this.setMainToken()
+  mounted() {
+	  this.getProposalsDetail()
+	  this.getVoterCount()
+	  this.getVoter()
+	  this.getDepositorCount()
+	  this.getDepositor()
+	  this.setMainToken()
   },
-  mounted() {},
   methods: {
       async setMainToken(){
           let mainToken = await getMainToken();
@@ -423,7 +382,7 @@ export default {
                     this.time = '--'
                   } else {
                     let timestamp = plan.time && Math.floor(new Date(plan.time).getTime() / 1000)
-                    this.time = timestamp && Tools.getDisplayDate(timestamp)
+                    this.time = timestamp && Tools.formatLocalTime(timestamp)
                   }
                   this.upgradedClientState = plan.upgraded_client_state || '--'
                 }
@@ -435,10 +394,10 @@ export default {
                 break
             }
           }
-          this.submitTime = res.submit_time ? Tools.getDisplayDate(res.submit_time) : ''
-          this.submitAge = res.submit_time ? Tools.formatAge(Tools.getTimestamp(), res.submit_time * 1000, 'ago') : ''
-          this.depositEndTime = res.deposit_end_time ? Tools.getDisplayDate(res.deposit_end_time) : ''
-          this.depositEndAge = res.deposit_end_time ? Tools.formatAge(Tools.getTimestamp(), res.deposit_end_time * 1000, 'ago') : ''
+          this.submitTime = res.submit_time ?Tools.formatLocalTime(res.submit_time) : ''
+          this.submitAge = res.submit_time ?  Tools.formatAge(Tools.getTimestamp(), res.submit_time * 1000, 'ago') : ''
+          this.depositEndTime = res.deposit_end_time ? Tools.formatLocalTime(res.deposit_end_time) : ''
+          this.depositEndAge = res.deposit_end_time ?  Tools.formatAge(Tools.getTimestamp(), res.deposit_end_time * 1000, 'ago') : ''
           res.deposit_end_time ? this.getDepositTime(res.deposit_end_time) : ''
           if (res.total_deposit && res.total_deposit.length !== 0) {
             let amount = await converCoin(res.total_deposit[0])
@@ -446,9 +405,9 @@ export default {
           }
           this.burnValue = `${(Number(res.burned_rate) * 100).toFixed(2)}`
           if(res.status !== proposalStatus.depositPeriod) {
-            this.votingStartTime = res.voting_start_time ? Tools.getDisplayDate(res.voting_start_time) : ''
+            this.votingStartTime = res.voting_start_time ? Tools.formatLocalTime(res.voting_start_time) : ''
             this.votingStartAge = res.voting_start_time ? Tools.formatAge(Tools.getTimestamp(), res.voting_start_time * 1000, 'ago') : ''
-            this.votingEndTime = res.voting_end_time ? Tools.getDisplayDate(res.voting_end_time) : ''
+            this.votingEndTime = res.voting_end_time ? Tools.formatLocalTime(res.voting_end_time) : ''
             this.votingEndAge = res.voting_end_time ? Tools.formatAge(Tools.getTimestamp(), res.voting_end_time * 1000, 'ago') : ''
             res.voting_end_time ? this.getVotingEndTime(res.voting_end_time) : ''
           } else {
@@ -560,6 +519,7 @@ export default {
       return Tools.formatValidatorAddress(address)
     },
     async getVoter() {
+      	this.isVoterLoading = true
       try {
         let res = await getProposalDetailVotersApi(this.$route.params.proposal_id, this.currentVoterPageNum, this.pageSize, false, this.filterTab)
         this.voterData = []
@@ -573,13 +533,15 @@ export default {
               option: formatVoteOptions[voter.option],
               block: voter.height,
               hash: voter.hash,
-              time: voter.timestamp ? Tools.getDisplayDate(voter.timestamp) : '--',
+              time: voter.timestamp ? Tools.formatLocalTime(voter.timestamp) : '--',
             }
           })
         } else {
           this.voterData = []
-        }          
+        }
+		  this.isVoterLoading = false
       } catch (e) {
+		  this.isVoterLoading = false
         console.error(e)
       }
     },
@@ -606,6 +568,7 @@ export default {
       }
     },
     async getDepositor() {
+      	this.isDepositorLoading = true
       try {
         let res = await getProposalDetailDepositorApi(this.$route.params.proposal_id, this.currentDepositorPageNum, this.pageSize, false)    
         if (res?.data.length > 0) {
@@ -622,13 +585,15 @@ export default {
               amount,
               type: depositor.type,
               hash: depositor.hash,
-              time: depositor.timestamp ? Tools.getDisplayDate(depositor.timestamp) : '--',
+              time: depositor.timestamp ? Tools.formatLocalTime(depositor.timestamp) : '--',
             })
           }
         } else {
           this.depositorData = []
         }
+		  this.isDepositorLoading = false
       } catch (e) {
+		  this.isDepositorLoading = false
         console.error(e)
       }
     },

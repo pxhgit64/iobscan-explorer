@@ -117,4 +117,21 @@ const router = new Router({
 
 	]
 })
+router.beforeEach((to,from,next) => {
+	sessionStorage.removeItem('currentChoiceMsgType')
+	if(to.path !== '/txs'){
+		sessionStorage.removeItem('lastChoiceMsgModelIndex')
+		sessionStorage.removeItem('txTimeRange')
+		sessionStorage.removeItem('currentChoiceMsgType')
+		sessionStorage.removeItem('currentTxModelIndex')
+		sessionStorage.removeItem('lastChoiceMsgModelIndex')
+	}
+	if(to.path !== '/txs/delegations'){
+		sessionStorage.removeItem('selectMsgTypeIndex')
+	}
+	if(to.path !== '/txs/delegations'){
+		sessionStorage.removeItem('selectMsgTypeIndex')
+	}
+	next()
+})
 export default router

@@ -211,7 +211,7 @@ export default {
                                 itemObj.value = statisticsDb.validatorCount;
                                 break;
                             case 203:
-                                itemObj.value = `${statisticsDb.avgBlockTime}s`
+                                itemObj.value = `${statisticsDb.avgBlockTime}${this.$t('ExplorerLang.common.s')}`
                                 break;
                             case 204:
                                 itemObj.value = statisticsDb.assetCount
@@ -271,13 +271,13 @@ export default {
                             switch(item) {
                                 case 201:
                                     itemObj.value = statisticsNetwork.txCount;
-                                    itemObj.footerLabel = Tools.getDisplayDate(statisticsNetwork.latestBlockTime)
+                                    itemObj.footerLabel = Tools.formatLocalTime(statisticsNetwork.latestBlockTime)
                                     break;
                                 case 202:
                                     itemObj.value = statisticsDb.validatorCount;
                                     break;
                                 case 203:
-                                    itemObj.value = `${statisticsDb.avgBlockTime}s`
+                                    itemObj.value = `${statisticsDb.avgBlockTime}${this.$t('ExplorerLang.common.s')}`
                                     break;
                                 case 204:
                                     itemObj.value = statisticsDb.assetCount

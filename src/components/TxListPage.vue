@@ -5,12 +5,11 @@
 				<span v-if="$route.params.txType === 'delegations'">{{ $t('ExplorerLang.transactions.delegationTxsList')}}</span>
 				<span v-if="$route.params.txType === 'validations'">{{$t('ExplorerLang.transactions.validationTxsList')}}</span>
 				<span v-if="$route.params.txType === 'governance'">{{$t('ExplorerLang.transactions.govTxsList')}}</span>
-				<span>{{ count }} {{$t('ExplorerLang.transactions.txs')}}</span>
 			</div>
 			<div class="transaction_list_title_wrap">
 				<div class="transaction_list_title_content">
 					<div class="filter_container">
-						<div class="filter_tx_type_statue_content">
+<!--						<div class="filter_tx_type_statue_content">
 							<el-select popper-class="tooltip" v-model="value" filterable :change="filterTxByTxType(value)">
 								<el-option v-for="(item, index) in txTypeListArray"
 										:key="index"
@@ -54,7 +53,7 @@
 						<div class="reset_search_content">
 							<div class="tx_search_btn" @click="getFilterTxs">{{$t('ExplorerLang.transactions.search')}}</div>
 							<div class="reset_btn" @click="resetFilterCondition"><i class="iconfont iconzhongzhi"></i></div>
-						</div>
+						</div>-->
 					</div>
 				</div>
 			</div>
@@ -63,17 +62,41 @@
             <div class="transaction_list_table_content">
                 <div class="table_list_content">
                     <!-- Delegation Txs -->
-					<DelegationTxsList :dataList="txList" :isShowFee="isShowFee" v-if="this.$route.params.txType === 'delegations'" />
+<!--					<DelegationTxsList :dataList="txList" :isShowFee="isShowFee" v-if="this.$route.params.txType === 'delegations'" />-->
+					<list-component :is-loading="isLoading"
+									:list-data="txList"
+									:column-list="txColumnList"
+									:token-symbol="mainTokenSymbol"
+									:pagination="{pageSize:Number(pageSize),dataCount:count,pageNum:Number(currentPageNum)}"
+									@pageChange="pageChange">
+						<template v-slot:msgType>
+							<tabs-component :tab-list="txTypeListArray"
+											@onSelectMagModel="setChoiceMsgTypeColumn"></tabs-component>
+						</template>
+						<template v-slot:resetButton>
+							<tx-reset-button-component @resetParams="resetFilterCondition"></tx-reset-button-component>
+						</template>
+
+						<template v-slot:datePicket>
+							<tx-status-tabs-components
+								@onChangTxStatus="changeTxStatus"
+								@onChangeDate="changeTime"
+								ref="statusDatePicker"></tx-status-tabs-components>
+						</template>
+						<template v-slot:txCount>
+							<tx-count-component :title="$t('ExplorerLang.transactions.txs')" :icon="'iconTrainsaction'" :tx-count="count"></tx-count-component>
+						</template>
+					</list-component>
                     <!-- Validation Txs -->
-					<ValidationTxsList :dataList="txList" :isShowFee="isShowFee" v-if="this.$route.params.txType === 'validations'" />
+<!--					<ValidationTxsList :dataList="txList" :isShowFee="isShowFee" v-if="this.$route.params.txType === 'validations'" />-->
 					<!-- Gov Txs -->
-					<GovTxsList :dataList="txList" :isShowFee="isShowFee" v-if="this.$route.params.txType === 'governance'" />
+<!--					<GovTxsList :dataList="txList" :isShowFee="isShowFee" v-if="this.$route.params.txType === 'governance'" />-->
                 </div>
-                <div class="pagination_nav_footer_content">
+<!--                <div class="pagination_nav_footer_content">
                     <keep-alive>
                         <m-pagination :total="count" :page="currentPageNum" :page-size="pageSize" :page-change="pageChange"></m-pagination>
                     </keep-alive>
-                </div>
+                </div>-->
             </div>
         </div>
     </div>
@@ -82,23 +105,41 @@
 <script>
 	import Tools from "../util/Tools";
 	import MPagination from "./common/MPagination";
-	import {pageTitleConfig, TxStatus,decimals,TX_TYPE,TX_TYPE_DISPLAY} from "../constant";
+	import {pageTitleConfig, TxStatus, decimals, TX_TYPE} from "../constant";
 	import {TxHelper} from '@/helper/TxHelper.js';
 	import {getTypeStakingApi, getTypeDeclarationApi, getDelegationTxsApi, getValidationTxsApi,getGovTxsApi,getTypeGovApi} from "@/service/api";
-	import {converCoin,getMainToken} from "../helper/IritaHelper";
+	import {converCoin,getMainToken,getTxType} from "../helper/IritaHelper";
 	import {getAmountByTx} from "../helper/txListAmoutHelper";
 	import DelegationTxsList from '@/components/common/DelegationTxsList'
 	import ValidationTxsList from '@/components/common/ValidationTxsList'
 	import GovTxsList from '@/components/common/GovTxsList'
 	import prodConfig from '../productionConfig';
 	import parseTimeMixin from '../mixins/parseTime'
-
+	import ListComponent from "./common/ListComponent";
+	import TabsComponent from "./common/TabsComponent";
+	import txCommonTable from "./tableListColumnConfig/txCommonTable";
+	import txCommonLatestTable from "./tableListColumnConfig/txCommonLatestTable";
+	import {needAddColumn} from "./tableListColumnConfig/allTxTableColumnConfig";
+	import TxStatusTabsComponents from "./common/TxStatusTabsComponents";
+	import TxCountComponent from "./TxCountComponent";
+	import stakingValidationAndDelegationAmount from './tableListColumnConfig/stakingValidationAndDelegationAmount'
+	import SignerColunmn from "./tableListColumnConfig/SignerColunmn";
+	import validatorMonikerColumn from "./tableListColumnConfig/validatorMonikerColumn";
+	import TxResetButtonComponent from "./common/TxResetButtonComponent";
 	export default {
 		name: "TransactionListPage",
-		components: {MPagination,DelegationTxsList,ValidationTxsList,GovTxsList},
+		components: {
+			TxResetButtonComponent,
+			TxCountComponent,
+			TxStatusTabsComponents,
+			TabsComponent, ListComponent, MPagination,DelegationTxsList,ValidationTxsList,GovTxsList},
 		mixins:[parseTimeMixin],
 		data () {
 			return {
+				isLoading:false,
+				txColumnList: [],
+				mainTokenSymbol:'',
+				TX_TYPE_DISPLAY: {},
 				isShowFee: prodConfig.fee.isShowFee,
 				isShowDenom: prodConfig.fee.isShowDenom,
 				proposalTitleNum: 20,
@@ -107,6 +148,7 @@
 				totalPageNum: sessionStorage.getItem("txpagenum") ? JSON.parse(sessionStorage.getItem("txpagenum")) : 1,
 				currentPageNum: this.forCurrentPageNum(),
 				pickerStartTime: sessionStorage.getItem('firstBlockTime') ? sessionStorage.getItem('firstBlockTime') : '',
+				selectMsgTypeIndex: sessionStorage.getItem('selectMsgTypeIndex') ? JSON.parse(sessionStorage.getItem('selectMsgTypeIndex')) : 0,
 				PickerOptions: {
 					disabledDate: (time) => {
 						return time.getTime() < new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
@@ -136,7 +178,22 @@
 				type: '',
 			}
 		},
-		mounted () {
+		async mounted () {
+			const {txType} = Tools.urlParser();
+			await this.getType();
+			this.txColumnList = txCommonTable.concat(txCommonLatestTable)
+			if(this.type === 'stake'){
+				this.txColumnList = txCommonTable.concat(stakingValidationAndDelegationAmount,SignerColunmn,txCommonLatestTable)
+			}
+			if(this.type === 'declaration'){
+				this.txColumnList = txCommonTable.concat(validatorMonikerColumn,SignerColunmn,txCommonLatestTable)
+			}
+			if(txType && needAddColumn[txType]){
+				this.txColumnList = txCommonTable.concat(needAddColumn[txType],txCommonLatestTable)
+			}
+			this.TxType = txType
+			await this.getTxTypeData()
+			await this.setMainToken();
 			let statusArray = [
 				{
 					value: 'allStatus',
@@ -154,12 +211,57 @@
 			statusArray.forEach(item => {
 				this.status.push(item)
 			})
-			this.getType();
-            this.getTxListByFilterCondition(null, null, true)
-            this.getTxListByFilterCondition(this.currentPageNum, this.pageSize)
-
+			
+			this.getTxListByFilterCondition(null, null, true)
+			this.getTxListByFilterCondition(this.currentPageNum, this.pageSize)
+			// this.$store.commit('currentTxModelIndex',this.selectMsgTypeIndex)
+			
 		},
 		methods: {
+			setChoiceMsgTypeColumn(param){
+				this.txColumnList = txCommonTable.concat(txCommonLatestTable)
+				if(this.type === 'stake'){
+					this.txColumnList = txCommonTable.concat(stakingValidationAndDelegationAmount,SignerColunmn,txCommonLatestTable)
+				}
+				if(this.type === 'declaration'){
+					this.txColumnList = txCommonTable.concat(validatorMonikerColumn,SignerColunmn,txCommonLatestTable)
+				}
+				if(param?.value && needAddColumn[param.value]){
+					this.txColumnList = txCommonTable.concat(needAddColumn[param.value],txCommonLatestTable)
+				}
+				this.TxType = param?.value === 'allTxType' ?  '' : param.value
+				if(param?.index){
+					sessionStorage.setItem('lastChoiceMsgModelIndex',param.index)
+				}
+				this.getFilterTxs()
+			},
+			async setMainToken() {
+				let mainToken = await getMainToken();
+				if (mainToken && mainToken.symbol) {
+					this.mainTokenSymbol = mainToken.symbol.toUpperCase();
+				}
+			},
+			changeTxStatus(txStatus) {
+				this.txStatus = Number(txStatus)
+				this.getFilterTxs()
+			},
+			changeTime(selectTime) {
+				this.urlParamsShowStartTime = ''
+				this.urlParamsShowEndTime = ''
+				if (selectTime?.length === 2) {
+					this.urlParamsShowStartTime = selectTime[0]
+					this.urlParamsShowEndTime = selectTime[1]
+				}
+				this.getFilterTxs()
+			},
+			async getTxTypeData(){
+				try {
+					let res = await getTxType()
+					this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+				} catch (error) {
+					console.log(error)
+				}
+			},
 			getParamsByUrlHash () {
 				let txType,
 					txStatus,
@@ -210,7 +312,7 @@
 			getFilterTxs () {
 				this.currentPageNum = 1;
 				sessionStorage.setItem('txpagenum', 1);
-				history.pushState(null, null, `/#${this.$route.path}?txType=${this.TxType}&status=${this.txStatus}&startTime=${this.urlParamsShowStartTime}&endTime=${this.urlParamsShowEndTime}&page=1`);
+				history.pushState(null, null, `/#${this.$route.path}?txType=${this.TxType || ''}&status=${this.txStatus}&startTime=${this.urlParamsShowStartTime}&endTime=${this.urlParamsShowEndTime}&page=1`);
                 this.getTxListByFilterCondition(null, null, true)
                 this.getTxListByFilterCondition(this.currentPageNum, this.pageSize)
 			},
@@ -224,13 +326,13 @@
 				this.urlParamsShowEndTime = '';
 				history.pushState(null, null, `/#${this.$route.path}?txType=&status=&startTime=&endTime=&page=1`);
 			},
-			filterTxByTxType (e) {
+			/*filterTxByTxType (e) {
 				if (e === 'allTxType' || e === undefined) {
 					this.TxType = '';
 				} else {
 					this.TxType = e
 				}
-			},
+			},*/
 			filterTxByStatus (e) {
 				if (e === 'allStatus') {
 					this.txStatus = '';
@@ -256,10 +358,15 @@
 				return Number(new Date(time).getTime() / 1000) + Number(oneDaySeconds) - Number(offest)
 			},
 			resetFilterCondition () {
+				this.TxType = ''
 				this.getType();
 				this.resetUrl()
                 this.getTxListByFilterCondition(null, null, true)
                 this.getTxListByFilterCondition(this.currentPageNum, this.pageSize)
+				this.$store.commit('currentTxModelIndex', 0)
+				sessionStorage.setItem('lastChoiceMsgModelIndex',0)
+				sessionStorage.setItem('txTimeRange',[])
+				this.$refs.statusDatePicker.resetParams()//新增
 			},
 			getType () {
 				switch (this.$route.params.txType) {
@@ -279,10 +386,14 @@
 						this.type = 'gov';
 						this.pageTitle = pageTitleConfig.GovGovTxs;
 				}
+				// this.$store.commit('currentTxModelIndex',0)
 				this.getAllTxType();
 			},
 			async getAllTxType () {
 				let res = [];
+				this.selectMsgTypeIndex = 0
+				sessionStorage.removeItem('selectMsgTypeIndex')
+				this.$store.commit('currentTxModelIndex',0)
 				if (this.type === 'stake') {
 					const {data} = await getTypeStakingApi()
 					data.forEach(item => {
@@ -305,7 +416,7 @@
 						typeArray = res.map(item => {
 							return {
 								value: item,
-								label: TX_TYPE_DISPLAY[item] || itme
+								label: this.TX_TYPE_DISPLAY[item] || item
 							}
 						});
 						this.txTypeListArray = [
@@ -316,22 +427,49 @@
 							}
 						];
 						this.txTypeListArray = this.txTypeListArray.concat(typeArray)
+						if(this.txTypeListArray?.length > 0 && this.TxType){
+							this.txTypeListArray.forEach( (item,index) => {
+								if(item?.value === this.TxType){
+									this.selectMsgTypeIndex  = index
+								}
+							})
+							sessionStorage.setItem('selectMsgTypeIndex',this.selectMsgTypeIndex)
+							sessionStorage.setItem('currentTxModelIndex',this.selectMsgTypeIndex)
+							sessionStorage.setItem('lastChoiceMsgModelIndex',this.selectMsgTypeIndex)
+							this.$store.commit('currentTxModelIndex',this.selectMsgTypeIndex)
+						}
 					}
 				} catch (e) {
 					console.error(e)
 				}
 			},
+			getAmount(amount) {
+				if (!amount) {
+					return "";
+				}
+				let denomRule = /[0-9.]+/
+				return amount.match(denomRule)[0] ;
+			},
+			getAmountUnit(amount) {
+				if (!amount) {
+					return "";
+				}
+				let denomRule = /[A-Za-z\/]+/
+				return amount.match(denomRule)[0];
+			},
 			async getTxListByFilterCondition (currentPageNum, pageSize, useCount = false) {
+				this.isLoading = true;
 				let mainToken = await getMainToken()
 				let urlParams = this.getParamsByUrlHash(), param = {};
 				param.type = this.type;
 				param.txType = urlParams.txType ? urlParams.txType : '';
-				if (urlParams.txStatus) {
-					if (urlParams.txStatus === 'success') {
+				if (Number(urlParams.txStatus)) {
+					param.status = urlParams.txStatus
+					/*if (urlParams.txStatus === 'success') {
 						param.status = 1
 					} else if (urlParams.txStatus === 'fail') {
 						param.status = 2
-					}
+					}*/
 				} else {
 					param.status = ''
 				}
@@ -348,27 +486,72 @@
                                 this.count = res.count;
                             } else {
                                 this.count = 0;
-                            }  
+                            }
                         } else {
                             this.txList = [];
                             if (res?.data) {
                                 this.totalPageNum = Math.ceil((res.data / this.pageSize) === 0 ? 1 : (res.data / this.pageSize));
                                 for (const item of res.data) {
                                     if(item) {
-                                        let msgsNumber = item.msgs ? item.msgs.length : 0, formTO;
-                                        let amount = '--'
-                                        if (item.msgs && item.msgs.length === 1) {
-                                            formTO = TxHelper.getFromAndToAddressFromMsg(item.msgs[0])
-                                            amount = item.msgs[0] ? await getAmountByTx(item.msgs[0],item.events) : '--'
-                                        } else {
-                                            formTO = '--'
-                                        }
-                                        let fromMonikers,toMonikers
+                                    	let msg = {};
+										if(item?.msgs?.length){
+											for (const msgElement of item.msgs) {
+												if(msgElement.type === this.TxType){
+													msg = msgElement || {}
+												}
+											}
+										}
+										let msgsNumber = item.msgs ? item.msgs.length : 0, amountArr= [], fromAddr = '--',toAddr = '--',fromAddrArr = [],toAddrArr = [];
+										let amount = '--'
+										if(msgsNumber > 1){
+											for (const msgElement of item.msgs) {
+												if(msgElement && JSON.stringify(msgElement) !== '{}'){
+													const fromToAddr = TxHelper.getFromAndToAddressFromMsg(msgElement)
+													if(msgElement.type === this.TxType){
+														amountArr.push(await getAmountByTx(msgElement,item.events,true))
+														if(fromToAddr?.from){
+															fromAddrArr.push(fromToAddr.from)
+														}
+														if(fromToAddr?.to){
+															toAddrArr.push(fromToAddr.to)
+														}
+													}
+												}
+											}
+											fromAddrArr = Array.from(new Set(fromAddrArr))
+											toAddrArr = Array.from(new Set(toAddrArr))
+											fromAddr = fromAddrArr?.length > 1 ? ' ' : fromAddrArr?.length === 1 ? fromAddrArr[0] : '--'
+											toAddr = toAddrArr?.length > 1 ? ' ' : toAddrArr?.length === 1 ? toAddrArr[0] : '--'
+											amount = amountArr?.length > 1 ? ' ' : amountArr?.length === 1 ? amountArr[0] : ' '
+										}else if(msgsNumber === 1) {
+											if (item.msgs[0] && JSON.stringify(item.msgs[0]) !== '{}') {
+												const fromToAddr = TxHelper.getFromAndToAddressFromMsg(item.msgs[0])
+												if(fromToAddr?.from){
+													fromAddr =fromToAddr.from
+												}
+												if(fromToAddr?.to){
+													toAddr =fromToAddr.to
+												}
+												amount = item.msgs[0] ? await getAmountByTx(item.msgs[0],item.events,true) : '--'
+											}
+										}
+                                        let fromMonikers = ' ',toMonikers = ' '
+										
                                         if(item.monikers.length) {
-                                            item.monikers.map( it => {
-                                                toMonikers = toMonikers|| it[formTO.to] || ''
-                                                fromMonikers = fromMonikers || it[formTO.from] || ''
-                                            })
+											let monikersMap = new Map()
+											item.monikers.forEach( item => {
+												monikersMap.set(Object.keys(item)[0],Object.values(item)[0])
+											})
+											if(monikersMap.has(fromAddr)){
+												fromMonikers = monikersMap.get(fromAddr)
+											}
+											if(monikersMap.has(toAddr)){
+												toMonikers = monikersMap.get(toAddr)
+											}
+                                            /*item.monikers.map( it => {
+                                                toMonikers = toMonikers|| it[toAddr] || ''
+                                                fromMonikers = fromMonikers || it[fromAddr] || ''
+                                            })*/
                                         }
                                         let isShowMore = false;
                                         // const type = item.msgs && item.msgs[0] && item.msgs[0].type;
@@ -376,35 +559,39 @@
                                         // 	isShowMore = true
                                         // }
                                         // const time = Tools.getDisplayDate(item.time)
+										
                                         const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) :'--'
-                                        this.txList.push({
-                                            Tx_Hash: item.tx_hash,
-                                            Block: item.height,
-                                            From: formTO.from || "--",
+										this.txList.push({
+											txHash: item.tx_hash,
+											blockHeight: item.height,
+											from: fromAddr ,
                                             fromMonikers,
-                                            Amount: amount,
-                                            To: formTO.to || '--',
+                                            amount: this.getAmount(amount),
+                                            denom: this.getAmountUnit(amount),
+                                            to: toAddr,
                                             toMonikers,
-                                            Tx_Type: (item.msgs || []).map(item=>TX_TYPE_DISPLAY[item.type] || item.type),
+											txType: (item.msgs || []).map(item=>item.type),
                                             MsgsNum: msgsNumber,
                                             // Tx_Fee: fee && fee.amount ?  this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)} ${fee.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
                                             Tx_Fee: fee && fee.amount ?  `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
-                                            Tx_Signer: item.signers[0] ? item.signers[0] : '--',
-                                            Tx_Status: TxStatus[item.status],
+											signer: item.signers[0] ? item.signers[0] : '--',
+											status: item.status,
                                             Timestamp: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
                                             isShowMore,
-                                            Time: item.time
+                                            Time:Tools.formatLocalTime(item.time)
                                         })
                                     }
                                 }
-                            }            
-                        }	
+                            }
+							this.isLoading = false;
+                        }
 					} catch (e) {
+						this.isLoading = false;
 						console.error(e)
 					}
 				} else if (this.type === 'declaration') {
 					let res = await getValidationTxsApi('', param.pageNumber, param.pageSize, useCount, param.txType, param.status, param.beginTime, param.endTime)
-					try {		
+					try {
                         if(useCount){
                             if(res?.count){
                                 this.count = res.count;
@@ -412,49 +599,79 @@
                                 this.count = 0
                             }
                         } else {
-                            this.txList = []
+                           
                             if(res?.data){
+								this.txList = []
                                 this.totalPageNum = Math.ceil((res.data / this.pageSize) === 0 ? 1 : (res.data / this.pageSize));
                                 for (const item of res.data) {
                                     if(item) {
                                         let msgsNumber = item.msgs ? item.msgs.length : 0
+										let msg = {}
+										if(item?.msgs?.length){
+											for (const msgElement of item.msgs) {
+												if(msgElement.type === this.TxType){
+													msg = msgElement || {}
+												}
+											}
+										}
+										let validatorOperatorArr = [] , operatorAddr = '--',operatorMonikers = '' ;
+										if(item?.msgs?.length > 1 ){
+											for (const msg1 of item.msgs) {
+												if(msg1 &&JSON.stringify(msg1) !== '{}'){
+													const validatorOperator =  TxHelper.getValidationTxsOperator(msg1)
+													validatorOperatorArr.push(validatorOperator)
+												}
+											}
+										}else if(item?.msgs?.length === 1) {
+											operatorAddr = TxHelper.getValidationTxsOperator(item.msgs[0])
+										}
+										validatorOperatorArr = Array.from(new Set(validatorOperatorArr))
+										operatorAddr = validatorOperatorArr?.length > 1 ? ' ' : validatorOperatorArr?.length === 1 ? validatorOperatorArr[0] : operatorAddr || '--'
+										operatorMonikers = validatorOperatorArr?.length > 1 ? ' ' : '--'
+										let monikerMap = new Map()
+	
+										if(item.monikers.length) {
+											item.monikers.forEach( it => {
+												monikerMap.set(Object.keys(it)[0],Object.values(it)[0])
+											})
+										}
+										if(monikerMap.has(operatorAddr)){
+											operatorMonikers = monikerMap.get(operatorAddr)
+										}
+	
                                         const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) :'--';
                                         const selfBonded = item.msgs && item.msgs.length === 1 ? item.msgs[0].msg && item.msgs[0].msg.value ? await converCoin(item.msgs[0].msg.value) : '--' : '--';
                                         // const time = Tools.getDisplayDate(item.time)
                                         const time = Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix'))
-
-                                        let OperatorAddr = item.msgs && item.msgs.length === 1 ? item.msgs[0] && TxHelper.getValidationTxsOperator(item.msgs[0]) : '--'
-                                        let OperatorMonikers
-                                        if(item.monikers.length) {
-                                            item.monikers.map( it => {
-                                                OperatorMonikers = OperatorMonikers || it[OperatorAddr] || ''
-                                            })
-                                        }
+									
+                                        let amount = msg ? await getAmountByTx(msg,item.events,true) : '--'
                                         this.txList.push({
-                                                Tx_Hash: item.tx_hash,
-                                                Block: item.height,
-                                                OperatorAddr,
-                                                OperatorMonikers: OperatorMonikers || '--',
-                                                SelfBonded: selfBonded.amount || '--',
-                                                'Tx_Type': (item.msgs || []).map(item=>TX_TYPE_DISPLAY[item.type] || item.type),
+												txHash: item.tx_hash,
+												blockHeight: item.height,
+												validatorAddress: operatorAddr,
+												validatorMoniker: operatorMonikers ,
+												amount: amount || '--',
+												txType: (item.msgs || []).map(item=>item.type),
                                                 MsgsNum: msgsNumber,
                                                 // 'Tx_Fee': fee && fee.amount ? this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)} ${fee.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
                                                 'Tx_Fee': fee && fee.amount ? this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
-                                                'Tx_Signer': item.signers[0] ? item.signers[0] : '--',
-                                                'Tx_Status': TxStatus[item.status],
+												signer: item.signers[0] ? item.signers[0] : '--',
+												status: item.status,
                                                 Timestamp: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
-                                                Time: item.time
+                                                Time: Tools.formatLocalTime(item.time)
                                         })
                                     }
                                 }
                             }
+							this.isLoading = false;
                         }
 					} catch (e) {
+						this.isLoading = false;
 						console.error(e)
 					}
 				} else if (this.type === 'gov') {
 					try {
-						let res = await getGovTxsApi('', param.pageNumber, param.pageSize, useCount, param.txType, param.status, param.beginTime, param.endTime)		
+						let res = await getGovTxsApi('', param.pageNumber, param.pageSize, useCount, param.txType, param.status, param.beginTime, param.endTime)
                         if(useCount){
                             if(res?.count){
                                 this.count = res.count;
@@ -465,13 +682,20 @@
                             this.txList = [];
                             if(res?.data) {
                                 for (const item of res.data) {
-                                    let msgsNumber = item.msgs ? item.msgs.length : 0
-                                    const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) :'--'
+									let msgsNumber = item.msgs ? item.msgs.length : 0;
+									let msg = {};
+									
+									if(item?.msgs?.length){
+										for (const msgElement of item.msgs) {
+											if(msgElement.type === this.TxType){
+												msg = msgElement || {}
+											}
+										}
+									}
+									const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) :'--'
                                     // const time = Tools.getDisplayDate(item.time)
                                     // const time = Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix'))
-
                                     let amount = null
-                                    let msg = item.msgs && item.msgs[0]
                                     if(msg) {
                                         if(msg.type == "deposit") {
                                             let unit = msg.msg && msg.msg.amount && msg.msg.amount[0]
@@ -485,29 +709,45 @@
                                             }
                                         }
                                     }
-                                    this.txList.push({
-                                        Tx_Hash: item.tx_hash,
-                                        Block: item.height,
+                                    let depositor = '--',option = '--',voter = '--';
+									if(msg?.type === TX_TYPE.deposit && msg?.msg?.depositor && msg?.msg?.proposal_id ){
+										depositor = msg.msg.depositor
+									}
+									if(msg?.type === TX_TYPE.vote && msg?.msg?.option && msg?.msg?.proposal_id && msg?.msg?.voter){
+										option = msg.msg.option
+										voter = msg.msg.voter
+									}
+									let addrObj = TxHelper.getFromAndToAddressFromMsg(msg);
+									let from = addrObj.from || '--';
+									this.txList.push({
+										txHash: item.tx_hash,
+										depositor,
+										from,
+										option,
+										voter,
+										blockHeight: item.height,
                                         proposalType: item.ex && item.ex.type,
                                         proposalId: item.ex && item.ex.id,
-                                        proposalTitle: item.ex && item.ex.title && Tools.formatString(item.ex.title, this.proposalTitleNum, '...'),
+										title: item.ex && item.ex.title && Tools.formatString(item.ex.title, this.proposalTitleNum, '...'),
                                         // amount: amount ? `${Tools.toDecimal(amount.amount,this.feeDecimals)} ${amount.denom.toLocaleUpperCase()}` : '--',
                                         amount: amount ? `${Tools.toDecimal(amount.amount,this.feeDecimals)}` : '--',
-                                        'Tx_Type': (item.msgs || []).map(item=>TX_TYPE_DISPLAY[item.type] || item.type),
+										txType: (item.msgs || []).map(item=>this.TX_TYPE_DISPLAY[item.type] || item.type),
                                         MsgsNum: msgsNumber,
                                         // 'Tx_Fee': fee && fee.amount ?  this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)} ${fee.denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
                                         'Tx_Fee': fee && fee.amount ?  this.isShowDenom ? `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : `${Tools.toDecimal(fee.amount,this.feeDecimals)}` : '--',
-                                        'Tx_Signer': item.signers[0] ? item.signers[0] : '--',
-                                        'Tx_Status': TxStatus[item.status],
+										signer: item.signers[0] ? item.signers[0] : '--',
+										status: item.status,
                                         Timestamp: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
                                         proposalLink: item.ex && item.ex.proposal_link,
-                                        Time: item.time
+										Time: Tools.formatLocalTime(item.time)
                                     })
                                 }
                             }
+							this.isLoading = false;
                         }
 						
 					} catch(e) {
+						this.isLoading = false;
 						console.error(e)
 					}
 				}
@@ -516,6 +756,7 @@
 				 */
 				this.parseTime('txList', 'Time', 'Timestamp')
 			},
+			
 			formatAddress (address) {
 				return Tools.formatValidatorAddress(address)
 			},
@@ -531,7 +772,12 @@
                 }
                 return type;
             },
-		}
+		},
+		beforeDestroy(){
+			this.$store.commit('currentTxModelIndex',0)
+			sessionStorage.removeItem('lastChoiceMsgModelIndex')
+			sessionStorage.removeItem('currentChoiceMsgType')
+		},
 	}
 </script>
 
@@ -539,21 +785,21 @@
 	.transaction_list_page_container {
 		.transaction_list_page_container_title {
 			max-width: 12rem;
-			margin: 0.3rem auto;
-			margin-bottom: 0.13rem;
+			margin: 0.4rem auto 0.1rem auto;
 			display: flex;
-		}
-		.title_container {
-			text-align: left;
-			line-height: 0.32rem;
-			color: $t_first_c;
-			font-size: $s18;
-			font-weight: bold;
-			margin-right: 0.2rem;
-			span:nth-child(1) {
-				margin-right: 0.1rem;
+			.title_container {
+				text-align: left;
+				line-height: 0.26rem;
+				font-weight: 600;
+				color: $t_first_c;
+				font-size: 0.22rem;
+				margin-right: 0.2rem;
+				span:nth-child(1) {
+					margin-right: 0.1rem;
+				}
 			}
 		}
+		
 		.transaction_list_title_wrap {
 			background-color: $bg_cancel_c;
 			.transaction_list_title_content {
@@ -730,7 +976,7 @@
 			.transaction_list_title_wrap {
 				.transaction_list_title_content {
 					// margin: 0 0.24rem;
-					.filter_container {		
+					.filter_container {
 						.filter_tx_type_statue_content {
 						}
 						
@@ -750,10 +996,10 @@
 				}
 			}
 			.transaction_list_table_container {
-				margin: 0 0.24rem;				
-				.transaction_list_table_content {				
+				margin: 0 0.24rem;
+				.transaction_list_table_content {
 					.table_list_content {
-					}				
+					}
 					.pagination_nav_footer_content {
 					}
 					
@@ -775,7 +1021,7 @@
 			.transaction_list_title_wrap {
 				.transaction_list_title_content {
 					// margin: 0 0.24rem;
-					.filter_container {		
+					.filter_container {
 						.filter_tx_type_statue_content {
 						}
 						
@@ -794,10 +1040,10 @@
 					
 				}
 			}
-			.transaction_list_table_container {			
-				.transaction_list_table_content {				
+			.transaction_list_table_container {
+				.transaction_list_table_content {
 					.table_list_content {
-					}				
+					}
 					.pagination_nav_footer_content {
 					}
 					
@@ -808,7 +1054,7 @@
 
 	@media screen and (max-width: 910px) {
 		.transaction_list_page_container {
-			.title_container {	
+			.title_container {
 				span {
 				}
 			}
@@ -893,7 +1139,7 @@
 			.transaction_list_title_wrap {
 				.transaction_list_title_content {
 					margin: 0 0.12rem;
-					.filter_container {		
+					.filter_container {
 						.filter_tx_type_statue_content {
 						}
 						
@@ -913,10 +1159,10 @@
 				}
 			}
 			.transaction_list_table_container {
-				margin: 0 0.12rem;				
-				.transaction_list_table_content {				
+				margin: 0 0.12rem;
+				.transaction_list_table_content {
 					.table_list_content {
-					}				
+					}
 					.pagination_nav_footer_content {
 					}
 					

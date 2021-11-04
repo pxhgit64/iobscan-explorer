@@ -128,7 +128,7 @@
                 <h3 class="service_information_transaction_title">
                     {{$t('ExplorerLang.serviceDetail.serviceTransactions')}}
                 </h3>
-                <div class="service_information_transaction_condition_container">
+<!--                <div class="service_information_transaction_condition_container">
                     <span class="service_information_transaction_condition_count">
                         {{`${txCount} ${$t('ExplorerLang.unit.Txs')}`}}
                     </span>
@@ -152,10 +152,34 @@
                             <i class="iconfont iconzhongzhi"></i>
                         </div>
                     </div>
-                </div>
+                </div>-->
 
                 <div class="service_information_transaction_table_content">
-                    <el-table class="table" :data="transactionArray" :empty-text="$t('ExplorerLang.table.emptyDescription')">
+					<list-component
+						:token-symbol="mainTokenSymbol"
+						:is-loading="isIserviceLoading"
+						:list-data="transactionArray"
+						:column-list="iServiceTxColumn"
+						:pagination=" {pageSize:Number(txPageSize),dataCount:txCount,pageNum:Number(txPageNum)}"
+						@pageChange="pageChange"
+					>
+						<template v-slot:msgType>
+							<tabs-component :tab-list="txTypeOption"
+											@onSelectMagModel="handleSearchClick"></tabs-component>
+						</template>
+						
+						<template v-slot:datePicket>
+							<tx-status-tabs-components
+								@onChangTxStatus="changeTxStatus"
+								@onChangeDate="changeTime"
+								@resetParams="resetFilterCondition"></tx-status-tabs-components>
+						</template>
+						<template v-slot:txCount>
+							<tx-count-component :title="$t('ExplorerLang.transactions.txs')" :icon="'iconTrainsaction'" :tx-count="txCount"></tx-count-component>
+						</template>
+						
+					</list-component>
+<!--                    <el-table class="table" :data="transactionArray" :empty-text="$t('ExplorerLang.table.emptyDescription')">
                         <el-table-column class-name="hash_status" :min-width="ColumnMinWidth.txHash" :label="$t('ExplorerLang.table.txHash')">
                             <template slot-scope="scope">
                                 <img class="service_tx_status"
@@ -209,7 +233,7 @@
                                     <router-link v-if="isValid(scope.row.from)" :to="`/address/${scope.row.from}`">
                                         {{formatAddress(scope.row.from)}}
                                     </router-link>
-                                    <span v-else>--</span>
+                                    <span v-else>&#45;&#45;</span>
                                 </el-tooltip>
                             </template>
                         </el-table-column>
@@ -224,7 +248,7 @@
                                     <router-link v-else-if="isValid(scope.row.to)" :to="`/tx?txHash=${scope.row.txHash}`">
                                         {{ `${scope.row.to.length} ${$t('ExplorerLang.unit.providers')}`}}
                                     </router-link>
-                                    <span v-else>{{'--'}}</span>
+                                    <span v-else>{{'&#45;&#45;'}}</span>
                                 </el-tooltip>
                             </template>
                         </el-table-column>
@@ -236,9 +260,9 @@
 
                         <el-table-column :min-width="ColumnMinWidth.time" :label="$t('ExplorerLang.table.timestamp')"
                                          prop="timestamp"></el-table-column>
-                    </el-table>
+                    </el-table>-->
                 </div>
-                <div class="pagination_content" v-show="txCount > txPageSize">
+<!--                <div class="pagination_content" v-show="txCount > txPageSize">
                     <keep-alive>
                         <m-pagination :page-size="Number(txPageSize)"
                             :total="txCount"
@@ -246,7 +270,7 @@
                             :page-change="pageChange">
                         </m-pagination>
                     </keep-alive>
-                </div>
+                </div>-->
             </div>
 
         </div>
@@ -256,7 +280,7 @@
 <script>
     import Tools from "../util/Tools"
     import MPagination from "./common/MPagination";
-    import { TX_STATUS,ColumnMinWidth,decimals,TX_TYPE_DISPLAY } from '../constant';
+    import { TX_STATUS,ColumnMinWidth,decimals } from '../constant';
     import {
         getAllServiceTxTypes,
         getServiceDetail,
@@ -266,13 +290,21 @@
     } from "../service/api";
     import { TxHelper } from "../helper/TxHelper";
     import LargeString from './common/LargeString';
-    import { converCoin, getMainToken } from '@/helper/IritaHelper';
+    import { converCoin, getMainToken, getTxType } from '@/helper/IritaHelper';
     import productionConfig from '@/productionConfig.js'
+	import ListComponent from "./common/ListComponent";
+    import iserviceTxColumn from "./tableListColumnConfig/iserviceTxColumn";
+	import TabsComponent from "./common/TabsComponent";
+	import TxStatusTabsComponents from "./common/TxStatusTabsComponents";
+	import TxCountComponent from "./TxCountComponent";
     export default {
         name : "ServiceInformation",
-        components : {MPagination,LargeString},
+        components : {TxCountComponent, TxStatusTabsComponents, TabsComponent, ListComponent, MPagination,LargeString},
         data(){
             return {
+            	iServiceTxColumn:[],
+				isIserviceLoading:false,
+                TX_TYPE_DISPLAY: {},
                 isShowFee: productionConfig.fee.isShowFee,
                 isShowDenom: productionConfig.fee.isShowDenom,
                 feeDecimals: decimals.fee,
@@ -286,7 +318,7 @@
                 idlContent : '',
                 serviceList : [],
                 transactionArray : [],
-                txPageSize : 10,
+                txPageSize : 5,
                 txPageNum : 1,
                 txCount : 0,
                 author : '',
@@ -330,16 +362,41 @@
                 mainTokenSymbol:'',
             }
         },
-        mounted(){
-            this.getServiceInformation();
+        async mounted(){
+        	this.iServiceTxColumn = iserviceTxColumn
+            await this.getTxTypeData();
+			this.setMainToken();
+			this.getServiceInformation();
             this.getServiceBindingListCount();
             this.getServiceBindingList();
             this.getServiceTransactionCount();
             this.getServiceTransaction();
             this.getAllTxType();
-            this.setMainToken();
+			this.$store.commit('currentTxModelIndex',0)
         },
         methods : {
+			changeTxStatus(params){
+				if(params && params == 2){
+					this.txStatus = 0
+				}else if(params && params == 1) {
+					this.txStatus = 1
+				}else {
+					this.txStatus = ''
+				}
+				this.getServiceTransactionCount();
+				this.getServiceTransaction();
+			},
+			changeTime(){
+			
+			},
+            async getTxTypeData(){
+                try {
+                    let res = await getTxType()
+                    this.TX_TYPE_DISPLAY = res?.TX_TYPE_DISPLAY
+                } catch (error) {
+                    console.log(error)
+                }
+            },
             pageChange(pageNum){
                 this.txPageNum = pageNum;
                 this.getServiceTransaction();
@@ -366,7 +423,7 @@
                         this.tags = tags.length > 0 ? tags : '--';
                         this.hash = res.tx_hash;
                         this.height = res.height;
-                        this.time = Tools.getDisplayDate(res.time);
+                        this.time = Tools.formatLocalTime(res.time);
                     }
 
                 } catch (e) {
@@ -381,7 +438,7 @@
                         let bindings = await getServiceBindingByServiceName(this.$route.query.serviceName);
                         if(bindings.result){
                             serviceList.data.forEach((s) =>{
-                                s.bindTime = Tools.getDisplayDate(s.bindTime);
+                                s.bindTime = Tools.formatLocalTime(s.bindTime);
                                 bindings.result.forEach((b) =>{
                                     let deposit = `${b.deposit[0].amount} ${b.deposit[0].denom}`;
                                     if(s.provider === b.provider){
@@ -453,7 +510,7 @@
                             msgs = item.msgs || [{}];
                         return {
                             // type : item.msgs.length > 1 ? '--' : item.msgs[0].type,
-                            type : (item.msgs || []).map(item=>TX_TYPE_DISPLAY[item.type] || item.type),
+                            type : (item.msgs || []).map(item=>item.type),
                             msgCount: item.msgs.length,
                             from,
                             status : item.status,
@@ -463,7 +520,7 @@
                             // fee: fee[index] && fee[index].amount ?  this.isShowDenom ? `${Tools.toDecimal(fee[index].amount,this.feeDecimals)} ${fee[index].denom.toLocaleUpperCase()}` : `${Tools.toDecimal(fee[index].amount,this.feeDecimals)}` : '--',
                             fee: fee[index] && fee[index].amount ? `${Tools.toDecimal(fee[index].amount,this.feeDecimals)}` : '--',
                             height : item.height,
-                            timestamp : Tools.getDisplayDate(item.time)
+                            timestamp : Tools.formatLocalTime(item.time)
                         };
 
                     });
@@ -498,7 +555,7 @@
                     res.data.forEach((type) =>{
                         this.txTypeOption.push({
                             value : type.typeName,
-                            label : TX_TYPE_DISPLAY[type.typeName],
+                            label : this.TX_TYPE_DISPLAY[type.typeName] || type.typeName,
                         });
                     });
                 } catch (e) {
@@ -507,9 +564,16 @@
                 }
 
             },
-            handleSearchClick(){
+            handleSearchClick(param){
+				this.txType = ''
+				if(param?.value){
+					this.txType = param.value
+				}
+				if(param?.index){
+					sessionStorage.setItem('lastChoiceMsgModelIndex',param.index)
+				}
                 this.txStatus = this.status;
-                this.txType = this.type;
+                // this.txType = this.type;
                 this.txPageNum = 1;
                 this.getServiceTransactionCount();
                 this.getServiceTransaction();
@@ -517,7 +581,9 @@
             resetFilterCondition(){
                 this.txStatus = this.status = '';
                 this.txType = this.type = '';
-                this.txPageNum = 1;  
+                this.txPageNum = 1;
+                sessionStorage.removeItem('lastChoiceMsgModelIndex')
+				this.$store.commit('currentTxModelIndex',0)
                 this.getServiceTransactionCount();
                 this.getServiceTransaction();          
             },

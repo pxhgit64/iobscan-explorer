@@ -172,7 +172,7 @@
                         this.credentials = res.credentials || '--';
                         this.createTxHash = res.create_tx_hash || '--';
                         this.createHeight = res.create_block_height || '--';
-                        this.createTime = Tools.getDisplayDate(res.create_block_time);
+                        this.createTime = Tools.formatLocalTime(res.create_block_time);
                     }
                 } catch (e) {
                     console.error(e);
@@ -196,14 +196,14 @@
             },
             async getPubkeyList(){
                 try {
-                    const res = await getPubkeyListByIdentity(this.id, this.pageNum, this.pageSize, false);
+                    const res = await getPubkeyListByIdentity(this.id, this.pubkeyListPageNum, this.pubkeyListPageSize, false);
                     if(res?.data.length > 0){
                         this.pubkeyList = res.data.map((item) =>{
                             let result = {
                                 pubkey: (item.pubkey || {}).pubkey || '',
                                 pubKeyAlgo: (item.pubkey || {}).algorithm || '',
                                 txHash: item.hash || '',
-                                time: Tools.getDisplayDate(item.time),
+                                time: Tools.formatLocalTime(item.time),
                             };
                             return result;
                         });
@@ -213,7 +213,7 @@
                 } catch (e) {
                     console.error(e);
                 }
-            },    
+            },
             async getPubkeyListCount(){
               try {
                   const res = await getPubkeyListByIdentity(this.id, null, null, true);
@@ -225,16 +225,16 @@
               } catch (e) {
                   console.error(e);
               }
-            },         
+            },
             async getCertificateList(){
                 try {
-                    const res = await getCertificateListByIdentity(this.id, this.pageNum, this.pageSize, false);
-                    if(res?.data.length > 0){           
+                    const res = await getCertificateListByIdentity(this.id, this.certificateListPageNum, this.certificateListPageSize, false);
+                    if(res?.data.length > 0){
                         this.certificateList = res.data.map((item) =>{
                             let result = {
                                 certificate: item.certificate || '--',
                                 txHash: item.hash || '--',
-                                time: Tools.getDisplayDate(item.time),
+                                time: Tools.formatLocalTime(item.time),
                             };
                             return result;
                         });
@@ -420,41 +420,41 @@
     @media screen and (max-width: 768px) {
         .identity_detail_container {
             .identity_detail_content_wrap {
-                
+
                 .identity_detail_title {
-                    
+
                     .identity_detail_title_first {
-                    
+
                     }
                     .identity_detail_title_hash {
-                    
+
                     }
                 }
                 .identity_information_content {
-                    
+
                     .identity_information_list_item {
-                        
+
                         span:nth-of-type(1) {
                             min-width: 1rem;
                         }
                         span:nth-of-type(2) {
-                        
+
                         }
                     }
                     .identity_information_list_item:last-child {
                     }
                 }
                 .identity_detail_bg{
-                
+
                 }
                 .content_title{
-                
+
                 }
                 .pagination_content{
-                
+
                 }
                 .status_icon{
-                
+
                 }
             }
         }
