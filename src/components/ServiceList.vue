@@ -10,8 +10,8 @@
                             @change="handleSearchClick"
                             :placeholder="$t('ExplorerLang.service.placeHolder')"></el-input>
                     <div class="tx_type_mobile_content">
-                        <div class="search_btn" @click="handleSearchClick">{{$t('ExplorerLang.nftAsset.search')}}</div>
-                        <div class="reset_btn" @click="reset"><i class="iconfont iconzhongzhi"></i></div>
+                        <div class="service_search_btn" @click="handleSearchClick">{{$t('ExplorerLang.nftAsset.search')}}</div>
+                        <div class="service_reset_btn"  @click="reset"><i class="iconfont iconzhongzhi"></i></div>
                     </div>
                 </div>
             </div>
@@ -383,8 +383,6 @@
                 }
                 .tx_type_mobile_content{
                     display: flex;
-
-
                     ::v-deep.el-select{
                         width: 1.3rem;
                         .el-input{
@@ -443,29 +441,30 @@
                     .joint_mark{
                         margin: 0 0.08rem;
                     }
-                    .reset_btn{
-                        background: $bg_button_c;
-                        color: $t_button_c;
-                        border-radius: 0.04rem;
-                        margin-left: 0.1rem;
-                        cursor: pointer;
+                    .service_reset_btn{
+						background: $theme_c;
+						border-color: $theme_c;
+						margin: 0 0.1rem;
+						border-radius: 0.08rem;
                         i{
                             padding: 0.08rem;
-                            font-size: $s14;
+                            font-size: $s16;
+							color: #fff;
                             line-height: 1;
                             display: inline-block;
                         }
                     }
-                    .search_btn{
+					.service_search_btn{
                         cursor: pointer;
-                        background: $bg_button_c;
+                        background: $theme_c;
                         margin-left: 0.1rem;
                         color: $t_button_c;
-                        border-radius: 0.04rem;
-                        padding: 0.05rem 0.18rem;
-                        font-size: $s14;
+                        border-radius: 0.08rem;
+                        padding: 0.06rem 0.15rem;
+                        font-size: $s12;
                         line-height: 0.2rem;
                         white-space: nowrap;
+						
                     }
                 }
             }

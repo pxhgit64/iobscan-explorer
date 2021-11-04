@@ -277,11 +277,13 @@ export default {
     box-sizing: border-box;
     width: 5.9rem;
     height: 4.2rem;
-    border-radius: 0.01rem;
-    border: 0.01rem solid  $bd_second_c;
+    //border: 0.01rem solid  $bd_second_c;
     display: flex;
     flex-direction: column;
       background: $bg_white_c;
+	  margin: 0.1rem 0 0.2rem 0;
+	  box-shadow: 0 0.03rem 0.06rem #ededed;
+	  border-radius: 0.08rem;
     .text {
       width: 100%;
       height: 100%;

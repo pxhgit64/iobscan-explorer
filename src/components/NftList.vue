@@ -469,7 +469,7 @@ a {
           margin: 0 0.08rem;
         }
         .reset_btn {
-          background: $bg_button_c;
+          background: $theme_c;
           color: $t_button_c;
           border-radius: 0.04rem;
           margin-left: 0.1rem;
@@ -483,7 +483,7 @@ a {
         }
         .search_btn {
           cursor: pointer;
-          background: $bg_button_c;
+          background: $theme_c;
           margin-left: 0.1rem;
           color: $t_button_c;
           border-radius: 0.04rem;

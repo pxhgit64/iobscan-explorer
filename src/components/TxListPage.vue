@@ -448,14 +448,24 @@
 					return "";
 				}
 				let denomRule = /[0-9.]+/
-				return amount.match(denomRule)[0] ;
+				const amountRule = /^[0-9]+.?[0-9]*$/
+				if(amountRule.test(amount)){
+					return  amount
+				}
+				let result = amount.match(denomRule)
+				return result ? amount.match(denomRule)[0] : ' ';
 			},
 			getAmountUnit(amount) {
 				if (!amount) {
 					return "";
 				}
+				const amountRule = /^[0-9]+.?[0-9]*$/
+				if(amountRule.test(amount)){
+					return  ' '
+				}
 				let denomRule = /[A-Za-z\/]+/
-				return amount.match(denomRule)[0];
+				let result = amount.match(denomRule)
+				return result ? amount.match(denomRule)[0] : ' ';
 			},
 			async getTxListByFilterCondition (currentPageNum, pageSize, useCount = false) {
 				this.isLoading = true;
