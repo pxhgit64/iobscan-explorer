@@ -22,7 +22,7 @@
 					</p>
 					<p class="tx_information_list_item">
 						<span>{{ $t('ExplorerLang.transactionInformation.status') }}：</span>
-						<span :style="{color: status === 'Failed' ? '#fa8593' : ''}">
+						<span :style="{color: status === $t('ExplorerLang.common.failed') ? '#fa8593' : ''}">
               {{status}}
               <el-tooltip  popper-class="tooltip" placement="top" v-if="status === $t('ExplorerLang.common.failed')">
 					<div slot="content" >
