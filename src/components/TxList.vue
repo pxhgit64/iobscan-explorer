@@ -720,11 +720,11 @@ export default {
 
 								}
 								if (msg?.type === TX_TYPE.clean_packet
-									&& msg?.msg?.packet?.sequence
-									&& msg?.msg?.packet?.source_chain
+									&& msg?.msg?.clean_packet?.sequence
+									&& msg?.msg?.clean_packet?.source_chain
 									&& msg?.msg?.signer) {
-									sequenceArr.push(msg.msg.packet.sequence)
-									source_chainArr.push(msg.msg.packet.source_chain)
+									sequenceArr.push(msg.msg.clean_packet.sequence)
+									source_chainArr.push(msg.msg.clean_packet.source_chain)
 									signers.push(msg.msg.signer)
 
 								}
@@ -945,11 +945,11 @@ export default {
 							denomName = msg.msg.denomName
 						}
 
-						if(msg?.type === TX_TYPE.clean_packet && msg?.msg?.packet?.source_chain){
-							source_chain = msg.msg.packet.source_chain
+						if(msg?.type === TX_TYPE.clean_packet && msg?.msg?.clean_packet?.source_chain){
+							source_chain = msg.msg.clean_packet.source_chain
 						}
-						if(msg?.type === TX_TYPE.clean_packet && msg?.msg?.packet?.sequence){
-							sequence = msg.msg.packet.sequence
+						if(msg?.type === TX_TYPE.clean_packet && msg?.msg?.clean_packet?.sequence){
+							sequence = msg.msg.clean_packet.sequence
 						}
 
 
