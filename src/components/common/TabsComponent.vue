@@ -189,6 +189,13 @@ export default {
 				const {txType} = Tools.urlParser();
 				value.children.forEach((item, index) => {
 					item.active = 0
+					if(txType.indexOf(',') !== -1){
+						const currentTxType = txType.split(',')
+						value.children[0].active = 0
+						if(currentTxType.includes(item.value)){
+							value.children[0].active = 1
+						}
+					}
 					if (item.value === txType || item.value === currentSearchType) {
 						item.active = 1
 					}

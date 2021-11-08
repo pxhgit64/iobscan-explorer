@@ -994,7 +994,7 @@ export class TxHelper {
         allTxType = allTxType.filter(item => item.children.length)
         allTxType.forEach(item=>{
             if(item?.children?.length){
-                item.children.push({
+                item.children.unshift({
                         label:'secondaryAll',
                         value:'All',
                 })

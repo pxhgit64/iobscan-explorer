@@ -136,9 +136,9 @@ export default {
   computed: {
     logoImg() {
       let img = ''
-      /*try {
+      try {
         img = require('../../assets/logo.png')
-      } catch (e) {}*/
+      } catch (e) {}
       return img
     },
   },
