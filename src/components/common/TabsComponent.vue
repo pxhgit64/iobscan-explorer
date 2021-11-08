@@ -130,12 +130,31 @@ export default {
 		if(typeListData?.length){
 			typeListData.forEach( (item,index) =>{
 				if(item.children && txType){
-					item.children.forEach( item =>{
-						if(item.value === txType){
+					if(txType && txType.indexOf(',') !== -1){
+						const currentTxType = txType.split(',')
+						const currentMsgTypes = currentTxType.sort((a,b) =>{
+							return a.localeCompare(b)
+						})
+						const currentNotHasAllMsgType  = item.children.filter( item => {
+							return item.label !== 'secondaryAll'
+						})
+						const currentNotHasAllMsgTypeValue = currentNotHasAllMsgType.map( item => item.value)
+						const currentNotHasAllMsgTypeSortValue = currentNotHasAllMsgTypeValue.sort((a,b) => {
+							return a.localeCompare(b)
+						})
+						
+						if(JSON.stringify(currentMsgTypes) === JSON.stringify(currentNotHasAllMsgTypeSortValue)){
 							sessionStorage.setItem('lastChoiceMsgModelIndex',index)
 							this.$store.commit('currentTxModelIndex',index)
 						}
-					})
+					}else {
+						item.children.forEach( item =>{
+							if(item.value === txType){
+								sessionStorage.setItem('lastChoiceMsgModelIndex',index)
+								this.$store.commit('currentTxModelIndex',index)
+							}
+						})
+					}
 				}
 			})
 		}
@@ -189,10 +208,21 @@ export default {
 				const {txType} = Tools.urlParser();
 				value.children.forEach((item, index) => {
 					item.active = 0
-					if(txType.indexOf(',') !== -1){
+					value.children[0].active = 0
+					if(txType && txType.indexOf(',') !== -1){
 						const currentTxType = txType.split(',')
-						value.children[0].active = 0
-						if(currentTxType.includes(item.value)){
+						const currentMsgTypes = currentTxType.sort((a,b) =>{
+							return a.localeCompare(b)
+						})
+						const currentNotHasAllMsgType  = value.children.filter( item => {
+							return item.label !== 'secondaryAll'
+						})
+						const currentNotHasAllMsgTypeValue = currentNotHasAllMsgType.map( item => item.value)
+						const currentNotHasAllMsgTypeSortValue = currentNotHasAllMsgTypeValue.sort((a,b) => {
+							return a.localeCompare(b)
+						})
+						
+						if(JSON.stringify(currentMsgTypes) === JSON.stringify(currentNotHasAllMsgTypeSortValue)){
 							value.children[0].active = 1
 						}
 					}
