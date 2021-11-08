@@ -752,8 +752,8 @@ export default {
 									signers.push(msg.msg.signer)
 
 								}
-								if (msg?.type === TX_TYPE.tibc_update_client && msg?.chain_name && msg?.msg?.signer) {
-									chain_nameArr.push(msg.chain_name)
+								if (msg?.type === TX_TYPE.tibc_update_client && msg?.msg?.chain_name && msg?.msg?.signer) {
+									chain_nameArr.push(msg.msg.chain_name)
 									signers.push(msg.msg.signer)
 
 								}
