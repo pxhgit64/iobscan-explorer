@@ -19,7 +19,7 @@
 						<el-card>
 							<el-tag v-for="(value,index) in childrenTabs"
 									:key="value.value"
-									@click.stop="selectMsgType(value,index)"
+									@click.stop="selectMsgType(value,index,childrenTabs)"
 									:class="value.active ? 'active_tag_style' : 'default_tag_style'">
 								{{ setDisplayMsgType(value.value) }}
 							</el-tag>
@@ -130,12 +130,31 @@ export default {
 		if(typeListData?.length){
 			typeListData.forEach( (item,index) =>{
 				if(item.children && txType){
-					item.children.forEach( item =>{
-						if(item.value === txType){
+					if(txType && txType.indexOf(',') !== -1){
+						const currentTxType = txType.split(',')
+						const currentMsgTypes = currentTxType.sort((a,b) =>{
+							return a.localeCompare(b)
+						})
+						const currentNotHasAllMsgType  = item.children.filter( item => {
+							return item.label !== 'secondaryAll'
+						})
+						const currentNotHasAllMsgTypeValue = currentNotHasAllMsgType.map( item => item.value)
+						const currentNotHasAllMsgTypeSortValue = currentNotHasAllMsgTypeValue.sort((a,b) => {
+							return a.localeCompare(b)
+						})
+						
+						if(JSON.stringify(currentMsgTypes) === JSON.stringify(currentNotHasAllMsgTypeSortValue)){
 							sessionStorage.setItem('lastChoiceMsgModelIndex',index)
 							this.$store.commit('currentTxModelIndex',index)
 						}
-					})
+					}else {
+						item.children.forEach( item =>{
+							if(item.value === txType){
+								sessionStorage.setItem('lastChoiceMsgModelIndex',index)
+								this.$store.commit('currentTxModelIndex',index)
+							}
+						})
+					}
 				}
 			})
 		}
@@ -189,6 +208,24 @@ export default {
 				const {txType} = Tools.urlParser();
 				value.children.forEach((item, index) => {
 					item.active = 0
+					value.children[0].active = 0
+					if(txType && txType.indexOf(',') !== -1){
+						const currentTxType = txType.split(',')
+						const currentMsgTypes = currentTxType.sort((a,b) =>{
+							return a.localeCompare(b)
+						})
+						const currentNotHasAllMsgType  = value.children.filter( item => {
+							return item.label !== 'secondaryAll'
+						})
+						const currentNotHasAllMsgTypeValue = currentNotHasAllMsgType.map( item => item.value)
+						const currentNotHasAllMsgTypeSortValue = currentNotHasAllMsgTypeValue.sort((a,b) => {
+							return a.localeCompare(b)
+						})
+						
+						if(JSON.stringify(currentMsgTypes) === JSON.stringify(currentNotHasAllMsgTypeSortValue)){
+							value.children[0].active = 1
+						}
+					}
 					if (item.value === txType || item.value === currentSearchType) {
 						item.active = 1
 					}
@@ -210,7 +247,7 @@ export default {
 			value.index = index
 			this.$emit('onSelectMagModel', value)
 		},
-		selectMsgType(msgType, index) {
+		selectMsgType(msgType, index,childrenTabs) {
 			this.childrenTabs.forEach((item) => {
 				if (item.active) {
 					item.active = 0
@@ -223,7 +260,12 @@ export default {
 			sessionStorage.setItem('lastChoiceMsgModelIndex',this.currentClickIndex)
 			this.$store.commit('isShowMsgChildrenType',false)
 			sessionStorage.setItem('currentChoiceMsgType', msgType.value)
-			this.$emit('onSelectMagType', msgType)
+			if(msgType.label === 'secondaryAll'){
+				this.$emit('onSelectMagType', childrenTabs)
+			}else {
+				this.$emit('onSelectMagType', msgType)
+			}
+
 		}
 	}
 }
