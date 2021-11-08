@@ -36,6 +36,9 @@ export const TX_TYPE = {
   edit_nft: 'edit_nft',
   issue_denom: 'issue_denom',
   mint_nft: 'mint_nft',
+  //新增
+  transfer_denom:'transfer_denom',//新增
+
   // Token
   issue_token: 'issue_token',
   edit_token: 'edit_token',
@@ -116,6 +119,15 @@ export const TX_TYPE = {
 
   // Random
   request_rand: 'request_rand',
+
+  //TiBC
+  tibc_nft_transfer:'tibc_nft_transfer',
+  tibc_recv_packet:'tibc_recv_packet',
+  tibc_acknowledge_packet:'tibc_acknowledge_packet',
+  clean_packet:'clean_packet',
+  recv_clean_packet:'recv_clean_packet',
+  tibc_update_client:'tibc_update_client',
+
 }
 
 // 展示 abandon
@@ -141,8 +153,12 @@ export const TX_TYPE_DISPLAY = {
   burn_nft: 'NFT Burn',
   transfer_nft: 'NFT Transfer',
   edit_nft: 'NFT Edit',
-  issue_denom: 'Issue Denom',
+  issue_denom: 'Denom Issue ',
   mint_nft: 'NFT Mint',
+  transfer_denom:'Denom Transfer',//新增
+
+
+
   // Token
   issue_token: 'Issue Token',
   edit_token: 'Edit Token',
@@ -223,6 +239,13 @@ export const TX_TYPE_DISPLAY = {
 
   // Random
   request_rand: 'Request Rand',
+  //TiBC
+  tibc_nft_transfer:'TIBC NFT Transfer Out',
+  tibc_recv_packet:'TIBC NFT Transfer In',
+  tibc_acknowledge_packet:'TIBC Acknowledge Packet',
+  clean_packet:'TIBC Clean Packet Out',
+  recv_clean_packet:'TIBC Clean Packet In',
+  tibc_update_client:'TIBC Update Client',
 }
 
 export const LEVEL_TX_TYPE = {
@@ -230,6 +253,7 @@ export const LEVEL_TX_TYPE = {
   Staking: 'Staking',
   iService: 'iService',
   NFT: 'NFT',
+  TIBC:'TIBC',//新增
   Coinswap: 'Coinswap',
   Identity: 'Identity',
   IBC: 'IBC',

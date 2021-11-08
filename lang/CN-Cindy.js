@@ -158,6 +158,11 @@ export const ExplorerLang = {
         paused: '暂停',
         completed: '完成',
         creatorName:'创建者',
+        sourceChain:'发起链',
+        chainName:'链名称',
+        sequence:'序列号',
+        destinationChain:'目标链'
+
     },
     unit:{
         ellipsis:' ,...',
@@ -306,6 +311,34 @@ export const ExplorerLang = {
         uri: '链外链接',
         fee: '网络费用',
         gasUsed:'Gas Used',
+        tibc:{
+            classTibc:'路径:',//tibc新增
+            destChain:'目标链:',
+            realayChain:'中继链:',
+            sender:'发送者:',
+            receiver:'接收者:',
+            viewSource:'查看源码:',
+            idTibc:'标识:',
+            urlTibc:'链接:',
+            sequence:'序列号:',
+            port:'端口:',
+            sourceChain:'发起链:',
+            nftStatus:'数据对象状态:',
+            signer:'签名者:',
+            cleanPacket:'清除数据包:',
+            chainName:'链名称:',
+        },
+        nft:{
+            denomId:'标识:',//nft新增
+            sender:'发送者:',
+            receiver:'接收者:',
+            denomName:'数据类别:',
+            symbol:'Symbol:',
+            schema:'Schema:',
+            mintRestricted:'Mint Restricted:',
+            updateRestricted:'Update Restricted:',
+            signer:'签名者',
+        },
         issueDenom:{
             schema: '上链结构',
             sender: '创建者',

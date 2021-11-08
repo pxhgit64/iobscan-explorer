@@ -212,6 +212,20 @@ export default {
 					this.memo = res.memo ? res.memo : '--'
 					this.txType = res.msgs && res.msgs[0] && res.msgs[0].type || '--'
 					switch (this.txType) {
+						case TX_TYPE.transfer_denom:
+							break
+						case TX_TYPE.tibc_update_client:
+							break
+						case TX_TYPE.recv_clean_packet:
+							break
+						case TX_TYPE.clean_packet:
+							break
+						case TX_TYPE.tibc_acknowledge_packet:
+							break
+						case TX_TYPE.tibc_recv_packet:
+							break
+						case TX_TYPE.tibc_nft_transfer:
+							break
 						case TX_TYPE.mint_nft:
 							break
 						case TX_TYPE.burn_nft:

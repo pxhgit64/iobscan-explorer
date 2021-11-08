@@ -220,6 +220,17 @@ export default {
 			}else if(param?.value === '') {
 				//处理点击all的情况
 				this.txType = ''
+			} else if(Array.isArray(param)){
+				const notAllMsgType = param.filter(item => {
+					return item.label !== 'secondaryAll'
+				})
+				const currentSelectSecondMsgTypes = notAllMsgType.map( item =>{
+					return item.value
+				})
+
+				if(currentSelectSecondMsgTypes?.length){
+					this.txType = currentSelectSecondMsgTypes.join(',')
+				}
 			}
 			this.txColumnList = txCommonTable.concat(SignerColunmn,txCommonLatestTable)
 			if(this.txType && needAddColumn[this.txType]){
@@ -543,8 +554,19 @@ export default {
 							sameMsg = [],
 							sameMsgFromAddrArr = [],
 							sameMsgToAddrArr = [],
-							msg
-						;
+							dest_chain = '--',
+							dest_chainArr = [],
+							source_chain='--',
+							source_chainArr = [],
+							sequence='--',
+							sequenceArr = [],
+							chain_name='--',
+							chain_nameArr = [],
+							signer='--',
+							signers=[],
+							msg;
+
+
 						if (tx.msgs.length > 0) {
 								tx.msgs.forEach(item => {
 									if(item.type === msgType){
@@ -583,7 +605,7 @@ export default {
 									denomIdArr.push(item.msg.denom)
 									nftIdArr.push(item.msg.id)
 								}
-								
+
 								if(item?.type === TX_TYPE.start_feed || item?.type === TX_TYPE.edit_feed || item?.type === TX_TYPE.pause_feed || item?.type === TX_TYPE.create_feed  && item?.msg?.feed_name && item?.msg?.creator){
 									feedNameArr.push(item.msg.feed_name)
 									oracleCreatorArr.push(item.msg.creator)
@@ -694,6 +716,52 @@ export default {
 								if(item?.type=== TX_TYPE.update_request_context && item?.msg?.ex && item?.msg?.ex?.service_name){
 									serviceNameArr.push( item.msg.service_name)
 								}
+								//新增
+								if (msg?.type === TX_TYPE.tibc_nft_transfer && msg?.msg?.id && msg?.msg?.sender && msg?.msg?.dest_chain) {
+									nftIdArr.push(msg.msg.id)
+									senderArr.push(msg.msg.sender)
+									dest_chainArr.push(msg.msg.dest_chain)
+								}
+								if (msg?.type === TX_TYPE.tibc_recv_packet
+									&& msg?.msg?.packet?.data?.id
+									&& msg?.msg?.packet?.data?.receiver
+									&& msg?.msg?.packet?.source_chain) {
+									nftIdArr.push(msg.msg.packet.data.id)
+									receiverArr.push(msg.msg.packet.data.receiver)
+									source_chainArr.push(msg.msg.packet.source_chain)
+								}
+								if (msg?.type === TX_TYPE.tibc_acknowledge_packet
+									&& msg?.msg?.packet?.id
+									&& msg?.msg?.packet?.data?.sender
+									&& msg?.msg?.packet?.destination_chain) {
+									nftIdArr.push(msg.msg.packet.id)
+									senderArr.push(msg.msg.packet.data.sender)
+									dest_chainArr.push(msg.msg.packet.destination_chain)
+
+								}
+								if (msg?.type === TX_TYPE.clean_packet
+									&& msg?.msg?.clean_packet?.sequence
+									&& msg?.msg?.clean_packet?.source_chain
+									&& msg?.msg?.signer) {
+									sequenceArr.push(msg.msg.clean_packet.sequence)
+									source_chainArr.push(msg.msg.clean_packet.source_chain)
+									signers.push(msg.msg.signer)
+
+								}
+								if (msg?.type === TX_TYPE.recv_clean_packet && msg?.msg?.signer) {
+									signers.push(msg.msg.signer)
+
+								}
+								if (msg?.type === TX_TYPE.tibc_update_client && msg?.msg?.chain_name && msg?.msg?.signer) {
+									chain_nameArr.push(msg.msg.chain_name)
+									signers.push(msg.msg.signer)
+
+								}
+								if(msg?.type === TX_TYPE.transfer_denom && msg?.msg?.denomId  && msg?.msg?.sender&& msg?.msg?.receiver){
+									denomIdArr.push(msg.msg.denomId)
+									senderArr.push(msg.msg.sender)
+									receiverArr.push(msg.msg.receiver)
+								}
 							})
 							/*
 							* 同一类型多msg 去重
@@ -729,13 +797,12 @@ export default {
 							providerArr = Array.from(new Set(providerArr))
 							requestContextIdArr = Array.from(new Set(requestContextIdArr))
 							serviceNameArr = Array.from(new Set(serviceNameArr))
-							
-							
-							
-							
-							
-						}else {
-							if(msg?.type === TX_TYPE.multisend && msg?.msg?.outputs?.length){
+							dest_chainArr = Array.from(new Set(dest_chainArr))
+							source_chainArr = Array.from(new Set(source_chainArr))
+							sequenceArr = Array.from(new Set(sequenceArr))
+							chain_nameArr = Array.from(new Set(chain_nameArr))
+						} else {
+							if (msg?.type === TX_TYPE.multisend && msg?.msg?.outputs?.length) {
 								numberOfTo = msg.msg.outputs.length
 							}
 							if(msg?.type === TX_TYPE.respond_service && msg?.msg?.request_id){
@@ -830,7 +897,7 @@ export default {
 								proposalId = msg.msg.proposal_id
 								depositor = msg.msg.depositor
 							}
-							if(msg?.type === TX_TYPE.submit_proposal && msg?.msg?.content?.title ){
+							if (msg?.type === TX_TYPE.submit_proposal && msg?.msg?.content?.title) {
 								title = msg.msg.content.title
 							}
 							if(msg?.type === TX_TYPE.pause_request_context
@@ -860,7 +927,81 @@ export default {
 								serviceName = msg.msg.ex.service_name
 							}
 						}
-						
+						if (msg?.type === TX_TYPE.tibc_nft_transfer && msg?.msg?.id) {
+							nftId = msg.msg.id
+
+						}
+						if(msg?.type === TX_TYPE.tibc_recv_packet
+							|| msg?.type === TX_TYPE.tibc_acknowledge_packet
+							&& msg?.msg?.packet?.data?.id){
+							nftId = msg.msg.packet.data.id
+
+						}
+						if(msg?.type === TX_TYPE.tibc_recv_packet && msg?.msg?.packet?.data?.receiver){
+							receiver =msg.msg.packet.data.receiver
+						}
+						if(msg?.type === TX_TYPE.tibc_acknowledge_packet && msg?.msg?.packet?.data?.sender){
+							sender = msg.msg.packet.data.sender
+						}
+						if(msg?.type===TX_TYPE.tibc_update_client
+							&& msg?.msg?.chain_name){
+							chain_name = msg.msg.chain_name
+						}
+						if (msg?.type === TX_TYPE.tibc_nft_transfer
+							&& msg?.msg?.dest_chain) {
+							dest_chain = msg.msg.dest_chain
+						}
+						if(msg?.type === TX_TYPE.tibc_recv_packet && msg?.msg?.packet?.source_chain){
+							source_chain = msg.msg.packet.source_chain
+						}
+						if(msg?.type === TX_TYPE.tibc_acknowledge_packet&& msg?.msg?.packet?.destination_chain){
+							dest_chain= msg.msg.packet.destination_chain
+						}
+						if (msg?.type === TX_TYPE.tibc_nft_transfer){
+							sender = msg.msg.sender
+						}
+						if(msg?.type===TX_TYPE.issue_denom
+							&& msg?.msg?.denomName){
+							denomName = msg.msg.denomName
+						}
+
+						if(msg?.type === TX_TYPE.clean_packet && msg?.msg?.clean_packet?.source_chain){
+							source_chain = msg.msg.clean_packet.source_chain
+						}
+						if(msg?.type === TX_TYPE.clean_packet && msg?.msg?.clean_packet?.sequence){
+							sequence = msg.msg.clean_packet.sequence
+						}
+
+
+
+						if (msg?.type === TX_TYPE.transfer_denom
+							|| msg?.type === TX_TYPE.issue_denom
+							&& msg?.msg?.sender) {
+							sender = msg.msg.sender
+
+						}
+
+
+						if (msg?.type === TX_TYPE.recv_clean_packet
+							|| msg?.type === TX_TYPE.tibc_update_client
+							|| msg?.type === TX_TYPE.clean_packet
+							&& msg?.msg?.signer) {
+							signer = msg.msg.signer
+
+						}
+						if (msg?.type === TX_TYPE.transfer_denom
+							&& msg?.msg?.receiver) {
+							receiver = msg.msg.receiver
+						}
+
+						if(msg?.type ===TX_TYPE.transfer_denom
+							||msg?.type ===TX_TYPE.issue_denom
+							&& msg?.msg?.denomId
+							&& msg?.msg?.sender){
+							denomId = msg.msg.denomId
+							sender  = msg.msg.sender
+						}
+
 						let addrObj = TxHelper.getFromAndToAddressFromMsg(msg);
 						amounts.push(msg ? sameMsg?.length > 1 ? ' ' : await getAmountByTx(msg, tx.events, true) : '--');
 						let from = sameMsg?.length > 1 ? sameMsgFromAddrArr?.length > 1 ? ' ' : sameMsgFromAddrArr?.length === 1 ? sameMsgFromAddrArr[0] : '--' : addrObj.from || '--',
@@ -952,7 +1093,11 @@ export default {
 							denomTheme: {
 								denomColor: '',
 								tooltipContent: ''
-							}
+							},
+							dest_chain: dest_chainArr?.length > 1 ? ' ' : dest_chainArr?.length === 1 ? dest_chainArr[0] : dest_chain,
+							source_chain: source_chainArr?.length > 1 ? ' ' : source_chainArr?.length === 1 ? source_chainArr[0] : source_chain,
+							sequence: sequenceArr?.length > 1 ? ' ' : sequenceArr?.length === 1 ? sequenceArr[0] : sequence,
+							chain_name: chain_nameArr?.length > 1 ? ' ' : chain_nameArr?.length === 1 ? chain_nameArr[0] : chain_name,
 						})
 						/**
 						 * @description: from parseTimeMixin
@@ -990,23 +1135,23 @@ export default {
 							}
 						})
 					}
-					/*this.$nextTick(() => {
-						setTimeout(() => {
-							this.colWidthList = this.$adjustColumnWidth(this.$refs['listTable'].$el);
-							this.loading = false;
-						});
-					});*/
-				}
-			} catch (error) {
-				console.log(error)
-			}
-			
-		},
+					}
+		}catch(error) {
+			console.log(error)
+		}
+
 	},
-	
+
 	beforeDestroy(){
 		this.$store.commit('currentTxModelIndex',0)
 	},
+}
+,
+beforeDestroy()
+{
+	this.$store.commit('currentTxModelIndex', 0)
+}
+,
 }
 
 </script>
@@ -1018,45 +1163,50 @@ a {
 
 .tx_content_container {
 	width: 100%;
+
 	.tx_content_wrap {
 		max-width: 12.3rem;
-		.tx_content_header_title{
+
+		.tx_content_header_title {
 			text-align: left;
 			margin-top: 0.4rem;
 			padding-bottom: 0.1rem;
-			.tc_content_header{
+
+			.tc_content_header {
 				font-size: 0.22rem;
 				font-weight: 600;
 				color: #171D44;
 				line-height: 0.26rem;
 			}
 		}
+
 		.tx_content_header_wrap {
 			display: flex;
 			justify-content: flex-start;
 		}
 	}
+
 	@media screen and (max-width: 910px) {
 		.tx_content_wrap {
 			width: 100%;
-			
+
 			.tx_content_header_wrap {
 				display: flex;
 				flex-direction: column;
 				align-items: flex-start;
-				
+
 				.tx_type_mobile_content {
 					margin-bottom: 0.1rem;
-					
+
 					&:last-child {
 						width: 100%;
 						justify-content: flex-end;
-						
+
 						.search_btn {
 							margin-left: 0;
 						}
 					}
-					
+
 					.tx_type_transactions {
 						margin-right: 0.26rem !important;
 					}
@@ -1070,7 +1220,7 @@ a {
 				.tooltip_box {
 					text-align: end;
 				}
-				
+
 				.common_pagination_content {
 					border: 0;
 					text-align: end;
@@ -1086,24 +1236,24 @@ a {
 			}
 		}
 	}
-	
+
 	.tx_content_wrap {
 		margin: 0 auto;
 		box-sizing: border-box;
 		padding: 0 0.15rem;
-		
+
 		.service_tx_to_container {
 			.service_tx_muti_to_container {
 				display: flex;
 				flex-direction: column;
 				align-items: flex-start;
-				
+
 				.service_tx_muti_to_ellipsis {
 					color: $t_link_c;
 				}
 			}
 		}
-		
+
 		.service_tx_status {
 			position: relative;
 			top: 0.02rem;
@@ -1111,15 +1261,15 @@ a {
 			width: 0.13rem;
 			height: 0.13rem;
 		}
-		
+
 		.tx_content_header_wrap {
 			padding: 0.3rem 0 0.13rem 0;
-			
+
 			.tx_transaction_content_hash {
 				display: flex;
 				align-items: center;
 			}
-			
+
 			.total_tx_content {
 				// height: 0.64rem;
 				line-height: 0.4rem;
@@ -1129,58 +1279,58 @@ a {
 				margin: 0rem 0.2rem 0rem 0rem;
 				//text-indent: 0.2rem;
 			}
-			
+
 			/*.filer_content {
 					display: flex;
 					align-items: center;*/
 			.tx_type_mobile_content {
 				display: flex;
 				align-items: center;
-				
+
 				.tooltip_content {
 					padding: 0 0 0 0.1rem;
 				}
-				
+
 				::v-deep.el-cascader {
 					width: 1.3rem;
 					margin-right: 0.1rem;
-					
+
 					.el-input {
 						input::-webkit-input-placeholder {
 							/* 使用webkit内核的浏览器 */
 							color: $t_first_c;
 						}
-						
+
 						input:-moz-placeholder {
 							/* Firefox版本4-18 */
 							color: $t_first_c;
 						}
-						
+
 						input::-moz-placeholder {
 							/* Firefox版本19+ */
 							color: $t_first_c;
 						}
-						
+
 						input:-ms-input-placeholder {
 							/* IE浏览器 */
 							color: $t_first_c;
 						}
-						
+
 						.el-input__inner {
 							padding-left: 0.07rem;
 							height: 0.32rem;
 							font-size: $s14 !important;
 							line-height: 0.32rem;
-							
+
 							&::-webkit-input-placeholder {
 								font-size: $s14 !important;
 							}
 						}
-						
+
 						.el-input__inner:focus {
 							border-color: $theme_c !important;
 						}
-						
+
 						.el-input__suffix {
 							.el-input__suffix-inner {
 								.el-input__icon {
@@ -1189,34 +1339,34 @@ a {
 							}
 						}
 					}
-					
+
 					.is-focus {
 						.el-input__inner {
 							border-color: $theme_c !important;
 						}
 					}
 				}
-				
+
 				::v-deep .el-select {
 					width: 1.3rem;
 					margin-right: 0.1rem;
-					
+
 					.el-input {
 						.el-input__inner {
 							padding-left: 0.07rem;
 							height: 0.32rem;
 							font-size: $s14 !important;
 							line-height: 0.32rem;
-							
+
 							&::-webkit-input-placeholder {
 								font-size: $s14 !important;
 							}
 						}
-						
+
 						.el-input__inner:focus {
 							border-color: $theme_c !important;
 						}
-						
+
 						.el-input__suffix {
 							.el-input__suffix-inner {
 								.el-input__icon {
@@ -1225,57 +1375,57 @@ a {
 							}
 						}
 					}
-					
+
 					.is-focus {
 						.el-input__inner {
 							border-color: $theme_c !important;
 						}
 					}
 				}
-				
+
 				::v-deep .el-date-editor {
 					width: 1.3rem;
-					
+
 					.el-icon-circle-close {
 						display: none !important;
 					}
-					
+
 					.el-input__inner {
 						height: 0.32rem;
 						padding-left: 0.07rem;
 						padding-right: 0;
 						line-height: 0.32rem;
-						
+
 						&::-webkit-input-placeholder {
 							font-size: $s14 !important;
 						}
-						
+
 						&:focus {
 							border-color: $theme_c;
 						}
 					}
-					
+
 					.el-input__prefix {
 						right: 5px;
 						left: 1rem;
-						
+
 						.el-input__icon {
 							line-height: 0.32rem;
 						}
 					}
 				}
-				
+
 				.joint_mark {
 					margin: 0 0.08rem;
 				}
-				
+
 				.reset_btn {
 					background: $bg_button_c;
 					color: $t_button_c;
 					border-radius: 0.04rem;
 					margin-left: 0.1rem;
 					cursor: pointer;
-					
+
 					i {
 						padding: 0.08rem;
 						font-size: $s14;
@@ -1283,7 +1433,7 @@ a {
 						display: inline-block;
 					}
 				}
-				
+
 				.search_btn {
 					cursor: pointer;
 					background: $bg_button_c;
@@ -1296,19 +1446,19 @@ a {
 					white-space: nowrap;
 				}
 			}
-			
+
 			//}
 		}
-		
+
 		.status_icon {
 			width: 0.13rem;
 			height: 0.13rem;
 			margin-right: 0.05rem;
 		}
-		
+
 		.pagination_content {
 			margin: 0.1rem 0 0.2rem 0;
-			
+
 			.tooltip_box {
 				display: flex;
 				align-items: center;
@@ -1316,21 +1466,21 @@ a {
 				padding: 0.05rem 0.2rem;
 				font-size: $s12;
 				color: #8d8b8b;
-				
+
 				.tooltip_title {
 					margin-right: 0.24rem;
 				}
-				
+
 				.tooltip_title_box {
 					display: flex;
 				}
-				
+
 				.tooltip_title_IBC {
 					margin-right: 0.24rem;
 					display: flex;
 					align-items: center;
 					position: relative;
-					
+
 					&::before {
 						left: -0.12rem;
 						content: ' ';
@@ -1341,12 +1491,12 @@ a {
 						background-color: #d47d78;
 					}
 				}
-				
+
 				.tooltip_title_HTLT {
 					display: flex;
 					align-items: center;
 					position: relative;
-					
+
 					&::before {
 						left: -0.12rem;
 						content: ' ';

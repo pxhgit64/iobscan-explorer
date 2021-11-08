@@ -19,7 +19,7 @@
 						<el-card>
 							<el-tag v-for="(value,index) in childrenTabs"
 									:key="value.value"
-									@click.stop="selectMsgType(value,index)"
+									@click.stop="selectMsgType(value,index,childrenTabs)"
 									:class="value.active ? 'active_tag_style' : 'default_tag_style'">
 								{{ setDisplayMsgType(value.value) }}
 							</el-tag>
@@ -210,7 +210,7 @@ export default {
 			value.index = index
 			this.$emit('onSelectMagModel', value)
 		},
-		selectMsgType(msgType, index) {
+		selectMsgType(msgType, index,childrenTabs) {
 			this.childrenTabs.forEach((item) => {
 				if (item.active) {
 					item.active = 0
@@ -223,7 +223,12 @@ export default {
 			sessionStorage.setItem('lastChoiceMsgModelIndex',this.currentClickIndex)
 			this.$store.commit('isShowMsgChildrenType',false)
 			sessionStorage.setItem('currentChoiceMsgType', msgType.value)
-			this.$emit('onSelectMagType', msgType)
+			if(msgType.label === 'secondaryAll'){
+				this.$emit('onSelectMagType', childrenTabs)
+			}else {
+				this.$emit('onSelectMagType', msgType)
+			}
+
 		}
 	}
 }
