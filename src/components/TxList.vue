@@ -219,6 +219,17 @@ export default {
 			}else if(param?.value === '') {
 				//处理点击all的情况
 				this.txType = ''
+			} else if(Array.isArray(param)){
+				const notAllMsgType = param.filter(item => {
+					return item.label !== 'secondaryAll'
+				})
+				const currentSelectSecondMsgTypes = notAllMsgType.map( item =>{
+					return item.value
+				})
+
+				if(currentSelectSecondMsgTypes?.length){
+					this.txType = currentSelectSecondMsgTypes.join(',')
+				}
 			}
 			this.txColumnList = txCommonTable.concat(SignerColunmn,txCommonLatestTable)
 			if(this.txType && needAddColumn[this.txType]){
