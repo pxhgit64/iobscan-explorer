@@ -120,26 +120,15 @@ export default {
       max-width: 3.2rem;
     }
   }
+
   .address_link {
     color: $t_link_c !important;
     cursor:pointer;
     font-weight: normal !important;
-	  margin-right: 12px;
-	  text-align:left;
-	  flex-wrap:wrap
+	  margin-right: 5px;
+
   }
-  .inputstyle{
-	  @media screen and (max-width:910px){
-		  justify-content: space-between;
-      }
-	  flex-wrap:wrap;
-  }
-.outputstyle{
-	@media screen and (max-width:910px){
-		justify-content: space-between;
-	}
-	flex-wrap:wrap;
-}
+
   .el-table .cell {
     word-break: break-word !important;
     overflow: visible !important;
