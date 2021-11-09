@@ -318,7 +318,7 @@ export const ExplorerLang = {
             sender:'发送者:',
             receiver:'接收者:',
             viewSource:'查看源码:',
-            idTibc:'标识:',
+            idTibc:'数据对象标识:',
             urlTibc:'链接:',
             sequence:'序列号:',
             port:'端口:',

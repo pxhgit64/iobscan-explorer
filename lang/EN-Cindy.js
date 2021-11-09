@@ -310,7 +310,7 @@ export const ExplorerLang = {
         owner: 'Owner',
         qos: 'QoS', // 更改，中文未变
         deposit: 'Deposit',
-        nftId: 'Id',
+        nftId: 'NFT ID',
         nftName: 'NFT Name',
         data: 'Data',
         uri: 'Uri',
@@ -323,8 +323,8 @@ export const ExplorerLang = {
             sender:'Sender:',
             receiver:'Receiver:',
             viewSource:'View Source:',
-            idTibc:'ID:',
-            urlTibc:'URL:',
+            idTibc:'NFT ID:',
+            urlTibc:'URI:',
             sequence:'Sequence:',
             port:'Port:',
             sourceChain:'Source Chain:',
@@ -334,7 +334,7 @@ export const ExplorerLang = {
             chainName:'Chain Name:',
         },
         nft:{
-            denomId:'ID:',//nft新增
+            denomId:'Denom ID:',//nft新增
             sender:'Sender:',
             receiver:'Recipient:',
             denomName:'Denom Name:',

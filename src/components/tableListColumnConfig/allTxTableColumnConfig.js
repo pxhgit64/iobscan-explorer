@@ -645,6 +645,11 @@ export const needAddColumn = {
         {
             label: i18n.t('ExplorerLang.table.nftId'),
             displayValue: 'nftId',
+            nftRouterParamsValue: 'denomId',
+            isLink: true,
+            isNft: true,
+            linkRoute: '/nft/token?denom=',
+            denomRouter: '&tokenId='
         },
         {
             label:i18n.t('ExplorerLang.table.denomId'),
@@ -726,6 +731,11 @@ export const needAddColumn = {
             label: i18n.t('ExplorerLang.table.nftId'),
             displayValue: 'nftId',
             nativeValue: 'nftId',
+            nftRouterParamsValue: 'denomId',
+            isLink: true,
+            isNft: true,
+            linkRoute: '/nft/token?denom=',
+            denomRouter: '&tokenId='
         },
         {
             label: i18n.t('ExplorerLang.table.from'),
@@ -770,20 +780,26 @@ export const needAddColumn = {
     transfer_denom: [
         {
             label:i18n.t('ExplorerLang.table.denomId'),
-            displayValue:'denomId',
-            nativeValue:'denomId',
+            displayValue:'id',
+            nativeValue:'id',
         },
         {
             label:i18n.t('ExplorerLang.table.sender'),
             displayValue:'sender',
             nativeValue:'sender',
+            isLink: true,
+            isNeedFormat: true,
+            isFormatAddress: true,
+            linkRoute: '/address/',
         },
         {
             label:i18n.t('ExplorerLang.table.receiver'),
             displayValue:'receiver',
             nativeValue:'receiver',
-            islink:true,
-            linkRoute:'/adderss/'
+            isLink: true,
+            isNeedFormat: true,
+            isFormatAddress: true,
+            linkRoute:'/address/',
         },
     ],
     swap_order: [

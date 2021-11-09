@@ -310,10 +310,6 @@
 				<router-link v-else class="address_link" :to="`/address/${sender}`">{{sender}}</router-link>
 			</template>
 		</p>
-			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.denomId')}}：</span>
-				<span>{{denom}}</span>
-			</p>
 		</div>
 		<div v-if="txType === TX_TYPE.send">
 			    <p>
@@ -2295,7 +2291,10 @@
 				</p>
 				<p>
 					<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}</span>
-					<span>{{signer}}</span>
+					<template>
+						<span v-if="signer === '--'">{{signer}}</span>
+						<router-link v-else  :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
+					</template>
 				</p>
 		</div>
 		<!--新增TIBC Acknowledge Packet-->
@@ -2364,7 +2363,10 @@
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}</span>
-				<span>{{signer}}</span>
+				<template>
+					<span v-if="signer === '--'">{{signer}}</span>
+					<router-link v-else  :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
+				</template>
 			</p>
 		</div>
 		<!--TIBC Clean Packet Out-->
@@ -2389,10 +2391,13 @@
 
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}</span>
-				<span>{{signer}}</span>
+				<template>
+					<span v-if="signer === '--'">{{signer}}</span>
+					<router-link v-else  :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
+				</template>
 			</p>
 		</div>
-        <!--  TIBC Clean Packet In这里signer-->
+        <!--  TIBC Clean Packet In-->
 		<div v-if="txType === TX_TYPE.recv_clean_packet">
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.cleanPacket')}}</span>
@@ -2411,7 +2416,10 @@
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}</span>
-				<span>{{signer}}</span>
+				<template>
+					<span v-if="signer === '--'">{{signer}}</span>
+					<router-link v-else  :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
+				</template>
 			</p>
 		</div>
         <!--新增Transfer Denom (Denom Transfer)-->
@@ -2422,44 +2430,23 @@
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.nft.sender')}}</span>
-				<span>{{sender}}</span>
+				<template>
+					<span v-if="sender === '--'">{{sender}}</span>
+					<router-link v-else :to="`/address/${sender}`" class="address_link">{{sender}}</router-link>
+				</template>
+
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.nft.receiver')}}</span>
-				<span>{{receiver}}</span>
+				<template>
+					<span v-if="sender === '--'">{{receiver}}</span>
+					<span v-else @click="addressRoute(receiver)"
+						  :class="(receiver.startsWith(COSMOS_ADDRESS_PREFIX) || receiver.startsWith(IRIS_ADDRESS_PREFIX))? 'address_link' : ''"
+					>{{receiver}}</span>
+				</template>
+
 			</p>
 
-		</div>
-		<!--新增Issue Denom (Denom Issue)-->
-		<div v-if="txType === TX_TYPE.issue_denom">
-			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.nft.denomId')}}</span>
-				<span>{{denomId}}</span>
-			</p>
-			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.nft.denomName')}}</span>
-				<span>{{denomName}}</span>
-			</p>
-			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.nft.symbol')}}</span>
-				<span>{{symbol}}</span>
-			</p>
-			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.nft.schema')}}</span>
-				<span>{{schema}}</span>
-			</p>
-			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.nft.mintRestricted')}}</span>
-				<span>{{mintRestricted}}</span>
-			</p>
-			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.nft.updateRestricted')}}</span>
-				<span>{{updateRestricted}}</span>
-			</p>
-			<p>
-				<span>{{$t('ExplorerLang.transactionInformation.nft.sender')}}</span>
-				<span>{{sender}}</span>
-			</p>
 		</div>
 
 <!-- exclude UpdateClient -->
@@ -2885,13 +2872,13 @@
 								this.tokenUri = msg.uri || '--';
 								break;
 							case TX_TYPE.issue_denom:
-								this.denomId=msg.id || '--'
-								this.denomName=msg.name || '--'
-								this.symbol=msg.symbol || '--'
-								this.schema=msg.schema || '--'
-								this.mintRestricted=msg.mint_restricted || '--'
-								this.updateRestricted=msg.update_restricted || '--'
-								this.sender= msg.sender
+								this.denomId=msg.id || '--';
+								this.denomName=msg.name || '--';
+								this.symbol=msg.symbol || '--';
+								this.schema=msg.schema || '--';
+								this.mintRestricted=msg.mint_restricted ;
+								this.updateRestricted=msg.update_restricted ;
+								this.sender= msg.sender;
 								break;
 							case TX_TYPE.respond_service:
 								this.output = msg.output || '--';
