@@ -1,6 +1,7 @@
 import {cfg} from "../../config";
 import VueI18n from 'vue-i18n';
 import prodConfig from "../../productionConfig";
+import {formatMoniker} from "../../helper/IritaHelper";
 const i18n = new VueI18n({
     locale:prodConfig.lang == 'EN' ? 'EN' : 'CN',
     messages: {
@@ -649,11 +650,15 @@ export const needAddColumn = {
             isLink: true,
             isNft: true,
             linkRoute: '/nft/token?denom=',
-            denomRouter: '&tokenId='
+            denomRouter: '&tokenId=',
+            isNeedFormat: true,
+            isFormatNftIdAndDenomId: true,
         },
         {
             label:i18n.t('ExplorerLang.table.denomId'),
             displayValue: 'denomId',
+            isNeedFormat: true,
+            isFormatNftIdAndDenomId: true,
         },
         {
             label: i18n.t('ExplorerLang.table.from'),
@@ -674,7 +679,9 @@ export const needAddColumn = {
             isLink: true,
             isNft: true,
             linkRoute: '/nft/token?denom=',
-            denomRouter: '&tokenId='
+            denomRouter: '&tokenId=',
+            isNeedFormat: true,
+            isFormatNftIdAndDenomId: true,
         },
         {
             label: i18n.t('ExplorerLang.table.denomId'),
@@ -684,7 +691,9 @@ export const needAddColumn = {
             isLink: true,
             isNft: true,
             linkRoute: '/nft/token?denom=',
-            denomRouter: '&tokenId='
+            denomRouter: '&tokenId=',
+            isNeedFormat: true,
+            isFormatNftIdAndDenomId: true,
         },
         {
             label: i18n.t('ExplorerLang.table.from'),
@@ -705,7 +714,9 @@ export const needAddColumn = {
             isLink: true,
             isNft: true,
             linkRoute: '/nft/token?denom=',
-            denomRouter: '&tokenId='
+            denomRouter: '&tokenId=',
+            isNeedFormat: true,
+            isFormatNftIdAndDenomId: true,
         },
         {
             label: i18n.t('ExplorerLang.table.from'),
@@ -735,7 +746,9 @@ export const needAddColumn = {
             isLink: true,
             isNft: true,
             linkRoute: '/nft/token?denom=',
-            denomRouter: '&tokenId='
+            denomRouter: '&tokenId=',
+            isNeedFormat: true,
+            isFormatNftIdAndDenomId: true,
         },
         {
             label: i18n.t('ExplorerLang.table.from'),
@@ -761,6 +774,9 @@ export const needAddColumn = {
             label: i18n.t('ExplorerLang.table.denomId'),
             displayValue: 'denomId',
             nativeValue: 'denomId',
+            isNeedFormat: true,
+            isFormatNftIdAndDenomId: true,
+
         },
         {
             label: i18n.t('ExplorerLang.table.denomName'),
@@ -782,6 +798,9 @@ export const needAddColumn = {
             label:i18n.t('ExplorerLang.table.denomId'),
             displayValue:'denomId',
             nativeValue:'denomId',
+            isNeedFormat: true,
+            isFormatNftIdAndDenomId: true,
+
         },
         {
             label:i18n.t('ExplorerLang.table.sender'),
@@ -1535,6 +1554,8 @@ export const needAddColumn = {
             label:i18n.t('ExplorerLang.table.nftId'),
             displayValue:'nftId',
             nativeValue:'nftId',
+            isNeedFormat: true,
+            isFormatNftIdAndDenomId: true,
         },
         {
             label:i18n.t('ExplorerLang.table.sender'),
@@ -1557,6 +1578,8 @@ export const needAddColumn = {
             label:i18n.t('ExplorerLang.table.nftId'),
             displayValue:'nftId',
             nativeValue:'nftId',
+            isNeedFormat: true,
+            isFormatNftIdAndDenomId: true,
         },
         {
             label:i18n.t('ExplorerLang.table.receiver'),
@@ -1578,6 +1601,8 @@ export const needAddColumn = {
             label:i18n.t('ExplorerLang.table.nftId'),
             displayValue:'nftId',
             nativeValue:'nftId',
+            isNeedFormat: true,
+            isFormatNftIdAndDenomId: true,
         },
         {
             label:i18n.t('ExplorerLang.table.sender'),
