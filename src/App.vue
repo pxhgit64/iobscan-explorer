@@ -124,7 +124,6 @@ export default {
     color: $t_link_c !important;
     cursor:pointer;
     font-weight: normal !important;
-	  margin-right: 5px;
   }
 
   .el-table .cell {
