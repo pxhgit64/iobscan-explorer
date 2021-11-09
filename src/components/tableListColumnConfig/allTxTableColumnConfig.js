@@ -646,11 +646,6 @@ export const needAddColumn = {
         {
             label: i18n.t('ExplorerLang.table.nftId'),
             displayValue: 'nftId',
-            nftRouterParamsValue: 'denomId',
-            isLink: true,
-            isNft: true,
-            linkRoute: '/nft/token?denom=',
-            denomRouter: '&tokenId=',
             isNeedFormat: true,
             isFormatNftIdAndDenomId: true,
         },
