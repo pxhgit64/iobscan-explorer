@@ -564,8 +564,6 @@ export default {
 							chain_nameArr = [],
 							signer='--',
 							signers=[],
-							id='--',
-							idArr=[],
 							msg;
 
 
@@ -760,7 +758,7 @@ export default {
 
 								}
 								if(msg?.type === TX_TYPE.transfer_denom && msg?.msg?.id  && msg?.msg?.sender&& msg?.msg?.recipient){
-									idArr.push(msg.msg.id)
+									denomIdArr.push(msg.msg.id)
 									senderArr.push(msg.msg.sender)
 									receiverArr.push(msg.msg.recipient)
 								}
@@ -803,7 +801,6 @@ export default {
 							source_chainArr = Array.from(new Set(source_chainArr))
 							sequenceArr = Array.from(new Set(sequenceArr))
 							chain_nameArr = Array.from(new Set(chain_nameArr))
-							idArr=Array.from(new Set(idArr))
 						} else {
 							if (msg?.type === TX_TYPE.multisend && msg?.msg?.outputs?.length) {
 								numberOfTo = msg.msg.outputs.length
@@ -981,7 +978,6 @@ export default {
 							|| msg?.type === TX_TYPE.issue_denom
 							&& msg?.msg?.sender) {
 							sender = msg.msg.sender
-
 						}
 
 
@@ -993,12 +989,9 @@ export default {
 
 						}
 						if (msg?.type === TX_TYPE.transfer_denom
-							&& msg?.msg?.recipient) {
+							&& msg?.msg?.recipient||msg?.msg?.id) {
 							receiver = msg.msg.recipient
-
-						}
-						if(msg?.type === TX_TYPE.transfer_denom&&msg?.msg?.id){
-							id = msg.msg.id
+							denomId = msg.msg.id
 						}
 
 						if(msg?.type ===TX_TYPE.issue_denom
@@ -1104,7 +1097,6 @@ export default {
 							source_chain: source_chainArr?.length > 1 ? ' ' : source_chainArr?.length === 1 ? source_chainArr[0] : source_chain,
 							sequence: sequenceArr?.length > 1 ? ' ' : sequenceArr?.length === 1 ? sequenceArr[0] : sequence,
 							chain_name: chain_nameArr?.length > 1 ? ' ' : chain_nameArr?.length === 1 ? chain_nameArr[0] : chain_name,
-							id: idArr?.length > 1 ? ' ' : idArr?.length === 1 ? idArr[0] : id,
 						})
 						/**
 						 * @description: from parseTimeMixin

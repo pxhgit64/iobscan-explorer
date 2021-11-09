@@ -780,8 +780,8 @@ export const needAddColumn = {
     transfer_denom: [
         {
             label:i18n.t('ExplorerLang.table.denomId'),
-            displayValue:'id',
-            nativeValue:'id',
+            displayValue:'denomId',
+            nativeValue:'denomId',
         },
         {
             label:i18n.t('ExplorerLang.table.sender'),
