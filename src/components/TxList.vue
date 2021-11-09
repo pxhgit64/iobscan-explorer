@@ -362,7 +362,7 @@ export default {
 			sessionStorage.setItem('lastChoiceMsgModelIndex',0)
 			sessionStorage.setItem('txTimeRange',[])
 			this.txTypeArray = ['']
-			this.txColumnList = txCommonTable.concat(txCommonLatestTable)
+			this.txColumnList = txCommonTable.concat(SignerColunmn, txCommonLatestTable)
 			
 		},
 		async getTxTypeData() {

@@ -68,8 +68,8 @@
 										<!-- 判断是否需要显示提示信息 -->
 										<el-tooltip v-if="item.isCopyIcon" :content="`${item.value}`">
 											<!-- 判断是否为地址链接，不是则直接渲染 -->
-											<span v-if="item.flAddressLink" style="font-family: Arial;">{{formatAddress(item.value)}}</span>
-											<router-link style="font-family: Arial;" v-if="!item.flAddressLink" :to="'/address/'+ item.value" :style="{color: item.isValidatorAddress ? '' :'$theme_c !important'}">{{formatAddress(item.value)}}</router-link>
+											<span v-if="item.flAddressLink" style="font-family: PublicSans;">{{formatAddress(item.value)}}</span>
+											<router-link style="font-family: PublicSans;" v-if="!item.flAddressLink" :to="'/address/'+ item.value" :style="{color: item.isValidatorAddress ? '' :'$theme_c !important'}">{{formatAddress(item.value)}}</router-link>
 										</el-tooltip>
 										<!-- 不用显示复制的图标 直接渲染数据 -->
 										<span v-if="!item.isCopyIcon">

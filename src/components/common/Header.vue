@@ -354,7 +354,7 @@ export default {
   top: 0;
   width: 100%;
   z-index: 10000;
-  font-family: Arial;
+  font-family: PublicSans;
 
   .header_content {
     max-width: 12rem;
@@ -375,7 +375,6 @@ export default {
         margin-right: 0.2rem;
         height: 0.6rem;
         font-size: $s12;
-        font-family: Arial;
         color: $t_white_c;
         text-align: left;
         line-height: 1.3;
@@ -546,7 +545,6 @@ export default {
         cursor: pointer;
         color: inherit;
         font-size: $s14;
-        font-family: Arial;
         text-align: left;
         padding: 0.05rem 0;
         width: 100%;
