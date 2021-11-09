@@ -423,7 +423,7 @@ a {
 				line-height: 0.21rem;
 				margin: 0.3rem 0 0.15rem 0rem;
 				text-align: left;
-				font-family: Arial;
+				font-family: PublicSans;
 				font-weight: 600;
 				.tx_detail_title_first {
 					white-space: nowrap;
@@ -431,7 +431,7 @@ a {
 				}
 				.tx_detail_title_hash {
 					font-size: $s14;
-					font-family: Arial;
+					font-family: PublicSans;
 					font-weight: 400;
 					color: $t_first_c;
 					line-height: 0.2rem;

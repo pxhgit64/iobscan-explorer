@@ -2073,7 +2073,7 @@
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.multisend.inputs')}}: </span>
 				<span>
-					<p v-for="(input,index) in inputs" :key="index">
+					<p v-for="(input,index) in inputs" :key="index" class="address_container">
 <!--						<span @click="addressRoute(input.address)" class="address_link">{{input.address}}</span>-->
 						<router-link :to="`/address/${input.address}`" class="address_link">{{input.address}}</router-link>
 						<span>{{input.amount}}</span>
@@ -2083,7 +2083,7 @@
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.multisend.outputs')}}: </span>
 				<span>
-					<p v-for="(output,index) in outputs" :key="index">
+					<p v-for="(output,index) in outputs" :key="index" class="address_container">
 <!--						<span @click="addressRoute(output.address)" class="address_link">{{output.address}}</span>-->
 						<router-link :to="`/address/${output.address}`" class="address_link">{{output.address}}</router-link>
 						<span>{{output.amount}}</span>
@@ -3876,6 +3876,17 @@
 						}
 					}
 				}
+			}
+		}
+		.address_container{
+			flex-wrap: wrap;
+			a{
+				margin-right: 0.1rem;
+			}
+			span{
+				
+				font-weight: normal !important;
+				color: #171D44 !important;
 			}
 		}
 

@@ -119,7 +119,7 @@
 				// font-size:$s12;
 				font-size:$s14;
 				max-width:12rem;
-				font-family: Arial;
+				font-family: PublicSans;
 				p {
 					margin:0.05rem 0.15rem;
 				}
