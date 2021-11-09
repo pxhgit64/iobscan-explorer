@@ -2072,21 +2072,21 @@
 		<div v-if="txType === TX_TYPE.multisend">
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.multisend.inputs')}}: </span>
-				<span>
-					<p v-for="(input,index) in inputs" :key="index">
+				<span style="text-align:right;" >
+					<p v-for="(input,index) in inputs" :key="index" class="inputstyle" >
 <!--						<span @click="addressRoute(input.address)" class="address_link">{{input.address}}</span>-->
 						<router-link :to="`/address/${input.address}`" class="address_link">{{input.address}}</router-link>
-						<span>{{input.amount}}</span>
+						<span style="text-align:right" >{{input.amount}}</span>
 					</p>
 				</span>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.multisend.outputs')}}: </span>
-				<span>
-					<p v-for="(output,index) in outputs" :key="index">
+				<span style="text-align:right" >
+					<p v-for="(output,index) in outputs" :key="index"  class="outputstyle">
 <!--						<span @click="addressRoute(output.address)" class="address_link">{{output.address}}</span>-->
 						<router-link :to="`/address/${output.address}`" class="address_link">{{output.address}}</router-link>
-						<span>{{output.amount}}</span>
+						<span style="text-align:right">{{output.amount}}</span>
 					</p>
 				</span>
 			</p>
