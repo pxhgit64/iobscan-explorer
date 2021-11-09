@@ -2073,16 +2073,16 @@
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.multisend.inputs')}}: </span>
 				<span>
-					<p v-for="(input,index) in inputs" :key="index" >
+					<p v-for="(input,index) in inputs" :key="index">
 <!--						<span @click="addressRoute(input.address)" class="address_link">{{input.address}}</span>-->
 						<router-link :to="`/address/${input.address}`" class="address_link">{{input.address}}</router-link>
-						<span >{{input.amount}}</span>
+						<span>{{input.amount}}</span>
 					</p>
 				</span>
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.multisend.outputs')}}: </span>
-				<span >
+				<span>
 					<p v-for="(output,index) in outputs" :key="index">
 <!--						<span @click="addressRoute(output.address)" class="address_link">{{output.address}}</span>-->
 						<router-link :to="`/address/${output.address}`" class="address_link">{{output.address}}</router-link>
