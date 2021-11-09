@@ -323,7 +323,7 @@ export const ExplorerLang = {
             sender:'Sender:',
             receiver:'Receiver:',
             viewSource:'View Source:',
-            idTibc:'Id:',
+            idTibc:'ID:',
             urlTibc:'URL:',
             sequence:'Sequence:',
             port:'Port:',
