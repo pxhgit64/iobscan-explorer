@@ -505,6 +505,10 @@ export const monikerNum = {
   otherTable: 11,
 }
 
+export  const nftAndDenomSplitNum = {
+  num:8
+}
+
 export const proposalStatus = {
   passed: 'Passed',
   rejected: 'Rejected',

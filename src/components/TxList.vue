@@ -757,10 +757,10 @@ export default {
 									signers.push(msg.msg.signer)
 
 								}
-								if(msg?.type === TX_TYPE.transfer_denom && msg?.msg?.denomId  && msg?.msg?.sender&& msg?.msg?.receiver){
-									denomIdArr.push(msg.msg.denomId)
+								if(msg?.type === TX_TYPE.transfer_denom && msg?.msg?.id  && msg?.msg?.sender&& msg?.msg?.recipient){
+									denomIdArr.push(msg.msg.id)
 									senderArr.push(msg.msg.sender)
-									receiverArr.push(msg.msg.receiver)
+									receiverArr.push(msg.msg.recipient)
 								}
 							})
 							/*
@@ -978,7 +978,6 @@ export default {
 							|| msg?.type === TX_TYPE.issue_denom
 							&& msg?.msg?.sender) {
 							sender = msg.msg.sender
-
 						}
 
 
@@ -990,12 +989,12 @@ export default {
 
 						}
 						if (msg?.type === TX_TYPE.transfer_denom
-							&& msg?.msg?.receiver) {
-							receiver = msg.msg.receiver
+							&& msg?.msg?.recipient||msg?.msg?.id) {
+							receiver = msg.msg.recipient
+							denomId = msg.msg.id
 						}
 
-						if(msg?.type ===TX_TYPE.transfer_denom
-							||msg?.type ===TX_TYPE.issue_denom
+						if(msg?.type ===TX_TYPE.issue_denom
 							&& msg?.msg?.denomId
 							&& msg?.msg?.sender){
 							denomId = msg.msg.denomId
