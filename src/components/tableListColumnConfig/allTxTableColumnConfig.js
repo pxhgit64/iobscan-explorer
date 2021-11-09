@@ -1,7 +1,7 @@
 import {cfg} from "../../config";
 import VueI18n from 'vue-i18n';
 import prodConfig from "../../productionConfig";
-import {formatMoniker} from "../../helper/IritaHelper";
+
 const i18n = new VueI18n({
     locale:prodConfig.lang == 'EN' ? 'EN' : 'CN',
     messages: {
