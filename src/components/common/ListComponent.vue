@@ -57,6 +57,7 @@
 										<span v-else-if="item.isFormatAddress">{{formatAddress(scope.row[item.displayValue]) }}</span>
 										
 										<span v-else-if="item.isFormatMoniker">{{formatTableMoniker(scope.row[item.displayValue]) }}</span>
+										<span v-else-if="item.isFormatNftIdAndDenomId">{{formatNftIdAndDenomId(scope.row[item.displayValue]) }}</span>
 										
 										<span v-else>{{ scope.row[item.displayValue] }}</span>
 										

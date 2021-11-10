@@ -1276,6 +1276,7 @@ export const needAddColumn = {
             nativeValue: 'title',
             isNeedFormat: true,
             isFormatMoniker: true,
+            isFormatNftIdAndDenomId: true,
         },
         {
             label:i18n.t('ExplorerLang.table.initialDeposit'),
