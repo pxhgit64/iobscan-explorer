@@ -336,7 +336,7 @@ export const ExplorerLang = {
         nft:{
             denomId:'Denom ID:',//nft新增
             sender:'Sender:',
-            receiver:'Recipient:',
+            receiver:'Receiver:',
             denomName:'Denom Name:',
             symbol:'Symbol:',
             schema:'Schema:',
