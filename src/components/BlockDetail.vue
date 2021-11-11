@@ -64,7 +64,13 @@
 			<!-- 区块交易 -->
 			<div class="block_transaction_content" v-if="transactionArray.length > 0">
 				<div class="block_transaction_title_content">{{$t('ExplorerLang.blockDetail.transactions')}}</div>
-				<TxListComponent :txData="transactionArray"></TxListComponent>
+				<list-component
+					        :empty-text="$t('ExplorerLang.table.emptyDescription')"
+							:list-data="transactionArray"
+							:column-list="transactionArrayConfig"
+							:token-symbol="mainTokenSymbol"
+							:is-show-footer="true"
+				></list-component>
 			</div>
 			<!-- Validator Set 表格 -->
 			<div class="block_validator_set_container" v-if="moduleSupport('107', prodConfig.navFuncList)">
@@ -130,16 +136,22 @@
 		stakingBlockInformation
 	} from '../service/api';
 	import Tools from "../util/Tools";
-	import {TX_TYPE, TX_STATUS,ColumnMinWidth} from '../constant';
+	import {TX_TYPE, TX_STATUS, ColumnMinWidth, decimals} from '../constant';
 	import {moduleSupport} from "../helper/ModulesHelper";
 	import prodConfig from "../productionConfig"
 	import MPagination from "./common/MPagination";
 	import { addressRoute } from '@/helper/IritaHelper'
+	import ListComponent from "./common/ListComponent";
+	import txCommonTable from "./tableListColumnConfig/txCommonTable";
+	import txCommonLatestTable from "./tableListColumnConfig/txCommonLatestTable";
+	import SignerColunmn from "./tableListColumnConfig/SignerColunmn";
+	import { converCoin,getMainToken} from '@/helper/IritaHelper';
 	export default {
 		name: "BlockDetail",
-		components: {TxListComponent, MPagination},
+		components: {ListComponent, TxListComponent, MPagination},
 		data () {
 			return {
+				mainTokenSymbol: '',
 				Tools,
 				addressRoute,
 				ColumnMinWidth,
@@ -167,7 +179,9 @@
 				validatorSetListCount: 0,
 				pageSize: 10,
 				validatorSetPageNum: 1,
-				cutNumber: 8
+				cutNumber: 8,
+				transactionArrayConfig:[],
+				feeDecimals: decimals.fee,
 			}
 		},
 		watch: {
@@ -190,6 +204,8 @@
 			},
 		},
 		mounted () {
+			this.setMainToken();
+			this.transactionArrayConfig = txCommonTable.concat(SignerColunmn,txCommonLatestTable)
 			this.getBlockInformation();
 			this.getTransactionList();
 			this.getStakingBlockInformation()
@@ -204,6 +220,12 @@
 			this.getValidatorSetList(this.validatorSetPageNum, this.pageSize, this.$route.params.height);
 		},
 		methods: {
+			async setMainToken() {
+				let mainToken = await getMainToken();
+				if (mainToken && mainToken.symbol) {
+					this.mainTokenSymbol = mainToken.symbol.toUpperCase();
+				}
+			},
 			async getStakingBlockInformation() {
 				try {
 					const height = this.$route.params.height
@@ -259,8 +281,24 @@
 			async getTransactionList () {
 				try {
 					const res = await getBlockTxList(this.$route.params.height);
-					if (res) {
-						this.transactionArray = res.data;
+					if (res && res.data && res.data.length) {
+
+						 this.transactionArray = res.data.map( (item,index) => {
+							return{
+								txType:(item.msgs || []).map(item=>item.type),
+								txHash: item.tx_hash,
+								time: Tools.formatAge(Tools.getTimestamp(),item.time*1000, this.$t('ExplorerLang.table.suffix')),
+								Time: Tools.formatLocalTime(item.time),
+								status: item.status,
+								signer : item.signers[0],
+								blockHeight: item.height,
+								Tx_Fee:  item.fee
+							}
+						})
+						this.transactionArray.forEach(async (item,index) => {
+							const fee = item && item.Tx_Fee && item.Tx_Fee.amount &&  item.Tx_Fee.amount.length ? await converCoin(item.Tx_Fee.amount[0]) : '--'
+							item.Tx_Fee = fee && fee.amount && fee.denom ? Tools.toDecimal(fee.amount, this.feeDecimals) : '--'
+						})
 					}
 				} catch (e) {
 					console.error(e);

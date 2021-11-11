@@ -168,7 +168,7 @@
 					</el-table>
 				</vue-scroll>
 			</div>
-			<div class="list_component_footer">
+			<div class="list_component_footer" v-show="!isShowFooter">
 				<div class="token_type_container">
 					<div class="tooltip_box" v-if="isShowTokenType" v-show="isShowIbc || isShowHashLock">
 						<span class="tooltip_title">Cross-chain TokenType:</span>
@@ -259,6 +259,10 @@ export default {
 		tokenSymbol: {
 			type: String,
 			default: ''
+		},
+		isShowFooter:{
+			type:Boolean,
+			default:false
 		},
 		isLoading: {
 			type: Boolean,
