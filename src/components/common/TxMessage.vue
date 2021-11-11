@@ -2405,7 +2405,10 @@
 			</p>
 			<p>
 				<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}</span>
-				<span>{{signer}}</span>
+				<template>
+					<span v-if="signer === '--'">{{signer}}</span>
+					<router-link v-else  :to="`/address/${signer}`" class="address_link">{{signer}}</router-link>
+				</template>
 			</p>
 		</div>
         <!--TIBC Update Client-->
