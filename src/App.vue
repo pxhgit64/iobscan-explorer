@@ -27,6 +27,7 @@ export default {
     }
   },
   mounted(){
+      console.log(prodConfig)
 	  // can loop
 	  let head = document.getElementsByTagName('head');
 	  let meta1 = document.createElement('meta');

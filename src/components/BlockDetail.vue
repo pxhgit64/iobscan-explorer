@@ -70,6 +70,7 @@
 							:column-list="transactionArrayConfig"
 							:token-symbol="mainTokenSymbol"
 							:is-show-footer="true"
+							:pagination="{}"
 				></list-component>
 			</div>
 			<!-- Validator Set 表格 -->
