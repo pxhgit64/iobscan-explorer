@@ -3685,13 +3685,13 @@
 										})
 									}
 								});
-                if(attributeMap.has('amount')){
-                  let coin = await converCoin(attributeMap.get('amount'))
-                  this.amount = `${coin.amount} ${coin.denom.toUpperCase()}`;
-                }
-                if(attributeMap.has('recipient')){
-                  this.recipient = attributeMap.get('recipient')
-                }
+								if(attributeMap && attributeMap.has('amount')){
+								  let coin = await converCoin(attributeMap.get('amount'))
+								  this.amount = `${coin.amount} ${coin.denom.toUpperCase()}`;
+								}
+								if(attributeMap && attributeMap.has('recipient')){
+								  this.recipient = attributeMap.get('recipient')
+								}
 								if(!this.recipient) {
 									this.recipient = '--'
 								}
