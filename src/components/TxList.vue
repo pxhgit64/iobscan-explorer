@@ -717,50 +717,51 @@ export default {
 									serviceNameArr.push( item.msg.service_name)
 								}
 								//新增
-								if (msg?.type === TX_TYPE.tibc_nft_transfer && msg?.msg?.id && msg?.msg?.sender && msg?.msg?.dest_chain) {
-									nftIdArr.push(msg.msg.id)
-									senderArr.push(msg.msg.sender)
-									dest_chainArr.push(msg.msg.dest_chain)
+								if (item?.type === TX_TYPE.tibc_nft_transfer && item?.msg?.id && item?.msg?.sender && item?.msg?.dest_chain) {
+									nftIdArr.push(item.msg.id)
+									senderArr.push(item.msg.sender)
+									dest_chainArr.push(item.msg.dest_chain)
 								}
-								if (msg?.type === TX_TYPE.tibc_recv_packet
-									&& msg?.msg?.packet?.data?.id
-									&& msg?.msg?.packet?.data?.receiver
-									&& msg?.msg?.packet?.source_chain) {
-									nftIdArr.push(msg.msg.packet.data.id)
-									receiverArr.push(msg.msg.packet.data.receiver)
-									source_chainArr.push(msg.msg.packet.source_chain)
+								if (item?.type === TX_TYPE.tibc_recv_packet
+									&& item?.msg?.packet?.data?.id
+									&& item?.msg?.packet?.data?.receiver
+									&& item?.msg?.packet?.source_chain) {
+									nftIdArr.push(item.msg.packet.data.id)
+									receiverArr.push(item.msg.packet.data.receiver)
+									source_chainArr.push(item.msg.packet.source_chain)
 								}
-								if (msg?.type === TX_TYPE.tibc_acknowledge_packet
-									&& msg?.msg?.packet?.id
-									&& msg?.msg?.packet?.data?.sender
-									&& msg?.msg?.packet?.destination_chain) {
-									nftIdArr.push(msg.msg.packet.id)
-									senderArr.push(msg.msg.packet.data.sender)
-									dest_chainArr.push(msg.msg.packet.destination_chain)
+								if (item?.type === TX_TYPE.tibc_acknowledge_packet
+									&& item?.msg?.packet?.id
+									&& item?.msg?.packet?.data?.sender
+									&& item?.msg?.packet?.destination_chain) {
+									
+									nftIdArr.push(item.msg.packet.id)
+									senderArr.push(item.msg.packet.data.sender)
+									dest_chainArr.push(item.msg.packet.destination_chain)
 
 								}
-								if (msg?.type === TX_TYPE.clean_packet
-									&& msg?.msg?.clean_packet?.sequence
-									&& msg?.msg?.clean_packet?.source_chain
-									&& msg?.msg?.signer) {
-									sequenceArr.push(msg.msg.clean_packet.sequence)
-									source_chainArr.push(msg.msg.clean_packet.source_chain)
-									signers.push(msg.msg.signer)
+								if (item?.type === TX_TYPE.clean_packet
+									&& item?.msg?.clean_packet?.sequence
+									&& item?.msg?.clean_packet?.source_chain
+									&& item?.msg?.signer) {
+									sequenceArr.push(item.msg.clean_packet.sequence)
+									source_chainArr.push(item.msg.clean_packet.source_chain)
+									signers.push(item.msg.signer)
 
 								}
-								if (msg?.type === TX_TYPE.recv_clean_packet && msg?.msg?.signer) {
-									signers.push(msg.msg.signer)
+								if (item?.type === TX_TYPE.recv_clean_packet && item?.msg?.signer) {
+									signers.push(item.msg.signer)
 
 								}
-								if (msg?.type === TX_TYPE.tibc_update_client && msg?.msg?.chain_name && msg?.msg?.signer) {
-									chain_nameArr.push(msg.msg.chain_name)
-									signers.push(msg.msg.signer)
+								if (item?.type === TX_TYPE.tibc_update_client && item?.msg?.chain_name && item?.msg?.signer) {
+									chain_nameArr.push(item.msg.chain_name)
+									signers.push(item.msg.signer)
 
 								}
-								if(msg?.type === TX_TYPE.transfer_denom && msg?.msg?.id  && msg?.msg?.sender&& msg?.msg?.recipient){
-									denomIdArr.push(msg.msg.id)
-									senderArr.push(msg.msg.sender)
-									receiverArr.push(msg.msg.recipient)
+								if(item?.type === TX_TYPE.transfer_denom && item?.msg?.id  && item?.msg?.sender&& item?.msg?.recipient){
+									denomIdArr.push(item.msg.id)
+									senderArr.push(item.msg.sender)
+									receiverArr.push(item.msg.recipient)
 								}
 							})
 							/*
