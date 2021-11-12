@@ -2285,10 +2285,10 @@
 					</template>
 				</p>
 
-				<p>
+<!--				<p>
 					<span>{{$t('ExplorerLang.transactionInformation.tibc.nftStatus')}}</span>
 					<span>{{ nftStatus}}</span>
-				</p>
+				</p>-->
 				<p>
 					<span>{{$t('ExplorerLang.transactionInformation.tibc.signer')}}</span>
 					<template>
@@ -3713,7 +3713,7 @@
 								break;
 							//新增TIBC NFT Transfer In
 							case TX_TYPE.tibc_recv_packet:
-								let recvPacketAcknowledgementValue = ''
+								/*let recvPacketAcknowledgementValue = ''
 								if(this?.eventsNew?.length){
 									this.eventsNew.forEach( item => {
 										if(item?.msg_index === this.msgIndex && item?.events?.length){
@@ -3729,8 +3729,7 @@
 										}
 										
 									})
-								}
-								const recvPacketAcknowledgementResult = recvPacketAcknowledgementValue ? recvPacketAcknowledgementValue.splice(/[^0-9]/ig,"") : '';
+								}*/
 								this.idTibc=msg.packet.data.id || '--';
 								this.urlTibc = msg.packet.data.uri || '--';
 								this.classTibc = msg.packet.data.class|| '--'
@@ -3742,15 +3741,13 @@
 								this.sender = msg.packet.data.sender|| '--'
 								this.signer = msg.signer|| '--'
 								this.receiver = msg.packet.data.receiver || '--';
-								this.nftStatus = recvPacketAcknowledgementResult && Number(acknowledgementResult) === 1  ? this.$t('ExplorerLang.common.success'):this.$t('ExplorerLang.common.failed')
+								// const recvPacketAcknowledgementResult = recvPacketAcknowledgementValue ? recvPacketAcknowledgementValue.splice(/[^0-9]/ig,"") : '';
+								// this.nftStatus = recvPacketAcknowledgementResult && Number(acknowledgementResult) === 1  ? this.$t('ExplorerLang.common.success'):this.$t('ExplorerLang.common.failed')
 
 								break;
 							//新增TIBC Acknowledge Packet
 							case TX_TYPE.tibc_acknowledge_packet:
-								let acknowledgementResult = ''
-								if(msg?.acknowledgement){
-									acknowledgementResult = msg.acknowledgement.replace(/[^0-9]/ig,"");
-								}
+								
 								this.idTibc=msg.packet.data.id || '--';
 								this.urlTibc = msg.packet.data.uri || '--';
 								this.classTibc = msg.packet.data.class|| '--'
@@ -3762,6 +3759,10 @@
 								this.sender = msg.packet.data.sender|| '--'
 								this.signer = msg.signer|| '--'
 								this.receiver = msg.packet.data.receiver || '--';
+								let acknowledgementResult = ''
+								if(msg?.acknowledgement){
+									acknowledgementResult = msg.acknowledgement.replace(/[^0-9]/ig,"");
+								}
 								this.nftStatus = acknowledgementResult && Number(acknowledgementResult) === 1 ? this.$t('ExplorerLang.common.success'):this.$t('ExplorerLang.common.failed')
 								break;
                             //新增 TIBC Clean Packet Out
