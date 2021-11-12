@@ -10,7 +10,10 @@ const i18n = new VueI18n({
     EN: require('../../lang/EN-Cindy'),
   },
 })
-
+export const EVENTS_TYPE = {
+  writeAcknowledgement:'write_acknowledgement',
+  packet_ack:'packet_ack'
+}
 // 链上
 export const TX_TYPE = {
   // service

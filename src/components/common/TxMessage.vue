@@ -2461,7 +2461,7 @@
 </template>
 
 <script>
-	import {TX_TYPE,voteOptions,formatVoteOptions, COSMOS_ADDRESS_PREFIX, IRIS_ADDRESS_PREFIX} from '../../constant';
+	import {TX_TYPE,voteOptions,formatVoteOptions,EVENTS_TYPE, COSMOS_ADDRESS_PREFIX, IRIS_ADDRESS_PREFIX} from '../../constant';
 	import Tools from "../../util/Tools";
 	import { TxHelper } from '../../helper/TxHelper';
     import LargeString from './LargeString';
@@ -2736,7 +2736,6 @@
 					if (message) {
 						let msg = message.msg;
 						this.txType = message.type || '--';
-
 						(this.txType !== TX_TYPE.update_client) && (function (that) {
 							if(that.eventsNew && that.eventsNew.length > 0) {
 								that.eventsNew.forEach((item) => {
@@ -2754,7 +2753,6 @@
 								})
 							}
 						}(this))
-
 						switch (this.txType) {
 							case TX_TYPE.mint_nft:
 								this.denom = msg.denom || '--';
@@ -3715,6 +3713,24 @@
 								break;
 							//新增TIBC NFT Transfer In
 							case TX_TYPE.tibc_recv_packet:
+								let recvPacketAcknowledgementValue = ''
+								if(this?.eventsNew?.length){
+									this.eventsNew.forEach( item => {
+										if(item?.msg_index === this.msgIndex && item?.events?.length){
+											item.events.forEach( i => {
+												if(i.type === EVENTS_TYPE.writeAcknowledgement && i?.attributes?.length){
+													i.attributes.forEach( value => {
+														if(value?.key === 'packet_ack'){
+															recvPacketAcknowledgementValue = value.value
+														}
+													})
+												}
+											})
+										}
+										
+									})
+								}
+								const recvPacketAcknowledgementResult = recvPacketAcknowledgementValue ? recvPacketAcknowledgementValue.splice(/[^0-9]/ig,"") : '';
 								this.idTibc=msg.packet.data.id || '--';
 								this.urlTibc = msg.packet.data.uri || '--';
 								this.classTibc = msg.packet.data.class|| '--'
@@ -3726,11 +3742,15 @@
 								this.sender = msg.packet.data.sender|| '--'
 								this.signer = msg.signer|| '--'
 								this.receiver = msg.packet.data.receiver || '--';
-								this.nftStatus = msg.acknowledgement ? this.$t('ExplorerLang.common.success'):this.$t('ExplorerLang.common.failed')
+								this.nftStatus = recvPacketAcknowledgementResult && Number(acknowledgementResult) === 1  ? this.$t('ExplorerLang.common.success'):this.$t('ExplorerLang.common.failed')
 
 								break;
 							//新增TIBC Acknowledge Packet
 							case TX_TYPE.tibc_acknowledge_packet:
+								let acknowledgementResult = ''
+								if(msg?.acknowledgement){
+									acknowledgementResult = msg.acknowledgement.replace(/[^0-9]/ig,"");
+								}
 								this.idTibc=msg.packet.data.id || '--';
 								this.urlTibc = msg.packet.data.uri || '--';
 								this.classTibc = msg.packet.data.class|| '--'
@@ -3742,7 +3762,7 @@
 								this.sender = msg.packet.data.sender|| '--'
 								this.signer = msg.signer|| '--'
 								this.receiver = msg.packet.data.receiver || '--';
-								this.nftStatus = msg.acknowledgement ? this.$t('ExplorerLang.common.success'):this.$t('ExplorerLang.common.failed')
+								this.nftStatus = acknowledgementResult && Number(acknowledgementResult) === 1 ? this.$t('ExplorerLang.common.success'):this.$t('ExplorerLang.common.failed')
 								break;
                             //新增 TIBC Clean Packet Out
 							case TX_TYPE.clean_packet:
