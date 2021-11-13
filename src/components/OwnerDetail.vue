@@ -1272,7 +1272,7 @@ export default {
 									serviceNameArr.push( item.msg.service_name)
 									
 								}
-								if(item?.type === TX_TYPE.issue_denom && item?.msg?.id && item?.msg?.name &&  item?.msg?.sender){
+								if(item?.type === TX_TYPE.issue_denom && item?.msg?.id || item?.msg?.name ||  item?.msg?.sender){
 									senderArr.push(item.msg.sender)
 									denomIdArr.push(item.msg.id)
 									denomNameArr.push(item.msg.name)
@@ -1437,7 +1437,7 @@ export default {
 								serviceName = msg.msg.service_name
 								
 							}
-							if(msg?.type === TX_TYPE.issue_denom && msg?.msg?.id && msg?.msg?.name &&  msg?.msg?.sender){
+							if(msg?.type === TX_TYPE.issue_denom && msg?.msg?.id || msg?.msg?.name ||  msg?.msg?.sender){
 								sender = msg.msg.sender
 								denomId = msg.msg.id
 								denomName = msg.msg.name
