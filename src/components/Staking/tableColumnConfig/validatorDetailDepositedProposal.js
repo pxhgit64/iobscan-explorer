@@ -8,19 +8,7 @@ const i18n = new VueI18n({
     }
 })
 export default  [
-    {
-        label:i18n.t('ExplorerLang.table.txHash'),
-        displayValue:'txHash',
-        nativeValue:'txHash',
-        isLink:true,
-        isNeedFormat:true,
-        isNeedFormatHash:true,
-        isNeedShowTxStatus:true,
-        linkRoute:'/tx?txHash=',
-        isShowMoniker:false,
-        isShowTxStatusIcon:true,
-        width:140,
-    },
+
 
     {
         label:i18n.t('ExplorerLang.table.proposalId'),
@@ -50,6 +38,15 @@ export default  [
         label: i18n.t('ExplorerLang.table.submited'),
         displayValue: 'submited',
         nativeValue: 'submited',
+    },
+    {
+        label:i18n.t('ExplorerLang.table.txHash'),
+        displayValue:'txHash',
+        nativeValue:'txHash',
+        isLink:true,
+        isNeedFormat:true,
+        isNeedFormatHash:true,
+        linkRoute:'/tx?txHash=',
     },
 
 
