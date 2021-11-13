@@ -19,7 +19,8 @@ export default [
         isNeedShowTxStatus:true,
         linkRoute:'/tx?txHash=',
         isShowMoniker:false,
-        isShowTxStatusIcon:true
+        isShowTxStatusIcon:true,
+        width:140,
     },
     {
         label:i18n.t('ExplorerLang.table.txType'),
