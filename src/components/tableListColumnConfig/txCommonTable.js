@@ -16,7 +16,10 @@ export default [
         isLink:true,
         isNeedFormat:true,
         isNeedFormatHash:true,
+        isNeedShowTxStatus:true,
         linkRoute:'/tx?txHash=',
+        isShowMoniker:false,
+        isShowTxStatusIcon:true
     },
     {
         label:i18n.t('ExplorerLang.table.txType'),
