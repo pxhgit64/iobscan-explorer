@@ -1,6 +1,7 @@
 import {cfg} from "../../config";
 import VueI18n from 'vue-i18n';
 import prodConfig from "../../productionConfig";
+
 const i18n = new VueI18n({
     locale:prodConfig.lang == 'EN' ? 'EN' : 'CN',
     messages: {
@@ -645,10 +646,14 @@ export const needAddColumn = {
         {
             label: i18n.t('ExplorerLang.table.nftId'),
             displayValue: 'nftId',
+            isNeedFormat: true,
+            isFormatNftIdAndDenomId: true,
         },
         {
             label:i18n.t('ExplorerLang.table.denomId'),
             displayValue: 'denomId',
+            isNeedFormat: true,
+            isFormatNftIdAndDenomId: true,
         },
         {
             label: i18n.t('ExplorerLang.table.from'),
@@ -669,7 +674,9 @@ export const needAddColumn = {
             isLink: true,
             isNft: true,
             linkRoute: '/nft/token?denom=',
-            denomRouter: '&tokenId='
+            denomRouter: '&tokenId=',
+            isNeedFormat: true,
+            isFormatNftIdAndDenomId: true,
         },
         {
             label: i18n.t('ExplorerLang.table.denomId'),
@@ -679,7 +686,9 @@ export const needAddColumn = {
             isLink: true,
             isNft: true,
             linkRoute: '/nft/token?denom=',
-            denomRouter: '&tokenId='
+            denomRouter: '&tokenId=',
+            isNeedFormat: true,
+            isFormatNftIdAndDenomId: true,
         },
         {
             label: i18n.t('ExplorerLang.table.from'),
@@ -700,7 +709,9 @@ export const needAddColumn = {
             isLink: true,
             isNft: true,
             linkRoute: '/nft/token?denom=',
-            denomRouter: '&tokenId='
+            denomRouter: '&tokenId=',
+            isNeedFormat: true,
+            isFormatNftIdAndDenomId: true,
         },
         {
             label: i18n.t('ExplorerLang.table.from'),
@@ -726,6 +737,13 @@ export const needAddColumn = {
             label: i18n.t('ExplorerLang.table.nftId'),
             displayValue: 'nftId',
             nativeValue: 'nftId',
+            nftRouterParamsValue: 'denomId',
+            isLink: true,
+            isNft: true,
+            linkRoute: '/nft/token?denom=',
+            denomRouter: '&tokenId=',
+            isNeedFormat: true,
+            isFormatNftIdAndDenomId: true,
         },
         {
             label: i18n.t('ExplorerLang.table.from'),
@@ -751,6 +769,9 @@ export const needAddColumn = {
             label: i18n.t('ExplorerLang.table.denomId'),
             displayValue: 'denomId',
             nativeValue: 'denomId',
+            isNeedFormat: true,
+            isFormatNftIdAndDenomId: true,
+
         },
         {
             label: i18n.t('ExplorerLang.table.denomName'),
@@ -769,16 +790,30 @@ export const needAddColumn = {
     ],
     transfer_denom: [
         {
-            label: i18n.t('ExplorerLang.table.denomId'),
-            value: '',
+            label:i18n.t('ExplorerLang.table.denomId'),
+            displayValue:'denomId',
+            nativeValue:'denomId',
+            isNeedFormat: true,
+            isFormatNftIdAndDenomId: true,
+
         },
         {
-            label: i18n.t('ExplorerLang.table.sender'),
-            value: '',
+            label:i18n.t('ExplorerLang.table.sender'),
+            displayValue:'sender',
+            nativeValue:'sender',
+            isLink: true,
+            isNeedFormat: true,
+            isFormatAddress: true,
+            linkRoute: '/address/',
         },
         {
-            label: i18n.t('ExplorerLang.table.recipient'),
-            value: '',
+            label:i18n.t('ExplorerLang.table.receiver'),
+            displayValue:'receiver',
+            nativeValue:'receiver',
+            isLink: true,
+            isNeedFormat: true,
+            isFormatAddress: true,
+            linkRoute:'/address/',
         },
     ],
     swap_order: [
@@ -1241,6 +1276,7 @@ export const needAddColumn = {
             nativeValue: 'title',
             isNeedFormat: true,
             isFormatMoniker: true,
+            isFormatNftIdAndDenomId: true,
         },
         {
             label:i18n.t('ExplorerLang.table.initialDeposit'),
@@ -1507,6 +1543,128 @@ export const needAddColumn = {
             isNeedFormat: true,
             isFormatAddress: true,
         },
-    ]
+    ],
+    //新增tibc展示配置字段
+    tibc_nft_transfer:[
+        {
+            label:i18n.t('ExplorerLang.table.nftId'),
+            displayValue:'nftId',
+            nativeValue:'nftId',
+            isNeedFormat: true,
+            isFormatNftIdAndDenomId: true,
+        },
+        {
+            label:i18n.t('ExplorerLang.table.sender'),
+            displayValue:'sender',
+            nativeValue:'sender',
+            isLink: true,
+            isNeedFormat: true,
+            isFormatAddress: true,
+            linkRoute: '/address/',
+
+        },
+        {
+            label:i18n.t('ExplorerLang.table.destinationChain'),
+            displayValue:'dest_chain',
+            nativeValue:'dest_chain',
+        },
+    ],
+    tibc_recv_packet:[
+        {
+            label:i18n.t('ExplorerLang.table.nftId'),
+            displayValue:'nftId',
+            nativeValue:'nftId',
+            isNeedFormat: true,
+            isFormatNftIdAndDenomId: true,
+        },
+        {
+            label:i18n.t('ExplorerLang.table.receiver'),
+            displayValue:'receiver',
+            nativeValue:'receiver',
+            isLink: true,
+            isNeedFormat: true,
+            isFormatAddress: true,
+            linkRoute: '/address/',
+        },
+        {
+            label:i18n.t('ExplorerLang.table.sourceChain'),
+            displayValue:'source_chain',
+            nativeValue:'source_chain',
+        },
+    ],
+    tibc_acknowledge_packet:[
+        {
+            label:i18n.t('ExplorerLang.table.nftId'),
+            displayValue:'nftId',
+            nativeValue:'nftId',
+            isNeedFormat: true,
+            isFormatNftIdAndDenomId: true,
+        },
+        {
+            label:i18n.t('ExplorerLang.table.sender'),
+            displayValue:'sender',
+            nativeValue:'sender',
+            isLink: true,
+            isNeedFormat: true,
+            isFormatAddress: true,
+            linkRoute: '/address/',
+
+        },
+        {
+            label:i18n.t('ExplorerLang.table.destinationChain'),
+            displayValue:'dest_chain',
+            nativeValue:'dest_chain',
+        },
+    ],
+    clean_packet:[
+
+        {
+            label:i18n.t('ExplorerLang.table.sequence'),
+            displayValue:'sequence',
+        },
+        {
+            label:i18n.t('ExplorerLang.table.sourceChain'),
+            displayValue:'source_chain',
+            nativeValue:'source_chain',
+        },
+        {
+            label:i18n.t('ExplorerLang.table.signer'),
+            displayValue:'signer',
+            nativeValue:'signer',
+            isLink: true,
+            isNeedFormat: true,
+            isFormatAddress: true,
+            linkRoute: '/address/',
+
+        },
+    ],
+    recv_clean_packet:[
+        {
+            label:i18n.t('ExplorerLang.table.signer'),
+            displayValue:'signer',
+            nativeValue:'signer',
+            isLink: true,
+            isNeedFormat: true,
+            isFormatAddress: true,
+            linkRoute: '/address/',
+        },
+    ],
+    tibc_update_client:[
+        {
+            label:i18n.t('ExplorerLang.table.chainName'),
+            displayValue:'chain_name',
+            nativeValue:'chain_name',
+        },
+        {
+            label:i18n.t('ExplorerLang.table.signer'),
+            displayValue:'signer',
+            nativeValue:'signer',
+            isLink:true,
+            isNeedFormat: true,
+            isFormatAddress: true,
+            linkRoute:'/address/',
+        },
+    ],
+
 
 }

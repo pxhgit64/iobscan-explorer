@@ -57,6 +57,7 @@
 										<span v-else-if="item.isFormatAddress">{{formatAddress(scope.row[item.displayValue]) }}</span>
 										
 										<span v-else-if="item.isFormatMoniker">{{formatTableMoniker(scope.row[item.displayValue]) }}</span>
+										<span v-else-if="item.isFormatNftIdAndDenomId">{{formatNftIdAndDenomId(scope.row[item.displayValue]) }}</span>
 										
 										<span v-else>{{ scope.row[item.displayValue] }}</span>
 										
@@ -156,6 +157,8 @@
 										</el-tooltip>
 									</div>
 <!--									-->
+									<span v-else-if="item.isFormatNftIdAndDenomId" >
+										{{ formatNftIdAndDenomId(scope.row[item.displayValue])}}</span>
 									<span v-else :class="item.isWrap ? 'wrap_style' : item.isRight ? 'right_style' : '' " >
 										{{ scope.row[item.displayValue] === 0 || scope.row[item.displayValue] === '0' ? 0 : scope.row[item.displayValue] || '--' }}</span>
 										
@@ -165,7 +168,7 @@
 					</el-table>
 				</vue-scroll>
 			</div>
-			<div class="list_component_footer">
+			<div class="list_component_footer" v-show="!isShowFooter">
 				<div class="token_type_container">
 					<div class="tooltip_box" v-if="isShowTokenType" v-show="isShowIbc || isShowHashLock">
 						<span class="tooltip_title">Cross-chain TokenType:</span>
@@ -201,7 +204,8 @@ import {
 	monikerNum,
 	decimals,
 	IRIS_ADDRESS_PREFIX,
-	COSMOS_ADDRESS_PREFIX
+	COSMOS_ADDRESS_PREFIX,
+	nftAndDenomSplitNum,
 } from '../../constant';
 import {fetchAllTokens} from "../../service/api";
 import ProposalStatusComponent from "../Gov/ProposalStatusComponent";
@@ -255,6 +259,10 @@ export default {
 		tokenSymbol: {
 			type: String,
 			default: ''
+		},
+		isShowFooter:{
+			type:Boolean,
+			default:false
 		},
 		isLoading: {
 			type: Boolean,
@@ -477,6 +485,13 @@ export default {
 		formatAddress(address) {
 			if (address) {
 				return Tools.formatValidatorAddress(address)
+			}
+			return '--'
+		},
+		formatNftIdAndDenomId(NftIdOrDenomId){
+
+			if(NftIdOrDenomId){
+				return Tools.formatString(NftIdOrDenomId,nftAndDenomSplitNum.num,'...')
 			}
 			return '--'
 		},

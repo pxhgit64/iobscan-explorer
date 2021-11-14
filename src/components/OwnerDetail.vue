@@ -643,7 +643,7 @@
 				</div>
 			</div>
 			
-			<div v-show="isTx" class="address_transaction_content">
+			<div v-if="isTx" class="address_transaction_content">
 <!--				<div class="content_title">-->
 <!--					{{ $t("ExplorerLang.addressDetail.txRecord") }}-->
 <!--				</div>-->
@@ -1272,7 +1272,7 @@ export default {
 									serviceNameArr.push( item.msg.service_name)
 									
 								}
-								if(item?.type === TX_TYPE.issue_denom && item?.msg?.id && item?.msg?.name &&  item?.msg?.sender){
+								if(item?.type === TX_TYPE.issue_denom && item?.msg?.id || item?.msg?.name ||  item?.msg?.sender){
 									senderArr.push(item.msg.sender)
 									denomIdArr.push(item.msg.id)
 									denomNameArr.push(item.msg.name)
@@ -1437,7 +1437,7 @@ export default {
 								serviceName = msg.msg.service_name
 								
 							}
-							if(msg?.type === TX_TYPE.issue_denom && msg?.msg?.id && msg?.msg?.name &&  msg?.msg?.sender){
+							if(msg?.type === TX_TYPE.issue_denom && msg?.msg?.id || msg?.msg?.name ||  msg?.msg?.sender){
 								sender = msg.msg.sender
 								denomId = msg.msg.id
 								denomName = msg.msg.name
@@ -2072,7 +2072,9 @@ export default {
 			this.$store.commit('currentTxModelIndex', 0)
 			sessionStorage.setItem('lastChoiceMsgModelIndex',0)
 			sessionStorage.setItem('txTimeRange',[])
+			sessionStorage.removeItem('currentChoiceMsgType')
 			this.$refs.statusDatePicker.resetParams()//新增
+			this.txColumnList = txCommonTable.concat(SignerColunmn,txCommonLatestTable)
 		},
 		async getAllTxType() {
 			try {
@@ -2520,7 +2522,7 @@ a {
 			line-height: 0.21rem;
 			margin: 0.3rem 0 0.15rem 0rem;
 			text-align: left;
-			font-family: Arial;
+			font-family: PublicSans;
 			font-weight: 600;
 			
 			.address_content_title_first {
@@ -2530,7 +2532,7 @@ a {
 			
 			.address_content_title_address {
 				font-size: $s16;
-				font-family: Arial;
+				font-family: PublicSans;
 				font-weight: 400;
 				color: $t_first_c;
 				line-height: 0.2rem;
@@ -2838,7 +2840,7 @@ a {
 			margin-bottom: 0.4rem;
 			text-align: left;
 			font-size: $s16;
-			font-family: Arial;
+			font-family: PublicSans;
 			font-weight: 600;
 			line-height: 22px;
 		}

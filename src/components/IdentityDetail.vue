@@ -307,7 +307,7 @@
                 line-height: 0.21rem;
                 margin: 0.3rem 0 0.15rem 0.25rem;
                 text-align: left;
-                font-family: Arial;
+				font-family: PublicSans;
                 font-weight: 600;
                 .identity_detail_title_first {
                     white-space: nowrap;
@@ -344,7 +344,7 @@
                         color: $t_second_c;
                         font-size: $s14;
                         line-height: 0.16rem;
-                        font-family: Arial;
+						font-family: PublicSans;
                         font-weight: 600;
                     }
                     span:nth-of-type(2) {

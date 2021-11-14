@@ -104,7 +104,7 @@ pre {
 }
 
 code, kbd, pre, samp {
-    font-family: Arial;
+    font-family: PublicSans;
     font-size: 1em
 }
 
@@ -197,12 +197,12 @@ td, th {
 }
 
 .tooltip,.el-tooltip__popper {
-    font-family: Arial;
+    font-family: PublicSans;
     font-size: 0.14rem !important;
 }
 
 .el-menu--horizontal {
-    font-family: Arial;
+    font-family: PublicSans;
     font-size: 0.14rem !important;
 }
 

@@ -367,6 +367,13 @@
 				sessionStorage.setItem('lastChoiceMsgModelIndex',0)
 				sessionStorage.setItem('txTimeRange',[])
 				this.$refs.statusDatePicker.resetParams()//新增
+				this.txColumnList = txCommonTable.concat(txCommonLatestTable)
+				if(this.type === 'stake'){
+					this.txColumnList = txCommonTable.concat(stakingValidationAndDelegationAmount,SignerColunmn,txCommonLatestTable)
+				}
+				if(this.type === 'declaration'){
+					this.txColumnList = txCommonTable.concat(validatorMonikerColumn,SignerColunmn,txCommonLatestTable)
+				}
 			},
 			getType () {
 				switch (this.$route.params.txType) {

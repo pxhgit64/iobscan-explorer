@@ -8,6 +8,8 @@ const i18n = new VueI18n({
     }
 })
 export default  [
+
+
     {
         label:i18n.t('ExplorerLang.table.proposalId'),
         displayValue:'id',
@@ -39,16 +41,12 @@ export default  [
     },
     {
         label:i18n.t('ExplorerLang.table.txHash'),
-        displayValue:'txhash',
-        nativeValue:'txhash',
+        displayValue:'txHash',
+        nativeValue:'txHash',
         isLink:true,
         isNeedFormat:true,
         isNeedFormatHash:true,
-        isNeedShowTxStatus:true,
         linkRoute:'/tx?txHash=',
-        isShowMoniker:false,
-        isShowTxStatusIcon:true
-
     },
 
 

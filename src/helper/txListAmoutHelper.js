@@ -79,7 +79,10 @@ export async function getAmountByTx (message, events, isShowDenom) {
 				break;
 			case TX_TYPE.multisend:
 				if(msg && msg.inputs && msg.inputs.length && msg.inputs.length  === 1){
-					amount = msg?.inputs[0]?.coins ? `${Tools.toDecimal(msg.inputs[0].coins[0].amount,amountDecimals) } ${msg.inputs[0].coins[0].denom.toLocaleUpperCase()}` :'--'
+					const nativeAmount = msg?.inputs[0]?.coins[0] ?  await converCoin(msg.inputs[0].coins[0]) : ''
+					if(nativeAmount){
+						amount = nativeAmount?.amount && nativeAmount?.denom ? `${Tools.toDecimal(nativeAmount.amount,amountDecimals) } ${nativeAmount.denom.toLocaleUpperCase()}` :'--'
+					}
 				}else if(msg && msg.inputs && msg.inputs.length && msg.inputs.length  > 1) {
 					amount = ''
 				}else {
