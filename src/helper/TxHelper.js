@@ -1,6 +1,14 @@
 import { TX_TYPE, PubKeyAlgorithm, LEVEL_TX_TYPE,TX_TYPE_DISPLAY } from "../constant";
 import prodConfig from '../productionConfig';
 import Tools from "../util/Tools";
+import VueI18n from 'vue-i18n';
+const i18n = new VueI18n({
+    locale:prodConfig.lang == 'EN' ? 'EN' : 'CN',
+    messages: {
+        "CN" : require('../../lang/CN-Cindy'),
+        "EN" : require('../../lang/EN-Cindy'),
+    }
+})
 export class TxHelper {
     //The corresponding IBC Denom was deduced through the IBC Packet path
     static getOriginalDenomFromPacket (ibc_package,type) {
@@ -996,7 +1004,7 @@ export class TxHelper {
             if(item?.children?.length && item.children.length > 1){
                 item.children.unshift({
                         label:'secondaryAll',
-                        value:'All',
+                        value:i18n.t('ExplorerLang.common.allTxType'),
                 })
 
             }
