@@ -758,7 +758,7 @@ export class TxHelper {
                             label: TX_TYPE_DISPLAY[TX_TYPE.update_client]
                         });
                     } else {
-                        othersObj.children.push({
+                        ibcObj.children.push({
                             value: TX_TYPE.update_client,
                             label: TX_TYPE_DISPLAY[TX_TYPE.update_client]
                         });
