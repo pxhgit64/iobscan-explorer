@@ -1004,7 +1004,7 @@ export class TxHelper {
             if(item?.children?.length && item.children.length > 1){
                 item.children.unshift({
                         label:'secondaryAll',
-                        value:i18n.t('ExplorerLang.common.allTxType'),
+                        value:i18n.t('ExplorerLang.common.all'),
                 })
 
             }
