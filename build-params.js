@@ -5,6 +5,9 @@ let prodConfig =  require("./src/productionConfig");
 
 let textColor = (prodConfig.text || {}).color || {};
 let title = prodConfig.title || '',
+    og_image_url = prodConfig.ogImageUrl || 'ogImageUrl'
+    og_title = prodConfig.ogTitle || 'ogImageUrl'
+    og_description = prodConfig.ogDescription || 'ogDescription'
     theme_color = prodConfig.themeColor || '#3264fd';
     text_color_first = textColor.first || '#171D44',
     text_color_second = textColor.second || '#787C99',
@@ -34,6 +37,9 @@ replaceEnv([
         background_color_common : background_color_common,
         tag_color_common : tag_color_common,
         table_tr_color : table_tr_color_common,
+        ogImageUrl : og_image_url,
+        ogTitle : og_title,
+        ogDescription : og_description,
     }
 );
 
