@@ -27,21 +27,6 @@ export default {
     }
   },
   mounted(){
-      console.log(prodConfig)
-	  // can loop
-	  let head = document.getElementsByTagName('head');
-	  let meta1 = document.createElement('meta');
-	  let meta2 = document.createElement('meta');
-	  let meta3 = document.createElement('meta');
-	  meta1.setAttribute('property','og:image')
-	  meta1.content = prodConfig.ogImageUrl;
-	  meta2.setAttribute('property','og:title')
-	  meta2.content =prodConfig.ogTitle;
-	  meta3.setAttribute('property','og:description')
-	  meta3.content = prodConfig.ogDescription;
-	  head[0].appendChild(meta1)
-	  head[0].appendChild(meta2)
-	  head[0].appendChild(meta3)
     // echart不能使用媒体查询
     if (window.innerWidth > 910) {
         this.$store.commit('isMobile',false);
