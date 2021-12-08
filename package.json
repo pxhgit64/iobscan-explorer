@@ -23,7 +23,7 @@
     "moment": "^2.26.0",
     "move-decimal-point": "0.0.4",
     "sass": "^1.37.2",
-    "sass-loader": "^8.0.0",
+    "sass-loader": "^12.4.0",
     "scss": "^0.2.4",
     "sha256": "^0.2.0",
     "spinkit": "^2.0.1",
