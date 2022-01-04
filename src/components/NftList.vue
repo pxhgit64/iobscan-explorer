@@ -132,6 +132,9 @@ export default {
     }
   },
   mounted() {
+  	if(this?.$route?.query?.denomId){
+	  this.denom = this.$route.query.denomId
+  	}
   	this.nftListColumn = nftListColumn
     this.getNftsByFilterCount()
     this.getNftsByFilter()
@@ -175,7 +178,6 @@ export default {
       this.getNftsByFilter()
     },
     async getNftsByFilter() {
-
       if (Tools.isBech32(this.input)) {
         this.owner = this.input
       }
