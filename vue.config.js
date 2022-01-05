@@ -2,7 +2,7 @@ const path = require('path') //引入path模块
 function resolve(dir) {
   return path.join(__dirname, dir) //path.join(__dirname)设置绝对路径
 }
-import productionConfig from './src/productionConfig.js'
+const productionConfig = require('./src/productionConfig.js')
 module.exports = {
   devServer: {
     proxy: {
