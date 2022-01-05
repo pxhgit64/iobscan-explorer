@@ -2,7 +2,7 @@ const path = require('path') //引入path模块
 function resolve(dir) {
   return path.join(__dirname, dir) //path.join(__dirname)设置绝对路径
 }
-
+const productionConfig = require('./src/productionConfig.js')
 module.exports = {
   devServer: {
     proxy: {
@@ -12,7 +12,7 @@ module.exports = {
         pathRewrite: { '^/api': '' },
       },
       '/lcd': {
-        target: 'http://192.168.150.40:1317',
+        target: productionConfig?.lcdUrl ? productionConfig.lcdUrl:'http://192.168.150.40:1317',
         secure: false,
         pathRewrite: { '^/lcd': '' },
       }
