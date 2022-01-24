@@ -48,7 +48,9 @@
 								<el-tooltip :manual="setManual(!item.isNeedFormat,scope.row[item.displayValue])"
 											:content="formatStr(scope.row[item.nativeValue],item.isNft ? scope.row[item.displayValue] : null)">
 <!--									-->
-									<router-link class="link_style" :class="item.isAdjustStyle ? 'index_style' : ''"
+									<router-link class="link_style"
+												 :class="item.isAdjustStyle ? 'index_style' : ''"
+												 :style="{color:isOwnerAddress(scope.row[item.nativeValue]) ? '#606266 !important' : '', cursor:isOwnerAddress(scope.row[item.nativeValue]) ? 'default !important' : ''}"
 												 v-if="item.isLink &&  scope.row[item.displayValue] && scope.row[item.displayValue] !== '--'"
 												 :to="!item.isNft ? `${item.linkRoute}${scope.row[item.nativeValue]}` : `${item.linkRoute}${scope.row[item.nftRouterParamsValue]}${item.denomRouter}${scope.row[item.nativeValue]}`">
 										
@@ -78,6 +80,7 @@
 										
 										<a v-if="isShowHref(scope.row[item.displayValue])"
 										   class="route_link_style"
+										   :style="{color:isOwnerAddress(scope.row[item.nativeValue]) ? '#606266 !important' : ''}"
 										   :href="`${item.href}/#/address/${scope.row[item.nativeValue]}`"
 										   target="_blank"
 										   rel="noreferrer noopener">{{ formatAddress(scope.row[item.displayValue]) }}</a>
@@ -342,6 +345,15 @@ export default {
 		}
 	},
 	methods: {
+		isOwnerAddress(address){
+			if(this.$route.params?.param && address === this.$route.params.param){
+				return true
+			}
+			if(this.$route.params.height && address == this.$route.params.height){
+				return true
+			}
+			return  false
+		},
 		percentSort(a, b, c) {
 			a = Number(a.substring(0, a.length - c))
 			b = Number(b.substring(0, b.length - c))
