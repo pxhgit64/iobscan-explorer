@@ -646,12 +646,14 @@ export const needAddColumn = {
         {
             label: i18n.t('ExplorerLang.table.nftId'),
             displayValue: 'nftId',
+            nativeValue: 'nftId',
             isNeedFormat: true,
             isFormatNftIdAndDenomId: true,
         },
         {
             label:i18n.t('ExplorerLang.table.denomId'),
             displayValue: 'denomId',
+            nativeValue: 'denomId',
             isNeedFormat: true,
             isFormatNftIdAndDenomId: true,
         },

@@ -46,7 +46,7 @@
 								</div>
 								
 								<el-tooltip :manual="setManual(!item.isNeedFormat,scope.row[item.displayValue])"
-											:content="formatStr(scope.row[item.nativeValue])">
+											:content="formatStr(scope.row[item.nativeValue],item.isNft ? scope.row[item.displayValue] : null)">
 <!--									-->
 									<router-link class="link_style" :class="item.isAdjustStyle ? 'index_style' : ''"
 												 v-if="item.isLink &&  scope.row[item.displayValue] && scope.row[item.displayValue] !== '--'"
@@ -495,7 +495,10 @@ export default {
 			}
 			return '--'
 		},
-		formatStr(str) {
+		formatStr(str,displayStr) {
+			if(displayStr){
+				return  displayStr
+			}
 			if (str && Array.isArray(str)) {
 				let {txType} = Tools.urlParser();
 				if(!txType){

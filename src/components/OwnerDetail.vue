@@ -952,9 +952,20 @@ export default {
 		getFilterTxs(param) {
 			if (param?.value) {
 				this.type = param.value
-			}else {
+			}else if(param?.value === ''){
 				//处理点击all的情况
 				this.type = ''
+			}else if(Array.isArray(param)){
+				const notAllMsgType = param.filter(item => {
+					return item.label !== 'secondaryAll'
+				})
+				const currentSelectSecondMsgTypes = notAllMsgType.map( item =>{
+					return item.value
+				})
+				
+				if(currentSelectSecondMsgTypes?.length){
+					this.type = currentSelectSecondMsgTypes.join(',')
+				}
 			}
 			this.txColumnList = txCommonTable.concat(SignerColunmn,txCommonLatestTable)
 			if(this.type && needAddColumn[this.type]){

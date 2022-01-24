@@ -400,7 +400,6 @@
                 margin-bottom: 0.4rem;
                 text-align: left;
                 font-size: $s16;
-                font-family:Arial;
                 font-weight:600;
                 line-height:22px;
             }
