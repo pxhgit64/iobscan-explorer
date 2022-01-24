@@ -148,7 +148,7 @@ export default {
 		if(txType && needAddColumn[txType]){
 			this.txColumnList = txCommonTable.concat(needAddColumn[txType],txCommonLatestTable)
 		}
-		this.getTxListData(this.pageNum,this.pageSize,true)
+		// this.getTxListData(this.pageNum,this.pageSize,true)
 		this.getAllTxType();
 		this.setMainToken();
     this.setIsShowIbc();

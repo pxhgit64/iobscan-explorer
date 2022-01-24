@@ -305,7 +305,7 @@ export const needAddColumn = {
             linkRoute: '/service?serviceName='
         },
         {
-            label: i18n.t('ExplorerLang.table.requestContentId'),
+            label: i18n.t('ExplorerLang.table.respondserviceRequestId'),
             displayValue: 'requestId',
             nativeValue: 'requestId',
             isHref: true,
