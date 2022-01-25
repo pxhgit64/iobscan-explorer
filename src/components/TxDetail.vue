@@ -466,7 +466,6 @@ a {
 						color: $t_second_c;
 						font-size: $s14;
 						line-height: 0.16rem;
-						font-family: Arial;
 						font-weight: 600;
 					}
 					span:nth-of-type(2) {
@@ -492,7 +491,6 @@ a {
 						text-align: left;
 						font-size: $s16;
 						font-weight: bold;
-						font-family: Arial;
 						font-weight: 600;
 					}
 					.tx_information_tx_message_line {
