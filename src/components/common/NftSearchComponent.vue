@@ -1,6 +1,6 @@
 <template>
     <div class="nft_search_container">
-        <el-input class="nft_search_content" v-model="input" size="small" @change="handleSearchClick"
+        <el-input class="nft_search_content" v-model.trim="input" size="small" @change="handleSearchClick"
                   :placeholder="inputPlaceholder"></el-input>
         <div class="tx_type_mobile_content">
             <el-button type="primary" size="small" class="search_btn" @click="handleSearchClick">

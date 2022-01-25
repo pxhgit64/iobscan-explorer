@@ -43,7 +43,7 @@ export const ExplorerLang = {
         withdrawAddress: 'Withdraw Address',
         respondserviceRequestId:'Request ID',
         author: 'Author',
-        requestContentId:'Request Context ID',
+        requestContentId:'Request ID',
         nftId:'NFT ID',
         numberOfTo:'Number of To',
         denomId:'Denom ID',
@@ -79,7 +79,7 @@ export const ExplorerLang = {
         signer: 'Signer',
         txTimestamp: 'Age',
         // requestId: 'Request Id',
-        requestId: 'Request Context ID',
+        requestId: 'Request ID',
         number:'#',
         name: 'Moniker',
         operator: 'Operator',
@@ -123,8 +123,8 @@ export const ExplorerLang = {
         unbondingHeight: 'Unbonding Height', // 新增
         address: 'Address',
         amount: 'Amount',
-        swapAmount1: 'Amount1',
-        swapAmount2: 'Amount2',
+        swapAmount1: 'Amount',
+        swapAmount2: 'Amount  ',
         shares: 'Shares',
         endTime: 'End Time',
         fee: 'Fee',
@@ -305,7 +305,7 @@ export const ExplorerLang = {
         serviceFeeCap: 'Service Fee Cap',
         timeOut: 'Timeout',
         serviceName: 'Service Name',
-        requestContextId: 'Request Context ID', //更改，中文未变
+        requestContextId: 'Request ID', //更改，中文未变
         pricing: 'Pricing', //更改，中文未变
         owner: 'Owner',
         qos: 'QoS', // 更改，中文未变

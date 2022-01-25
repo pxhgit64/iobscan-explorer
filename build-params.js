@@ -18,7 +18,9 @@ let title = prodConfig.title || '',
     button_bgColor_common = ((prodConfig.button || {}).bgColor || {}).common || '#3264FD',
     background_color_common = prodConfig.background || '#F8F8F8',
     tag_color_common = prodConfig.tagBackground ||'rgba(239, 243, 255, 1)',
-    table_tr_color_common = prodConfig.tableTrColor ||'rgba(50, 100, 253, 0.3)';
+    table_tr_color_common = prodConfig.tableTrColor ||'rgba(50, 100, 253, 0.3)',
+    umeng_id = prodConfig.umeng.umengId || 'umengId',
+    umeng_web_id = prodConfig.umeng.umengWebId || 'umengWebId';
 
 replaceEnv([
         "./public/index.html",
@@ -40,6 +42,8 @@ replaceEnv([
         ogImageUrl : og_image_url,
         ogTitle : og_title,
         ogDescription : og_description,
+        umeng_id: umeng_id,
+        umeng_web_id: umeng_web_id
     }
 );
 

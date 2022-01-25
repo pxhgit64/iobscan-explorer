@@ -33,6 +33,11 @@ export default {
     } else {
         this.$store.commit('isMobile',true);
     }
+    // 友盟统计添加
+    const script = document.createElement("script");
+    script.src = `https://v1.cnzz.com/z_stat.php?id=${prodConfig.umeng.umengId}&web_id=${prodConfig.umeng.umengWebId}`;
+    script.language = "JavaScript";
+    document.body.appendChild(script);
   },
 	methods:{
 		closeMsgChildrenType(){
@@ -40,7 +45,17 @@ export default {
 			this.$store.commit('isShowMsgChildrenType',false)
 			this.$store.commit('currentTxModelIndex',Number(lastChoiceMsgModelIndex))
 		}
-	}
+	},
+    watch: {
+        $route() {
+            if (window._czc) {
+                let location = window.location;
+                let contentUrl = location.pathname + location.hash;
+                let refererUrl = "/";
+                window._czc.push(["_trackPageview", contentUrl, refererUrl]);
+            }
+        }
+    }
 }
 </script>
 

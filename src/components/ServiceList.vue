@@ -6,7 +6,7 @@
                     {{ txCount }} {{$t('ExplorerLang.service.services')}}{{txCount > 1 && $t('ExplorerLang.service.services').length > 2 ? 's':'' }}
                 </div>
                 <div class="nft_list_header_content">
-                    <el-input v-model="iptVal"
+                    <el-input v-model.trim="iptVal"
                             @change="handleSearchClick"
                             :placeholder="$t('ExplorerLang.service.placeHolder')"></el-input>
                     <div class="tx_type_mobile_content">
