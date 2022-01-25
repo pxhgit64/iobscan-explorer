@@ -10,7 +10,7 @@
 import Header from "./components/common/Header"
 import Footer from "./components/common/Footer";
 import { getTxType } from './helper/IritaHelper';
-import prodConfig from "../productionConfig/productionConfig"
+import prodConfig from "./productionConfig";
 export default {
   name: 'app',
   components:{Footer, Header},
@@ -46,16 +46,6 @@ export default {
 			this.$store.commit('currentTxModelIndex',Number(lastChoiceMsgModelIndex))
 		}
 	},
-    watch: {
-        $route() {
-            if (window._czc) {
-                let location = window.location;
-                let contentUrl = location.pathname + location.hash;
-                let refererUrl = "/";
-                window._czc.push(["_trackPageview", contentUrl, refererUrl]);
-            }
-        }
-    }
 }
 </script>
 
