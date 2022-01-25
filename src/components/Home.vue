@@ -166,11 +166,40 @@
 				}
 			},
 			setTipDisplay(txType){
-				if(txType?.length){
+				/*if(txType?.length){
 					txType = txType.map(item => {
 						return this.TX_TYPE_DISPLAY[item] || ''
 					})
 					return txType.join(',')
+				}*/
+				if (txType && Array.isArray(txType)) {
+					/*let {txType} = Tools.urlParser();
+					if(!txType){
+						txType = sessionStorage.getItem('currentChoiceMsgType') ? sessionStorage.getItem('currentChoiceMsgType'):undefined;
+					}*/
+					let msgTxTypeIndex = 0, tmp = txType[0]
+					txType.forEach((item, index) => {
+						if (txType && item === txType) {
+							msgTxTypeIndex = index
+						}
+					})
+					if (msgTxTypeIndex !== 0) {
+						txType[0] = txType
+						txType[msgTxTypeIndex] = tmp
+					}
+					
+					let data = txType.reduce(function (prev, next) {
+						prev[next] = (prev[next] + 1) || 1;
+						return prev;
+					}, {});
+					let formatStr = ''
+					for (let dataKey in data) {
+						dataKey = dataKey.toLowerCase()
+						formatStr += `${this.TX_TYPE_DISPLAY[dataKey] || dataKey} *${data[dataKey] || dataKey},`
+					}
+					return formatStr.substring(0, formatStr.length - 1)
+				} else {
+					return this.TX_TYPE_DISPLAY[txType?.toString()] || this.TX_TYPE_DISPLAY[txType] || txType?.toString() || txType
 				}
 			},
 			async getLastBlocks(){

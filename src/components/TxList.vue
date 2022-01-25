@@ -990,7 +990,7 @@ export default {
 
 						}
 						if (msg?.type === TX_TYPE.transfer_denom
-							&& msg?.msg?.recipient||msg?.msg?.id) {
+							&& (msg?.msg?.recipient|| msg?.msg?.id)) {
 							receiver = msg.msg.recipient
 							denomId = msg.msg.id
 						}
@@ -1037,6 +1037,7 @@ export default {
 								isShowMore = true
 							}
 						}
+						console.log(denomId,msg,'aaaa')
 						this.transactionArray.push({
 							txHash: tx.tx_hash,
 							blockHeight: tx.height,

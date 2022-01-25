@@ -3912,7 +3912,6 @@
 				min-width: 1.64rem;
 				text-align: left;
 				font-size: $s14;
-				font-family: Arial;
 				font-weight: 600;
 			}
 
