@@ -834,7 +834,7 @@ export const needAddColumn = {
             isRight: true
         },
         {
-            label: '',
+            label: ' ',
             displayValue: 'swapAmount1Denom',
             isShowDenomTip: true,
         },

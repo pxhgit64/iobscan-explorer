@@ -58,7 +58,7 @@ export default class Tools {
     const sec = config.lang === 'CN'? cn.ExplorerLang.common.sec : en.ExplorerLang.common.sec
     const ago = config.lang === 'CN'? cn.ExplorerLang.table.suffix : en.ExplorerLang.table.suffix
 
-    let str = `${dayDiff ? (dayDiff < 2 ? `${dayDiff} ${day1}` : `${dayDiff} ${day}`) : ''} ${hours ? (hours < 2 ? `${hours} ${hrs}` : `${hours} ${hr}`) : ''} ${dayDiff ? '' : minutes ? (minutes < 2 ? `${minutes}${mins}` : `${minutes} ${min}`) : ''} ${dayDiff || hours ? '' : seconds ? (seconds < 2 ? `${seconds} ${secs}` : `${seconds} ${sec}`) : ''}`
+    let str = `${dayDiff ? (dayDiff < 2 ? `${dayDiff} ${day}` : `${dayDiff} ${day1}`) : ''} ${hours ? (hours < 2 ? `${hours} ${hr}` : `${hours} ${hrs}`) : ''} ${dayDiff ? '' : minutes ? (minutes < 2 ? `${minutes}${min}` : `${minutes} ${mins}`) : ''} ${dayDiff || hours ? '' : seconds ? (seconds < 2 ? `${seconds} ${sec}` : `${seconds} ${secs}`) : ''}`
 
 
 

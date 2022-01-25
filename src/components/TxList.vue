@@ -1037,7 +1037,6 @@ export default {
 								isShowMore = true
 							}
 						}
-						console.log(denomId,msg,'aaaa')
 						this.transactionArray.push({
 							txHash: tx.tx_hash,
 							blockHeight: tx.height,

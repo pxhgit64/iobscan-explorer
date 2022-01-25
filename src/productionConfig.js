@@ -164,6 +164,10 @@ let config = {
     isShowFee: true, // 是否展示fee
     isShowDenom: false, //列表中fee是否展示单位
     decimals: 4 // 列表中fee展示的数值精度
+  },
+  umeng: {
+    umengId: 1279754478,
+    umengWebId: 1279754478
   }
 }
 module.exports = config;

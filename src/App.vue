@@ -10,7 +10,7 @@
 import Header from "./components/common/Header"
 import Footer from "./components/common/Footer";
 import { getTxType } from './helper/IritaHelper';
-import prodConfig from "../productionConfig/productionConfig"
+import prodConfig from "./productionConfig";
 export default {
   name: 'app',
   components:{Footer, Header},
@@ -33,6 +33,11 @@ export default {
     } else {
         this.$store.commit('isMobile',true);
     }
+    // 友盟统计添加
+    const script = document.createElement("script");
+    script.src = `https://v1.cnzz.com/z_stat.php?id=${prodConfig.umeng.umengId}&web_id=${prodConfig.umeng.umengWebId}`;
+    script.language = "JavaScript";
+    document.body.appendChild(script);
   },
 	methods:{
 		closeMsgChildrenType(){
@@ -40,7 +45,7 @@ export default {
 			this.$store.commit('isShowMsgChildrenType',false)
 			this.$store.commit('currentTxModelIndex',Number(lastChoiceMsgModelIndex))
 		}
-	}
+	},
 }
 </script>
 
