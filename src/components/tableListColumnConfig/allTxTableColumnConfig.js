@@ -305,7 +305,7 @@ export const needAddColumn = {
             linkRoute: '/service?serviceName='
         },
         {
-            label: i18n.t('ExplorerLang.table.requestContentId'),
+            label: i18n.t('ExplorerLang.table.respondserviceRequestId'),
             displayValue: 'requestId',
             nativeValue: 'requestId',
             isHref: true,
@@ -646,12 +646,14 @@ export const needAddColumn = {
         {
             label: i18n.t('ExplorerLang.table.nftId'),
             displayValue: 'nftId',
+            nativeValue: 'nftId',
             isNeedFormat: true,
             isFormatNftIdAndDenomId: true,
         },
         {
             label:i18n.t('ExplorerLang.table.denomId'),
             displayValue: 'denomId',
+            nativeValue: 'denomId',
             isNeedFormat: true,
             isFormatNftIdAndDenomId: true,
         },
@@ -832,7 +834,7 @@ export const needAddColumn = {
             isRight: true
         },
         {
-            label: '',
+            label: ' ',
             displayValue: 'swapAmount1Denom',
             isShowDenomTip: true,
         },

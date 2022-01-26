@@ -98,6 +98,7 @@ export function getDenoms(pageNum, pageSize, useCount = false, needAll, denomNam
 }
 
 export function getNfts(pageNum, pageSize, useCount = false, denom, nftId, owner){
+    nftId = nftId?.toString()?.replace(/\%/g,'%25').replace(/\#/g,'%23').replace(/\+/g,'%2B').replace(/\"/g,'%22').replace(/\'/g, '%27').replace(/\//g,'%2F').replace(' ','+').replace(/\?/g,'%3F').replace(/\&/g,'%26').replace(/\=/g,'%3D')
 	let url = `nfts?denomId=${denom||''}&nftId=${nftId||''}&owner=${owner||''}`;
   if(pageNum && pageSize){
     url += `&pageNum=${pageNum}&pageSize=${pageSize}`

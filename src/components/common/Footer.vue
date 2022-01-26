@@ -89,7 +89,6 @@
 				align-items:center;
 				.footer_content_top{
 					font-size:$s14;
-					font-family:Arial;
 					font-weight:400;
 					.footer_content_top_icon{
 						height:0.6rem;
