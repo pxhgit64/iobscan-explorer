@@ -522,5 +522,11 @@ export default class Tools {
       })  
       return map;
   }
-  
+
+  /**
+   * 不使用四舍五入，去除小数部分
+   */
+  static lostDecimal (num) {
+      return parseInt(num);
+  }
 }
