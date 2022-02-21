@@ -359,15 +359,19 @@ export default {
                                         } else {
                                             mainToken = await getMainToken();
                                         }
-                                        let communityPoolMain = mainToken && mainToken.denom && statisticsNetwork.community_pool.filter(item => item.denom === mainToken.denom && item);
-                                        let communityPoolOther = mainToken && mainToken.denom && statisticsNetwork.community_pool.filter(item => item.denom !== mainToken.denom && item);
-                                        let communityPool = [...communityPoolMain, ...communityPoolOther];
-                                        for(let i = 0; i < communityPool.length; i++) {
-                                            let itemPool = await converCoin(communityPool[i]);
-                                            communityPool[i].denom = itemPool.denom.toUpperCase();
-                                            communityPool[i].amount = Tools.toDecimal(itemPool.amount,this.amountDecimals);
+                                        if(mainToken && mainToken.denom) {
+                                            let communityPoolMain = statisticsNetwork.community_pool.filter(item => item.denom === mainToken.denom && item);
+                                            let communityPoolOther = statisticsNetwork.community_pool.filter(item => item.denom !== mainToken.denom && item);
+                                            let communityPool = [...communityPoolMain, ...communityPoolOther];
+                                            for(let i = 0; i < communityPool.length; i++) {
+                                                let itemPool = await converCoin(communityPool[i]);
+                                                communityPool[i].denom = itemPool.denom.toUpperCase();
+                                                communityPool[i].amount = Tools.toDecimal(itemPool.amount,this.amountDecimals);
+                                            }
+                                            itemObj.value = communityPool;
+                                        } else {
+                                            itemObj.value = '--';
                                         }
-                                        itemObj.value = communityPool;
                                     } else {
                                         itemObj.value = '--';
                                     }
