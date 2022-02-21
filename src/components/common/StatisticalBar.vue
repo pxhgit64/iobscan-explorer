@@ -37,23 +37,26 @@
                         <router-link v-if="item.to && item.value !== '--'" :to="item.to">{{item.value}}</router-link>
                         <span v-else>{{item.value}}</span>
                     </p>
-                    <div v-else-if="item.value.length === 1" class="statistical_center_content">
-                        <p class="statistical_center_content_community">{{item.value && item.value[0].amount}} {{item.value && item.value[0].denom}}</p>
+                    <div v-else class="statistical_center_content">
+                        <div v-if="item.value !== '--'" class="statistical_center_content_community_wrap">
+                            <p v-if="item.value.length === 1" class="statistical_center_content_community">{{item.value[0].amount}} {{item.value[0].denom}}</p>
+                            <el-tooltip v-else placement="bottom" class="statistical_center_content_community">
+                                <div slot="content">
+                                    <table>
+                                        <tr style="font-size: 14px; line-height: 20px;" v-for="(cItem, cIndex) in item.value" :key="cIndex">
+                                            <td style="box-sizing: border-box; padding-right: 8px; text-align: right;">{{cItem.amount}}</td>
+                                            <td>{{cItem.denom}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="statistical_center_content">
+                                    <p class="statistical_center_content_community">{{item.value && item.value[0].amount}} {{item.value && item.value[0].denom}}</p>
+                                    ...
+                                </div>
+                            </el-tooltip>
+                        </div>
+                        <span v-else>{{item.value}}</span>
                     </div>
-                    <el-tooltip v-else placement="bottom">
-                        <div slot="content">
-                            <table>
-                                <tr style="font-size: 14px; line-height: 20px;" v-for="(cItem, cIndex) in item.value" :key="cIndex">
-                                    <td style="box-sizing: border-box; padding-right: 8px; text-align: right;">{{cItem.amount}}</td>
-                                    <td>{{cItem.denom}}</td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="statistical_center_content">
-                            <p class="statistical_center_content_community">{{item.value && item.value[0].amount}} {{item.value && item.value[0].denom}}</p>
-                            ...
-                        </div>
-                    </el-tooltip>
                     <p class="statistical_footer_content" :class="isChrome ? 'chrome' : ''">
                         {{item.footerLabel}}
                     </p>
@@ -158,7 +161,7 @@ export default {
                 iconClass:'iconfont icona-bianzu24',
                 label: this.$t('ExplorerLang.home.communityPool'),
                 footerLabel:'',
-                value:'--',
+                value: '--',
                 to: '',
             },
         },
@@ -262,6 +265,8 @@ export default {
                                 //     itemObj.footerLabel = `${statisticsNetwork.bonded_tokens || '--'} / ${statisticsNetwork.total_supply || '--'}`;
                                 // }
                                 break;
+                            case 210: 
+                                break;
                         }
                         this.navigationArray.push(itemObj)
                     })
@@ -336,38 +341,32 @@ export default {
                                         itemObj.footerLabel = `${statisticsNetwork.bonded_tokens || '--'} / ${statisticsNetwork.total_supply || '--'}`;
                                     }
                                     break;
-                                case 210: 
-                                    if(statisticsNetwork.community_pool) {
-                                        let mainToken = await getMainToken();
-                                        let communityPool = await statisticsNetwork.community_pool.map(item => {
+                                case 210:
+                                    if(statisticsNetwork.community_pool && statisticsNetwork.community_pool.length) {
+                                        // 先对每一项 CommunityPool 去除小数
+                                        let communityPool = statisticsNetwork.community_pool.map(item => {
                                             return {
                                                 denom: item.denom,
                                                 amount: Tools.lostDecimal(item.amount)
                                             }
                                         });
-                                        let communityPoolArr = [];
-                                        communityPool.forEach(async item => {
-                                            let itemPool = await converCoin(item);
-                                            if(mainToken.is_main_token) {
-                                                if(mainToken.symbol === itemPool.denom) {
-                                                    communityPoolArr.unshift({
-                                                        denom: itemPool.denom.toUpperCase(),
-                                                        amount: Number(itemPool.amount).toFixed(2)
-                                                    });
-                                                }else {
-                                                    communityPoolArr.push({
-                                                        denom: itemPool.denom.toUpperCase(),
-                                                        amount: Number(itemPool.amount).toFixed(2)
-                                                    });
-                                                }
-                                            } else {
-                                                communityPoolArr.push({
-                                                    denom: itemPool.denom.toUpperCase(),
-                                                    amount: Number(itemPool.amount).toFixed(2)
-                                                });
+                                        // 获取主 Token
+                                        let mainToken = await getMainToken();
+                                        // 循环每一项 CommunityPool，如果该项的 denom 与 主 Token 的 denom 一致，则将其提到数组的第一个
+                                        communityPool.forEach((item, index) => {
+                                            if(item.denom === mainToken.denom) {
+                                                communityPool.splice(index, 1);
+                                                communityPool.unshift(item);
                                             }
                                         })
-                                        itemObj.value = communityPoolArr;
+                                        for(let i = 0; i < communityPool.length; i++) {
+                                            let itemPool = await converCoin(communityPool[i]);
+                                            communityPool[i].denom = itemPool.denom.toUpperCase();
+                                            communityPool[i].amount = Number(itemPool.amount).toFixed(2);
+                                        }
+                                        itemObj.value = communityPool;
+                                    } else {
+                                        itemObj.value = '--';
                                     }
                                     break;
                             }
@@ -494,9 +493,11 @@ export default {
                             .statistical_center_content{
                                 font-size: $s20;
                                 margin-top: 0.35rem;
-                                .statistical_center_content_community {
-                                    margin-top: 0.08rem;
-                                    font-size: $s18;
+                                .statistical_center_content_community_wrap {
+                                    .statistical_center_content_community {
+                                        margin-top: 0.08rem;
+                                        font-size: $s18;
+                                    }
                                 }
                             }
                             .statistical_footer_content{
