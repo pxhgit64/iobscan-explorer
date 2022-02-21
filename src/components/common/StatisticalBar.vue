@@ -346,19 +346,21 @@ export default {
                                     if(statisticsNetwork.community_pool && statisticsNetwork.community_pool.length) {
                                         let mainToken = {};
                                         if(sessionStorage.getItem('config')) {
-                                            let tokenData = JSON.parse(sessionStorage.getItem('config')).tokenData;
+                                            let tokenData = JSON.parse(sessionStorage.getItem('config'))?.tokenData || null;
                                             if(tokenData && tokenData.length) {
                                                 tokenData.forEach(item => {
                                                     if(item.is_main_token) {
                                                         mainToken = item;
                                                     }
                                                 });
+                                            } else {
+                                                mainToken = await getMainToken();
                                             }
                                         } else {
                                             mainToken = await getMainToken();
                                         }
-                                        let communityPoolMain = statisticsNetwork.community_pool.filter(item => item.denom === mainToken.denom && item);
-                                        let communityPoolOther = statisticsNetwork.community_pool.filter(item => item.denom !== mainToken.denom && item);
+                                        let communityPoolMain = mainToken && mainToken.denom && statisticsNetwork.community_pool.filter(item => item.denom === mainToken.denom && item);
+                                        let communityPoolOther = mainToken && mainToken.denom && statisticsNetwork.community_pool.filter(item => item.denom !== mainToken.denom && item);
                                         let communityPool = [...communityPoolMain, ...communityPoolOther];
                                         for(let i = 0; i < communityPool.length; i++) {
                                             let itemPool = await converCoin(communityPool[i]);
