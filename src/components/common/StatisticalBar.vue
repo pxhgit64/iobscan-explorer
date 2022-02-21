@@ -50,7 +50,7 @@
                                     </table>
                                 </div>
                                 <div class="statistical_center_content">
-                                    <p class="statistical_center_content_community">{{item.value && item.value[0].amount}} {{item.value && item.value[0].denom}}</p>
+                                    <p class="statistical_center_content_community">{{item.value[0].amount}} {{item.value[0].denom}}</p>
                                     ...
                                 </div>
                             </el-tooltip>
@@ -73,12 +73,13 @@ import { getDbStatistics,getNetworkStatistics } from "../../service/api";
 import Tools from "../../util/Tools";
 import {moduleSupport} from "../../helper/ModulesHelper";
 import { addressRoute,formatMoniker,getMainToken,converCoin } from '@/helper/IritaHelper'
-import { monikerNum } from '../../constant'
+import { monikerNum, decimals } from '../../constant'
 
 export default {
   name: 'StatisticalBar',
   data () {
     return {
+        amountDecimals: decimals.amount,
         prodConfig,
         moduleSupport,
         Tools,
@@ -343,26 +344,26 @@ export default {
                                     break;
                                 case 210:
                                     if(statisticsNetwork.community_pool && statisticsNetwork.community_pool.length) {
-                                        // 先对每一项 CommunityPool 去除小数
-                                        let communityPool = statisticsNetwork.community_pool.map(item => {
-                                            return {
-                                                denom: item.denom,
-                                                amount: Tools.lostDecimal(item.amount)
+                                        let mainToken = {};
+                                        if(sessionStorage.getItem('config')) {
+                                            let tokenData = JSON.parse(sessionStorage.getItem('config')).tokenData;
+                                            if(tokenData && tokenData.length) {
+                                                tokenData.forEach(item => {
+                                                    if(item.is_main_token) {
+                                                        mainToken = item;
+                                                    }
+                                                });
                                             }
-                                        });
-                                        // 获取主 Token
-                                        let mainToken = await getMainToken();
-                                        // 循环每一项 CommunityPool，如果该项的 denom 与 主 Token 的 denom 一致，则将其提到数组的第一个
-                                        communityPool.forEach((item, index) => {
-                                            if(item.denom === mainToken.denom) {
-                                                communityPool.splice(index, 1);
-                                                communityPool.unshift(item);
-                                            }
-                                        })
+                                        } else {
+                                            mainToken = await getMainToken();
+                                        }
+                                        let communityPoolMain = statisticsNetwork.community_pool.filter(item => item.denom === mainToken.denom && item);
+                                        let communityPoolOther = statisticsNetwork.community_pool.filter(item => item.denom !== mainToken.denom && item);
+                                        let communityPool = [...communityPoolMain, ...communityPoolOther];
                                         for(let i = 0; i < communityPool.length; i++) {
                                             let itemPool = await converCoin(communityPool[i]);
                                             communityPool[i].denom = itemPool.denom.toUpperCase();
-                                            communityPool[i].amount = Number(itemPool.amount).toFixed(2);
+                                            communityPool[i].amount = Tools.toDecimal(itemPool.amount,this.amountDecimals);
                                         }
                                         itemObj.value = communityPool;
                                     } else {
