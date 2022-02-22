@@ -142,9 +142,12 @@
 					  )
 				  }}:</span>
 							<span class="address_information_detail_option_value">
-                <router-link :to="`/address/${withdrewToAddress}`">{{
+                <router-link v-if="withdrewToAddress !== $route.params.param" :to="`/address/${withdrewToAddress}`">{{
 						withdrewToAddress
 					}}</router-link>
+                <span v-if="withdrewToAddress === $route.params.param">{{
+						withdrewToAddress
+					}}</span>
               </span>
 						</div>
 						<!-- Delegator Rewards 的表格 -->

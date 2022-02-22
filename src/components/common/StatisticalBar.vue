@@ -33,10 +33,30 @@
                         <i :class="item.iconClass"></i>
                         <span class="statistical_content">{{item.label}}</span>
                     </p>
-                    <p class="statistical_center_content">
+                    <p v-if="item.id !== 210" class="statistical_center_content">
                         <router-link v-if="item.to && item.value !== '--'" :to="item.to">{{item.value}}</router-link>
                         <span v-else>{{item.value}}</span>
                     </p>
+                    <div v-else class="statistical_center_content">
+                        <div v-if="item.value !== '--'" class="statistical_center_content_community_wrap">
+                            <p v-if="item.value.length === 1" class="statistical_center_content_community">{{item.value[0].amount}} {{item.value[0].denom}}</p>
+                            <el-tooltip v-else placement="bottom" class="statistical_center_content_community">
+                                <div slot="content">
+                                    <table>
+                                        <tr style="font-size: 14px; line-height: 20px;" v-for="(cItem, cIndex) in item.value" :key="cIndex">
+                                            <td style="box-sizing: border-box; padding-right: 8px; text-align: right;">{{cItem.amount}}</td>
+                                            <td>{{cItem.denom}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="statistical_center_content">
+                                    <p class="statistical_center_content_community">{{item.value[0].amount}} {{item.value[0].denom}}</p>
+                                    ...
+                                </div>
+                            </el-tooltip>
+                        </div>
+                        <span v-else>{{item.value}}</span>
+                    </div>
                     <p class="statistical_footer_content" :class="isChrome ? 'chrome' : ''">
                         {{item.footerLabel}}
                     </p>
@@ -53,12 +73,13 @@ import { getDbStatistics,getNetworkStatistics } from "../../service/api";
 import Tools from "../../util/Tools";
 import {moduleSupport} from "../../helper/ModulesHelper";
 import { addressRoute,formatMoniker,getMainToken,converCoin } from '@/helper/IritaHelper'
-import { monikerNum } from '../../constant'
+import { monikerNum, decimals } from '../../constant'
 
 export default {
   name: 'StatisticalBar',
   data () {
     return {
+        amountDecimals: decimals.amount,
         prodConfig,
         moduleSupport,
         Tools,
@@ -136,6 +157,14 @@ export default {
                 value:'--',
                 to: '',
             },
+            210:{
+                id:210,
+                iconClass:'iconfont icona-bianzu24',
+                label: this.$t('ExplorerLang.home.communityPool'),
+                footerLabel:'',
+                value: '--',
+                to: '',
+            },
         },
         navigationArray:[],
         syncTimer: null,
@@ -179,7 +208,7 @@ export default {
             try{
                 let HomeCardArrayDb=[],HomeCardArrayNetwork=[];
                 prodConfig.homeCard.forEach(code => {
-                    if(code == 200 || code == 201 || code == 209) {
+                    if(code == 200 || code == 201 || code == 209 || code == 210) {
                         HomeCardArrayNetwork.push(code)
                     } else {
                         HomeCardArrayDb.push(code)
@@ -236,6 +265,8 @@ export default {
                                 //     itemObj.value = '--';
                                 //     itemObj.footerLabel = `${statisticsNetwork.bonded_tokens || '--'} / ${statisticsNetwork.total_supply || '--'}`;
                                 // }
+                                break;
+                            case 210: 
                                 break;
                         }
                         this.navigationArray.push(itemObj)
@@ -309,6 +340,40 @@ export default {
                                     } else {
                                         itemObj.value = '--';
                                         itemObj.footerLabel = `${statisticsNetwork.bonded_tokens || '--'} / ${statisticsNetwork.total_supply || '--'}`;
+                                    }
+                                    break;
+                                case 210:
+                                    if(statisticsNetwork.community_pool && statisticsNetwork.community_pool.length) {
+                                        let mainToken = {};
+                                        if(sessionStorage.getItem('config')) {
+                                            let tokenData = JSON.parse(sessionStorage.getItem('config'))?.tokenData || null;
+                                            if(tokenData && tokenData.length) {
+                                                tokenData.forEach(item => {
+                                                    if(item.is_main_token) {
+                                                        mainToken = item;
+                                                    }
+                                                });
+                                            } else {
+                                                mainToken = await getMainToken();
+                                            }
+                                        } else {
+                                            mainToken = await getMainToken();
+                                        }
+                                        if(mainToken && mainToken.denom) {
+                                            let communityPoolMain = statisticsNetwork.community_pool.filter(item => item.denom === mainToken.denom && item);
+                                            let communityPoolOther = statisticsNetwork.community_pool.filter(item => item.denom !== mainToken.denom && item);
+                                            let communityPool = [...communityPoolMain, ...communityPoolOther];
+                                            for(let i = 0; i < communityPool.length; i++) {
+                                                let itemPool = await converCoin(communityPool[i]);
+                                                communityPool[i].denom = itemPool.denom.toUpperCase();
+                                                communityPool[i].amount = Tools.toDecimal(itemPool.amount,this.amountDecimals);
+                                            }
+                                            itemObj.value = communityPool;
+                                        } else {
+                                            itemObj.value = '--';
+                                        }
+                                    } else {
+                                        itemObj.value = '--';
                                     }
                                     break;
                             }
@@ -435,6 +500,12 @@ export default {
                             .statistical_center_content{
                                 font-size: $s20;
                                 margin-top: 0.35rem;
+                                .statistical_center_content_community_wrap {
+                                    .statistical_center_content_community {
+                                        margin-top: 0.08rem;
+                                        font-size: $s18;
+                                    }
+                                }
                             }
                             .statistical_footer_content{
                                 font-size: $s10;
@@ -494,7 +565,7 @@ export default {
             }
         }
 	}
-    @media screen and (max-width: 1123px) {
+    @media screen and (max-width: 1143px) {
         .statistical_bar_container {
             .statistical_bar_wrap{
                 .statistical_validator_content{
@@ -525,7 +596,7 @@ export default {
             }
         }
 	}
-    @media screen and (max-width: 1050px) {
+    @media screen and (max-width: 1110px) {
         .statistical_bar_container {
             .statistical_bar_wrap{
                 margin: 0;

@@ -206,6 +206,7 @@ export const ExplorerLang = {
         validatorNumCount: '验证人数量',
         bondedTokens: '质押率',
         votingPower: '在线投票权',
+        communityPool: '社区池'
     },
     block:{
         title:'区块',

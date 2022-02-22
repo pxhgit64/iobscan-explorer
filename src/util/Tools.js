@@ -522,5 +522,4 @@ export default class Tools {
       })  
       return map;
   }
-  
 }

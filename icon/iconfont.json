@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "27673634",
+      "name": "Community Pool",
+      "font_class": "a-bianzu24",
+      "unicode": "e6c0",
+      "unicode_decimal": 59072
+    },
+    {
       "icon_id": "24661443",
       "name": "第一页",
       "font_class": "diyiye",

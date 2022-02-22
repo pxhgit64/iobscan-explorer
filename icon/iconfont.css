@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 1594514 */
-  src: url('iconfont.woff2?t=1632883310384') format('woff2'),
-       url('iconfont.woff?t=1632883310384') format('woff'),
-       url('iconfont.ttf?t=1632883310384') format('truetype');
+  src: url('iconfont.woff2?t=1645080567355') format('woff2'),
+       url('iconfont.woff?t=1645080567355') format('woff'),
+       url('iconfont.ttf?t=1645080567355') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,10 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icona-bianzu24:before {
+  content: "\e6c0";
 }
 
 .icondiyiye:before {

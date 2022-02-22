@@ -211,6 +211,7 @@ export const ExplorerLang = {
         validatorNumCount: 'Validators',
         bondedTokens:'Bonded Tokens',
         votingPower: 'Voting Power',
+        communityPool: 'Community Pool'
     },
     block:{
         title:'Blockchain',
