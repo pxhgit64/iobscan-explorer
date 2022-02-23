@@ -247,13 +247,13 @@ export default {
                                 // }
                                 break;
                             case 210:
-                                if(statisticsDb.community_pool) {
-                                    let communityPool = await converCoin(statisticsDb.community_pool);
-                                    if(communityPool) {
-                                        let denom = communityPool.denom.toUpperCase();
-                                        let amount = Tools.toDecimal(communityPool.amount,this.amountDecimals);
+                                if(statisticsDb?.community_pool && statisticsDb?.community_pool?.length && JSON.stringify(statisticsDb.community_pool[0]) !== '{}') {
+                                    let communityPool = await converCoin(statisticsDb.community_pool[0]);
+                                    if(communityPool && JSON.stringify(communityPool) !=='{}') {
+                                        const denom = communityPool?.denom.toUpperCase();
+                                        const amount = Tools.toDecimal(communityPool?.amount,this.amountDecimals);
                                         itemObj.value = `${amount} ${denom}`;
-                                        prodConfig.communityPoolAddress ? itemObj.to = `/address/${prodConfig.communityPoolAddress}` : itemObj.to = '';
+                                        itemObj.to = prodConfig.communityPoolAddress ? `/address/${prodConfig.communityPoolAddress}` : '';
                                     } else {
                                         itemObj.value = '--';
                                     }
