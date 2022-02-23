@@ -655,7 +655,7 @@
 										if(monikerMap.has(operatorAddr)){
 											operatorMonikers = monikerMap.get(operatorAddr)
 										}
-	
+                                        // console.log(item.fee.amount[0],'item.fee.amount[0]');
                                         const fee = this.isShowFee && item.fee && item.fee.amount && item.fee.amount.length > 0 ? await converCoin(item.fee.amount[0]) :'--';
                                         const selfBonded = item.msgs && item.msgs.length === 1 ? item.msgs[0].msg && item.msgs[0].msg.value ? await converCoin(item.msgs[0].msg.value) : '--' : '--';
                                         // const time = Tools.getDisplayDate(item.time)

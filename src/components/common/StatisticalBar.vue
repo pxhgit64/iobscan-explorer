@@ -33,30 +33,10 @@
                         <i :class="item.iconClass"></i>
                         <span class="statistical_content">{{item.label}}</span>
                     </p>
-                    <p v-if="item.id !== 210" class="statistical_center_content">
+                    <p class="statistical_center_content">
                         <router-link v-if="item.to && item.value !== '--'" :to="item.to">{{item.value}}</router-link>
                         <span v-else>{{item.value}}</span>
                     </p>
-                    <div v-else class="statistical_center_content">
-                        <div v-if="item.value !== '--'" class="statistical_center_content_community_wrap">
-                            <p v-if="item.value.length === 1" class="statistical_center_content_community">{{item.value[0].amount}} {{item.value[0].denom}}</p>
-                            <el-tooltip v-else placement="bottom" class="statistical_center_content_community">
-                                <div slot="content">
-                                    <table>
-                                        <tr style="font-size: 14px; line-height: 20px;" v-for="(cItem, cIndex) in item.value" :key="cIndex">
-                                            <td style="box-sizing: border-box; padding-right: 8px; text-align: right;">{{cItem.amount}}</td>
-                                            <td>{{cItem.denom}}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div class="statistical_center_content">
-                                    <p class="statistical_center_content_community">{{item.value[0].amount}} {{item.value[0].denom}}</p>
-                                    ...
-                                </div>
-                            </el-tooltip>
-                        </div>
-                        <span v-else>{{item.value}}</span>
-                    </div>
                     <p class="statistical_footer_content" :class="isChrome ? 'chrome' : ''">
                         {{item.footerLabel}}
                     </p>
@@ -208,7 +188,7 @@ export default {
             try{
                 let HomeCardArrayDb=[],HomeCardArrayNetwork=[];
                 prodConfig.homeCard.forEach(code => {
-                    if(code == 200 || code == 201 || code == 209 || code == 210) {
+                    if(code == 200 || code == 201 || code == 209) {
                         HomeCardArrayNetwork.push(code)
                     } else {
                         HomeCardArrayDb.push(code)
@@ -228,7 +208,7 @@ export default {
                     // }
                     // this.proposerAddress = statisticsNetwork.operator_addr;
                     // this.currentBlockHeight = statisticsNetwork.blockHeight;
-                    prodConfig.homeCard.forEach(item => {
+                    prodConfig.homeCard.forEach(async item => {
                         if(item === 200) return
                         let itemObj = this.navigationObj[item]
                         switch(item) {
@@ -236,7 +216,7 @@ export default {
                                 // itemObj.value = statisticsNetwork.txCount;
                                 // itemObj.footerLabel = Tools.getDisplayDate(statisticsNetwork.latestBlockTime)
                                 break;
-                             case 202:
+                            case 202:
                                 itemObj.value = statisticsDb.validatorCount;
                                 break;
                             case 203:
@@ -266,7 +246,20 @@ export default {
                                 //     itemObj.footerLabel = `${statisticsNetwork.bonded_tokens || '--'} / ${statisticsNetwork.total_supply || '--'}`;
                                 // }
                                 break;
-                            case 210: 
+                            case 210:
+                                if(statisticsDb?.community_pool && statisticsDb?.community_pool?.length && JSON.stringify(statisticsDb.community_pool[0]) !== '{}') {
+                                    let communityPool = await converCoin(statisticsDb.community_pool[0]);
+                                    if(communityPool && JSON.stringify(communityPool) !=='{}') {
+                                        const denom = communityPool?.denom.toUpperCase();
+                                        const amount = Tools.toDecimal(communityPool?.amount,this.amountDecimals);
+                                        itemObj.value = `${amount} ${denom}`;
+                                        itemObj.to = prodConfig.communityPoolAddress ? `/address/${prodConfig.communityPoolAddress}` : '';
+                                    } else {
+                                        itemObj.value = '--';
+                                    }
+                                } else {
+                                    itemObj.value = '--';
+                                }
                                 break;
                         }
                         this.navigationArray.push(itemObj)
@@ -343,38 +336,6 @@ export default {
                                     }
                                     break;
                                 case 210:
-                                    if(statisticsNetwork.community_pool && statisticsNetwork.community_pool.length) {
-                                        let mainToken = {};
-                                        if(sessionStorage.getItem('config')) {
-                                            let tokenData = JSON.parse(sessionStorage.getItem('config'))?.tokenData || null;
-                                            if(tokenData && tokenData.length) {
-                                                tokenData.forEach(item => {
-                                                    if(item.is_main_token) {
-                                                        mainToken = item;
-                                                    }
-                                                });
-                                            } else {
-                                                mainToken = await getMainToken();
-                                            }
-                                        } else {
-                                            mainToken = await getMainToken();
-                                        }
-                                        if(mainToken && mainToken.denom) {
-                                            let communityPoolMain = statisticsNetwork.community_pool.filter(item => item.denom === mainToken.denom && item);
-                                            let communityPoolOther = statisticsNetwork.community_pool.filter(item => item.denom !== mainToken.denom && item);
-                                            let communityPool = [...communityPoolMain, ...communityPoolOther];
-                                            for(let i = 0; i < communityPool.length; i++) {
-                                                let itemPool = await converCoin(communityPool[i]);
-                                                communityPool[i].denom = itemPool.denom.toUpperCase();
-                                                communityPool[i].amount = Tools.toDecimal(itemPool.amount,this.amountDecimals);
-                                            }
-                                            itemObj.value = communityPool;
-                                        } else {
-                                            itemObj.value = '--';
-                                        }
-                                    } else {
-                                        itemObj.value = '--';
-                                    }
                                     break;
                             }
                             this.navigationArray.push(itemObj)
@@ -500,12 +461,6 @@ export default {
                             .statistical_center_content{
                                 font-size: $s20;
                                 margin-top: 0.35rem;
-                                .statistical_center_content_community_wrap {
-                                    .statistical_center_content_community {
-                                        margin-top: 0.08rem;
-                                        font-size: $s18;
-                                    }
-                                }
                             }
                             .statistical_footer_content{
                                 font-size: $s10;
