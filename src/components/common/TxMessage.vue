@@ -1505,7 +1505,7 @@
 				<span>{{$t('ExplorerLang.transactionInformation.staking.depositor')}}</span>
 				<template>
 					<span v-if="depositor === '--'">{{depositor}}</span>
-					<span @click="addressRoute(depositor)" class="address_link">{{depositor}}</span>
+					<!-- <span @click="addressRoute(depositor)" class="address_link">{{depositor}}</span> -->
 					<router-link :to="`/address/${depositor}`" class="address_link">{{depositor}}</router-link>
 				</template>
 			</p>
@@ -1709,7 +1709,7 @@
 				<template>
 					<span v-if="creator === '--'">{{ creator }}</span>
 					<span  v-else @click="addressRoute(creator)" class="address_link">{{ creator }}</span>
-					<router-link v-else :to="`/address/${creator}`" class="address_link">{{creator}}</router-link>
+					<!-- <router-link v-else :to="`/address/${creator}`" class="address_link">{{creator}}</router-link> -->
 				</template>
 			</p>
 		</div>
