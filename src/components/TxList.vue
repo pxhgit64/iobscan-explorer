@@ -1130,7 +1130,10 @@ export default {
 								let denom = /[A-Za-z\-]{2,15}/.exec(amount[index])?.length ? /[A-Za-z\-]{2,15}/.exec(amount[index])[0] : ' '
 								if (denom !== undefined && /(lpt|LPT|lpt-|LPT-)/g.test(denom)) {
 									this.transactionArray[index].amount = ''
-								}
+								} else if(/(IBC | ibc)/g.test(denom)) {
+                                    this.transactionArray[index].amount = ' '
+                                    this.transactionArray[index].denom = ' '
+                                }
 								
 							}
 						})
