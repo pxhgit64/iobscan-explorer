@@ -188,7 +188,7 @@ export default {
             try{
                 let HomeCardArrayDb=[],HomeCardArrayNetwork=[];
                 prodConfig.homeCard.forEach(code => {
-                    if(code == 200 || code == 201 || code == 209) {
+                    if(code == 200) {
                         HomeCardArrayNetwork.push(code)
                     } else {
                         HomeCardArrayDb.push(code)
@@ -213,7 +213,7 @@ export default {
                         let itemObj = this.navigationObj[item]
                         switch(item) {
                             case 201:
-                                // itemObj.value = statisticsNetwork.txCount;
+                                itemObj.value = statisticsDb.txCount;
                                 // itemObj.footerLabel = Tools.getDisplayDate(statisticsNetwork.latestBlockTime)
                                 break;
                             case 202:
@@ -238,16 +238,24 @@ export default {
                                 itemObj.value = statisticsDb.validatorNumCount
                                 break;
                             case 209:
-                                // if(statisticsNetwork.total_supply) {
-                                //     itemObj.value = Tools.formatPercentageNumbers(statisticsNetwork.bonded_tokens,statisticsNetwork.total_supply)
-                                //     itemObj.footerLabel = Tools.formatBondedTokens(statisticsNetwork.bonded_tokens,statisticsNetwork.total_supply)
-                                // } else {
-                                //     itemObj.value = '--';
-                                //     itemObj.footerLabel = `${statisticsNetwork.bonded_tokens || '--'} / ${statisticsNetwork.total_supply || '--'}`;
-                                // }
+                                if(Number(statisticsDb.total_supply) && Number(statisticsDb.bonded_tokens)) {
+                                    itemObj.value = Tools.formatPercentageNumbers(statisticsDb.bonded_tokens,statisticsDb.total_supply)
+                                    let mainToken  = await getMainToken()
+                                    let [bonded_tokens,total_supply] = await Promise.all([converCoin({
+                                        denom: mainToken.denom,
+                                        amount: Number(statisticsDb.bonded_tokens)
+                                    }),converCoin({
+                                        denom: mainToken.denom,
+                                        amount: Number(statisticsDb.total_supply)
+                                    })])
+                                    itemObj.footerLabel = Tools.formatBondedTokens(Number(bonded_tokens.amount || 0),Number(total_supply.amount || 0))
+                                } else {
+                                    itemObj.value = '--';
+                                    itemObj.footerLabel = `${statisticsDb.bonded_tokens || '--'} / ${statisticsDb.total_supply || '--'}`;
+                                }
                                 break;
                             case 210:
-                                if(statisticsDb?.community_pool && statisticsDb?.community_pool?.length && JSON.stringify(statisticsDb.community_pool[0]) !== '{}') {
+                                if(statisticsDb?.community_pool?.length && JSON.stringify(statisticsDb.community_pool[0]) !== '{}') {
                                     let communityPool = await converCoin(statisticsDb.community_pool[0]);
                                     if(communityPool && JSON.stringify(communityPool) !=='{}') {
                                         const denom = communityPool?.denom.toUpperCase();
@@ -294,7 +302,7 @@ export default {
                             let itemObj = this.navigationObj[item]
                             switch(item) {
                                 case 201:
-                                    itemObj.value = statisticsNetwork.txCount;
+                                    // itemObj.value = statisticsNetwork.txCount;
                                     itemObj.footerLabel = Tools.formatLocalTime(statisticsNetwork.latestBlockTime)
                                     break;
                                 case 202:
@@ -319,21 +327,21 @@ export default {
                                     itemObj.value = statisticsDb.validatorNumCount
                                     break;
                                 case 209:
-                                    if(Number(statisticsNetwork.total_supply) && Number(statisticsNetwork.bonded_tokens)) {
-                                        itemObj.value = Tools.formatPercentageNumbers(statisticsNetwork.bonded_tokens,statisticsNetwork.total_supply)
-                                        let mainToken  = await getMainToken()
-                                        let [bonded_tokens,total_supply] = await Promise.all([converCoin({
-                                            denom: mainToken.denom,
-                                            amount: Number(statisticsNetwork.bonded_tokens)
-                                        }),converCoin({
-                                            denom: mainToken.denom,
-                                            amount: Number(statisticsNetwork.total_supply)
-                                        })])
-                                        itemObj.footerLabel = Tools.formatBondedTokens(Number(bonded_tokens.amount || 0),Number(total_supply.amount || 0))
-                                    } else {
-                                        itemObj.value = '--';
-                                        itemObj.footerLabel = `${statisticsNetwork.bonded_tokens || '--'} / ${statisticsNetwork.total_supply || '--'}`;
-                                    }
+                                    // if(Number(statisticsNetwork.total_supply) && Number(statisticsNetwork.bonded_tokens)) {
+                                    //     itemObj.value = Tools.formatPercentageNumbers(statisticsNetwork.bonded_tokens,statisticsNetwork.total_supply)
+                                    //     let mainToken  = await getMainToken()
+                                    //     let [bonded_tokens,total_supply] = await Promise.all([converCoin({
+                                    //         denom: mainToken.denom,
+                                    //         amount: Number(statisticsNetwork.bonded_tokens)
+                                    //     }),converCoin({
+                                    //         denom: mainToken.denom,
+                                    //         amount: Number(statisticsNetwork.total_supply)
+                                    //     })])
+                                    //     itemObj.footerLabel = Tools.formatBondedTokens(Number(bonded_tokens.amount || 0),Number(total_supply.amount || 0))
+                                    // } else {
+                                    //     itemObj.value = '--';
+                                    //     itemObj.footerLabel = `${statisticsNetwork.bonded_tokens || '--'} / ${statisticsNetwork.total_supply || '--'}`;
+                                    // }
                                     break;
                                 case 210:
                                     break;
