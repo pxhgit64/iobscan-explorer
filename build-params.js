@@ -4,6 +4,7 @@ let fs = require('fs');
 let prodConfig =  require("./src/productionConfig"); 
 
 let textColor = (prodConfig.text || {}).color || {};
+let umeng = prodConfig.umeng || {};
 let title = prodConfig.title || '',
     og_image_url = prodConfig.ogImageUrl || 'ogImageUrl',
     og_title = prodConfig.ogTitle || 'ogImageUrl',
@@ -19,8 +20,8 @@ let title = prodConfig.title || '',
     background_color_common = prodConfig.background || '#F8F8F8',
     tag_color_common = prodConfig.tagBackground ||'rgba(239, 243, 255, 1)',
     table_tr_color_common = prodConfig.tableTrColor ||'rgba(50, 100, 253, 0.3)',
-    umengId = prodConfig.umeng.umengId || 'umengId',
-    umengWebId = prodConfig.umeng.umengWebId || 'umengWebId';
+    umengId = umeng.umengId || 'umengId',
+    umengWebId = umeng.umengWebId || 'umengWebId';
 
 replaceEnv([
         "./public/index.html",

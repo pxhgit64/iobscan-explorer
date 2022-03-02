@@ -63,13 +63,26 @@
                                 item.label
                             }}</span>
                         </p>
-                        <p class="statistical_center_content">
+                        <p v-if="item.id !== 210" class="statistical_center_content">
                             <router-link
                                 v-if="item.to && item.value !== '--'"
                                 :to="item.to"
                                 >{{ item.value }}</router-link
                             >
                             <span v-else>{{ item.value }}</span>
+                        </p>
+                        <p v-else class="statistical_center_content">
+                            <router-link
+                                v-if="item.to && item.value !== '--'"
+                                :to="item.to"
+                            >
+                                <span class="community_pool_amount">{{item.value.amount}}</span>
+                                <span class="community_pool_denom">{{item.value.denom}}</span>
+                            </router-link>
+                            <span v-else>
+                                <span class="community_pool_amount">{{item.value.amount}}</span>
+                                <span class="community_pool_denom">{{item.value.denom}}</span>
+                            </span>
                         </p>
                         <p
                             class="statistical_footer_content"
@@ -189,6 +202,7 @@ export default {
                 },
             },
             navigationArray: [],
+            navigationArrayDbNet: [],
             syncTimer: null,
             currentBlockHeight: 0,
             validatorHeaderImgSrc: "",
@@ -237,7 +251,7 @@ export default {
                     }
                 });
                 let statisticsDb = await getDbStatistics(HomeCardArrayDb);
-                this.navigationArray = [];
+                this.navigationArrayDbNet = [];
                 if (statisticsDb) {
                     // this.validatorHeaderImgHref = ''
                     // //先通过正则剔除符号空格及表情，只保留数字字母汉字
@@ -339,7 +353,10 @@ export default {
                                             communityPool?.amount,
                                             this.amountDecimals
                                         );
-                                        itemObj.value = `${amount} ${denom}`;
+                                        itemObj.value = {
+                                            amount,
+                                            denom
+                                        };
                                         // itemObj.to = prodConfig.communityPoolAddress ? `/address/${prodConfig.communityPoolAddress}` : '';
                                     } else {
                                         itemObj.value = "--";
@@ -349,10 +366,10 @@ export default {
                                 }
                                 break;
                         }
-                        this.navigationArray.push(itemObj);
+                        this.navigationArrayDbNet.push(itemObj);
                     });
                     if (!moduleSupport("107", prodConfig.navFuncList)) {
-                        this.navigationArray.unshift({
+                        this.navigationArrayDbNet.unshift({
                             id: 200,
                             iconClass: "iconfont iconBlocks",
                             label: this.$t("ExplorerLang.home.blockHeight"),
@@ -366,7 +383,7 @@ export default {
                     HomeCardArrayNetwork
                 );
                 if (statisticsDb && statisticsNetwork) {
-                    this.navigationArray = [];
+                    this.navigationArrayDbNet = [];
                     this.validatorHeaderImgHref = "";
                     //先通过正则剔除符号空格及表情，只保留数字字母汉字
                     let regex = /[^\w\u4e00-\u9fa50-9a-zA-Z]/g;
@@ -448,11 +465,11 @@ export default {
                                 case 210:
                                     break;
                             }
-                            this.navigationArray.push(itemObj);
+                            this.navigationArrayDbNet.push(itemObj);
                         }
                     }
                     if (!moduleSupport("107", prodConfig.navFuncList)) {
-                        this.navigationArray.unshift({
+                        this.navigationArrayDbNet.unshift({
                             id: 200,
                             iconClass: "iconfont iconBlocks",
                             label: this.$t("ExplorerLang.home.blockHeight"),
@@ -462,6 +479,7 @@ export default {
                         });
                     }
                 }
+                this.navigationArray = this.navigationArrayDbNet;
             } catch (err) {
                 console.error(err);
             }
@@ -571,6 +589,12 @@ a {
                     .statistical_center_content {
                         font-size: $s20;
                         margin-top: 0.35rem;
+                        .community_pool_amount {
+                            margin-right: 0.04rem;
+                        }
+                        .community_pool_denom {
+                            font-size: 0.13rem;
+                        }
                     }
                     .statistical_footer_content {
                         font-size: $s10;

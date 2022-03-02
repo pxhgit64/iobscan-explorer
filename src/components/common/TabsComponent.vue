@@ -102,6 +102,7 @@ export default {
 	watch: {
 		tabList: {
 			handler(newValue, oldValue) {
+                this.runTypeListData(newValue);
 			},
 			deep: true
 		},
@@ -113,7 +114,6 @@ export default {
 	},
 	mounted() {
 		this.getTxTypeData()
-		const {txType} = Tools.urlParser();
 		let typeListData = null,moduleData = null;
 		if(sessionStorage.getItem('typeList')){
 			typeListData = JSON.parse(sessionStorage.getItem('typeList')) || null
@@ -127,40 +127,9 @@ export default {
 				this.moduleMap.set(item.module_en,item)
 			})
 		}
-		if(typeListData?.length){
-			typeListData.forEach( (item,index) =>{
-				if(item.children && txType){
-					if(txType && txType.indexOf(',') !== -1){
-						const currentTxType = txType.split(',')
-						const currentMsgTypes = currentTxType.sort((a,b) =>{
-							return a.localeCompare(b)
-						})
-						const currentNotHasAllMsgType  = item.children.filter( item => {
-							return item.label !== 'secondaryAll'
-						})
-						const currentNotHasAllMsgTypeValue = currentNotHasAllMsgType.map( item => item.value)
-						const currentNotHasAllMsgTypeSortValue = currentNotHasAllMsgTypeValue.sort((a,b) => {
-							return a.localeCompare(b)
-						})
-						
-						if(JSON.stringify(currentMsgTypes) === JSON.stringify(currentNotHasAllMsgTypeSortValue)){
-							sessionStorage.setItem('lastChoiceMsgModelIndex',index)
-							this.$store.commit('currentTxModelIndex',index)
-						}
-					}else {
-						item.children.forEach( item =>{
-							if(item.value === txType){
-								sessionStorage.setItem('lastChoiceMsgModelIndex',index)
-								this.$store.commit('currentTxModelIndex',index)
-							}
-						})
-					}
-				}
-			})
-		}
+        this.runTypeListData(typeListData);
 		this.setTagContentHeight()
 		window.addEventListener("resize", this.windowResizeFunc,true);
-		
 	},
 	methods: {
 		setDisplayMagType(value){
@@ -266,7 +235,41 @@ export default {
 				this.$emit('onSelectMagType', msgType)
 			}
 
-		}
+		},
+        runTypeListData(typeListData) {
+		    const {txType} = Tools.urlParser();
+            if(typeListData?.length){
+                typeListData.forEach( (item,index) =>{
+                    if(item.children && txType){
+                        if(txType && txType.indexOf(',') !== -1){
+                            const currentTxType = txType.split(',')
+                            const currentMsgTypes = currentTxType.sort((a,b) =>{
+                                return a.localeCompare(b)
+                            })
+                            const currentNotHasAllMsgType  = item.children.filter( item => {
+                                return item.label !== 'secondaryAll'
+                            })
+                            const currentNotHasAllMsgTypeValue = currentNotHasAllMsgType.map( item => item.value)
+                            const currentNotHasAllMsgTypeSortValue = currentNotHasAllMsgTypeValue.sort((a,b) => {
+                                return a.localeCompare(b)
+                            })
+                            
+                            if(JSON.stringify(currentMsgTypes) === JSON.stringify(currentNotHasAllMsgTypeSortValue)){
+                                sessionStorage.setItem('lastChoiceMsgModelIndex',index)
+                                this.$store.commit('currentTxModelIndex',index)
+                            }
+                        }else {
+                            item.children.forEach( item =>{
+                                if(item.value === txType){
+                                    sessionStorage.setItem('lastChoiceMsgModelIndex',index)
+                                    this.$store.commit('currentTxModelIndex',index)
+                                }
+                            })
+                        }
+                    }
+                })
+            }
+        }
 	}
 }
 </script>
