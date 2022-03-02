@@ -479,7 +479,7 @@ export default {
                         });
                     }
                 }
-                this.navigationArray = this.navigationArrayDbNet ? this.navigationArrayDbNet : [];
+                this.navigationArray = this.navigationArrayDbNet;
             } catch (err) {
                 console.error(err);
             }
