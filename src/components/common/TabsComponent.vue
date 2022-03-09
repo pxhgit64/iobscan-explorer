@@ -114,7 +114,7 @@ export default {
 		}
 	},
 	mounted() {
-    console.log(this.tabList)
+   
 		this.getTxTypeData()
 		let typeListData = null,moduleData = null;
 		if(sessionStorage.getItem('typeList')){
@@ -220,7 +220,7 @@ export default {
 		},
 		selectMsgType(msgType, index,childrenTabs) {
 			this.childrenTabs.forEach((item) => {
-        // console.log(item)
+        
 				if (item.active) {
 					item.active = 0
 				}
@@ -240,7 +240,7 @@ export default {
 
 		},
         runTypeListData(typeListData) {
-          console.log(typeListData)
+          
 		    const {txType} = Tools.urlParser();
             if(typeListData?.length){
                 typeListData.forEach( (item,index) =>{
