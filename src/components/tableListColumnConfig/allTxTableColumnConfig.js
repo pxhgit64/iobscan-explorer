@@ -36,12 +36,7 @@ export const needAddColumn = {
             isLink: true,
             isNeedFormat: true,
             isFormatAddress: true,
-        },
-        {
-          label: '',
-          displayValue: 'denom',
-          isShowDenomTip: true,
-      },
+        }
     ],
 
     send: [

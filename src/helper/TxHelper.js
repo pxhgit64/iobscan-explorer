@@ -440,54 +440,68 @@ export class TxHelper {
               // farm
               //#region 
 
-              case 'stake':
-                farmObj.children.push({
-                    value: 'stake',
-                    label: 'Farm'
-                });
-                break;  
+              // case 'stake':
+              //   farmObj.children.push({
+              //       value: 'stake',
+              //       label: 'Farm'
+              //   });
+              //   break;  
 
-                case 'unstake':
-                farmObj.children.push({
-                    value: 'unstake',
-                    label: 'Farm'
-                });
-                break; 
+              case TX_TYPE.stake:
+                    farmObj.children.push({
+                        value: TX_TYPE.stake,
+                        label: TX_TYPE_DISPLAY[TX_TYPE.stake]
+                    });
+                    break;
 
-                case 'harvest':
+
+              case TX_TYPE.unstake:
                       farmObj.children.push({
-                          value: 'harvest',
-                          label: 'Farm'
+                          value: TX_TYPE.unstake,
+                          label: TX_TYPE_DISPLAY[TX_TYPE.unstake]
                       });
-                      break;  
+                      break;
 
-                case 'create_pool':
-                farmObj.children.push({
-                    value: 'create_pool',
-                    label: 'Farm'
-                });
-                break; 
+                case TX_TYPE.harvest:
+                      farmObj.children.push({
+                          value: TX_TYPE.harvest,
+                          label: TX_TYPE_DISPLAY[TX_TYPE.harvest]
+                      });
+                      break;
 
-                case 'create_pool_with_community_pool':
-                  farmObj.children.push({
-                      value: 'create_pool_with_community_pool',
-                      label: 'Farm'
-                  });
-                  break;
+                 case TX_TYPE.create_pool:
+                        farmObj.children.push({
+                            value: TX_TYPE.create_pool,
+                            label: TX_TYPE_DISPLAY[TX_TYPE.create_pool]
+                        });
+                        break;
 
-                case 'destroy_pool':
-                farmObj.children.push({
-                    value: 'destroy_pool',
-                    label: 'Farm'
-                });
-                break;
+                  
+                  case TX_TYPE.create_pool_with_community_pool:
+                          farmObj.children.push({
+                              value: TX_TYPE.create_pool_with_community_pool,
+                              label: TX_TYPE_DISPLAY[TX_TYPE.create_pool_with_community_pool]
+                          });
+                          break;
 
-                case 'adjust_pool':
-                farmObj.children.push({
-                    value: 'adjust_pool',
-                    label: 'Farm'
-                });
-                break;
+
+                   case TX_TYPE.destroy_pool:
+                            farmObj.children.push({
+                                value: TX_TYPE.destroy_pool,
+                                label: TX_TYPE_DISPLAY[TX_TYPE.destroy_pool]
+                            });
+                            break;
+
+                    case TX_TYPE.adjust_pool:
+                              farmObj.children.push({
+                                  value: TX_TYPE.adjust_pool,
+                                  label: TX_TYPE_DISPLAY[TX_TYPE.adjust_pool]
+                              });
+                              break;
+
+              
+                
+
 
                 //#endregion
 

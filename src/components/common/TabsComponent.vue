@@ -102,7 +102,7 @@ export default {
 	watch: {
 		tabList: {
 			handler(newValue, oldValue) {
-        console.log(newValue)
+       
                 this.runTypeListData(newValue);
 			},
 			deep: true

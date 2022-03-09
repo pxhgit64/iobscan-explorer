@@ -48,7 +48,7 @@ export const TX_TYPE = {
   mint_token: 'mint_token',
   transfer_token_owner: 'transfer_token_owner',
   burn_token: 'burn_token',
-  //Farm 
+  
 
   //Bank
   send: 'send',
@@ -133,10 +133,30 @@ export const TX_TYPE = {
   recv_clean_packet:'recv_clean_packet',
   tibc_update_client:'tibc_update_client',
 
+
+  //Farm 
+  stake:'stake',
+  unstake:'unstake',
+  harvest:'harvest',
+  create_pool:'create_pool',
+  create_pool_with_community_pool:'create_pool_with_community_pool',
+  destroy_pool:'destroy_pool',
+  adjust_pool:'adjust_pool',
+
+
 }
 
 // 展示 abandon
 export const TX_TYPE_DISPLAY = {
+    //farm
+  stake:'stake',
+  unstake:'unstake',
+  harvest:'harvest',
+  create_pool:'create_pool',
+  create_pool_with_community_pool:'create_pool_with_community_pool',
+  destroy_pool:'destroy_pool',
+  adjust_pool:'adjust_pool',
+
   // service
   define_service: 'Define Service',
   bind_service: 'Bind Service',

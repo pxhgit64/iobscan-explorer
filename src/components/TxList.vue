@@ -146,7 +146,6 @@ export default {
 		this.formatTxData(txType)
 	},
 	mounted() {
-    // debugger
 		this.getFilterTxs('init');
 		const {txType} = Tools.urlParser();
 		this.txColumnList = txCommonTable.concat(SignerColunmn,txCommonLatestTable)
@@ -159,7 +158,6 @@ export default {
     this.setIsShowIbc();
     this.setIsShowHashLock();
 
-    // console.log("----",this.txColumnList)
 	},
 	methods: {
     async setIsShowIbc() {
