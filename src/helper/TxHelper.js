@@ -353,6 +353,12 @@ export class TxHelper {
 				label: LEVEL_TX_TYPE.Transfer,
 				children:[]
             },
+            // 新增farm 
+            farmObj={
+              value: LEVEL_TX_TYPE.Farm,
+                label: LEVEL_TX_TYPE.Farm,
+                children:[]
+            },
             stakingObj = {
                 value: LEVEL_TX_TYPE.Staking,
                 label: LEVEL_TX_TYPE.Staking,
@@ -430,18 +436,80 @@ export class TxHelper {
 			};
 		txTypeArray.forEach( item => {
             switch (item.typeName) {
-                case TX_TYPE.send:
+
+              // farm
+              //#region 
+
+              case 'stake':
+                farmObj.children.push({
+                    value: 'stake',
+                    label: 'Farm'
+                });
+                break;  
+
+                case 'unstake':
+                farmObj.children.push({
+                    value: 'unstake',
+                    label: 'Farm'
+                });
+                break; 
+
+                case 'harvest':
+                      farmObj.children.push({
+                          value: 'harvest',
+                          label: 'Farm'
+                      });
+                      break;  
+
+                case 'create_pool':
+                farmObj.children.push({
+                    value: 'create_pool',
+                    label: 'Farm'
+                });
+                break; 
+
+                case 'create_pool_with_community_pool':
+                  farmObj.children.push({
+                      value: 'create_pool_with_community_pool',
+                      label: 'Farm'
+                  });
+                  break;
+
+                case 'destroy_pool':
+                farmObj.children.push({
+                    value: 'destroy_pool',
+                    label: 'Farm'
+                });
+                break;
+
+                case 'adjust_pool':
+                farmObj.children.push({
+                    value: 'adjust_pool',
+                    label: 'Farm'
+                });
+                break;
+
+                //#endregion
+
+                
+
+
+              
+              
+              case TX_TYPE.send:
                     tansferObj.children.push({
                         value: TX_TYPE.send,
                         label: TX_TYPE_DISPLAY[TX_TYPE.send]
                     });
                     break;
+                   
                 case TX_TYPE.multisend:
                     tansferObj.children.push({
                         value: TX_TYPE.multisend,
                         label: TX_TYPE_DISPLAY[TX_TYPE.multisend]
                     });
                     break;
+                   
                 case TX_TYPE.delegate:
                     stakingObj.children.push({
                         value: TX_TYPE.delegate,
@@ -502,6 +570,9 @@ export class TxHelper {
                         label: TX_TYPE_DISPLAY[TX_TYPE.unjail]
                     });
                     break;
+                   
+
+
                 case TX_TYPE.define_service:
                     iServiceObj.children.push({
                         value: TX_TYPE.define_service,
@@ -997,8 +1068,10 @@ export class TxHelper {
 
 			}
         });
+
+        // 添加Farm
         
-		allTxType.push(tansferObj, nftObj,tibcObj, identityObj, ibcObj, stakingObj, coinswapObj, htlcObj, assetObj, govObj, oracleObj, randomObj, recordObj, iServiceObj,crossChainObj,othersObj);
+		allTxType.push(tansferObj, nftObj,tibcObj, identityObj, ibcObj, stakingObj, coinswapObj, farmObj,htlcObj, assetObj, govObj, oracleObj, randomObj, recordObj, iServiceObj,crossChainObj,othersObj);
         allTxType = allTxType.filter(item => item.children.length)
         allTxType.forEach(item=>{
             if(item?.children?.length && item.children.length > 1){
@@ -1022,6 +1095,7 @@ export class TxHelper {
 				})
 			}
 		})
+
 		return TxTypeArray
     }
 

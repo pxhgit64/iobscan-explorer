@@ -10,6 +10,40 @@ const i18n = new VueI18n({
     }
 })
 export const needAddColumn = {
+
+
+    stake:[
+      
+      {
+        label:i18n.t('ExplorerLang.table.amount'),
+        displayValue: 'amount',
+        isRight: true,
+        isLink: true,
+            isNeedFormat: true,
+            isFormatAddress: true,
+    },
+    
+        {
+            label: '',
+            displayValue: 'denom',
+            isShowDenomTip: true,
+        },
+
+        {
+          label: i18n.t('ExplorerLang.table.sender'),
+            displayValue: 'sender',
+            nativeValue: 'sender',
+            isLink: true,
+            isNeedFormat: true,
+            isFormatAddress: true,
+        },
+        {
+          label: '',
+          displayValue: 'denom',
+          isShowDenomTip: true,
+      },
+    ],
+
     send: [
         {
             label:i18n.t('ExplorerLang.table.amount'),

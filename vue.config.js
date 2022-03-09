@@ -7,12 +7,15 @@ module.exports = {
   devServer: {
     proxy: {
       '/api': {
-        target:'http://localhost:3000/',
+        // target:'http://localhost:3000/',
+        // target:'https://irishub.iobscan.io/api/ ',
+        target:'http://192.168.150.42:10001/api/',
         secure: false,
         pathRewrite: { '^/api': '' },
       },
       '/lcd': {
         target: productionConfig?.lcdUrl ? productionConfig.lcdUrl:'http://192.168.150.40:1317',
+        // target: productionConfig?.lcdUrl ? productionConfig.lcdUrl:'http://192.168.150.42:10001',
         secure: false,
         pathRewrite: { '^/lcd': '' },
       }

@@ -68,7 +68,11 @@ export default {
 	components: {
 		TxResetButtonComponent,
 		TxCountComponent,
-		TxStatusTabsComponents, TabsComponent, ListComponent, MPagination, TxListComponent
+		TxStatusTabsComponents, 
+    TabsComponent, 
+    ListComponent, 
+    MPagination, 
+    TxListComponent
 	},
 	mixins: [parseTimeMixin],
 	data() {
@@ -142,6 +146,7 @@ export default {
 		this.formatTxData(txType)
 	},
 	mounted() {
+    // debugger
 		this.getFilterTxs('init');
 		const {txType} = Tools.urlParser();
 		this.txColumnList = txCommonTable.concat(SignerColunmn,txCommonLatestTable)
@@ -153,6 +158,8 @@ export default {
 		this.setMainToken();
     this.setIsShowIbc();
     this.setIsShowHashLock();
+
+    // console.log("----",this.txColumnList)
 	},
 	methods: {
     async setIsShowIbc() {

@@ -215,6 +215,7 @@
 			this.getTxListByFilterCondition(null, null, true)
 			this.getTxListByFilterCondition(this.currentPageNum, this.pageSize)
 			// this.$store.commit('currentTxModelIndex',this.selectMsgTypeIndex)
+    
 			
 		},
 		methods: {

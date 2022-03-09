@@ -48,6 +48,8 @@ export const TX_TYPE = {
   mint_token: 'mint_token',
   transfer_token_owner: 'transfer_token_owner',
   burn_token: 'burn_token',
+  //Farm 
+
   //Bank
   send: 'send',
   multisend: 'multisend',
@@ -249,9 +251,12 @@ export const TX_TYPE_DISPLAY = {
   clean_packet:'TIBC Clean Packet Out',
   recv_clean_packet:'TIBC Clean Packet In',
   tibc_update_client:'TIBC Update Client',
+
+  
 }
 
 export const LEVEL_TX_TYPE = {
+  Farm:'Farm',
   Transfer: 'Transfer',
   Staking: 'Staking',
   iService: 'iService',
