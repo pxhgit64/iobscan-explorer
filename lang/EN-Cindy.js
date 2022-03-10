@@ -34,6 +34,9 @@ export const ExplorerLang = {
 
     },
     table:{
+        poolId:'Pool Id',
+        totalReward1:'Total Reward',
+        totalReward2:'Total Reward',
         time: 'Time',
         validator:'Validator',
         operatorAddress:'Operator Address',

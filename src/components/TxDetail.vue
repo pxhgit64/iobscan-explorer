@@ -180,6 +180,7 @@ export default {
 		async getTransactionInformation() {
 			try {
 				const res = await getTxDetail(this.$route.query.txHash)
+     
 				if (res) {
 					this.monikers = res.monikers
 					this.messages = res.msgs || []

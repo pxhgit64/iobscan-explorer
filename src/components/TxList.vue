@@ -1043,6 +1043,8 @@ export default {
 							}
 						}
 						this.transactionArray.push({
+              poolId:tx.msgs[0].msg.sender,
+              
 							txHash: tx.tx_hash,
 							blockHeight: tx.height,
 							txType: (tx.msgs || []).map(item => item.type ),
@@ -1066,6 +1068,7 @@ export default {
 							nftId:nftIdArr?.length > 1 ? ' ' : nftIdArr?.length === 1 ? nftIdArr[0] : nftId,
 							clientId: clientIdArr?.length > 1 ? ' ' : clientIdArr?.length === 1 ? clientIdArr[0] : clientId,
 							feedName: feedNameArr?.length > 1 ? ' ' : feedNameArr?.length ===1 ? feedNameArr[0] : feedName,
+              
 							oracleCreator: oracleCreatorArr?.length > 1 ? ' ' : oracleCreatorArr?.length === 1 ? oracleCreatorArr[0] : oracleCreator,
 							consumer: consumerArr?.length > 1 ? ' ' : consumerArr?.length === 1 ? consumerArr[0] : consumer,
 							serviceName: serviceNameArr?.length > 1 ? ' ' : serviceNameArr?.length === 1 ? serviceNameArr[0] : serviceName,

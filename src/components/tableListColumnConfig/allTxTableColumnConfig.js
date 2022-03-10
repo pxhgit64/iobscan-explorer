@@ -11,33 +11,238 @@ const i18n = new VueI18n({
 })
 export const needAddColumn = {
 
+  // farm
+  //#region 
 
-    stake:[
-      
-      {
-        label:i18n.t('ExplorerLang.table.amount'),
-        displayValue: 'amount',
-        isRight: true,
-        isLink: true,
-            isNeedFormat: true,
-            isFormatAddress: true,
+  
+  stake:[
+
+    {
+      label: i18n.t('ExplorerLang.table.poolId'),
+      displayValue: 'poolId',
+      nativeValue: 'poolId',
+      isLink: true,
+      isNeedFormat: true,
+      isFormatAddress: true,
+      linkRoute: '/address/',
     },
     
-        {
-            label: '',
-            displayValue: 'denom',
-            isShowDenomTip: true,
-        },
+    {
+      label:i18n.t('ExplorerLang.table.amount'),
+      displayValue: 'amount',
+      isRight: true,
+      
+  },
+  
+      {
+          label: '',
+          displayValue: 'denom',
+          isShowDenomTip: true,
+      },
 
-        {
+      {
           label: i18n.t('ExplorerLang.table.sender'),
-            displayValue: 'sender',
-            nativeValue: 'sender',
-            isLink: true,
-            isNeedFormat: true,
-            isFormatAddress: true,
-        }
-    ],
+          displayValue: 'sender',
+          nativeValue: 'sender',
+          isLink: true,
+          isNeedFormat: true,
+          isFormatAddress: true,
+          linkRoute: '/address/',
+      },
+      
+  ],
+
+  unstake:[
+
+    {
+      label: i18n.t('ExplorerLang.table.poolId'),
+      displayValue: 'poolId',
+      nativeValue: 'poolId',
+      isLink: true,
+      isNeedFormat: true,
+      isFormatAddress: true,
+      linkRoute: '/address/',
+    },
+
+    
+    
+    
+    {
+      label:i18n.t('ExplorerLang.table.amount'),
+      displayValue: 'amount',
+      nativeValue: 'amount',
+
+      isRight: true,
+      
+  },
+
+  {
+    label: '',
+    displayValue: 'denom',
+    isShowDenomTip: true,
+},
+  
+
+      {
+          label: i18n.t('ExplorerLang.table.sender'),
+          displayValue: 'sender',
+          nativeValue: 'sender',
+          isLink: true,
+          isNeedFormat: true,
+          isFormatAddress: true,
+          linkRoute: '/address/',
+      },
+      
+  ],
+
+  harvest:[
+
+    {
+      label: i18n.t('ExplorerLang.table.poolId'),
+      displayValue: 'poolId',
+      nativeValue: 'poolId',
+      isLink: true,
+      isNeedFormat: true,
+      isFormatAddress: true,
+      linkRoute: '/address/',
+    },
+
+    
+
+      {
+          label: i18n.t('ExplorerLang.table.sender'),
+          displayValue: 'sender',
+          nativeValue: 'sender',
+          isLink: true,
+          isNeedFormat: true,
+          isFormatAddress: true,
+          linkRoute: '/address/',
+      },
+      
+  ],
+
+
+  create_pool:[
+
+    {
+      label: i18n.t('ExplorerLang.table.totalReward1'),
+      displayValue: 'totalReward1',
+      nativeValue: 'totalReward1',
+      isLink: true,
+      isNeedFormat: true,
+      isFormatAddress: true,
+      linkRoute: '/address/',
+  },
+  {
+      label: ' ',
+      displayValue: 'createTotalReward2Denom',
+    
+      isShowDenomTip: true,
+  },
+  {
+      label: i18n.t('ExplorerLang.table.totalReward2'),
+      displayValue: 'totalReward2',
+      nativeValue: 'totalReward1',
+      isLink: true,
+      isNeedFormat: true,
+      isFormatAddress: true,
+      linkRoute: '/address/',
+  },
+  {
+      label: '',
+      displayValue: 'createTotalReward2Denom',
+      isShowDenomTip: true,
+  },
+
+
+
+    {
+      label: i18n.t('ExplorerLang.table.creator'),
+      displayValue: 'oracleCreator',
+      nativeValue: 'oracleCreator',
+      isLink:true,
+      isNeedFormat: true,
+      isFormatAddress: true,
+      linkRoute: '/address/',
+  },
+  
+  ],
+
+  destroy_pool:[
+    {
+      label: i18n.t('ExplorerLang.table.poolId'),
+      displayValue: 'poolId',
+      nativeValue: 'poolId',
+      isLink: true,
+      isNeedFormat: true,
+      isFormatAddress: true,
+      linkRoute: '/address/',
+    },
+
+    {
+      label: i18n.t('ExplorerLang.table.creator'),
+      displayValue: 'oracleCreator',
+      nativeValue: 'oracleCreator',
+      isLink:true,
+      isNeedFormat: true,
+      isFormatAddress: true,
+      linkRoute: '/address/',
+  },
+  ],
+
+  adjust_pool:[
+
+    {
+      label: i18n.t('ExplorerLang.table.poolId'),
+      displayValue: 'poolId',
+      nativeValue: 'poolId',
+      isLink: true,
+      isNeedFormat: true,
+      isFormatAddress: true,
+      linkRoute: '/address/',
+    },
+
+    {
+      label: i18n.t('ExplorerLang.table.creator'),
+      displayValue: 'oracleCreator',
+      nativeValue: 'oracleCreator',
+      isLink:true,
+      isNeedFormat: true,
+      isFormatAddress: true,
+      linkRoute: '/address/',
+  },
+  ],
+
+  create_pool_with_community_pool:[
+    {
+      label: i18n.t('ExplorerLang.table.proposer'),
+      displayValue: 'from',
+      nativeValue: 'from',
+      isFormatAddress: true,
+      isNeedFormat: true,
+      isLink: true,
+      linkRoute: '/address/',
+  },
+  {
+      label: i18n.t('ExplorerLang.table.title'),
+      displayValue: 'title',
+      nativeValue: 'title',
+      isNeedFormat: true,
+      isFormatMoniker: true,
+      isFormatNftIdAndDenomId: true,
+  },
+  {
+      label:i18n.t('ExplorerLang.table.initialDeposit'),
+      displayValue: 'amount',
+      nativeValue: 'amount',
+      isShowTokenSymbol:true,
+  },
+  ],
+
+
+
+   
+    //#endregion
 
     send: [
         {
